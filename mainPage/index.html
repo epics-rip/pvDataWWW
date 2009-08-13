@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html">
+  <title>EPICS PVData</title>
+</head>
+
+<body>
+<img src="logo101.gif" alt="EPICS" align="right" height="101" width="101"> 
+
+<h2 align="center">EPICS PVData</h2>
+
+<p>This is NOT ready for use. It will become the sourceforge pvData web site.
+It will contain documentation and download areas for all EPICS PVData
+projects. </p>
+
+<h3>Introduction</h3>
+
+<p><a href="http://www.anl.gov/epics">EPICS</a> is a set of Open Source
+software tools, libraries and applications developed collaboratively and used
+worldwide to create distributed soft real-time control systems for scientific
+instruments such as a particle accelerators, telescopes and other large
+scientific experiments. An IOC (Input/Output Controller) is a network node
+that controls and/or monitors a collection of devices. An IOC contains a
+memory resident real time database. The real time database has a set of
+"smart" records. Each record is an instance on a record of a particular
+type.</p>
+
+<p>EPICS PVData is a set of projects all based on PVData.
+One project is javaIOC, which is a JAVA implementation of an EPICS Input Output
+Controller (IOC). The javaIOC project implements an IOC that is similar
+to a Version 3 IOC ( the 3.13 and 3.14 releases of EPICS base) but extends the
+data types to support structures and arrays.
+This data is named PVData.
+</p>
+
+
+<p>PVData (Process Variable Data) defines and implements an efficent way to
+store, access, and transmit memory resident structured data.</p>
+<dl>
+  <dt>definition</dt>
+    <dd>Package org.epics.pvData.pv has Java interface definitions that
+      define PVData. Although defined with Java syntax the interfaces also
+      document what is required for implementation in other languages such as
+      C++.</dd>
+  <dt>implementation</dt>
+    <dd>Project org.epics.pvData provides a complete Java implementation of
+      PVData. It is used by other EPICS PVData projects</dd>
+  <dt>efficient</dt>
+    <dd>Small memory footprint, low cpu overhead, and concise code base.</dd>
+  <dt>data storage</dt>
+    <dd>PVData defines separate introspection and data interfaces. The
+      introspection interfaces provide access to immutable objects, which
+      allows introspection instances to be freely shared. The introspection
+      interface for a process variable can be accessed without requiring
+      access to the data.</dd>
+  <dt>data access</dt>
+    <dd>Client code can access PVData via the introspection and data
+      interfaces. For "well known" data, e.g. timeStamp, specialized
+      interfaces can be provided without requiring any changes to the core
+      software.</dd>
+  <dt>data transfer</dt>
+    <dd>The separation of introspection and data interfaces allows for
+      efficient network data transfer. At connection time introspection
+      information can be passed from server to client. Each side can create a
+      data instance. The data is transferred between these instances. The
+      data in the network buffers does not have to be self describing since
+      each side has the introspection information.</dd>
+  <dt>memory resident</dt>
+    <dd>PVData only defines memory resident data.</dd>
+  <dt>structured data</dt>
+    <dd>PVData has three types: scalar, array, and structure. A scalar can be
+      one of the following: boolean, byte, short, int, long, float, double,
+      string. An array is a one dimensional array with the element type being
+      a scalar. A structure is an ordered set of fields where each field has
+      a name and type. Since a field can have type structure complex
+      structures are supported. No other types are needed since structures
+      can be defined that simulate types.</dd>
+</dl>
+
+<p>The current implementation of EPICS PVData is only available in Java. The
+implementation environment is a set of elipse projects. In the future plans
+are to implement at least PVData and channel access for PVData in C++. </p>
+
+<h3>Getting Started</h3>
+<ol>
+  <li>The first step is to understand pvData. Ask for Description in <a
+    href="pvData/doc/index.html">pvData/doc/index.html</a></li>
+  <li>Create an eclipse project from the latest release of <a
+    href="javaIOC/index.html">javaIOC/index.html</a></li>
+</ol>
+
+<p>In the future better packaging in EPICS PVData will be supported. The next
+section describes the current pvData projects and also provides the current
+thoughts on future EPICS pvData projects.</p>
+
+<h3>EPICS PVData Projects</h3>
+
+<p>The following projects are available via sourceforge epics-pvdata</p>
+<dl>
+  <dt><a href="pvData/index.html">pvData</a></dt>
+  <dt><a href="channelAccess/index.html">channelAccess</a></dt>
+  <dt><a href="javaIOC/index.html">javaIOC</a></dt>
+</dl>
+
+<p>In the future the project structure may be something like the
+following.</p>
+<ul>
+  <li>Basic 
+    <dl>
+      <dt>iocTemplate</dt>
+        <dd>This will be a template for creating IOC applications. It will
+          include access to pvData, clannelAccess, and javaIOC.</dd>
+      <dt>pvData</dt>
+        <dd>The existing pvData project</dd>
+    </dl>
+  </li>
+  <li>network 
+    <dl>
+      <dt>channelAccess</dt>
+        <dd>The existing channelAccess that supports pvData.</dd>
+      <dt>caV3</dt>
+        <dd>Support for channel access version 3. This is currently part of
+          javaIOC. It has both client and server support. It allows existing
+          EPICS channel access client to access a pvData database and allows
+          a javaIOC record to have links to records in an EPICS IOC.</dd>
+    </dl>
+  </li>
+  <li>Client Tools 
+    <dl>
+      <dt>swtshell</dt>
+        <dd>This is currently part of javaIOC. It will become a separate
+          package. Currently some features require that it be run as part of
+          a javaIOC process. In the future all features will rely only on
+          channel access.</dd>
+      <dt>Control System Studio</dt>
+        <dd>Hopefully someone will provide the features supplied by swtshell
+          as plugins for CSS. But volunteers are required.</dd>
+    </dl>
+  </li>
+  <li>portDriver<br>
+    This is currently part of javaIOC. In the future it will be a separate
+    project.</li>
+</ul>
+</body>
+</html>
