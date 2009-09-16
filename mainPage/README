@@ -1,0 +1,29 @@
+This is the html doc for the source-forge epics-pvdata project.
+In order to put it into the sourceforge area do the following:
+
+scp <file> userid,epics-pvdata@web.sourceforge.net:htdocs/<parent>
+
+In order to put the javaDOC in place the old doc must be removed and the
+new installed. The following uses pvData as an example:
+
+To remove the old doc the only way IO know how is to use sftp
+
+ sftp  <user>,epics-pvdata@web.sourceforge.net:htdocs
+
+Then
+
+
+cd pvData/doc
+
+Then visit every subdirectory and delete all files.
+Then delete all subdirectories.
+A real pain but I have not discovered a better way.
+
+To put the new files in place:
+1) use eclipse to generate javaDoc
+2) export including javaDoc
+3) unzip the exported file
+4) cd to the export top level an d execute the command:
+ scp -r doc <user>,epics-pvdata@web.sourceforge.net:htdocs/pvData
+
+
