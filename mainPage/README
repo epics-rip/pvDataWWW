@@ -6,18 +6,21 @@ scp <file> userid,epics-pvdata@web.sourceforge.net:htdocs/<parent>
 In order to put the javaDOC in place the old doc must be removed and the
 new installed. The following uses pvData as an example:
 
-To remove the old doc the only way IO know how is to use sftp
+To remove the old doc 
 
- sftp  <user>,epics-pvdata@web.sourceforge.net:htdocs
+ssh -t USER,PROJECT@shell.sourceforge.net create
 
-Then
+then
+cd userweb
+cd htdocs
 
+then go to project and delete doc. For example
+cd pvData
+rm -fr doc
 
-cd pvData/doc
+then
 
-Then visit every subdirectory and delete all files.
-Then delete all subdirectories.
-A real pain but I have not discovered a better way.
+shutdown
 
 To put the new files in place:
 1) use eclipse to generate javaDoc
