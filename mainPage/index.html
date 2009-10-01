@@ -37,8 +37,7 @@ instruments such as a particle accelerators, telescopes and other large
 scientific experiments. An IOC (Input/Output Controller) is a network node
 that controls and/or monitors a collection of devices. An IOC contains a
 memory resident real time database. The real time database has a set of
-"smart" records. Each record is an instance on a record of a particular
-type.</p>
+"smart" records.</p>
 
 <p>A javaIOC is a JAVA implementation of an EPICS Input Output Controller
 (IOC). The javaIOC project implements an IOC that is similar to a Version 3
@@ -123,16 +122,20 @@ are to implement at least PVData and channel access for PVData in C++. </p>
 
 <h3>Getting the code.</h3>
 
-<p>At the present time releases are not being provided. The code is only
-available via the source-forge CVS repository for epics-pvData.</p>
+<p>At the present time releases are only provided via the source-forge CVS
+repository for epics-pvData.</p>
 
 <p>The easiest way to install the software is to create eclipse projects. The
 steps are:</p>
 <ul>
   <li>Install eclipse</li>
-  <li>Via CVS create projects pvData, CAJv4, and javaIOC<br>
-    Specify the following cvs options for CVS: 
-    <pre>   Connection Type:  extssh
+  <li>In eclipse import, via cvs, the following projects: pvData, CAJv4, and
+    javaIOC<br>
+    Specify the following options for CVS: 
+    <pre>    Authentication:
+              User: anonymous
+          Password: Just click enter key.
+   Connection Type:  extssh
               Host: epics-pvdata.cvs.sourceforge.net
    Repository Path: /cvsroot/epics-pvdata
             Module: pvData (and then CAJv4 and then javaIOC)</pre>
@@ -142,7 +145,16 @@ steps are:</p>
   <li>Make javaIOC depend on pvData and CAJv4.</li>
 </ul>
 
-<p>In the future better packaging including releases will be provided.</p>
+<p>The above is only done once. To access new releases use eclipse to attach
+to a release as follows:</p>
+<ul>
+  <li>In package view click on project</li>
+  <li>With right mouse button select
+  replaceWith=&gt;AnotherBranchOrVersion</li>
+  <li>Open Versions and select the version you want.</li>
+</ul>
+
+<p>In the future better packaging will be provided.</p>
 
 <h3>Getting Started</h3>
 

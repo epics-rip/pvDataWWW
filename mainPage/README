@@ -24,9 +24,9 @@ shutdown
 
 To put the new files in place:
 1) use eclipse to generate javaDoc
-2) export including javaDoc
+2) export only doc
 3) unzip the exported file
-4) cd to the export top level an d execute the command:
+4) cd to the export top level and execute the command:
  scp -r doc <user>,epics-pvdata@web.sourceforge.net:htdocs/pvData
 
 
