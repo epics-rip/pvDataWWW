@@ -14,24 +14,31 @@ alt="Get EPICS-pvData at SourceForge.net. Fast, secure and Free Open Source soft
 
 <h2 align="center">EPICS PVData</h2>
 
-<h2 align="center">2009.10.03</h2>
+<h2 align="center">2009.10.05</h2>
 
 <h3>Introduction</h3>
 
-<p>EPICS PVData is a set of projects, based on memory resident structured
-data, that provides a tool kit for implementing a Distributed Control
-System</p>
+<p>EPICS PVData is a tool kit for implementing a Distributed Control
+System.</p>
 
-<p>The current projects are:</p>
+<p>It consists of a set of projects, based on memory resident structured
+data. The current projects are:</p>
 <dl>
   <dt>pvData</dt>
     <dd>Definition and implementation of memory resident structured data.</dd>
-  <dt>channelAccess</dt>
-    <dd>Network Support for pvData</dd>
+  <dt>caV4</dt>
+    <dd>Channel Access Version 4: Network Support for pvData. Note: The
+      eclipse project name is CAJv4.</dd>
   <dt>javaIOC</dt>
     <dd>An Input Output Controller (IOC) that supports pvData and implements
       "smart" records.</dd>
 </dl>
+
+<p>A javaIOC is a JAVA implementation of an EPICS Input Output Controller
+(IOC). The javaIOC project implements an IOC that is similar to an EPICS
+Version 3 IOC ( the 3.13 and 3.14 releases of EPICS base) but extends the
+data types to support structured data.<a
+href="http://www.aps.anl.gov/epics"></a></p>
 
 <p><a href="http://www.aps.anl.gov/epics">EPICS</a> is a set of Open Source
 software tools, libraries and applications developed collaboratively and used
@@ -42,16 +49,9 @@ that controls and/or monitors a collection of devices. An IOC contains a
 memory resident real time database. The real time database has a set of
 "smart" records.</p>
 
-<p>A javaIOC is a JAVA implementation of an EPICS Input Output Controller
-(IOC). The javaIOC project implements an IOC that is similar to a Version 3
-IOC ( the 3.13 and 3.14 releases of EPICS base) but extends the data types to
-support structured data. A javaIOC is intended for use as a soft real time
-controller that can be used for SCADA (Supervisory Control and Data
-Acquisition) applications.</p>
-
 <h3>Uses</h3>
 
-<p>A few of the uses are:</p>
+<p>Some uses are:</p>
 <dl>
   <dt>I/O Controller</dt>
     <dd>The javaIOC can be used as a soft real-time Input/Output controller.
@@ -60,6 +60,9 @@ Acquisition) applications.</p>
       remains on implementing low level drivers).</dd>
   <dt>Distributed Control System</dt>
     <dd>EPICS PVData provides a toolkit for building a DCS.</dd>
+  <dt>SCADA</dt>
+    <dd>EPICS PVData can be used to implement Supervisory Control And Data
+      Acquisition (SCADA) applications.</dd>
   <dt>Data Server</dt>
     <dd>An application can use the javaIOC or just channelAccess/pvData to
       serve data to network clients.</dd>
@@ -72,20 +75,24 @@ Acquisition) applications.</p>
 <dl>
   <dt>PVData</dt>
     <dd>PVData (Process Variable Data) defines and implements an efficent way
-      to store, access, and transmit memory resident structured data.</dd>
+      to store, access, and create memory resident structured data. Although
+      defined with Java syntax the interfaces also document what is required
+      for implementation in other languages such as C++.</dd>
+  <dt>channel access - network access</dt>
+    <dd>caV4 implements a version of channel access that provides network
+      support for transfering PVData.</dd>
   <dt>interface definitions</dt>
     <dd>The Java package org.epics.pvData.pv has Java interface definitions
-      that define PVData. ChannelAccess also has java interface definitions
-      that define channelAccess. Although defined with Java syntax the
-      interfaces also document what is required for implementation in other
-      languages such as C++.</dd>
+      that define PVData. Package org.epics.ca.client has java interface
+      definitions that define channelAccess. Although defined with Java
+      syntax the interfaces also document what is required for implementation
+      in other languages such as C++.</dd>
   <dt>implementation</dt>
-    <dd>Project org.epics.pvData provides a complete Java implementation of
-      PVData. It is used by other EPICS PVData projects. Project
-      channelAccess provides network support for pvData. Project javaIOC
-      implements a smart memory resident soft real time database. Each field
-      of each record can optionally have attached support code which is
-      called when a record is processed. </dd>
+    <dd>Project pvData provides a complete Java implementation of PVData. It
+      is used by other EPICS PVData projects. Project CAjV4 provides network
+      support for pvData. Project javaIOC implements a smart memory resident
+      soft real time database. Each field of each record can optionally have
+      attached support code which is called when a record is processed. </dd>
   <dt>efficient</dt>
     <dd>Small memory footprint, low cpu overhead, and concise code base.</dd>
   <dt>data storage</dt>
@@ -112,10 +119,10 @@ Acquisition) applications.</p>
     <dd>PVData has three types: scalar, array, and structure. A scalar can be
       one of the following: boolean, byte, short, int, long, float, double,
       string. An array is a one dimensional array with the element type being
-      a scalar. A structure is an ordered set of fields where each field has
-      a name and type. Since a field can have type structure complex
-      structures are supported. No other types are needed since structures
-      can be defined that simulate types.</dd>
+      one of the scalar types. A structure is an ordered set of fields where
+      each field has a name and type. Since a field can have type structure
+      complex structures are supported. No other types are needed since
+      structures can be defined that simulate types.</dd>
 </dl>
 
 <p>The current implementation of EPICS PVData is only available in Java. The
@@ -127,40 +134,37 @@ are to implement at least PVData and channel access for PVData in C++. </p>
 <p>At the present time releases are only provided via the source-forge CVS
 repository for epics-pvData.</p>
 
-<p>The easiest way to install the software is to create eclipse projects. The
-steps are:</p>
+<p>To install the software create eclipse projects. The steps are:</p>
 <ul>
   <li>Install eclipse</li>
-  <li>In eclipse import, via cvs, the following projects: pvData, CAJv4, and
-    javaIOC<br>
-    Specify the following options for CVS: 
+  <li>In eclipse select file=&gt;new=&gt;CVS Repoasitory Location</li>
+  <li>Specify the following options for CVS: 
     <pre>    Authentication:
               User: anonymous
           Password: Just click enter key.
    Connection Type:  extssh
               Host: epics-pvdata.cvs.sourceforge.net
    Repository Path: /cvsroot/epics-pvdata
-            Module: pvData (and then CAJv4 and then javaIOC)</pre>
-    <pre> </pre>
+    </pre>
   </li>
-  <li>make CAJv4 depend on pvData</li>
-  <li>Make javaIOC depend on pvData and CAJv4.</li>
-</ul>
-
-<p>The above is only done once. To access new releases use eclipse to attach
-to a release as follows:</p>
-<ul>
-  <li>In package view click on project</li>
-  <li>With right mouse button select
-  replaceWith=&gt;AnotherBranchOrVersion</li>
-  <li>Open Versions and select the version you want.</li>
+  <li>In eclipse select Window=&gt;Open Perspective=&gt;SynchronizeView</li>
+  <li>Select the newly created repository</li>
+  <li>Go to versions and for each of pvData, CAJv4, and javaIOC 
+    <ul>
+      <li>Find the version you want</li>
+      <li>With right mouse button select check out as</li>
+      <li>Give a name that includes the release. For example pvDataR0-8-0</li>
+    </ul>
+  </li>
+  <li>make CAJv4Rx-x-x depend on pvDataRx-x-x</li>
+  <li>Make javaIOCRx-x-x depend on pvDataRx-x-x and CAJv4Rx-x-x.</li>
 </ul>
 
 <p>In the future better packaging will be provided.</p>
 
 <h3>Getting Started</h3>
 
-<p>The javaIOC project provides a GUI based shell. See Description in <a
+<p>The javaIOC project provides a GUI based shell. See Getting Started in <a
 href="javaIOC/doc/index.html">javaIOC/doc/index.html</a> For how to start it
 with an example database.</p>
 
@@ -174,11 +178,11 @@ latest javaDOC is available via links in the next section.</p>
 <p>The following projects are available via sourceforge epics-pvdata</p>
 <dl>
   <dt><a href="pvData/index.html">pvData</a></dt>
-  <dt><a href="channelAccess/index.html">channelAccess</a></dt>
+  <dt><a href="caV4/index.html">CAJv4</a></dt>
   <dt><a href="javaIOC/index.html">javaIOC</a></dt>
 </dl>
 
-<p>In the future the project structure may be something like the
+<p>In the future the project structure may become something like the
 following.</p>
 <ul>
   <li>Basic 
@@ -192,8 +196,8 @@ following.</p>
   </li>
   <li>network 
     <dl>
-      <dt>channelAccess</dt>
-        <dd>The existing channelAccess that supports pvData.</dd>
+      <dt>CAJv4</dt>
+        <dd>The existing CAJv4 project.</dd>
       <dt>caV3</dt>
         <dd>Support for channel access version 3. This is currently part of
           javaIOC. It has both client and server support. It allows existing
@@ -204,7 +208,7 @@ following.</p>
   <li>Client Tools 
     <dl>
       <dt>swtshell</dt>
-        <dd>This is currently part of javaIOC. It will become a separate
+        <dd>This is currently part of javaIOC. It may become a separate
           package.</dd>
       <dt>Control System Studio</dt>
         <dd>Hopefully someone will provide the features supplied by swtshell
@@ -212,7 +216,7 @@ following.</p>
     </dl>
   </li>
   <li>portDriver<br>
-    This is currently part of javaIOC. In the future it will be a separate
+    This is currently part of javaIOC. In the future it may be a separate
     project.</li>
 </ul>
 </body>
