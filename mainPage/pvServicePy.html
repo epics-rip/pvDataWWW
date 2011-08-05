@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS pvServiceaPy</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS pvServicePy<br />
+Overview<br />
+Shen Guobao, Marty Kraimer<br />
+2011.08.04</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#L39">Introduction</a></li>
+  <li><a href="#L73">Building The Python Support</a></li>
+  <li><a href="#L114">pvData/pvAccess python objects</a> 
+    <ul>
+      <li><a href="#L118">requester</a></li>
+      <li><a href="#L141">status</a></li>
+      <li><a href="#L172">alarm</a></li>
+      <li><a href="#L213">timeStamp</a></li>
+      <li><a href="#L344">pvAccessPy</a></li>
+    </ul>
+  </li>
+  <li><a href="#L356">Gather Service</a> 
+    <ul>
+      <li><a href="#L366">Getting Started</a></li>
+      <li><a href="#L372">gatherData</a></li>
+      <li><a href="#L480">createGather</a></li>
+      <li><a href="#L570">gather</a> 
+        <ul>
+          <li><a href="#L637">Getting the data.</a></li>
+          <li><a href="#L649">Creating a monitor</a></li>
+          <li><a href="#L666">Get the latest values.</a></li>
+          <li><a href="#L678">Setting channels bad</a></li>
+          <li><a href="#L690">Put Scalar channel values </a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#L704">License Agreement</a></li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="L39">Introduction</h2>
+<hr />
+
+<p>This product is available via the <a href="#LicenseAgreement">open source
+license</a> described at the end of this document.</p>
+
+<p>pvService is a set of network based services for use by High Level Control
+applications. This document describes a python implementation. The python
+implementation interfaces to the C++ pvService implementation. All arrays are
+provided as numPy arrays.</p>
+
+<p>This is the beginning of the C++ and Python pvService implementation. It is
+expected that the set of services will grow.</p>
+
+<p>Clients access a service via pvAccess which provides network access to
+pvData. Both pvData and pvAccess are described elsewhere. Each service provides
+a client interface that hides pvData and pvAccess details and provides data in
+a form that makes sense for the service. The python client only needs to be
+aware of a few special pvData/pvAccess objects such as timeStamp, alarm, and
+status. </p>
+
+<p>A brief list of the services provided is:</p>
+<dl>
+  <dt>createGather</dt>
+    <dd>This is a service that creates, on the server, a record that implements
+      a gather service.</dd>
+  <dt>gather</dt>
+    <dd>This is a service that connects to a set of V3 records. It can get,
+      put, and monitor the set of records. Arrays are transmitted between the
+      gather client and server.</dd>
+  <dt>other services will be listed as developed</dt>
+</dl>
+
+<p>Only the client side of these services is implemented in Python. In order to
+use the service a javaIOC server for createGather and gather must be running.
+How to start the servers is described in the Java version of the services.</p>
+<hr />
+
+<h2 style="text-align: center" id="L73">Building The Python Support</h2>
+<hr />
+
+<p>Currently all the Python support resides in pvServiceCPP/python. All
+associated C++ code is build via the normal EPICS build rules. After the build,
+one additional step is requred before the pvSupport python support can be used:
+</p>
+<pre> cd python
+ python generateSOLinks.py</pre>
+
+<p>This creates the "xxx.so" links required by Python. <span
+style="font-weight:bold;">NOTE: This currenently only works on Unix/Linux
+compatible architectures.</span></p>
+
+<p>In addition, since the users will normally not run in directory
+pvServiceCPP/python, the following must also be done.</p>
+<pre>  source PYTHONPATH</pre>
+
+<p>The python directory consists of files that have the following naming
+convention:</p>
+<dl>
+  <dt>*.py</dt>
+    <dd>These are python modules that client code uses. The other files are
+      used by the implementation.</dd>
+  <dt>*Py.cpp</dt>
+    <dd>A C++ Python extension module that is part of the implementation.</dd>
+  <dt>*Py.h</dt>
+    <dd>A file that provide "glue" code for convertion between C++ and
+    python.</dd>
+  <dt>*.cpp</dt>
+    <dd>Any other C++ source files are implementation details</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="L114">pvData/pvAccess python objects</h2>
+<hr />
+
+<h3 id="L118">requester</h3>
+
+<p>Module requester.py provides a class that implements the same functionality
+as Java and C++ class requester as well as the GatherMonitorRequester. It
+provides:</p>
+<ul>
+  <li>A callback for passing error messages to the client. A default is
+    provided that just prints the messages.</li>
+  <li>A monitorEvent callback. A default is provided that shows some of the
+    data associated with each monitor even.</li>
+</ul>
+
+<p>The default can be used via the following:</p>
+<pre>from requester import Requester as Requester
+ ...
+requester = Requester("someName")</pre>
+
+<p>The constructor takes a single argument, which must be a string that is the
+requester name.</p>
+
+<p>class Requester is if the form:</p>
+<pre>class Requester(object) :
+    messageTypeName = ( "info", "warning", "error", "fatal" )
+    messageType = (0,1,2,3)
+    ...
+</pre>
+
+<p>User code can implement a class that extends Requester. The methods that are
+likely to be overriden are:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">message(self,message,messageType)</span></dt>
+    <dd>message is a string. messageType must be an int that is a valid
+      MessageType</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">monitorEvent(self)</span></dt>
+    <dd>This is called when a monitor is received from the gather server.</dd>
+  <dt>A monitiorEvent must follow the pattern:</dt>
+</dl>
+<pre>while self.gather.poll() :
+    gatherData = self.gatherData
+   #do something with the data</pre>
+
+<p>Look at the default implementation to see how the data can be accessed,</p>
+
+<h3 id="L141">status</h3>
+
+<p>Module status.py provides a class that implements the same functionality as
+Java and C++ class status. Most of the pvService methods return a status. An
+code that uses pvService must issue the statement:</p>
+<pre>import status</pre>
+
+<p>Class Status has the following methods:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getMessage</span></dt>
+    <dd>Returns a string that has a status message if status.isOK() is
+    False.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getType</span></dt>
+    <dd>The type which must be a valid statusType.</dd>
+    <dd></dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">isOK</span></dt>
+    <dd>x</dd>
+</dl>
+
+<p>Two class attributes are defined for the status type:</p>
+<pre>class Status(object) :
+    statusName = ( "OK", "WARNING", "ERROR", "FATAL" )
+    statusType = (0,1,2,3)
+    ...</pre>
+
+<p>The normal way to use status is:</p>
+<pre>status = someFunc(...
+if not status.isOK() :
+    #take some action
+</pre>
+
+<h3 id="L172">alarm</h3>
+
+<p>Module alarm.py provides a class that implements the same functionality as
+Java and C++ class alarm. Alarm is a pvData "property" class for defining a
+alarm condition. For a pvService client an alarm is a property of of either a
+pvService record of of a data field in data returned by a service. An alarm has
+a severity and a message.</p>
+
+<p>The Alarm class defines two class attributes:</p>
+<pre>class Alarm(object) :
+    alarmSeverityNames = ("noAlarm","minorAlarm","majorAlarm","invalidAlarm")
+    alarmSeverity = (0,1,2,3)
+    ...</pre>
+
+<p>It has the following methods:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getMessage</span></dt>
+    <dd>This gets the current message. It is a string.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setMessage(message)</span></dt>
+    <dd>This sets the current message. Normally called by implementation code
+      not by the client.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getSeverity</span></dt>
+    <dd>Get the current severity. It one of the allowed alarmSeverity
+    values.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setSeverity(severity)</span></dt>
+    <dd>Set the current alarm severity.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">toString</span></dt>
+    <dd>Create a string with the current alarm severity and message.</dd>
+</dl>
+
+<p>The normal way to use alarm is as follows:</p>
+<pre>from alarm import Alarm as Alarm
+alarm = Alarm()
+ ...
+gatherData.getAlarm(alarm)</pre>
+
+<p>What the last statement does is update alarm from the C++ alarm held by the
+implementation.</p>
+
+<h3 id="L213">timeStamp</h3>
+
+<p>Module timeStamp.py provides a class that implements the same functionality
+as Java and C++ class timeStamp. timeStamp is a pvData "property" class for
+assigning a time stamp to data. A pvData timeStamp has the time in nano seconds
+since POSIX epoch, which is January 1, 1970 00:00:00 UTC. Note that this is
+different than the EPICS epoch, which is January 1, 1990. A timeStamp instance
+hold two fields for the time:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">secondsPastEpoch</span></dt>
+    <dd>A long which is the number of seconds since the epoch.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">nanoSeconds</span></dt>
+    <dd>An int which is the number of nanoseconds within the current
+    second.</dd>
+</dl>
+
+<p>The TimeStamp class defines the following class attrributes:</p>
+<pre>class TimeStamp(object) :
+    milliSecPerSec = 1000
+    microSecPerSec = milliSecPerSec*milliSecPerSec
+    nanoSecPerSec = milliSecPerSec*microSecPerSec
+    posixEpochAtEpicsEpoch = 631152000
+    ...</pre>
+
+<p>It has the following public methods:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">normalize</span></dt>
+    <dd>This adjusts secondsPastEpoch and nanoSeconds so that 0 &lt;=
+      nanoSeconds &lt; nanoSecPerSec</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">fromTime</span></dt>
+    <dd>Given a float value that is secondsPastEpoch it sets secondsPastEpoch
+      and nanoSeconds. Note that: 
+      <pre>   import time
+   xxx = time.time()</pre>
+      <p>Returns a float value that is in units of secondsPastEpoch.</p>
+    </dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getSecondsPastEpoch</span></dt>
+    <dd>This returns a long that is secondsPastEpoch.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getEpicsSecondsPastEpoch</span></dt>
+    <dd>This returns a long that is the number of seconds past the EPICS
+    Epoch.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getNanoSeconds</span></dt>
+    <dd>This returns nanoSeconds</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">put</span></dt>
+    <dd>This accepts two arguments: a long which is secondsPastEpoch and an int
+      which is nanoSeconds</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putMilliseconds</span></dt>
+    <dd>This accepts an argument which is the number of milliseconds since the
+      Epoch. It can be a float or a long.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getCurrent</span></dt>
+    <dd>This gets the current time by calling time.time() and then calling
+      toTime.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">toSeconds</span></dt>
+    <dd>This returns a float that is in units of secondsPastEpoch.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">__eq__</span></dt>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">__ne__</span></dt>
+    <dd>These support operations == and != betweee two timeStamps.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">__le__</span></dt>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">__lt__</span></dt>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">__ge__</span></dt>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">__gt__</span></dt>
+    <dd>This support operators &lt;= , &lt; , &gt;= , and , &gt; between two
+      time stamps.</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">add</span></dt>
+  <dt><span style="font-family: Courier New,Courier,monospace">sub</span></dt>
+    <dd>These support the ability to add or subtract two time stamps.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getMilliseconds</span></dt>
+    <dd>Get a float the is the number of milliseconds since the Epoch</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">toString</span></dt>
+    <dd>Converts the timeStamp to a string. It is meant for testing. Code that
+      wants a different format can call: 
+      <pre>   tm = timeStamp.toSeconds()
+   tupletime = time.localtime(tm)
+   string= tim.strftime("xxx",tupletime)</pre>
+      where xxx is the format desired. </dd>
+</dl>
+
+<p>The normal way to use timeStamp is as follows:</p>
+<pre>from timeStamp import TimeStamp as TimeStamp
+timeStamp = TimeStamp()
+ ...
+gatherData.getTimeStamp(timeStamp)</pre>
+
+<p>What the last statement does is update timeStamp from the C++ timeStamp held
+by the implementation.</p>
+
+<h3 id="L344">pvAccessPy</h3>
+
+<p>pcAccessPy.cpp provides two Python extension functions to start and stop
+pvAccess. A client should start pvAccess once and stop it only when done. It is
+called as follows:</p>
+<pre>import pvAccessPy
+pvAccessPy.startClientFactory()
+ ...
+#hangs if stopClientFactory called
+#pvAccessPy.stopClientFactory()
+print "all done"</pre>
+
+<p><span style="font-weight:bold;">NOTE: stopClientFactory never returns. Do
+not know why </span>.</p>
+<hr />
+
+<h2 style="text-align: center" id="L356">Gather Service</h2>
+<hr />
+
+<p>The createGather service creates gather records that can be accessed by the
+gather service.</p>
+
+<p>The gather service accesses a set of V3 IOC records and presents the data as
+arrays. </p>
+
+<p>The data that gather collects is given to the Python client as numPy
+arrays.</p>
+
+<h3 id="L366">Getting Started</h3>
+
+<p>Python code that uses the gather service should use imports like the
+following:</p>
+<pre>import pvAccessPy
+pvAccessPy.startClientFactory()
+
+import numpy
+from requester import Requester as Requester
+import requester
+import status
+import gatherData
+from createGather import CreateGather as CreateGather
+from gather import Gather as Gather</pre>
+
+<h3 id="L372">gatherData</h3>
+
+<p>The V3 channels are either all scalars or all arrays. This initial
+implementation only support V3 scalar channels but support for arrays will be
+provided.</p>
+
+<p>The module gatherData.py defines three classes: GatherData,
+GatherDataScalar, and GatherDataArray. GatherData is the base class for the
+other two classes. GatherDataScalar is for a gather record that collects data
+for a set of V3 scalar channels. GatherDataArray is for a gather record that
+collects data for a set of V3 array channels. The Python GatherData obtains
+it's data from a C++ gatheData object, i.e. the data itself is owned by the C++
+object. Note that the python gatheData instance will be created by the gather
+service not by the client.</p>
+
+<p>GatherData has the following methods:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarm</span></dt>
+    <dd>This accepts a single argument, which must be an alarm. The Python
+      alarm will be set to the same value as the C++ alarm that gatherData gets
+      from pvAccess. For example: 
+      <pre>  from alarm import Alarm as Alarm
+  ...
+ alarm = Alarm()
+gatherData.getAlarm(alarm)</pre>
+    </dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamp</span></dt>
+    <dd>This accepts a single argument, which must be a timeStamp. The Python
+      timeStamp will be set to the same value as the C++ timeStamp that
+      gatherData gets from pvAccess.</dd>
+</dl>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getNumberChannels</span></dt>
+    <dd>Get the number of V3 channels that are being gathered.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">anyBad</span></dt>
+    <dd>Are any of the channels bad? Returns False or True</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">isBad(index)</span></dt>
+    <dd>This accepts a single argument which is the index of the V3 channel
+      being gathered. It returns False or True is the channel (is not, is)
+    bad.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">badChange</span></dt>
+    <dd>Has there been a change in bad status since the last time this method
+      was called. Calling to resets the value to False.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">allConnected</span></dt>
+    <dd>Are all channels connected?</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">isConnected(index)</span></dt>
+    <dd>This accepts a single argument which is the index of the V3 channel
+      being gathered. It returns False or True is the channel (is not, is)
+      connected.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">connectionChange</span></dt>
+    <dd>Has there been a change in connection status since the last time this
+      method was called. Calling to resets the value to False.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getSeverity(index)</span></dt>
+    <dd>This accepts a single argument which is the index of the V3 channel
+      being gathered. It returns the alarmSeverity of that channel.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">severityChange</span></dt>
+    <dd>Has there been a change in the severity of any cahhel since the last
+      time this method was called. Calling to resets the value to False.</dd>
+</dl>
+
+<p>GatherDataScalar has the methods:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getValue</span></dt>
+    <dd>Get the value, which is a numPy array of V3 channel values. The type is
+      float64</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setValue(numpyArray)</span></dt>
+    <dd>Set the channel values. The single argument must ge a numPy array of
+      type float64. The size of the array must be the number of channels.</dd>
+</dl>
+
+<p>GatherDataArray has the methods:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getValue</span></dt>
+    <dd>Not implemented</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setValue</span></dt>
+    <dd>Not implemented</dd>
+</dl>
+
+<h3 id="L480">createGather</h3>
+
+<p>Module createGather.py provides a class that implements the same
+functionality as Java and C++ class createGather. It is used to create gather
+records based on a array of channel names and some options.</p>
+
+<p>Before a client can make a request to the createGather service the client
+must connect to the service as follows:</p>
+<pre>serverName = "createGather" # this is the name of the javaIOC record that implements createGather
+recordName = "gatherRecord" # this is the name of the gather record to create
+requester = Requester(requesterName)
+createGather = CreateGather(serverName,requester)
+status = createGather.connect()
+if status.isOK() == False  :
+    message = "connect createGather failed " + status.getMessage()
+    raise RuntimeError(message)
+    exit(1)
+status = createGather.waitConnect(2.0);
+if status.isOK() == False  :
+    message = "waitConnect createGather failed " + status.getMessage()
+    raise RuntimeError(message)
+    exit(1)</pre>
+
+<p>Once connected to the createGather service the client can issue an arbitrary
+number of create requests. Each request is of the form:</p>
+<pre>status = createGather.sendRequest(channelNames, recordName,False,False,False);
+if status.isOK() == False  :
+    message = "sendRequest for putGet records failed " + status.getMessage()
+    raise RuntimeError(message)
+    exit(1)
+status = createGather.waitRequest()
+if status.isOK() == False  :
+    createGather.destroy();
+    message = "waitRequest for putGet records  failed " + status.getMessage()
+    raise RuntimeError(message)
+    exit(1)</pre>
+
+<p>The constructor for CreateGather must be passed the following:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">serverName</span></dt>
+    <dd>This is the name of the pvRecord that implements the createGather
+      service.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">requester</span></dt>
+    <dd>Must be provided by the client. See requester above.</dd>
+</dl>
+
+<p>When done with createGather the method <span
+style="font-family: Courier New,Courier,monospace">destroy</span> should be
+called. It has no arguments.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">connect</span> has no
+arguments.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">waitConnect</span> has the
+single argument.</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">timeOut</span></dt>
+    <dd>The timeout in seconds.</dd>
+</dl>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">sendRequest</span> has the
+arguments.</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">channelNames</span></dt>
+    <dd>A Python list of V3 channel names.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">recordName</span></dt>
+    <dd>The name of the gather record to create.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">temporary</span></dt>
+    <dd>Is the gather record temporary. If True then when client disconnect
+      from the record an no more clients are attached the record is
+      automatically deleted.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">monitor</span></dt>
+    <dd>Should the V3 records be monitored?</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">channelsAreArrays</span></dt>
+    <dd>Is each V3 channel expected to be an array?</dd>
+</dl>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">waitRequest</span> has no
+arguments.</p>
+
+<h3 id="L570">gather</h3>
+
+<p>Module gather.py provides a class that implements the same functionality as
+Java and C++ class gather. It is used to create gather records based on a array
+of channel names and some options.</p>
+
+<p>Before a client can make a request to the gather service the client must
+connect to the service as follows:</p>
+<pre>gather = Gather(recordName,requester,False,"processGet,putValue","value")
+status = gather.connect()
+if status.isOK() == False  :
+    message = "connect gather failed " + status.getMessage()
+    raise RuntimeError(message)
+    exit(1)
+status = gather.waitConnect(2.0);
+if status.isOK() == False  :
+    message = "waitConnect gather failed " + status.getMessage()
+    raise RuntimeError(message)
+    exit(1)</pre>
+
+<p>Once connected to the gather service the client can issue an arbitrary
+number of create other requests, i.e. get, put,etc. For example the following
+is a request to get data from the gather record.</p>
+<pre>status = gather.get()
+if status.isOK() == False  :
+    message = "get failed " + status.getMessage()
+    raise RuntimeError(message)
+    exit(1)
+if status.isOK() == False  :
+    message = "waitGet failed " + status.getMessage()
+    raise RuntimeError(message)
+    exit(1)
+gatherData = gather.getGatherDataScalar()
+if(gatherData==None) :
+    message = "getGatherDataScalar failed"
+    raise RuntimeError(message)
+    exit(1)</pre>
+
+<p>The constructor for Gather must be passed the following:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">serverName</span></dt>
+    <dd>The pvName of the gather record that implements the service.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">requester</span></dt>
+    <dd>The Requester callback.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">channelsAreArrays</span></dt>
+    <dd>Are the channels arrays?</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">commands</span></dt>
+    <dd>This is a list of commands the client will issue to gather. This is any
+      combination of "get,processGet,putValue,putBad"</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">properties</span></dt>
+    <dd>The properties the client will access from GatherData. This can be any
+      combination of "value,isBad,isConnected,severityIndex". If a property is
+      not specified here then GatherData will return a null values for that
+      property when it is requested. For each of isBad, isConnected, and
+      severityIndex the gather client creates a monitor on the corresponding
+      field of the gather record if the property is requested.</dd>
+</dl>
+
+<p>When done with createGather the method <span
+style="font-family: Courier New,Courier,monospace">destroy</span> should be
+called. It has no arguments.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">connect</span> has no
+arguments.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">waitConnect</span> has the
+single argument.</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">timeOut</span></dt>
+    <dd>The time to wait in seconds before failure.</dd>
+</dl>
+
+<h4 id="L637">Getting the data.</h4>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">getGatherDataScalar</span>
+has no arguments. It returns a GatherDataScalar object.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">getGatherDataArray</span>
+has no arguments. It returns a GatherDataArray object.</p>
+
+<h4 id="L649">Creating a monitor</h4>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">createMonitor</span> issues
+a request to create a monitor on the gather record.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">waitCreateMonitor</span>
+waits until the monitor has been created.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">getGatherMonitor</span> ,
+which must not be called until the monitor has been created, returns the
+monitor.</p>
+
+<p>The typical way to create and start monitors is:</p>
+<pre>gather = Gather(...
+status = gather.connect()
+if not status.isOK()  :
+    ...
+status =gather.waitConnect(2.0)
+if not status.isOK()  :
+    ...
+requester.startMonitor(gather)</pre>
+
+<p>Everything else is done automatically.</p>
+
+<h4 id="L666">Get the latest values.</h4>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">get</span> has no arguments.
+It issue either a get or a processGet command to the server. A processGet will
+cause each V3 channel to process before the data is fetched by the server.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">waitGet</span> has no
+arguments. It waits for the get to complete. The data will be in either
+dataGatherScalar or dataGatherArray.</p>
+
+<h4 id="L678">Setting channels bad</h4>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">putBad</span> has a single
+argument which must be a numPy array with values that repesent True,False. The
+array is passed to the server.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">waitPutBad</span> has no
+arguments. It waits for the putBad command to complete.</p>
+
+<h4 id="L690">Put Scalar channel values </h4>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">putValue</span> has a single
+argument This method is only valid if the V3 channels are scalars. The argument
+must be a numPy float64 arrays with size equal to the number of channels.</p>
+
+<p>The method <span
+style="font-family: Courier New,Courier,monospace">waitPutValue</span> has no
+arguments. It waits for putValue to complete.</p>
+<hr />
+
+<h2 style="text-align: center" id="L704">License Agreement</h2>
+<hr />
+<pre>Copyright (c) 2008 Martin R. Kraimer
+Copyright (c) 2007 Control System Laboratory,
+    (COSYLAB) Ljubljana Slovenia
+Copyright (c) 2010 Brookhaven National Laboratory
+
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+________________________________________________________________________
+
+This software is in part copyrighted by Brookhaven National Laboratory(BNL)
+
+In no event shall BNL be liable to any party for direct, indirect,
+special, incidental, or consequential damages arising out of the use of
+this software, its documentation, or any derivatives thereof, even if
+BNL has been advised of the possibility of such damage.
+
+BNL specifically disclaims any warranties, including, but not limited
+to, the implied warranties of merchantability, fitness for a particular
+purpose, and non-infringement.  This software is provided on an "as is"
+basis, and BNL has no obligation to provide maintenance, support,
+updates, enhancements, or modifications.
+
+________________________________________________________________________
+
+This software is in part copyrighted by the BERLINER SPEICHERRING
+GESELLSCHAFT FUER SYNCHROTRONSTRAHLUNG M.B.H. (BESSY), BERLIN, GERMANY.
+
+In no event shall BESSY be liable to any party for direct, indirect,
+special, incidental, or consequential damages arising out of the use of
+this software, its documentation, or any derivatives thereof, even if
+BESSY has been advised of the possibility of such damage.
+
+BESSY specifically disclaims any warranties, including, but not limited
+to, the implied warranties of merchantability, fitness for a particular
+purpose, and non-infringement.  This software is provided on an "as is"
+basis, and BESSY has no obligation to provide maintenance, support,
+updates, enhancements, or modifications.
+
+________________________________________________________________________
+
+This software is in part copyrighted by the Deutsches Elektronen-Synchroton,
+    Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+
+In no event shall DESY be liable to any party for direct, indirect,
+special, incidental, or consequential damages arising out of the use of
+this software, its documentation, or any derivatives thereof, even if
+DESY has been advised of the possibility of such damage.
+
+DESY specifically disclaims any warranties, including, but not limited
+to, the implied warranties of merchantability, fitness for a particular
+purpose, and non-infringement.  This software is provided on an "as is"
+basis, and DESY has no obligation to provide maintenance, support,
+updates, enhancements, or modifications.
+________________________________________________________________________</pre>
+</body>
+</html>

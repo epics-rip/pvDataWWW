@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS pvServiceaCPP</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS pvServiceCPP<br />
+Overview<br />
+Shen Guobao, Marty Kraimer<br />
+2011.08.04</h1>
+CONTENTS
+
+<div class="toc">
+<ul>
+  <li><a href="#L39">Introduction</a></li>
+  <li><a href="#L71">Service Client Architecture</a>
+    <ul>
+      <li><a href="#L100">Synchronous Interface</a></li>
+      <li><a href="#L125">Error and Monitor Reporting Mechanism</a></li>
+      <li><a href="#L154">Memory Management</a></li>
+    </ul>
+  </li>
+  <li><a href="#L166">Create Gather Service</a></li>
+  <li><a href="#L271">Gather Service</a>
+    <ul>
+      <li><a href="#L277">GatherRequester</a></li>
+      <li><a href="#L310">Gather</a></li>
+      <li><a href="#L443">GatherData</a></li>
+      <li><a href="#L574">Monitor Value</a></li>
+    </ul>
+  </li>
+  <li><a href="#L608">License Agreement</a></li>
+</ul>
+</div>
+
+<p> </p>
+<hr />
+
+<h2 style="text-align: center" id="L39">Introduction</h2>
+<hr />
+
+<p>This product is available via the <a href="#LicenseAgreement">open source
+license</a> described at the end of this document.</p>
+
+<p>pvService is a set of network based services for use by High Level Control
+applications. pvServiceCPP is the C++ implementation of pvService.</p>
+
+<p>Clients access a service via pvAccess which provides network access for
+pvData. Both pvData and pvAccess are described elsewhere.</p>
+
+<p>Each service provides a client interface that hides pvData and pvAccess
+details and provides data in form that makes sense for the service. The client
+architecture is described in the next section.</p>
+
+<p>A brief list of the services provided is:</p>
+<dl>
+  <dt>createGather</dt>
+    <dd>This is a service that creates, on the server, a record that implements
+      a gather service.</dd>
+  <dt>gather</dt>
+    <dd>This is a service that can get/put/monitor a set of V3 records. The
+      client receives the data as arrays of the V3 record values.</dd>
+  <dt>other services will be listed as developed</dt>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="L71">Service Client Architecture</h2>
+<hr />
+
+<p>As mentioned in the introduction, each service provides network access via
+pvAccess. pvAccess provides "objects" to the user via callbacks. pvAccess also
+provides threads for communication between a client and a server. With any C++
+application memory management is an important consideration.</p>
+
+<p>The service client architecture hides most of the memory management,
+threading, and pvData issues from the client. It does this via the following
+features:</p>
+<dl>
+  <dt>synchronous interface</dt>
+    <dd>With two exceptions, each service provides a synchronous rather that
+      callback interface. The two exceptions are error reporting and monitor
+      notification.</dd>
+  <dt>error reporting interface</dt>
+    <dd>For each service the client must implement interface SeviceRequester,
+      which is used to report errors and informational messages to the
+    client.</dd>
+  <dt>monitor notification</dt>
+    <dd>Any service that allows the client to monitor data changes in the
+      server requires that the requester implement a monitor notification
+      interface.</dd>
+  <dt>memory management</dt>
+    <dd>The client is responsible for managing the error reporting and monitor
+      notification interfaces. In additiion each service provides a client
+      callable method that creates an instance of the service. The create
+      method returns the client interface for accessing the service. The
+      interface provides a method named destroy. This is called to terminate
+      the clients access to the service. The destroy method takes care of all
+      cleanup including freeiing any memory allocated by the client
+    interface.</dd>
+</dl>
+
+<h3 id="L100">Synchronous Interface</h3>
+
+<p>Each service, with the exception of error reporting and monitors, provides a
+synchronous interface to the service client. In order to allow a client to
+efficiently use multiple services each request that needs to block has two
+methods associated with each request, a method that initiates the request but
+returns immediately, and a method that blocks until the request completes. For
+example most services connect to the server via the following two methods:</p>
+<dl>
+  <dt><span style="font-family: Courier New,Courier,monospace">status
+  connect()</span></dt>
+    <dd>Connect to the server for service.</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">status
+  waitConnect(double timeOut)]</span></dt>
+    <dd>Wait until connection is complete</dd>
+</dl>
+
+<p>Each method returns a status. status is defined in pvDataCPP. This is
+normally used as follows:</p>
+<pre>    Status::shared_pointer status;
+    ...
+    status xxx-&gt;connect();
+    if(!status-&gt;isOK()) {
+        //take some action
+    }
+    status =xxx-&gt;waitConnect(2.0);
+    if(!status-&gt;isOK()) {
+        //take some action
+    }</pre>
+
+<p>A client could access several services simultaneously via code like the
+following:</p>
+<pre>      status = serviceA-&gt;connect()
+      if(!status-&gt;isOK()) {...}
+      status = serviceB-&gt;connect()
+      if(!status-&gt;isOK()) {...}
+      ...
+      status = serviceA-&gt;waitConnect()
+      if(!status-&gt;isOK()) {...}
+      status = serviceB-&gt;waitConnect()
+      if(!status-&gt;isOK()) {...}
+      ...</pre>
+
+<h3 id="L125">Error and Monitor Reporting Mechanism</h3>
+
+<p>Errors are reported to a client via the client supplied inteface Requester
+It has the methods:</p>
+<dl>
+  <dt><span style="font-family: Courier New,Courier,monospace">String
+  getRequesterName()</span></dt>
+    <dd>Get the name of the requester.</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">void
+  message(String message,MessageType messageType)</span></dt>
+    <dd>A message for the client. See requester in pvData.</dd>
+  <dt>The argument and return types are defined in pvData. </dt>
+  <dt>For services that support monitors additional methods for supporting
+  monitors are required. An example is the gather service. The gather service
+  defines a class GatherMonitorRequester which extends Requester and provides
+  the additional method:</dt>
+</dl>
+<pre>virtual void monitorEvent();
+</pre>
+
+<p>An implementation is provided in testApp/gather/requesterImpl.h:</p>
+<pre>class RequesterImpl : public GatherMonitorRequester {
+public:
+    RequesterImpl(String requesterName,FILE *fd,FILE *auxfd);
+    void startMonitor(Gather::shared_pointer const &amp; gather);
+    virtual String getRequesterName();
+    virtual void message(String message,MessageType messageType);
+    virtual void monitorEvent();
+private:
+    ...
+};
+</pre>
+
+<p>The default implementation of:</p>
+<dl>
+  <dt>message</dt>
+    <dd>Prints the message on fd</dd>
+  <dt>monitorEvent</dt>
+    <dd>Prints information about the event of fd, and auxfd</dd>
+</dl>
+
+<p>These are the methods that a client is likely to override.</p>
+
+<h3 id="L154">Memory Management</h3>
+
+<p>The client is responsible for managing the error reporting and monitor
+notification interfaces. In additiion each service provides a client callable
+method that creates an instance of the service. The create method returns the
+client interface for accessing the service. The interface provides a method
+named destroy. This is called to terminate client access to the service. The
+destroy method takes care of all cleanup.</p>
+
+<p>Each service also handles any race conditions associated with accessing
+memory via separate threads. The general technique is as follows:</p>
+
+<p>The problem is the interaction between client requests and pvAccess
+callbacks. A service keeps a "state" that describes the current state of
+interaction with the client. It contains code that checks that a client never
+calls a method in an incorrect state. Also only client calls result in state
+changes. Remember that each request has two methods: xxxRequest and
+waitxxxRequest. The service has an event, which has signal and wait methods,
+which coordinates between the client calls and the pvAccess callbacks. The
+waitxxxRequest ALWAYS calls event wait and a pvAccess callback ALWAYS calls
+event signal when the request is finished. This prevents almost all race
+conditions. Note that no locking is necessary.</p>
+
+<p>The only possible problem is in an event wait times out. This is almost
+always because it is not possible to connect to the server or becaiuse the
+client has specified a short timeout. Most services do the following what a
+timeout occurs. It terminated the connection to the server by destoying the
+pvAccess channel that provides the connection to the server. This means that
+the client must reconnect, i.e. the state becomes "idle".</p>
+<hr />
+
+<h2 style="text-align: center" id="L166">Create Gather Service</h2>
+<hr />
+
+<p>The create gather service creates gather records that can be accessed by the
+gather service. For now only the client side of create gather is implemented so
+a javaIOC must provide the service side of create gather.</p>
+
+<p>The gather service accesses a set of V3 IOC records and presents the data as
+arrays. See the gather service for details.</p>
+
+<p>The javaIOC implementation provides the following: A createGather record
+creates and installs gather records. The create gather describes in this
+section accesses this record.</p>
+
+<p>The interface for create gather is provided by gatherClient.h. The following
+are the client methods methods for create gather</p>
+<pre>class CreateGather ... {
+    CreateGather(String serverName,Requester::shared_pointer const &amp;requester);
+    void destroy();
+    Status::shared_pointer connect();
+    Status::shared_pointer waitConnect(double timeOut);
+    Status::shared_pointer sendRequest(
+        StringArray channelNames,
+        int numberChannels,
+        String gatherRecordName,
+        bool temporary,
+        bool monitor,
+        bool channelsAreArrays);
+    Status::shared_pointer waitRequest();
+    ...
+}</pre>
+
+<p>where:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">CreateGather</span></dt>
+    <dd>This creates a new interface to a create gather server. The arguments
+      are: 
+      <dl>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">serverName</span></dt>
+          <dd>The name of the IOC record that implements the create gather
+            service.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">requester</span></dt>
+          <dd>The interface, which must be implemented by the service client,
+            for reporting problems.</dd>
+      </dl>
+    </dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Break the connection to the service and clean up any other resources
+      such as memory.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">connect</span></dt>
+    <dd>Connect to the IOC service record. </dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">waitConnect</span></dt>
+    <dd>Wait for connection to the IOC to complete.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">sendRequest</span></dt>
+    <dd>This sends a request to the server. The arguments are: 
+      <dl>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">channelNames</span></dt>
+          <dd>A array of V3 channel names.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">numberChannels</span></dt>
+          <dd>The number of channel names.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">gatherRecordName</span></dt>
+          <dd>The name of the gather record to be created. If it already exists
+            no new record is created.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">temporary</span></dt>
+          <dd>Should the gather record be temporary? If true then after the
+            first client connects to the record it will be deleted as soon as
+            no clients are attached.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">monitor</span></dt>
+          <dd>Should the gather record set monitors on the V3 records.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">channelsAreArrays</span></dt>
+          <dd>Are the channels arrays? If true then the value field of each V3
+            record must be an array. If false the value field must be scalars.
+          </dd>
+      </dl>
+    </dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">waitRequest</span></dt>
+    <dd>Wait for the request to finish.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="L271">Gather Service</h2>
+<hr />
+
+<p>The Gather service attaches to a record created by the CreateGather service.
+</p>
+
+<h3 id="L277">GatherRequester</h3>
+
+<p>The gather service provides the ability to monitor for data changes.</p>
+
+<p>The client must implement the following method:</p>
+<pre>class GatherRequester : public Requester {
+    virtual void monitorEvent();
+};</pre>
+
+<p>Method monitorEvent is implemented as follows:</p>
+<pre>void RequesterImpl::monitorEbect()
+{
+    while(gatherMonitor-&gt;poll()) {
+        //gatherData has all the data
+        // look at default implementation to see how to access the data
+   }
+}</pre>
+
+<h3 id="L310">Gather</h3>
+
+<p>Gather has the methods:</p>
+<pre>class Gather ... {
+    Gather(
+        String serverName,
+        GatherRequester::shared_pointer requester,
+        bool channelsAreArrays,
+        String commands,
+        String exceptions
+    );
+    void destroy();
+    Status::shared_pointer connect();
+    Status::shared_pointer waitConnect(double timeOut);
+    GatherDataScalar::shared_pointer getGatherDataScalar();
+    GatherDataArray::shared_pointer getGatherDataArray();
+    Status::shared_pointer createMonitor(GatherMonitorRequester::shared_pointer const&amp;gatherMonitorRequester);
+    Status::shared_pointer waitCreateMonitor();
+    GatherMonitor::shared_pointer getGatherMonitor();
+    Status::shared_pointer get();
+    Status::shared_pointer waitGet();
+    Status::shared_pointer putBad(epics::pvData::BooleanArray isBad,int numberChannels);
+    Status::shared_pointer waitPutBad();
+    Status::shared_pointer putValue(epics::pvData::DoubleArray value);
+    Status::shared_pointer waitPutValue();
+   ...
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">Gather</span></dt>
+    <dd>This creates a new interface to a create gather server. The arguments
+      are: 
+      <dl>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">serverName</span></dt>
+          <dd>The name of the IOC record that implements the create gather
+            service.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">requester</span></dt>
+          <dd>The interface, which must be implemented by the service client,
+            for reporting problems.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">channelsAreArrays</span></dt>
+          <dd>Are the value fields of the V3 records expected to be arrays or
+            scalars?</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">commands</span></dt>
+          <dd>This is come combination of "processGet,get,putValue,putBad".
+            Only one of processGet and get is allowed. Either processGet or get
+            must be specified if the client will call get/waitGet. putValue
+            must be specified if the client will call putValue/waitPutValue.
+            putBad must be specified if the client will call
+          putBad/waitPutBad.</dd>
+        <dt><span
+        style="font-family: Courier New,Courier,monospace">exceptions</span></dt>
+          <dd>This is some combination of "isBad,isConnected,severity". It
+            specifies which exceptions the gather client will monitor.</dd>
+      </dl>
+    </dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+</dl>
+<dl>
+  <dt></dt>
+    <dd>Break the connection to the service and clean up any other resources
+      such as memory.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">connect</span></dt>
+    <dd>Connect to the IOC service record. </dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">waitConnect</span></dt>
+    <dd>Wait for connection to the IOC to complete. Note that none of the
+      following methods can be called until this completes successfully.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getGatherDataScalar</span></dt>
+    <dd>Get the interface for accessing data. This must only be called if the
+      V3 records have a scalar value field.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getGatherDataArray</span></dt>
+    <dd>Get the interface for accessing data. This must only be called if the
+      V3 records have an array value field.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">createMonitor</span></dt>
+    <dd>Create a monitor on the value field. Note that although this can be
+      specified as well as get think hard about why you want both monitor and
+      get.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">waitCreateMonitor</span></dt>
+    <dd>Wait for the monitor to be created.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getGatherMonitor</span></dt>
+    <dd>Get the monitir interface. This must not be called until the previous
+      method returns success.</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">get</span></dt>
+    <dd>Get data.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">waitGet</span></dt>
+    <dd>Wait for get to complete. The data is in GatherData.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putBad</span></dt>
+    <dd>Put bad. Note that it is up to clients to set channels bad or good.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">waitPutBad</span></dt>
+    <dd>Wait for putBad to complete.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putValue</span></dt>
+    <dd>Put value to the record. The client must have set the data in
+      GatherData before calling this.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">waitPutValue</span></dt>
+    <dd>Wait for putValue to complete.</dd>
+</dl>
+
+<h3 id="L443">GatherData</h3>
+
+<p>GatherData provides the data for the user. The gather record on the server
+connects to the value field of a set of caV3 records. All caV3 value fields
+must be a scalar or an array. If the value fields are scalar then a
+GatherDataArray is created and if they are arrays then a GatherDataArray is
+created,</p>
+
+<p>GatherData is:</p>
+<pre>class GatherData : private epics::pvData::NoDefaultMethods {
+public:
+    Alarm getAlarm();
+    TimeStamp getTimeStamp();
+    int getNumberChannels();
+    bool anyBad();
+    bool isBad(int index);
+    bool badChange();
+    bool allConnected();
+    bool isConnected(int index);
+    bool connectionChange();
+    int getSeverity(int index);
+    bool severityChange();
+    // other methods not meant for client
+protected:
+    ...
+};
+
+class GatherDataScalar : public GatherData {
+public:
+    DoubleArray getValue();
+    void setValue(DoubleArray value,int length);
+private:
+   ...
+};
+
+class GatherDataArray : public GatherData {
+public:
+    DoubleArray getValue(int index);
+    int32 getLength(int index);
+    void setValue(DoubleArray value,int length,int index);
+private:
+    ...
+};</pre>
+
+<p>GatherData is the base clase. It has the methods:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarm</span></dt>
+    <dd>This updates and returns the latest alarm obtained from the gather
+      record.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamp</span></dt>
+    <dd>This updates and returns the latest time stamp obtained from the gather
+      record.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getNumberChannels</span></dt>
+    <dd>Get the number of V3 channels.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">anyBad</span></dt>
+    <dd>Are any V3 channels declared bad.</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">isBad</span></dt>
+    <dd>Is the specified V3 channel bad.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">badChange</span></dt>
+    <dd>Has any V3 channel switched between bad and good since the last time
+      this methods was called.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">allConnected</span></dt>
+    <dd>Are all V3 channels connected.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">isConnected</span></dt>
+    <dd>Is the specified V3 channel connected.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">connectionChange</span></dt>
+    <dd>Has any V3 channel switched between connected and disconnected since
+      the last time this methods was called.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getSeverity</span></dt>
+    <dd>Get the severity for the specified channel.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">severityChange</span></dt>
+    <dd>Has the severity of any V3 channel changed since the last time this
+      methods was called.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setIsBad</span></dt>
+    <dd>Set the bad value for each V3 channel.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setIsConnected</span></dt>
+    <dd>Set the connected status of each V3 channel. Not normally set by a
+      client.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setSeverity</span></dt>
+    <dd>Set the severity of each V3 channel. Not normally set by a client.</dd>
+</dl>
+
+<p>GatherDataScalar has the method:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getValue</span></dt>
+    <dd>Get the value array.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setValue</span></dt>
+    <dd>Set the value for each V3 channel. The argument is an array of
+    doubles.</dd>
+</dl>
+
+<p>GatherDataArray has the methods:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getValue</span></dt>
+    <dd>Get the value array for the specified index.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getLength</span></dt>
+    <dd>This gets the length of the specified V3 channel.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setValue</span></dt>
+    <dd>This gives a new value to the specified V3 channel.</dd>
+</dl>
+
+<h3 id="L574">Monitor Value</h3>
+
+<p>It is possible to monitor the value field of a gather record. The monitor
+value support implements the following:</p>
+<pre>class GatherMonitor {
+public:
+    virtual bool poll() = 0;
+};</pre>
+
+<p>where:</p>
+<dl>
+  <dt><span style="font-family: Courier New,Courier,monospace">poll</span></dt>
+    <dd>This returns true if more data was received. The data is in
+    GatherData.</dd>
+</dl>
+
+<p>A monior client must implement the following:</p>
+<pre>class GatherMonitorRequester : public GatherRequester {
+public:
+    virtual void monitorEvent() = 0;
+    };</pre>
+
+<p>This the client must implement all the methods if GatherRequester and must
+also implement:</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">monitorEvent</span></dt>
+    <dd>This is called when a monitor occurs.</dd>
+</dl>
+
+<p>The client does something like the following:</p>
+<pre>void GatherMonitorIsBad::monitorEvent(Monitor* monitor)
+{
+    while(gatherMonitor-&gt;poll()) {
+       // data is obtained by  gatherData-&gt;&gt;getValue();
+       // gatherData is either dataGatherScalar or dataGatherArray
+   }
+}</pre>
+<hr />
+
+<h2 style="text-align: center" id="L608">License Agreement</h2>
+<hr />
+<pre>Copyright (c) 2008 Martin R. Kraimer
+Copyright (c) 2007 Control System Laboratory,
+    (COSYLAB) Ljubljana Slovenia
+Copyright (c) 2010 Brookhaven National Laboratory
+
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+________________________________________________________________________
+
+This software is in part copyrighted by Brookhaven National Laboratory(BNL)
+
+In no event shall BNL be liable to any party for direct, indirect,
+special, incidental, or consequential damages arising out of the use of
+this software, its documentation, or any derivatives thereof, even if
+BNL has been advised of the possibility of such damage.
+
+BNL specifically disclaims any warranties, including, but not limited
+to, the implied warranties of merchantability, fitness for a particular
+purpose, and non-infringement.  This software is provided on an "as is"
+basis, and BNL has no obligation to provide maintenance, support,
+updates, enhancements, or modifications.
+
+________________________________________________________________________
+
+This software is in part copyrighted by the BERLINER SPEICHERRING
+GESELLSCHAFT FUER SYNCHROTRONSTRAHLUNG M.B.H. (BESSY), BERLIN, GERMANY.
+
+In no event shall BESSY be liable to any party for direct, indirect,
+special, incidental, or consequential damages arising out of the use of
+this software, its documentation, or any derivatives thereof, even if
+BESSY has been advised of the possibility of such damage.
+
+BESSY specifically disclaims any warranties, including, but not limited
+to, the implied warranties of merchantability, fitness for a particular
+purpose, and non-infringement.  This software is provided on an "as is"
+basis, and BESSY has no obligation to provide maintenance, support,
+updates, enhancements, or modifications.
+
+________________________________________________________________________
+
+This software is in part copyrighted by the Deutsches Elektronen-Synchroton,
+    Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+
+In no event shall DESY be liable to any party for direct, indirect,
+special, incidental, or consequential damages arising out of the use of
+this software, its documentation, or any derivatives thereof, even if
+DESY has been advised of the possibility of such damage.
+
+DESY specifically disclaims any warranties, including, but not limited
+to, the implied warranties of merchantability, fitness for a particular
+purpose, and non-infringement.  This software is provided on an "as is"
+basis, and DESY has no obligation to provide maintenance, support,
+updates, enhancements, or modifications.
+________________________________________________________________________</pre>
+</body>
+</html>

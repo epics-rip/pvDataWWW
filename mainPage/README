@@ -11,12 +11,15 @@ To remove the old doc
 ssh -t USER,PROJECT@shell.sourceforge.net create
 
 then
-cd userweb
+sf-help
+
+LAST TIME THE FOLLOWING WORKED
+
+cd /home/project-web/epics-pvdata
 cd htdocs
 
 then go to project and delete doc. For example
-cd pvData
-rm -fr doc
+rm -fr javaIOC
 
 then
 
@@ -27,6 +30,6 @@ To put the new files in place:
 2) export only doc
 3) unzip the exported file
 4) cd to the export top level and execute the command:
- scp -r doc <user>,epics-pvdata@web.sourceforge.net:htdocs/pvData
+ scp -r javaIOC  <user>,epics-pvdata@web.sourceforge.net:htdocs
 
 
