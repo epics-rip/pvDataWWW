@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+ <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+ <title>Charter of the EPICS v4 Working Group</title>
+ <link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css" type="text/css" media="screen" />
+ <link rel="stylesheet" type="text/css" href="http://www.w3.org/2006/02/charter-style.css" />
+ <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" />
+ <link rel="stylesheet" type="text/css" href="epicsv4.css" />
+ <style type="text/css">
+     /*
+   h2:before {
+        content: counter(h2) ". ";
+        display: inline;
+   }
+   h2 {
+     counter-increment: h2;
+     counter-reset: h3;
+   }
+   .sub:before {
+     content: counter(h2) "." counter(h3) ". ";
+     font-style: normal;
+     display: inline;
+   }
+   .sub {
+     counter-increment: h3;
+     font-style: italic;
+   }
+   @media print {
+     body { margin-right: 10%;
+     font-size: 10pt }
+   }
+
+   @media screen {
+     body { font-size: smaller;
+     margin-right: 10% }
+   }
+   */
+ </style>
+</head>
+
+<body> <!-- ----------------- -->
+
+
+<div class="head">
+<h1>Charter of the EPICS v4 Working Group</h1>
+<!-- Maturity -->
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 1-Sep-2011</h2>
+
+<!-- Versioning. When modifying, always upload a file with date
+appended as 'This Version', and an unappended file as Latest Version
+-->
+ 
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/charter_04092011.html">charter_04092011.html</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/charter.html">charter.html</a></dd>
+<dt>Editors:</dt>
+<dd>Greg White, SLAC, PSI</dd>
+<dd>Bob Dalesio, Brookhaven Lab</dd>
+</dl>
+<hr />
+</div>
+
+<h2 class="nocount" id="abstract">Abstract</h2>
+<p>EPICS v4 is a set of computer communications protocols, and a
+software framework, for high performance distributed control, message
+passing, and high level software services, as may be used in large
+scientific instruments and industrial plants. <a href="http://epics-pvdata.sourceforge.net/">The EPICS v4 working
+group</a> is a collaborative effort of members invited by Brookhaven
+Lab, to bring EPICS v4 to its full potential. </p>
+
+<p>The Charter of the EPICS v4 working group is a statement of the
+basis for work on EPICS v4, the intended outcomes for that work, its
+deliverables and success criteria. It also outlines some
+administrative matters of the organization of the group, and its
+working practices. </p>
+
+<p>For more information about the EPICS, please refer to the home page
+of the <a href="http://www.aps.anl.gov/epics/">Experimental Physics
+and Industrial Control System.</a></p>
+
+<h2 class="nocount" id="status">Status of this Document</h2>
+<p>This is a working draft of the Charter, awaiting approval by the
+group.</p>
+<p> After approval, this document will form the basis for the
+collaboration.</p>
+</p>
+<p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY
+when highlighted (through style sheets, and in uppercase in the
+source) are used in accordance
+with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>
+  [<a href="refs.html#ref-RFC2119">RFC2119</a>]. The term NOT REQUIRED
+  (not defined in RFC 2119) indicates exemption.</p>
+
+<h2 class="nocount">Table of Contents</h2>
+<ol>
+  <li><a href="#process">Basis for Work</a></li>
+  <li><a href="#mission">Mission</a></li>
+  <li><a href="#scope">Scope and Goals</a></li>
+  <li><a href="#out">Out of Scope</a></li>
+  <li><a href="#success">Success Criteria</a></li>
+  <li><a href="#deliverables">Deliverables and Duration</a></li>
+  <li><a href="#milestones">Expected Milestones</a></li>
+  <li><a href="#coordination">Coordination with Other Groups</a></li>
+  <li><a href="#participation">Working Group Participation</a></li>
+  <li><a href="#meetings">Meetings</a></li>
+  <li><a href="#communication">Communication</a></li>
+  <li><a href="#confidentiality">Confidentiality</a></li>
+  <li><a href="#pp">Patent Policy</a></li>
+  <li><a href="#glossary">Glossary of Terms</a></li>
+</ol>
+<hr />
+
+<h2 id="process">Basis for Work</h2>
+
+<p>The EPICS v4 working group is supported by Brookhaven Lab (BNL) and
+collaborating organizations, subject to their following this Charter.
+</p>
+
+<h2 id="mission">Mission</h2>
+
+<p>The main objective of the EPICS v4 Working Group
+(<abbr title="EPICS v4 Working Group">EPICS v4</abbr>) is to develop a
+core network messaging system, data format, and client and server APIs,
+that enable development of efficient distributed control and
+application services for large scientific instruments and industrial
+plants.  A second objective is development of a core set of associated
+software tools and frameworks that use the data exchange system for
+productive development of host level services and interactive
+applications.
+</p>
+
+<h2 id="scope">Scope and Goals</h2>
+
+<p>EPICS version 3 and its predecessors have been enormously
+successful as a framework for distributed device control, but have not
+been optimal for all purposes. Firstly, the underlying network
+protocol has not been documented and standardized, and so is not
+suitable for independent implementation or extension. Secondly, the
+network codec and message passing system has not supported passing
+semi-structured data, nor arguments, and so not been been suitable for
+use as a services layer in support of host level scientific
+applications. </p>
+
+<p>The EPICSv4 Working Group is chartered to define and publish an open control
+protocol for control system endpoints, which functionally extends
+channel access to suitability for both device control and high level
+services. This must include data types suitable for high level
+services, including at least a heterogeneous table (as might be
+used for returning results from a relational database query) and
+"multi-channel" array. It should also include a dynamically run-time
+constructed heterogeneous type analogous to CORBA's Any type
+or <a href="http://www.w3.org/TR/XMLHttpRequest/">XMLHTTPRequest</a>
+object (the basis of Web Services).
+</p>
+
+<p>Specifically, the EPICSv4 group is chartered to procedure a
+standard for the interface of user level clients, for updating
+displays, control, and application level data, to services and device
+control implemented in an
+<a href="#EPICSv4IOC">EPICS v4 IOC</a>, or in an EPICS v3 IOC (where a
+client may itself be an EPICS v4 IOC).</p>
+
+<p>Java, C or C++, bindings must be supplied for all implementations
+of each normative standard. 
+</p>
+
+<h3>Goals</h3>
+
+    <p><strong>The goals of the Working Group are:</strong></p> 
+    
+<ol>
+
+  <li id="go:pvaccess">Production of an open, documented, control
+    system message protocol suitable for device control and services
+    in a distributed control system; including support for
+    semi-structured type transport (see below) and parametrized
+    (attribute=value) PV value requests. This is known as
+    pvAccess </li>
+
+  <li id="go:pvdata">Production of an open, documented, data type
+    encoder/decoder capable of exchanging both atomic and
+    semi-structured data with high performance, suitable as the data
+    exchange format for services. This is known as pvData</li>
+
+  <li id="g:pvioc">Production of an Input/Output Controller (IOC)
+    framework, suitable for both controls and services, that is on the
+    back-end compatible with EPICS v3 record processing, and on the
+    front-end with the message and data protocols described
+    above. This is known as pvIOC [TBD. This goal needs to be made
+    clearer. We may well remove the goal the it includes control
+    altogether, and descope control in pvIOC.]</li>
+
+  <li id="go:services">Production of a software framework for
+    scientific services, as will be suitable for online optimization
+    (e.g. modelling) or coordinated device control (e.g. energy
+    management of a whole linac, or beam synchronized BPM orbit
+    acquisition)</li>
+ 
+  <li id="go:interopv3">Interoperability with EPICS v3. The pvAccess
+    message protocol must be interoperable with EPICS
+    v3.14. See <a href="#interopv3">Interoperability with EPICS v3
+    below</a></li>
+
+  <li id="go:interopv4">Interoperability of EPICS v4 clients
+    and <em>EPICS v4 services</em>. Any general purpose client, such
+    as a command line "pvget" tool, must be able to acquire any data
+    served by any EPICS v4
+    service. See <a href="#interoppv4">Interoperability within EPICS
+    v4</a> below</li>
+
+  <li id="go:perf">High Performance. The above protocols and
+    controller framework must be of high
+    performance. See <a href="#go:perfgoals">Performance goals</a>
+    below
+  </li>
+
+  <li id="go:adopt">Exceptionally easy adoptability. The above
+    protocols and framework must be transparent, documented, and
+    delivered so that it is very easy for a developer to create EPICS
+    v4 IOC applications and services</li>
+
+  <li id="go:impl">Implementability. The above protocols, and the
+    processing of message I/O, must be documented in such as way that
+    outside software developers can easily create an interoperable
+    implementation</li>
+
+  <li id="go:err">Error handling. All normative software
+    implementations must handle and log all errors in such a way that
+    distributed users can see both the causes and outcomes of all
+    errors. In practice, this will mean the creation and adoption of a
+    single error messaging standard, perhaps an EPICS v4 service whose
+    job it is to receive and log errors from all other endpoints.</li>
+
+</ol>
+
+
+<h3 id="interopv3">Interoperability with EPICS v3</h3>
+<p>EPICS v4 clients must be interoperable with EPICS v3
+IOCs. Specifically, PvAccess must run in version 3 IOCs and serve all
+v3 type structures.</p>
+
+<p>This mechanism must satisfy the expected use case of device control
+including EPICS v4 in the medium term; in which device control will
+continue to be through EPICS v3, with control wire protocols and
+client sides in EPICS v4. It is expected that in the longer term, past the
+duration of this charter, the EPICS v4 IOC will be properly extended
+into device control.</p>
+
+<p>The extent and any limitations of compatibility with adjacent
+layers in the EPICS v3 protocol stack must be documented as
+a <a href="#normative">normative document</a> of the working group.
+</p>
+
+<h3 id="interopv4">Interoperability within EPICS v4</h3>
+<p>Each normative standard must be demonstrated to be interoperable
+with adjacent layers in the EPICS v4 protocol stack by production of,
+and testing, at least one implementation.</p>
+
+<h3 id="perfgoals">Performance Goals</h3>
+<p>The following minimum performance goals are expected:</p>
+
+<ul>
+  <li>put &#47; get - 80% if channel access</li>
+  <li>monitors - 80% of channel access</li>
+  <li>multicast - each point is 80% but it is more scalable</li>
+  <li>streams (bulk data) - 80% of the capability of the media.  For
+    example, over 10GBit Ethernet, then 8GBits of data transfer on a
+    dedicated VLAN. This should be optimized for sending images and
+    multidimensional arrays, and by implication should minimize
+    copying.</li>
+</ul>
+
+<h2 id="out">Out of Scope</h2>
+
+<p>The following are out of scope for the group specifically: </p> 
+
+<ol> 
+
+  <li>Both and only Java and C/C++ bindings are required for reference
+  implementations of the core protocols (pvAccess and pvData). One one
+  or the other language binding is required for service
+  implementations</li>
+
+  <li>Operating System implementations. [TBD: Which architecture and
+  OSes should be in scope for clients, services (EPICS4 IOCs
+  implementing "RPC" services), and EPICS v4 IOCs? I think Windows
+  reference implementations should be specifically out of scope] </li>
+
+  <li>Development of application specific data protocols or IOC
+  processes, are out of scope. Like channel access itself, the new
+  data protocol and IOC must support a wide variety of applications,
+  and the group should not spend time optimizing for any given
+  service. For instance, inclusion of specific type designs for
+  archiving, images, scanning, are out of scope. Rather, it's expected
+  that the <a href="#interopdatatypes">EPICS v4 Interoperable
+  Types</a> specification, will define one or two general purpose
+  types that can be used for semi-structured data, and include a
+  dynamic type that can be used to construct highly application
+  specific types. A few reference application specific data types may
+  be published, but they are only for illustration and offered as a
+  basis for extensions. </li>
+
+  <li>Development of specific production quality services are out of
+  scope. A few reference services may be produced, but they are only
+  for illustration and offered as a basis for extensions.</li>
+
+</ol>
+
+<p>With respect to development of support for specific services in
+  the core protocols, or development of specific services, being out of scope:
+  any user, including a member of EPICS v4, is free to use the
+  products of the EPICS v4 group to develop controls, extend any
+  protocol, or create production services, but the group itself should
+  concentrate on the normative standards and their implementations. A
+  separate group may choose to produce some production interoperable
+  services and applications, but they are out of scope for EPICS
+  v4.</p>
+
+<h2 id="success">Success Criteria</h2>
+
+<p>Derived from the goals above, success criteria are at least:</p>
+<ol>
+ <li>Adoption or planned adoption of EPICS v4 in the EPICS
+ community</li>
+ <li>Demonstrated interoperability of EPICS v4 clients and EPICS v4
+ services</li>
+ <li>Demonstrated interoperability with EPICS v3</li>
+ <li>Demonstrated high performance</li>
+ <li>Demonstrated easy to implement an EPICS v4 service, taking
+ arguments, and returning semi-structured data</li>
+ <li>Easy for a developer to acquire, understand, and build, a
+ reference implementation of pvAccess and pvData (independently of
+ their server side housing in an EPICS v4 IOC)</li>
+ <li>Easy for a developer to acquire, understand, build and deploy, a
+ reference implementation of EPICS v4 Java IOC or C/C++ IOC. </li>
+</ol>
+
+<h2 id="deliverables">Deliverables and Duration</h2>
+
+<p>The outputs of the working group will be delivered as a system of
+documented standards, plus reference implementation source code where
+relevant. These documents and source codes will all be available from
+the EPICS v4 web
+site, <a href="http://epics-pvdata.sourceforge.net">http://epics-pvdata.sourceforge.net/</a>. </p>
+
+<h3 class="sub" id="Deliverables">Deliverables</h3>
+
+<p>The group is expected to produce:</p>
+<ol>
+<li>A normative document of the pvAccess protocol</li>
+<li>A normative document of the pvData protocol. The document must
+include the user API - how a programmer creates data objects for the
+wire, and extracts them on the other side</li>
+<li>A normative document of the EPICS v4 IOC processing pipeline</li>
+<li>A reference implementation of pvAccess in each of C++ and Java language bindings</li>
+<li>A reference implementation of pvData in each of C++ and Java language bindings</li>
+<li>A reference implementation of the EPICS v4 IOC in each of C++ and
+Java language bindings</li>
+<li id="de:interopdatatypes">A normative document of the EPICS v4
+interoperable data types. These data types must be universally
+understood by every client and service which claims EPICS v4
+compatibility. The requirement for this deliverable is distinct from
+the pvData document deliverable, since pvData can encode any type,
+this deliverable recommends the confined set of data objects that will
+be used by EPICS v4 interoperable services</li>
+<li id="de:servicesAPI">A normative document of the EPICS v4 services
+API. This defines the form for encoding parameters and status
+descriptions between clients and services and back</li>
+<li>A report of interoperability of the EPICS v4 IOC with EPICS v3
+record processing</li>
+<li>A performance report, comparing EPICS v3 to EPICS v4 for some
+EPICS v3 tasks [TBD], and report of the expected performance of EPICS
+v4 service support. For instance, round trip time for network
+encoding/deserialization of results of a query for archive data</li>
+<li>A "Getting Started" document for EPICS v4 Service developers</li>
+<li>A User Guide for EPICS v4 IOC control application developers</li>
+<li>A Programmers Guide for EPICS v4 protocol implementers (for
+developing implementations of pvAccess, pvData or pvIOC)</li>
+<li>A command line tool similar to caget (call it say pvget), which
+understands all the <a href="#interopdatatypes">interoperable data
+types</a> above, and conforms to the <a href="#servicesAPI">EPICS v4
+services API</a> above.</li>
+</ol>
+
+<h3 class="sub" id="Duration">Duration</h3>
+
+<p>The expiration date of this charter is 1-Sep-2012. At that time,
+the group may seek to recharter with BNL and PSI, or determine that
+EPICSv4 should be discontinued. </p>
+
+<h2 id="milestones">Expected Milestones</h2>
+
+<p>[TBD]</p>
+
+<h2 id="coordination">Coordination with Other Bodies</h2>
+
+<p>The Working Group should coordinate and align objectives to satisfy
+the requirements of the following bodies:</p>
+
+<dl>
+ <dt>BNL NSLS Controls</dt> 
+ <dd>[TBD: What specific requirements are
+   there of EPICSv4 to satisfy BNL requirements. Are these solely with
+   respect to services, and if so which? Is BNL expecting work on
+   EPICS v4 database or record support?] </dd> 
+ <dt>PSI SwissFEL</dt>
+   <dd>PSI requires EPICS v4 services framework, for online
+   accelerator modelling in particular, and compatibility of EPICSv4
+   IOC with EPICS v3 record support.</dd> 
+ <dt>SLAC FEL accelerators (LCLS/LCLS-II)</dt> 
+   <dd>SLAC requires EPICS v4 services framework
+   in general, and for online accelerator modelling in
+   particular.
+   </dd> 
+</dl>
+
+<h2 id="participation">Group Participation</h2>
+
+<p>Effective participation is expected to consume one to two working
+days per week for each group participant; two days per week for
+editors of a specific normative document. Developers of
+implementations of a normative standard (such as pvAccess, pvData,
+services) are expected to consume three days per week. The Chair shall
+ensure that the criteria for <a href="#standing">Good Standing</a> are understood and
+followed.
+</p>
+<p>Prospective group participants should ask their primary EPICS
+contact or manager to send an email to one of the EPICS v4 chairs,
+showing that they understand the participant will be involved with
+EPICS v4 and the commitment level expected.</p>
+<p>Individuals who are not active participants, may join meetings
+of the group as observers. Email the chairs to get details of how to
+join the meetings.</p>
+
+<p>[TBD: How many participants are needed to be successful?]</p>
+
+<h3 id="standing">Good Standing</h3>
+<p>A participant who is absent from more than 2 meetings consecutively,
+or in the opinion of the chairs is not acting on Action Items or their
+responsibilities for group <a href="#deliverables">deliverables</a>,
+will be deemed out of good standing, and will no longer
+participate.</p>
+
+<h3 class="sub" id="Chair">Chair</h3>
+
+<p>The initial chairs of this Group are Greg White (PSI, SLAC) and Bob Dalesio (BNL).
+</p>
+
+<h2 id="meetings">Meetings</h2>
+
+<p>The Group will have distributed meetings, one to two hours every
+week, and face&ndash;to&ndash;face meetings, every three or four months.</p>
+
+<h2 id="communication">Communication</h2>
+
+<p>The Working Group will utilize the mailing
+list, <a href="mailto:epics-pvdata-devel@lists.sourceforge.net">epics-pvdata-devel@lists.sourceforge.net</a>. All
+except the most trivial messages should be cc'ed to this mailing
+list. The <a href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">web
+archive</a> of it used should be used as backward references in
+communications.</p>
+
+<h2 id="confidentiality">Confidentiality</h2>
+
+<p>The proceedings of this Working Group are open to all (not just
+members of the working group), subject to exceptions made by the
+Chairs, after consultation with the Working Group. The group's
+communications on
+the <a href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">web
+archive</a> will be world readable. Posting
+to <a href="mailto:epics-pvdata-devel@lists.sourceforge.net">epics-pvdata-devel@lists.sourceforge.net</a>
+will be unrestricted for members, but moderated for non-members.</p>
+
+<h2 id="pp">Patent Policy</h2>
+
+<p>This Working Group operates under [TBD which patent policy?]</p>
+
+<h2 id="Glossary">Glossary of Terms</h2>
+<dl>
+<li id="normative">Normative. "Normative" indicates whether a document
+or source code should be considered a core product of the working
+group and as such follows the standards for quality control of EPICS
+v4 deliverables. Normative documents will have standard
+headers. Normative code will be documented to an agreed standard
+level. Documents and code additionally made available by the group,
+for illustration, as minor test code, or incidental, are
+"non-normative".</li>
+<li id="EPICSv4IOC">EPICS v4 IOC. An Input Output Control computer or
+virtual machine (Schick), which implements [TBD - what constitutes
+being an EPICS v4 "Java IOC" or v4 "C++ IOC"?] </li>
+</dl>
+
+<hr />
+<address class="author">
+ Greg White, EPICS v4 group co-chair<br />
+ Bob Dalesio, BNL Controls Group leader, and EPICS v4 co-chair<br />
+ Last modified $ Date: 2011/08/29 13:06:49 $
+</address>
+
+</div> <!-- contents -->
+</body>
+</html>
