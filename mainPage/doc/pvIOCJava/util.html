@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: support</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: util<br />
+package: org.epics.ioc.util<br />
+2009.04.09</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Scan">Scan Field Support</a>
+    <ul>
+      <li><a href="#Definition">Definitions</a></li>
+      <li><a href="#ScanField">ScanField</a></li>
+      <li><a href="#ScanType">ScanType</a></li>
+      <li><a href="#ScanFieldF">ScanFieldFactory</a></li>
+    </ul>
+  </li>
+  <li><a href="#Periodic">Periodic and Event Scanners</a>
+    <ul>
+      <li><a href="#Definition1">Definitions</a></li>
+      <li><a href="#EventAnnou">EventAnnounce</a></li>
+      <li><a href="#EventScann">EventScanner</a></li>
+      <li><a href="#PeriodicSc">PeriodicScanner</a></li>
+    </ul>
+  </li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This package provides utility code for a javaIOC:</p>
+<dl>
+  <dt>Scan Field</dt>
+    <dd>Interface that makes it easier to access the scan field of a
+    record.</dd>
+  <dt>Periodic and Event Scanners</dt>
+    <dd>Support for records that are periodic or event scanned.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center;" id="Scan">Scan Field Support</h2>
+<hr />
+
+<h3 id="Definition">Definitions</h3>
+<pre>    public interface ScanField {
+        ThreadPriority getPriority();
+        PVInt getPriorityIndexPV();
+        ScanType getScanType();
+        PVInt getScanTypeIndexPV();
+        double getRate();
+        PVDouble getRatePV();
+        String getEventName();
+        PVString getEventNamePV();
+        boolean getProcessSelf();
+        PVBoolean getProcessSelfPV();
+        boolean getProcessAfterStart();
+        PVBoolean getProcessAfterStartPV();
+    }
+     
+    public enum ScanType {
+        passive,
+        event,
+        periodic;
+        public static Enumerated getScanType(PVField dbField);
+    }
+    
+    public class ScanFieldFactory {
+        public static ScanField create(PVRecord dbRecord);
+    }</pre>
+
+<h3 id="ScanField">ScanField</h3>
+
+<p>ScanField is a convenience interface for accessing the scan field of a
+record. </p>
+
+<h3 id="ScanType">ScanType</h3>
+
+<p>This is a Java enum which defines the scan types:</p>
+<dl>
+  <dt style="font-family: courier;">passive</dt>
+    <dd>This is a record that is not periodically or event scanned. It can be
+      processed by another requester. For example database links can request
+      processing and Channel Access clients can also request processing.</dd>
+  <dt style="font-family: courier;">event</dt>
+    <dd>A record can be event scanned. If so the record also has an eventName
+      assigned to it. An event announcer, defined below, can declare and
+      event. This makes all records with the associated eventName
+    process.</dd>
+  <dt style="font-family: courier;">periodic</dt>
+    <dd>The record is periodically scanned. A peridically scanned record has
+      a rate assigned it it.</dd>
+</dl>
+
+<p>The method is:</p>
+<dl>
+  <dt style="font-family: courier;">getScanType</dt>
+    <dd>If dbField has an Enumerated Create interface and if the choices
+      match the ScanType enum names than it returns the Enumerated interface.
+      Otherwise it returns null.</dd>
+</dl>
+
+<h3 id="ScanFieldF">ScanFieldFactory</h3>
+
+<p>This is a factory for creating a ScanField.</p>
+<dl>
+  <dt style="font-family: courier;">create</dt>
+    <dd>Create a ScanField.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center;" id="Periodic">Periodic and Event Scanners</h2>
+<hr />
+
+<h3 id="Definition1">Definitions</h3>
+<pre>    public interface EventAnnounce {
+        void announce();
+    }
+    public interface EventScanner {
+        boolean addRecord(PVRecord pvRecord);
+        boolean removeRecord(PVRecord pvRecord,String eventName,ThreadPriority scanPriority));
+        EventAnnounce addEventAnnouncer(String eventName,String announcer);
+        void removeEventAnnouncer(EventAnnounce eventAnnounce,String announcer);
+        String show(String eventName);
+    }
+    
+    public interface PeriodicScanner {
+        boolean addRecord(PVRecord pvRecord);
+        boolean removeRecord(PVRecord pvRecord,double rate,ThreadPriority threadPriority);
+        String show(ThreadPriority priority);
+        String show(double rate);
+        String show(double rate,ThreadPriority priority);
+    }
+    
+    public class ScannerFactory {
+         public static PeriodicScanner getPeriodicScanner();
+         public static EventScanner getEventScanner();
+    }</pre>
+
+<h3 id="EventAnnou">EventAnnounce</h3>
+
+<p>This is the interface for announcing an event. The event scanner
+implements this interface. An announcer calls eventScanner.addEventAnnouncer
+in order to get an EventAnnounce. The announcer then just calls:</p>
+<pre>    eventAnnounce.announce();</pre>
+
+<p>when it wants to announce an event.</p>
+
+<h3 id="EventScann">EventScanner</h3>
+
+<p>This is the interface for the event scanning facility implemented by
+ScannerFactory. It implements the methods:</p>
+<dl>
+  <dt style="font-family: courier;">addRecord</dt>
+    <dd>Add an event scanned record.</dd>
+  <dt style="font-family: courier;">removeRecord</dt>
+    <dd>Remove a record from being event scanned.</dd>
+  <dt style="font-family: courier;">addEventAnnouncer</dt>
+    <dd>Add an event announcer.</dd>
+  <dt style="font-family: courier;">removeEventAnnouncer</dt>
+    <dd>Remove an event announcer.</dd>
+  <dt style="font-family: courier;">show</dt>
+    <dd>report announcers and event scanned records</dd>
+</dl>
+
+<h3 id="PeriodicSc">PeriodicScanner</h3>
+
+<p>This is the interface for the periodic scanning facility implemented by
+ScannerFactory. It implements the methods:</p>
+<dl>
+  <dt style="font-family: courier;">addRecord</dt>
+    <dd>Add a new record to a periodically scanned list.</dd>
+  <dt style="font-family: courier;">removeRecord</dt>
+    <dd>Remove a record from being periodically scanned.</dd>
+  <dt style="font-family: courier;">show</dt>
+    <dd>Show periodically scanned records.</dd>
+</dl>
+</body>
+</html>

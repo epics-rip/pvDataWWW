@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS javaIOC: monitor</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS javaIOC: monitor<br />
+package: org.epics.ioc.monitor<br />
+2010.08.26</h1>
+CONTENTS
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Implementi">Implementing New Monitor Algorithms</a>
+    <ul>
+      <li><a href="#MonitorFac">MonitorFactory</a></li>
+      <li><a href="#MonitorAlg">MonitorAlgorithm</a></li>
+    </ul>
+  </li>
+</ul>
+</div>
+
+<p> </p>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>Package org.epics.pvData.monitor defines the monitor interfaces as seen by
+a client. See that package overview for details. This package implements the
+monitoring interfaces for a PVRecord.</p>
+
+<p>The implementation uses PVCopy and PVCopyMonitor which are implemented in
+package org.epics.ioc.pvCopy. When PVCopyMonitor tells monitor that changes
+have occurred, monitor applies the appropriate algorithm to each changed
+field and if any algorithm says to raise a monitor a monitor is sent to the
+client.</p>
+
+<p>This package implements support for the following monitor algorithms:</p>
+<dl>
+  <dt>onPut</dt>
+    <dd>A monitor is issued whenever a put is issued to the field. This is
+      the default unless the record defines deadbands for a field. An
+      exception is the top level timeStamp which by default is made onChange
+      and monitor will not be raised.</dd>
+  <dt>onChange</dt>
+    <dd>This provides two options: 1) A monitor is raised whenever a field
+      changes value, and 2) A monitor will never be raised for the field.</dd>
+  <dt>deadband</dt>
+    <dd>The field must be a numeric scalar. Whenever the absolute or
+      percentage value of the field changes by more than a deadband a monitor
+      is issued. The record instance can also define deadbands.</dd>
+  <dt>periodic</dt>
+    <dd>A monitor is issued at a periodic rate if a put was issued to any
+      field being monitored.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Implementi">Implementing New Monitor
+Algorithms</h2>
+<hr />
+
+<p>This section discusses how to implement new monitor algorithms in addition
+to the onPut, onChange, etc, implemented by this package.</p>
+
+<p>The monitor algorithm must register by calling:</p>
+<pre>    MonitorFactory.registerMonitorAlgorithmCreater(MonitorAlgorithmCreate monitorAlgorithmCreate)</pre>
+
+<p>The implementation must implement interfaces <span
+style="font-family: Courier">MonitorAlgorithmCreate</span> and <span
+style="font-family: Courier">MonitorAlgorithm</span> which are described
+below.</p>
+
+<h3 id="MonitorFac">MonitorFactory</h3>
+
+<p>This is a request to create a monitor.</p>
+<pre>class MonitorFactory {
+    static Monitor create(PVRecord pvRecord,
+        MonitorRequester monitorRequester,PVStructure pvRequest);
+    static void registerMonitorAlgorithmCreater(MonitorAlgorithmCreate monitorAlgorithmCreate)
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt><span style="font-family: Courier">create</span></dt>
+    <dd>Create a monitor. The arguments are: 
+      <dl>
+        <dt><span style="font-family: Courier">pvRecord</span></dt>
+          <dd>The record being monitored.</dd>
+        <dt><span style="font-family: Courier">monitorRequester</span></dt>
+          <dd>The monitor requester. This is the code to which monitot events
+            will be delivered.</dd>
+        <dt><span style="font-family: Courier">pvRequest</span></dt>
+          <dd>The request options</dd>
+      </dl>
+    </dd>
+  <dt><span
+  style="font-family: Courier">registerMonitorAlgorithmCreater</span></dt>
+    <dd>Called by code that implements a monitor algorithm.</dd>
+</dl>
+
+<h3 id="MonitorAlg">MonitorAlgorithm</h3>
+
+<p>The following are implemented by code that implements a monitor
+algorithm.</p>
+<pre>interface MonitorAlgorithmCreate {
+    String getAlgorithmName();
+    MonitorAlgorithm create(
+            PVRecord pvRecord,
+            MonitorRequester monitorRequester,
+            PVField fromPVRecord,
+            PVStructure pvOptions);
+}
+
+interface MonitorAlgorithm  {
+    String getAlgorithmName();
+    boolean causeMonitor();
+    void monitorIssued();
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt><span style="font-family: Courier">getAlgorithmName</span></dt>
+    <dd>return the name of the algorithm.</dd>
+  <dt><span style="font-family: Courier">causeMonitor</span></dt>
+    <dd>Called to see if a change to this field should cause a monitor</dd>
+  <dt><span style="font-family: Courier">monitorIssued</span></dt>
+    <dd>Called after a monitor has been issued.</dd>
+</dl>
+<hr />
+</body>
+</html>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>PVService: channelFinder</title>
+</head>
+
+<body>
+<h1 style="text-align: center">PVService: channelFinder<br />
+Overview<br />
+2010.06.23</h1>
+
+<hr />
+
+<h2 style="text-align: center">Introduction</h2>
+<hr />
+
+<p>NEEDS UPDATING</p>
+<p>This package and the other packages in org.epics.pvService.pvChannelFinder
+provide a service that obtains channel names together with properties that
+match a search pattern. The search pattern is a string that has the following
+syntax.</p>
+<pre>    prop=exp&amp;prop=exp...</pre>
+
+<p>where</p>
+<dl>
+  <dt>prop</dt>
+    <dd>Name of property.</dd>
+  <dt>exp</dt>
+    <dd>A regular expression as determined by the database.</dd>
+  <dt>&amp;</dt>
+    <dd>Separator between search patterns.</dd>
+</dl>
+
+<p>The client receives the result as an array of RequestResults where:</p>
+<pre>class RequestResult {
+     public String name;
+     public ChannelProperty[] properties;
+}
+
+class ChannelProperty {
+    public String name;
+    public String value;
+}</pre>
+<hr />
+
+<h2 style="text-align: center">Example</h2>
+<hr />
+<pre>public class PvChannelFinderClient {
+        private static final String serverName = "pvChannelFinderExample";
+
+        public static void main(String[] args) {
+                // must start PVAccess
+                org.epics.ca.ClientFactory.start();
+                Client client = new Client();
+                if(!client.connect()) System.exit(1);
+                String search = "Name=SR:*&amp;element=BPM&amp;family=Y";
+                if(args.length&gt;0) search = args[0];
+                RequestResult[] results = client.sendRequest(search);
+                if(results!=null) {
+                        for(RequestResult requestResult: results) {
+                                System.out.printf("%s%n", requestResult.name);
+                                for(ChannelProperty channelProperty : requestResult.properties) {
+                                        System.out.printf("  name:%s value:%s%n", channelProperty.name,channelProperty.value);
+                                }
+                        }
+                }
+                client.destroy();
+                System.out.println("all done");
+                org.epics.ca.ClientFactory.stop();
+                System.exit(0);
+        }
+
+        private static class Client implements ChannelFinderRequester {
+                private ChannelFinder channelFinder = ChannelFinderFactory.create(serverName,this);
+                private boolean connectOK = false;
+                private RequestResult[] results = null;
+
+                boolean connect() {
+                        channelFinder.waitConnect(5.0);
+                        return connectOK;
+                }
+
+                RequestResult[] sendRequest(String search) {
+                        channelFinder.sendRequest(search);
+                        channelFinder.waitRequest();
+                        return results;
+                }
+                void destroy() {
+                        channelFinder.destroy();
+                }
+                
+                public void connectResult(Status status) {
+                        if(status.isSuccess()) {
+                                connectOK = true;
+                                return;
+                        }
+                        System.out.println("connectResult " + status.getMessage());
+                }
+                public void requestResult(Status status, RequestResult[] results) {
+                        this.results = results;
+                        if(!status.isSuccess()) {
+                                System.out.println("requestResult " + status.getMessage());
+                                return;
+                        }
+                }
+                
+                public String getRequesterName() {
+                        return "exampleServiceClient";
+                }
+                
+                public void message(String message, MessageType messageType) {
+                        System.out.printf("%n%s %s%n",messageType.toString(),message);
+                }
+        }
+}
+
+</pre>
+<hr />
+
+<h2 style="text-align: center">Client Interface</h2>
+<hr />
+<pre>interface ChannelFinder extends ServiceClient{
+    void sendRequest(String search);
+}
+
+interface ChannelFinderRequester extends Requester{
+    void connectResult(Status status);
+    void requestResult(Status status,RequestResult[] results);
+}
+
+class ChannelFinderFactory {
+    public static ChannelFinder create(
+       String serverName,ChannelFinderRequester channelFinderRequester);
+}
+
+class RequestResult {
+     public String name;
+     public ChannelProperty[] properties;
+}
+
+class ChannelProperty {
+    public String name;
+    public String value;
+}</pre>
+
+<p>ChannelFinder is the interface for issuing a request. It adds a single
+method to what serviceClient provides.</p>
+<dl>
+  <dt>sendRequest</dt>
+    <dd>The argument is the search string.</dd>
+</dl>
+
+<p>ChannelFinderRequester is the interface that must be implemented by the
+channelFinder client. It has the methods:</p>
+<dl>
+  <dt>connectResult</dt>
+    <dd>called when waitConnect is called.</dd>
+  <dt>requestResult</dt>
+    <dd>called after a sendRequest and waitrequest are called. It provides
+      the results.</dd>
+</dl>
+
+<p>RequestResult and ChannelProperty provide the result.</p>
+</body>
+</html>

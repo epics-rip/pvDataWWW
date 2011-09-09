@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: channel Access</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: caV3<br />
+Channel Access Version 3<br />
+package: org.epics.ioc.caV3<br />
+2009.11.17</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Server">Server</a>
+    <ul>
+      <li><a href="#Syntax">Syntax</a></li>
+      <li><a href="#Options">Get and Put Options</a></li>
+      <li><a href="#monitor">monitor options</a></li>
+    </ul>
+  </li>
+  <li><a href="#Client">Client</a>
+    <ul>
+      <li><a href="#Overview1">Overview</a></li>
+      <li><a href="#Naming">Naming conventions.</a></li>
+      <li><a href="#Data">Data Types Supported</a></li>
+      <li><a href="#Implementa">Implementation Overview</a></li>
+    </ul>
+  </li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This package provides support for Channel Access Version 3. The server
+allows an existing Channel Access client to access a javaIOC database. The
+client allows the javaIOC to communicate with a Version 3 server, e.g. a
+javaIOC database can have links to records in a V3 IOC database.</p>
+
+<p>In order to be available to a javaIOC, each must be started via the
+appropriate factory. This is just a call to the start method. For example:</p>
+<pre>    org.epics.ioc.caV3.ClientFactory.start();</pre>
+
+<p>The client must be started before the IOC is started and the server after.
+The javaIOC overview provides instructions for using XMLToDatabase to start
+everything.</p>
+
+<p>Both the client and server use the JCA/CAJ support provided by <a
+href="http://jca.cosylab.com">cosylab</a>. In addition the server uses the
+CAS support that comes with the latest versions of JCA/CAJ.</p>
+<hr />
+
+<h2 style="text-align: center" id="Server">Server</h2>
+<hr />
+
+<h3 id="Syntax">Syntax</h3>
+
+<p>A V3 client can access any field of a javaIOC record that is a scalar, an
+array of scalars, or an enumerated structure. A boolean field appears as a
+DBR_ENUM with choices = {"false","true"}.</p>
+
+<p>A pvName has the form:</p>
+<pre>    recordName.name.name...{options}</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace;">recordName</span></dt>
+    <dd>The name of a javaIOC record</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace;">name.name...</span></dt>
+    <dd>Each name is a fieldName or propertyName or index as described in
+      package org.epics.ioc.pv. The final field must a scalar, an array of
+      scalars, or an enumerated structure.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace;">options</span></dt>
+    <dd>options are of the form "name=value". The options are described
+    below.</dd>
+</dl>
+
+<p>The following examples use the channel access utility shell commands that
+come with EPICS base. The database is the example/exampleDB.xml that comes
+with the javaIOC. </p>
+<pre>    caput double 6</pre>
+
+<p>This writes the value 6 to the value field of a record named double.</p>
+<pre>    caput double.{putProcess=true} 5</pre>
+
+<p>This writes the value 5 to record double and also requests that the record
+be processed. The value is written before the record is processed.</p>
+<pre>     caget -d 20 double.{getProcess=true}</pre>
+
+<p>This gets the value field of record double. The record is processed.</p>
+<pre>    caput powerSupplyArray.supply.1.power{putProcess=true} 2</pre>
+
+<p>This writes the value 2 to the power.value field of the second supply of
+the powerSupplyArray record.</p>
+
+<h3 id="Options">Get and Put Options</h3>
+
+<p>The currently supported options are:</p>
+<pre>    getProcess=true
+    putProcess=true
+    shareData=true</pre>
+
+<p>getProcess processes the record and then retrives data. putProcess first
+puts data into the record and then processes the record. In order for either
+to work, the record must not already have a recordProcessor assigned to
+it.</p>
+
+<h3 id="monitor">monitor options</h3>
+
+<p>Currently no options are supported. </p>
+<hr />
+
+<h2 style="text-align: center" id="Client">Client</h2>
+<hr />
+
+<h3 id="Overview1">Overview</h3>
+
+<p>The client code implements a ChannelProvider that communicates with
+Channel Access version 3 IOCs. It allows access to all the V3 data types. The
+provider name is "caV3". </p>
+
+<p>The channelName is of the form recordName.fieldName, where fieldName is
+optional. See naming conventions below for details.</p>
+
+<p>The client code implements the standard ChannelProvider interface as
+defined by cajV4. This means that it also implements interface Channel.
+However only the features that make sense for caV3 are implemented. </p>
+
+<p> For Channel the implementation of the following methods is:</p>
+<dl>
+  <dt><span style="font-family: courier;">getField</span></dt>
+    <dd>Returns a Structure. The structure has a field named "value", which
+      is related to the fieldName of the channel. The type of the value field
+      depends on the caV3 native type. If the type is DBR_ENUM then the value
+      field will be an enumerated structure. For the other DBR types the
+      value field will be either a scalar or an array depending of the DBR
+      type. The scalarType of the field will match the DBR type. For all
+      types the Structure will have fields timeStamp and alarm, which are the
+      standard timeStamp and alarm structures. If the native DBR Type is
+      numeric then the Structure will also have structure fields for control
+      and display.</dd>
+  <dt><span style="font-family: courier;">getChannelProcess</span></dt>
+    <dd>Not supported.</dd>
+  <dt><span style="font-family: courier;">createChannelArray</span></dt>
+    <dd>Not supported.</dd>
+  <dt><span style="font-family: courier;">createChannelGet</span></dt>
+    <dd>Supported. Also support for alarm, timeStamp, display, and
+    control.</dd>
+  <dt><span style="font-family: courier;">createChannelPut</span></dt>
+    <dd>Supported but no support for properties.</dd>
+  <dt><span style="font-family: courier;">createChannelPutGet</span></dt>
+    <dd>Not supported.</dd>
+  <dt><span style="font-family: courier;">createMonitor</span></dt>
+    <dd>Supported. Also support for alarm and timeStamp. Note that a single
+      get request is made after connection so that enum choices and control
+      and display information can be obtained. For a numeric value field
+      support for display and control is implemented. Note that the display
+      and control information will not change. This matches the caV3
+      semantics.</dd>
+</dl>
+
+<p></p>
+
+<h3 id="Naming">Naming conventions.</h3>
+
+<p>A PV Name (Process Variable Name) must be of the form:</p>
+<pre>    recordName.fieldName</pre>
+
+<p>where</p>
+<dl>
+  <dt>recordName</dt>
+    <dd>Is the name of a record in a V3 IOC database.</dd>
+  <dt>fieldName</dt>
+    <dd>Must be a valid caV3 fieldname like VAL or RVAL. It is optional since
+      it is optional for v3.</dd>
+</dl>
+
+<p>The pvRequest passed to createChannelGet, createChannelPut, and
+createMonitor must define a request that makes sense for a v3 record. For all
+three the request should include the definition for a value field, which is
+associated with the fieldName of the pvName. For all it is OK to attach to a
+record which has a VAL field that is a DBR_ENUM. In this case the value can
+be retrieved as an enumerated structure or just the index or string value can
+be retrieved.</p>
+
+<p>The following request structure will get the value, alarm, and
+timeStamp:</p>
+<pre>&lt;structure name = "request"&gt;
+    &lt;scalar name = "fieldList" scalarType = "string"&gt;
+       value,alarm,timeStamp
+    &lt;/scalar&gt;
+&lt;/structure&gt;</pre>
+
+<p>The following will access the index of an DBR_ENUM:</p>
+<pre>&lt;structure name = "request"&gt;
+     &lt;scalar name = "value" scalarType = "string"&gt;value.index&lt;/scalar&gt;
+     &lt;scalar name = "alarm" scalarType = "string"&gt;alarm&lt;/scalar&gt;
+&lt;/structure&gt;</pre>
+
+<p>The following will access the choice of an DBR_ENUM:</p>
+<pre>&lt;structure name = "request"&gt;
+     &lt;scalar name = "value" scalarType = "string"&gt;value.choice&lt;/scalar&gt;
+     &lt;scalar name = "alarm" scalarType = "string"&gt;alarm&lt;/scalar&gt;
+&lt;/structure&gt;</pre>
+
+<h3 id="Data">Data Types Supported</h3>
+
+<p>The V3 data types are supported via a corresponding javaIOC data type. A
+V3 <span style="font-family: Courier New,Courier,monospace;">char</span> is a
+javaIOC <span
+style="font-family: Courier New,Courier,monospace;">byte</span>. The types
+<span style="font-family: Courier New,Courier,monospace;">short, int, float,
+and doubl</span>e are common to both. A V3 <span
+style="font-family: Courier New,Courier,monospace;">string</span> becomes a
+javaIOC <span
+style="font-family: Courier New,Courier,monospace;">String</span>. Arrays of
+byte,short,...,string are also supported. A V3 <span
+style="font-family: Courier New,Courier,monospace;">ENUM</span> becomes a
+javaIOC enumerated structure. V3 properties (status, severity, timeStamp,
+display limits, and control limits) become standard pvData structures (alarm,
+timeStamp, display, and control).</p>
+
+<h3 id="Implementa">Implementation Overview</h3>
+
+<p>The implementation consists of the following classes.</p>
+<dl>
+  <dt>ClientFactory</dt>
+    <dd>This implements ChannelProvider. It creates instances of
+      BaseV3Channel when a client calls createChannel. It creates a JCA
+      Context that is used for all channels. It also listens for JCA Context
+      Exceptions and Messages. In spawns a thread that issues a JCA poll
+      request at regular intervals.</dd>
+  <dt>BaseV3Channel</dt>
+    <dd>This implements the Channel interface. It creates a JCA Channel and
+      handles the JCA connection events. It does NOT implement
+      createChannelProcess, createChannelArray, or createChannelPutGet.</dd>
+  <dt>BaseV3ChannelStructure</dt>
+    <dd>This handles conversion between caV3 data and pvAccess data..</dd>
+  <dt>BaseV3ChannelPut</dt>
+    <dd>Implements a put request.</dd>
+  <dt>BaseV3ChannelGet</dt>
+    <dd>Implements a get request.</dd>
+  <dt>BaseV3ChannelMonitor</dt>
+    <dd>Implements a monitor request. Note that it issues a single get to
+      obtain enumerated choices and display and control information.</dd>
+</dl>
+</body>
+</html>

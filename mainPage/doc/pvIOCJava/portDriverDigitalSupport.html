@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: portDriver digital support</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: digital support<br />
+package: org.epics.ioc.support.pdrv.digital<br />
+2009.03.25</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#UInt32Digi">UInt32Digital</a></li>
+  <li><a href="#Java">Java Definitions</a></li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This package implements portDriver support for digital I/O. This support
+needs more work. It should have support that works for a driver that supports
+Int32. Currently there is only support for a driver that support interface
+Uint32Digital.</p>
+<hr />
+
+<h2 style="text-align: center" id="UInt32Digi">UInt32Digital</h2>
+<hr />
+
+<p>The xml definitions are:</p>
+<pre>&lt;structure name = "digitalInputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.basic.DigitalFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "digitalOutputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.basic.DigitalFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+
+
+&lt;structure name = "digitalState"&gt;
+  &lt;scalar name = "name" type = "string" /&gt;
+  &lt;scalar name = "value" type = "int" /&gt;
+  &lt;structure name = "severity" type = "alarmSeverity" /&gt;
+  &lt;scalar name = "message" type = "string" /&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "digital"&gt;
+  &lt;auxInfo name = "supportFactory" type = "string"&gt;genericFactory&lt;/auxInfo&gt;
+  &lt;scalar name = "value" type = "int" /&gt;
+  &lt;structure name = "input" type = "generic"/&gt;
+  &lt;!-- each field of states must be as digitalState structure --&gt;
+  &lt;!-- supportName can be digitalInput or digitalOutput --&gt;
+  &lt;structure name = "states"  /&gt;
+&lt;/structure&gt;</pre>
+
+<p>If the value field is an enumerated structure then the support will
+automatically give a value to value.choices based on the digitalState.name
+fields on the digital.states array.</p>
+
+<p>Some examples for an enumerated value field are:</p>
+<pre>&lt;record name = "syncDigitalOut"&gt;
+    &lt;scalar name = "value" type = "int"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "outlink" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;syncDigitalPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "output" type = "pdrvUInt32DigitalOutput"&gt;
+            &lt;scalar name = "mask"&gt;15&lt;/scalar&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "link" type = "generic"&gt;
+        &lt;structure name = "1" type = "caProcessLink"&gt;
+             &lt;scalar name = "pvname"&gt;syncDigitalIn1&lt;/scalar&gt;
+             &lt;scalar name = "wait" type = "boolean"&gt;false&lt;/scalar&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "2" type = "caProcessLink"&gt;
+             &lt;scalar name = "pvname"&gt;syncDigitalIn2&lt;/scalar&gt;
+             &lt;scalar name = "wait" type = "boolean"&gt;false&lt;/scalar&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "3" type = "caProcessLink"&gt;
+             &lt;scalar name = "pvname"&gt;syncDigitalIn3&lt;/scalar&gt;
+             &lt;scalar name = "wait" type = "boolean"&gt;false&lt;/scalar&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "4" type = "caProcessLink"&gt;
+             &lt;scalar name = "pvname"&gt;syncDigitalIn4&lt;/scalar&gt;
+             &lt;scalar name = "wait" type = "boolean"&gt;false&lt;/scalar&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "5" type = "caProcessLink"&gt;
+             &lt;scalar name = "pvname"&gt;syncDigitalIn5&lt;/scalar&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+&lt;record name = "syncDigitalIn1"&gt;
+    &lt;structure name = "value" type = "enumerated"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "input" type = "digital"&gt;
+        &lt;structure name = "link" type = "portDriverLink"&gt;
+            &lt;scalar name = "portName"&gt;syncDigitalPort&lt;/scalar&gt;
+            &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+            &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+            &lt;structure name = "input" type = "pdrvUInt32DigitalInput"&gt;
+                &lt;scalar name = "mask"&gt;0x1&lt;/scalar&gt;
+            &lt;/structure&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "states"&gt;
+            &lt;auxInfo name = "supportFactory" type = "string"&gt;digitalInputFactory&lt;/auxInfo&gt;
+            &lt;structure name = "0" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;off&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;0&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;none&lt;/scalar&gt;&lt;/structure&gt;
+            &lt;/structure&gt;
+            &lt;structure name = "1" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;on&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;1&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;minor&lt;/scalar&gt;&lt;/structure&gt;
+                &lt;scalar name = "message"&gt;on is minor alarm&lt;/scalar&gt;
+            &lt;/structure&gt;
+       &lt;/structure&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "valueAlarm" type = "enumeratedAlarm"&gt;
+            &lt;scalar name = "active"&gt;true&lt;/scalar&gt;
+            &lt;structure name = "changeStateAlarm"&gt;
+                 &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;none&lt;/scalar&gt;&lt;/structure&gt;
+                 &lt;scalar name = "message"&gt;Change State&lt;/scalar&gt;
+             &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+&lt;record name = "syncDigitalIn2"&gt;
+    &lt;structure name = "value" type = "enumerated"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "input" type = "digital"&gt;
+        &lt;structure name = "link" type = "portDriverLink"&gt;
+            &lt;scalar name = "portName"&gt;syncDigitalPort&lt;/scalar&gt;
+            &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+            &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+            &lt;structure name = "input" type = "pdrvUInt32DigitalInput"&gt;
+                &lt;scalar name = "mask"&gt;0x2&lt;/scalar&gt;
+            &lt;/structure&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "states"&gt;
+            &lt;auxInfo name = "supportFactory" type = "string"&gt;digitalInputFactory&lt;/auxInfo&gt;
+            &lt;structure name = "0" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;off&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;0&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;none&lt;/scalar&gt;&lt;/structure&gt;
+            &lt;/structure&gt;
+            &lt;structure name = "1" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;on&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;1&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;minor&lt;/scalar&gt;&lt;/structure&gt;
+                &lt;scalar name = "message"&gt;on is minor alarm&lt;/scalar&gt;
+            &lt;/structure&gt;
+       &lt;/structure&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "valueAlarm" type = "enumeratedAlarm"&gt;
+            &lt;scalar name = "active"&gt;true&lt;/scalar&gt;
+            &lt;structure name = "changeStateAlarm"&gt;
+                 &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;none&lt;/scalar&gt;&lt;/structure&gt;
+                 &lt;scalar name = "message"&gt;Change State&lt;/scalar&gt;
+             &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "syncDigitalIn5"&gt;
+    &lt;structure name = "value" type = "enumerated"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "input" type = "digital"&gt;
+        &lt;structure name = "link" type = "portDriverLink"&gt;
+            &lt;scalar name = "portName"&gt;syncDigitalPort&lt;/scalar&gt;
+            &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+            &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+            &lt;structure name = "input" type = "pdrvUInt32DigitalInput"&gt;
+                &lt;scalar name = "mask"&gt;0xf&lt;/scalar&gt;
+            &lt;/structure&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "states"&gt;
+            &lt;auxInfo name = "supportFactory" type = "string"&gt;digitalInputFactory&lt;/auxInfo&gt;
+            &lt;structure name = "0" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;zero&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;0&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;none&lt;/scalar&gt;&lt;/structure&gt;
+            &lt;/structure&gt;
+            &lt;structure name = "1" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;one&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;0x1&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;minor&lt;/scalar&gt;&lt;/structure&gt;
+                &lt;scalar name = "message"&gt;one is minor alarm&lt;/scalar&gt;
+            &lt;/structure&gt;
+            &lt;structure name = "2" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;two&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;0x2&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;major&lt;/scalar&gt;&lt;/structure&gt;
+                &lt;scalar name = "message"&gt;two is major alarm&lt;/scalar&gt;
+            &lt;/structure&gt;
+            &lt;structure name = "3" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;three&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;0x3&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;none&lt;/scalar&gt;&lt;/structure&gt;
+            &lt;/structure&gt;
+            &lt;structure name = "4" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;four&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;0x4&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;major&lt;/scalar&gt;&lt;/structure&gt;
+            &lt;/structure&gt;
+            &lt;structure name = "5" type = "digitalState"&gt;
+                &lt;scalar name = "name"&gt;eight&lt;/scalar&gt;
+                &lt;scalar name = "value"&gt;0x8&lt;/scalar&gt;
+                &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;none&lt;/scalar&gt;&lt;/structure&gt;
+            &lt;/structure&gt;
+       &lt;/structure&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "valueAlarm" type = "enumeratedAlarm"&gt;
+            &lt;scalar name = "active"&gt;true&lt;/scalar&gt;
+            &lt;structure name = "changeStateAlarm"&gt;
+                 &lt;structure name = "severity"&gt;&lt;scalar name = "choice"&gt;none&lt;/scalar&gt;&lt;/structure&gt;
+                 &lt;scalar name = "message"&gt;Change State&lt;/scalar&gt;
+             &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+
+<p>Some examples for a boolean value field are:</p>
+<pre>&lt;record name = "syncBooleanOut"&gt;
+    &lt;scalar name = "value" type = "int"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "outlink" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;syncBooleanPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "output" type = "pdrvUInt32DigitalOutput"&gt;
+            &lt;scalar name = "mask"&gt;32767&lt;/scalar&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "link" type = "generic"&gt;
+        &lt;structure name = "1" type = "caProcessLink"&gt;
+             &lt;scalar name = "pvname"&gt;syncBooleanIn1&lt;/scalar&gt;
+             &lt;scalar name = "wait" type = "boolean"&gt;false&lt;/scalar&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "2" type = "caProcessLink"&gt;
+             &lt;scalar name = "pvname"&gt;syncBooleanIn2&lt;/scalar&gt;
+             &lt;scalar name = "wait" type = "boolean"&gt;false&lt;/scalar&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "3" type = "caProcessLink"&gt;
+             &lt;scalar name = "pvname"&gt;syncBooleanIn3&lt;/scalar&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "syncBooleanIn1"&gt;
+    &lt;scalar name = "value" type = "boolean"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "link" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;syncBooleanPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "input" type = "pdrvUInt32DigitalInput"&gt;
+            &lt;scalar name = "mask"&gt;0x1&lt;/scalar&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "valueAlarm" type = "booleanAlarm"&gt;
+      &lt;scalar name = "active"&gt;true&lt;/scalar&gt;
+      &lt;structure name = "falseAlarm"&gt;&lt;scalar name = "choice"&gt;minor&lt;/scalar&gt;&lt;/structure&gt;
+      &lt;scalar name = "falseMessage"&gt;false alarm&lt;/scalar&gt;
+      &lt;structure name = "trueAlarm"&gt;&lt;scalar name = "choice"&gt;major&lt;/scalar&gt;&lt;/structure&gt;
+      &lt;scalar name = "trueMessage"&gt;true alarm&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "syncBooleanIn2"&gt;
+    &lt;scalar name = "value" type = "boolean"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "link" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;syncBooleanPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "input" type = "pdrvUInt32DigitalInput"&gt;
+            &lt;scalar name = "mask"&gt;0x2&lt;/scalar&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "valueAlarm" type = "booleanAlarm"&gt;
+      &lt;scalar name = "active"&gt;true&lt;/scalar&gt;
+      &lt;structure name = "falseAlarm"&gt;&lt;scalar name = "choice"&gt;minor&lt;/scalar&gt;&lt;/structure&gt;
+      &lt;scalar name = "falseMessage"&gt;false alarm&lt;/scalar&gt;
+      &lt;structure name = "trueAlarm"&gt;&lt;scalar name = "choice"&gt;major&lt;/scalar&gt;&lt;/structure&gt;
+      &lt;scalar name = "trueMessage"&gt;true alarm&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+</pre>
+<hr />
+
+<h2 style="text-align: center" id="Java">Java Definitions</h2>
+<hr />
+
+<p>The Java definitions are:</p>
+<pre>public class SupportFactory {
+    public static Support create(PVStructure pvStructure);
+}
+
+public class BaseUInt32DigitalInput;
+public class BaseUInt32DigitalOutput;
+public class BaseUInt32DigitalInterrupt;</pre>
+
+<p>The factory creates all the supported types. Each base class is a complete
+implementation.</p>
+</body>
+</html>

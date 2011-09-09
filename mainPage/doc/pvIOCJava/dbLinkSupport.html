@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: support</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: support.dbLink<br />
+package: org.epics.ioc.support.dbLink<br />
+2008.03.04</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Data">Data Types Supported</a></li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This is support for channel access links. It is implemented by making
+client calls to org.epics.ioc.dbLink. It provides an implementation of
+support for the following:</p>
+<dl>
+  <dt>dbProcessLink</dt>
+    <dd>Support that requests that another record process without transfering
+      any data.</dd>
+  <dt>dbInputLink</dt>
+    <dd>Support that 1) optionally requests that another record process, and
+      2) transfers data from the other record this record..</dd>
+  <dt>dbOutputLink</dt>
+    <dd>Support that 1) transfers data to another record, and 2) optionally
+      requests that the other record process.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Data">Data Types Supported</h2>
+<hr />
+
+<p>Each requires that other support code, e.g. record support knows how to
+call them.</p>
+
+<p>The types of data that can be transfered are.</p>
+<ul>
+  <li>Both valueType and linkType are scalars and they are copy compatible as
+    defined by org.epics.ioc.pvAccess.Convert.isCopyScalarCompatible.</li>
+  <li>Both are type Type.pvArray and are copy compatible as defined by
+    org.epics.ioc.pvAccess.Convert.isCopyArrayCompatible.</li>
+  <li>Both are Type.pvStructure and are copy compatible as defined by
+    org.epics.ioc.pvAccess.Convert.isCopyStructureCompatible.</li>
+</ul>
+
+<p>where</p>
+<dl>
+  <dt>valueType</dt>
+    <dd>The Type for the value field.</dd>
+  <dt>linkType</dt>
+    <dd>The Type for the pvname.</dd>
+</dl>
+
+<p>Look at the structure definitions in javaIOC/dbd/structures/dbLink.xml for
+a description of how the various structures are defined.</p>
+</body>
+</html>

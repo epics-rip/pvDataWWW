@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: Start </title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: JavaIOC<br />
+2010.04.30 </h1>
+
+<h2>Overview</h2>
+
+<p>This package has a single class called JavaIOC. It's purpose is to start a
+JavaIOC.</p>
+
+<p>NOTE: The environment variables IOCNAME, PVDATA, and JAVAIOC must be
+defined.</p>
+
+<p>JavaIOC is developed as part of an eclipse project. It uses two other
+eclipse projects: pvData and pvAccess. One way to start it is to chevk out
+the eclipse projects and then use then run JavaIOC as a java application. The
+following assumes that you have eclipse installed and have imported JavaIOC
+into a project named "javaIOC". In addition project pvData must also exist as
+an eclipse project.</p>
+
+<p>JavaIOC does the following:</p>
+<ul>
+  <li>Reads xml files containing structure and record definitions.</li>
+  <li>Dumps the resulting structure and record definitions.</li>
+  <li>Starts servers.</li>
+  <li>Starts running the javaIOC. There are two options:
+    <ul>
+      <li>Invokes swtshell, which is a Graphical User Interface (GUI) shell
+        that interacts with a running JavaIOC</li>
+      <li>Run without a shell.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The arguments to JavaIOC can be any combination of:</p>
+<ul>
+  <li>-structures<br />
+    followed by filenames of files containing XML structure definitions.</li>
+  <li>-records<br />
+    followed by filenames of files containing XML record definitions.</li>
+  <li>-dumpStructures<br />
+    dump the structure, create, and support definitions</li>
+  <li>-dumpRecords<br />
+    dump the record instances</li>
+  <li>-server 
+    <p>followed by filenames. Each field is a list of servers to start. See
+    javaIOC/server for a list of the server files supplied by javaIOC
+    itself.</p>
+  </li>
+  <li>-run<br />
+    Stop processing arguments and run forever.</li>
+  <li>-swtshell<br />
+    Start swtshell. This will also stop processing arguments.</li>
+</ul>
+
+<h2>Starting the JavaIOC with eclipse</h2>
+
+<p>Open the src tree and the select org.epics.ioc.JavaIOC and then run as
+Java Application. If this is the first time or it is not the configuration
+desired then stop the running JavaIOC.</p>
+
+<p>With the run menu select "run configurations". Then select Arguments. Then
+add the desired arguments as described above and then run. </p>
+
+<h2>Starting the JavaIOC without eclipse</h2>
+
+<p>The JavaIOC can also be started without eclipse. In the same directory
+have a file named source and files that start JavaIOC. The following is an
+example that works on linux or macOS.</p>
+
+<h3>source</h3>
+
+<p>This is a sample source file:</p>
+<pre>pwd=$PWD
+# The following assumes that pvData, pvAccess, and javaIOC are eclipse projects in $HOME/workspace
+export WORKSPACE=$HOME/workspace/
+export PVDATA=${WORKSPACE}/pvData
+export PVACCESS=${WORKSPACE}/pvAccess
+export JAVAIOC=${WORKSPACE}/javaIOC
+export CLASSPATH=${CLASSPATH}:${PVDATA}/bin
+export CLASSPATH=${CLASSPATH}:${PVACCESS}/bin
+export CLASSPATH=${CLASSPATH}:${JAVAIOC}/bin
+export CLASSPATH=${CLASSPATH}:${JAVAIOC}jar/CAJ.jar
+export CLASSPATH=${CLASSPATH}:${JAVAIOC}jar/JCA.jar
+# The following MUST be changed to locate the release of swt on your system
+export CLASSPATH=${CLASSPATH}:/home/install/eclipse/plugins/org.eclipse.swt_3.5.1.v3555a.jar
+export CLASSPATH=${CLASSPATH}:/home/install/eclipse/plugins/org.eclipse.swt.gtk.linux.x86_3.5.1.v3555a.jar
+
+</pre>
+
+<h3>example</h3>
+
+<p>The following is the contents of a file named startExample</p>
+<pre>#! /bin/bash
+source source
+java \ 
+     -server \
+     org.epics.ioc.JavaIOC \
+     -structures ${JAVAIOC}/xml/structures.xml \
+     -records  ${JAVAIOC}/example/exampleDB.xml \
+     -server ${JAVAIOC}/server/pvAccessServer.txt \
+     -swtshell 
+</pre>
+
+<p>To start the example just type:</p>
+<pre>./startExample</pre>
+<pre>
+</pre>
+</body>
+</html>

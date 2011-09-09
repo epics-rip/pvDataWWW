@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: install</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: Install<br />
+package: org.epics.ioc.install<br />
+2009.06.26</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Install">Install Factory</a>
+    <ul>
+      <li><a href="#Definition">Definitions</a></li>
+      <li><a href="#installStr">installStructures</a></li>
+      <li><a href="#installRec">installRecords</a></li>
+      <li><a href="#Initialize">Initialize, and Start Record
+      Instances</a></li>
+    </ul>
+  </li>
+  <li><a href="#Support">Support Creation</a>
+    <ul>
+      <li><a href="#Definition1">Definitions</a></li>
+      <li><a href="#Factory">Factory</a></li>
+      <li><a href="#SupportCre">SupportCreation</a></li>
+    </ul>
+  </li>
+  <li><a href="#After">After Start</a>
+    <ul>
+      <li><a href="#Definition2">Definitions</a></li>
+      <li><a href="#AfterStart">AfterStartNode</a></li>
+      <li><a href="#AfterStart1">AfterStartRequester</a></li>
+      <li><a href="#NewAfterSt">NewAfterStartRequester</a></li>
+      <li><a href="#AfterStart2">AfterStartFactory</a></li>
+      <li><a href="#AfterStart3">AfterStart</a></li>
+    </ul>
+  </li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This package provides code to install structures and records into a
+javaIOC. A javaIOC is started via JavaIOC.main. Once started structures and
+records can be installed either by JavaIOC or by any thread running as part
+of the javaIOC.</p>
+
+<p>A javaIOC has two databases: a PVDatabase and an IOCDatabase. The
+PVDatabase, which is described in project pvData, holds the memory resident
+data. The IOCDatabase provides access to the PVDatabase and to support code.
+Both databases are named master.</p>
+
+<p>New structure instances or record instances can be installed into a
+running javaIOC. It is not legal to install both new structures and records
+at the same time. Installation is done as follows: New instances are read
+into a new PVDatabase named beingInstalled. If any error is detected while
+reading the file, nothing more is done, i.e. installation fails. If the
+beingInstalled database has only structure definitions the new definitions
+are merged into master and installation is complete. If the beingInstalled
+database has only record instances then the record instances are initialized
+and started. If any record can not be started nothing more is done, i.e. the
+installation fails. If all records start then an AfterStart procedure
+described below is performed. As part of this procedure the new record
+instances are merged into master. When the AfterStart procedure is done
+installation is done. The InstallFactory ensures that only one installation
+at a time is allowed.</p>
+
+<p>This overview describes the following:</p>
+<dl>
+  <dt>Install</dt>
+    <dd>The interface for installing structures and records.</dd>
+  <dt>InstallFactory</dt>
+    <dd>The factory which implements a single instance of Install.</dd>
+  <dt>SupportCreation</dt>
+    <dd>Support to create, initialize, and start records.</dd>
+  <dt>AfterStart</dt>
+    <dd>Support that allows support and servers to perform various functions
+      after new records have started but before installation is complete.
+      After Start allows unrelated support to execute in parallel.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Install">Install Factory</h2>
+<hr />
+
+<p>InstallFactory is used to install structure or records into master
+database of a javaIOC. Only one set of definitions at a time can be
+installed.</p>
+
+<h3 id="Definition">Definitions</h3>
+<pre>interface Install {
+    boolean installStructures(String xmlFile,Requester requester);
+    boolean installStructures(PVDatabase pvDatabase,Requester requester);
+    boolean installStructure(PVStructure pvStructure,Requester requester);
+    boolean installRecords(String xmlFile,Requester requester);
+    boolean installRecords(PVDatabase pvDatabase,Requester requester);
+
+    boolean installRecord(PVRecord pvRecord,Requester requester);
+}
+
+class InstallFactory {
+    public static Install get();
+}</pre>
+
+<h3 id="installStr">installStructures</h3>
+
+<p>Three methods are provided. The first install structure definitions from
+file. The second installs structure definitions from a PVDatabase. The last
+installs a single PVStructure.</p>
+
+<p>The xml file must contain xml structure definitions as described in
+project pvData. The file is read into a PVDatabase named beingInstalled. If
+the file is read successfully the second installStructures method is
+called.</p>
+
+<p>The next method attempts to install structures from a PVDatabase. The
+pvDatabase must not have any records and must not have any structure that is
+already in master. If these checks succeed the new definitions are merged
+into master. The return value is (false,true) if the new structures (were
+not, were) installed.</p>
+
+<p>The last method installs a PVStructure if the structure does not already
+exist in the master.</p>
+
+<h3 id="installRec">installRecords</h3>
+
+<p>Three methods are provided. The first Install record definitions from
+file. The second installs records from a PVDatabase. The last installs a
+single PVRecord.</p>
+<ol>
+  <li>The xml file must contain xml record definitions as described in
+    project pvData. The file is read into a PVDatabase named beingInstalled.
+    If the file is read successfully method 2 is called</li>
+  <li>This method attempts to install records from a PVDatabase. The
+    pvDatabase must not have any structuress and must not have any record
+    that is already in master. If these checks succeed an attempt is made to
+    initialize and start the records instances as described below.</li>
+  <li>The last method creates a PVDatabase named beingInstalled, adds the
+    PVRecord to it, and calls method 2.</li>
+</ol>
+
+<h3 id="Initialize">Initialize, and Start Record Instances</h3>
+
+<p>PVReplaceFactory.replace is called for the PCDatabase holding the new
+records.</p>
+
+<p>An IOCDatabase is created for the PVDatabase holding the new records. </p>
+
+<p>A SupportCreation named beingInstalled is created and the following steps
+performed</p>
+<dl>
+  <dt>createSupport</dt>
+    <dd>supportCreation.createSupport is called. If it fails installation
+      fails.</dd>
+  <dt>initialize</dt>
+    <dd>supportCreation.initializeSupport is called. If it fails installation
+      fails.</dd>
+  <dt>start</dt>
+    <dd>An AfterStart is created and then supportCreation.start(afterStart)
+      is called. If it fails installation fails. </dd>
+  <dt>before merge</dt>
+    <dd>afterStart.callRequesters(false) is called.</dd>
+  <dt>merge</dt>
+    <dd>The beingInstalled databases (PVDatabase and IOCDatabase) are each
+      merged into the corresponding master database.</dd>
+  <dt>after merge</dt>
+    <dd>afterStart.callRequesters(true) is called.</dd>
+</dl>
+
+<p>The return value is (false,true) if the new records (were not, were)
+installed.</p>
+<hr />
+
+<h2 style="text-align: center;" id="Support">Support Creation</h2>
+<hr />
+
+<p>A SupportCreation is used to create, initialize, and start record
+instances. After it is done it is no longer accessable.</p>
+
+<h3 id="Definition1">Definitions</h3>
+<pre>public class SupportCreationFactory {
+    static public SupportCreation create(
+         IOCDatabase supportDatabase,Requester requester);
+}
+
+public interface SupportCreation {
+    boolean createSupport();
+    boolean initializeSupport();
+    boolean  startSupport(AfterStart afterStart);
+}</pre>
+
+<h3 id="Factory">Factory</h3>
+
+<p>This has the single method which creates a SupportCreation.</p>
+
+<h3 id="SupportCre">SupportCreation</h3>
+<dl>
+  <dt>createSupport</dt>
+    <dd>Create the support. It first created a RecordProcess and then support
+      for fields with support.</dd>
+  <dt>initializeSupport</dt>
+    <dd>Initialize the support. For each record it calls
+      recordProcess.initialize. It returns true if all records are
+      initialized.</dd>
+  <dt>startSupport</dt>
+    <dd>Start the support. For each record it calls recordProcess.start. It
+      returns true if all records are started.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center;" id="After">After Start</h2>
+<hr />
+
+<p>After Start is a facility that allows support code and servers like
+Channel Access to perform various functions after new records are started but
+before installation completes. It is designed so that unrelated functions can
+execute in parallel and so that related functions can execute in the order
+they require</p>
+
+<p>Code can request to be called back before or after the beingInstalled is
+merged into the master. Each request also specifies a priority. A callback
+should not block. When it is done it must notify AfterStart that is is done.
+All callbacks at a particular priority must complete before the callbacks at
+the next lower priority are called.</p>
+
+<p>The start method of Support is defined as: <pre>    void start(AfterStart afterStart);</pre>
+The support code can call afterStart.requestCallback. If so it must implement
+interface AfterStartRequester. When AfterStartRequester.callback is called
+the support code can do what it wants but should not block. Instead it should
+arrage for some other thread to do the work. When done the support code must
+call afterStart.done.</p>
+
+<p>Servers, i. e. code that is not attached to a record can call
+AfterStartFactory.newAfterStartRegister. An example of a server is Channel
+Access. The NewAfterStartRequester is called each time a new AfterStart is
+created, i.e. every time a new set of records are being installed. The server
+can then call afterStart.requestCallback just like support code.</p>
+
+<h3 id="Definition2">Definitions</h3>
+<pre>public interface AfterStartNode {}
+
+public interface AfterStartRequester {
+    void callback(AfterStartNode node);
+}
+
+public class AfterStartFactory {
+    public static  AfterStart create();
+    public static AfterStartNode allocNode(AfterStartRequester requester);
+    public static void newAfterStartRegister(NewAfterStartRequester requester);
+    public static void newAfterStartUnregister(NewAfterStartRequester requester);
+}
+
+public interface AfterStart {
+    void callRequesters(boolean afterMerge);
+    void requestCallback(AfterStartNode node,boolean afterMerge,ThreadPriority priority);
+    void done(AfterStartNode node);
+    void doneAndRequest(AfterStartNode node,boolean afterMerge,ThreadPriority priority);
+}
+
+
+public interface NewAfterStartRequester {
+    void callback(AfterStart afterStart);
+}</pre>
+
+<h3 id="AfterStart">AfterStartNode</h3>
+
+<p>Any code that calls afterStart.requestCallback must create an
+afterStartNode by calling AfterStartFactory.allocNode. It passes this to
+afterStart.requestCallback. A node can only be on one request list at a
+time.</p>
+
+<h3 id="AfterStart1">AfterStartRequester</h3>
+
+<p>This is the interface which must be implemented by code that calls
+afterStart.requestCallback. It has a single method which is the callback.</p>
+
+<h3 id="NewAfterSt">NewAfterStartRequester</h3>
+
+<p>This is the interface which must be implemented by code that calls
+AfterStartFactory.NewAfterStartRegister.</p>
+
+<h3 id="AfterStart2">AfterStartFactory</h3>
+<dl>
+  <dt>create</dt>
+    <dd>Create a new AfterStart. This is called by InstallFactory.</dd>
+  <dt>allocNode</dt>
+    <dd>This is called by any code that calls afterStart.requestCallback. It
+      can be reused as desired but a node can only be on a single request
+      queue at any given time. </dd>
+  <dt>NewAfterStartRegister</dt>
+    <dd>This is called by code that wants to be notified when a new
+      AfterStart is created, i.e. when new records are being installed.</dd>
+  <dt>NewAfterStartUnregister</dt>
+    <dd>Remove a NewAfterStartRequester.</dd>
+</dl>
+
+<h3 id="AfterStart3">AfterStart</h3>
+<dl>
+  <dt>callRequesters</dt>
+    <dd>Call requesters. This is called by InstallFactory.</dd>
+  <dt>requestCallback</dt>
+    <dd>A request to be called back. The ThreadPriority does not choose a
+      thread but just a priority.</dd>
+  <dt>done</dt>
+    <dd>The callback is done.</dd>
+  <dt>doneAndRequest</dt>
+    <dd>The callback is done but want to be called back again. The new
+      request queue must be for a later time then the current queue.</dd>
+</dl>
+</body>
+</html>

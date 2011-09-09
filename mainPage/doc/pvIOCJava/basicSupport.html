@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: basic support</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: basic support<br />
+package: org.epics.ioc.support.basic<br />
+2009.09.01</h1>
+CONTENTS
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Generic">Generic Support</a></li>
+  <li><a href="#Noop">Noop Support</a></li>
+  <li><a href="#ScanFactor">ScanFactory</a></li>
+  <li><a href="#Control">Control Limit</a></li>
+  <li><a href="#Linear">Linear Conversion</a>
+    <ul>
+      <li><a href="#linearConv">linearConversion</a></li>
+      <li><a href="#LinearConv">LinearConvertInputFactory</a></li>
+      <li><a href="#LinearConv1">LinearConvertOutputFactory</a></li>
+    </ul>
+  </li>
+  <li><a href="#Incrementa">Incremental Support</a></li>
+  <li><a href="#Event">Event Support</a></li>
+  <li><a href="#DelaySuppo">DelaySupport</a></li>
+</ul>
+</div>
+
+<p> </p>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This package contains a set of modules that provide basic support
+services.</p>
+
+<p>The following factories are provided:</p>
+<dl>
+  <dt>GenericFactory</dt>
+    <dd>Generic support for a structure or for an array with elementType of
+      array or structure.</dd>
+  <dt>NoopFactory</dt>
+    <dd>Support for all fields that just acts like it always succeeds
+      successfully.</dd>
+  <dt>ScanFactory</dt>
+    <dd>Complete support for the scan field which is defined in comon.xml</dd>
+  <dt>Support for linear conversions.</dt>
+    <dd><dl>
+        <dt>LinearConvertInputFactory</dt>
+          <dd>Support for linear conversion of input fields.</dd>
+        <dt>LinearConvertOutputFactory</dt>
+          <dd>Support for linear conversion of output fields.</dd>
+      </dl>
+    </dd>
+  <dt>ControlLimit</dt>
+    <dd>Enforce control limits.</dd>
+  <dt>IncrementalFactory</dt>
+    <dd>Support for incremental outputs.</dd>
+  <dt>EventFactory</dt>
+    <dd>Support for a string field that is the name of an event.</dd>
+  <dt>DelayFactory</dt>
+    <dd>It just causes an asynchronous delay before completing
+    successfully.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Generic">Generic Support</h2>
+<hr />
+<pre>    public class GenericFactory {
+        public static Support create(PVRecordStructure pvRecordStructure);
+    }</pre>
+Generic Support is used for many record/structure definitions . It is often
+used because it just looks for fields that have associated support and calls
+the support. It also has a few conventions so that it works with a variety of
+support modules. It implements the following semantics: 
+<dl>
+  <dt style="font-family: courier;">scan,timeStamp</dt>
+    <dd>It does not call the support for field scan or timeStamp because
+      recordProcess handles these fields.</dd>
+  <dt style="font-family: courier;">alarm</dt>
+    <dd>If field alarm is present and has AlarmSupport then it is handled
+      properly.</dd>
+  <dt>fields with associated support.</dt>
+    <dd>For each field with support, the support methods are called, i.e.
+      initialize,start,stop,uninitialize, and process. For process, by
+      default, generic waits for each support to finish before it calls the
+      next support. For a stucture subfield the default can be changed by
+      appending a boolean scalar field to the structure and setting the value
+      to false.</dd>
+</dl>
+
+<p>The generic support does not force the support for input to do input, the
+support for output to do output, etc. The generic support merely calls
+support if it exists. The generic support also does not check the types of
+any fields but looks for support and calls it if it exists. Thus the generic
+support can be used for many different types of data and many different types
+of support.</p>
+<hr />
+
+<h2 style="text-align: center" id="Noop">Noop Support</h2>
+<hr />
+<pre>    public class NoopFactory {
+        public static Support create(PVRecordField pvRecordField);
+        public static Support create(PVRecordStructure pvRecordStructure);
+    }</pre>
+
+<p>This can be used for record types that just hold data. It can also be used
+to provide support for any field. The support acts as though it is
+synchronous. All Support methods are implemented by just extending
+AbstractSupport without overriding any methods.</p>
+<hr />
+
+<h2 style="text-align: center" id="ScanFactor">ScanFactory</h2>
+<hr />
+
+<p>Support is provided for the scan field. This support is called by
+recordProcess. The support handles all the fields in structure scan:</p>
+
+<p>The following definitions are provided:</p>
+<pre>    public class ScanFactory {
+        public static Support create(PVRecordStructure pvRecordStructure);
+    }</pre>
+<hr />
+<hr />
+
+<h2 style="text-align: center" id="Control">Control Limit</h2>
+<hr />
+
+<p>This is code to enforce control limits. It handles the following type of
+definitions:</p>
+<pre>&lt;record name = "aoIncremental"&gt;
+    &lt;scalar name = "value" type = "double"&gt;
+        &lt;auxInfo name = "pvReplaceFactory" type = "string"&gt;controlLimitFactory&lt;/auxInfo&gt;
+    &lt;/scalar&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "control" type = "control" &gt;
+        &lt;structure name = "limit"&gt;
+            &lt;scalar name = "low"&gt;0.0&lt;/scalar&gt;
+            &lt;scalar name = "high"&gt;8.0&lt;/scalar&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;</pre>
+<hr />
+
+<h2 style="text-align: center" id="Linear">Linear Conversion</h2>
+<hr />
+
+<p>Support is available for input and output linear conversions. The xml
+definitions for linear conversions are:</p>
+
+<h3 id="linearConv">linearConversion</h3>
+
+<p>The structure linearConversion defines the fields used for linear
+conversions. The fields slope and intercept are the values used to convert a
+rawValue to engineering units. The rawValue is an integer value usually read
+from an ADC (Analog to Digital Convertor). The slope and intercept can be
+specified directly of calculated from the low and high engineering and device
+values. If the later method is chosen the engUnitsLow and engUnitsHigh must
+be provided. deviceLow and deviceHigh are either provided automatically by
+support of must be provided. The following are the fields in structure
+lineraConversion:</p>
+<dl>
+  <dt style="font-family: courier;">engUnitsLow</dt>
+    <dd>A double equal to the engineering units value corresponding to the
+      value for deviceHigh.</dd>
+  <dt style="font-family: courier;">engUnitsHigh</dt>
+    <dd>A double equal to the engineering units value corresponding to the
+      value for deviceLow.</dd>
+  <dt style="font-family: courier;">deviceHigh</dt>
+    <dd>An int equal to the maximum value for the rawValue.</dd>
+  <dt style="font-family: courier;">deviceLow</dt>
+    <dd>An int equal to the minimum value for the rawValue.</dd>
+  <dt style="font-family: courier;">slope</dt>
+    <dd>The slope for the linear conversion.</dd>
+  <dt style="font-family: courier;">intercept</dt>
+    <dd>The intercept for the linear conversion.</dd>
+</dl>
+
+<h3 id="LinearConv">LinearConvertInputFactory</h3>
+<pre>    public class LinearConvertFactory {
+        public static Support create(PVStructure pvStructure);
+    }</pre>
+
+<p>This is the factory that implements linear input conversion, i.e. it
+converts a rawValue to engineering units. The auxInfo must have supportName
+"linearConvertInputFactory" .A field for linear conversion for input is a
+structure containing the following fields:</p>
+<dl>
+  <dt style="font-family: courier;">rawValue</dt>
+    <dd>The raw value which is obtained via the support attached to the input
+      field or by a put to this field.</dd>
+  <dt style="font-family: courier;">linearConvert</dt>
+    <dd>The structure providing the conversion parameters.</dd>
+  <dt style="font-family: courier;">input</dt>
+    <dd>The link for reading the rawValue. If a field named is defined and
+      has support the support is called.</dd>
+</dl>
+
+<h3 id="LinearConv1">LinearConvertOutputFactory</h3>
+<pre>    public class LinearConvertFactory {
+        public static Support create(PVStructure pvStructure);
+    }</pre>
+
+<p>This is the factory that implements linear output conversion, i.e. it
+converts a value in engineering units to a rawValue.The auxInfo must have
+supportName "linearConvertOutputFactory". A field for linear conversion for
+output is a structure containing the following fields:</p>
+<dl>
+  <dt style="font-family: courier;">rawValue</dt>
+    <dd>The raw value which is obtained via the support attached to the input
+      field or by a put to this field.</dd>
+  <dt style="font-family: courier;">linearConvert</dt>
+    <dd>The structure providing the conversion parameters.</dd>
+  <dt style="font-family: courier;">output</dt>
+    <dd>The link for reading the rawValue. If a field named is defined and
+      has support the support is called.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Incrementa">Incremental Support</h2>
+<hr />
+
+<p>This is support for incremental outputs.For example it supports a record
+that has the following structure:</p>
+<pre>&lt;record name = "aoIncremental"&gt;
+    &lt;scalar name = "value" type = "double" /&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "desired" type = "incrementalDouble" &gt;
+        &lt;scalar name = "value"&gt;
+            &lt;auxInfo name = "pvReplaceFactory" type = "string"&gt;controlLimitFactory&lt;/auxInfo&gt;
+        &lt;/scalar&gt;
+        &lt;scalar name = "rateOfChange"&gt;.02&lt;/scalar&gt;
+        &lt;scalar name = "incremental"&gt;true&lt;/scalar&gt;
+        &lt;structure name = "control" type = "control" &gt;
+            &lt;structure name = "limit"&gt;
+                &lt;scalar name = "low"&gt;0.0&lt;/scalar&gt;
+                &lt;scalar name = "high"&gt;8.0&lt;/scalar&gt;
+            &lt;/structure&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+
+<p>This uses the Java definitions:</p>
+<pre>    
+    public class IncrementalFactory {
+        public static Support create(PVField pvField);
+    }</pre>
+
+<p>This supports the following fields:</p>
+<dl>
+  <dt style="font-family: courier;">value</dt>
+    <dd>The value field.</dd>
+  <dt style="font-family: courier;">desired.value</dt>
+    <dd>This must be a double field. When this field changes the support
+      changes the value field until it has the desired value. If control
+      limits are specified then the desired value is forced to be within the
+      control limits. If incrementalOutput is true then each time the record
+      is processed the value field is changed by rateOfChange until the
+      desired value is reached.</dd>
+  <dt style="font-family: courier;">incremental</dt>
+    <dd>This field is optional. If the record/structure has a field named
+      then it must be have type boolean. If not present the default is true.
+      If this has the value true the output is adjusted by rateOfChange
+      otherwise the value field is changed in one step to the desired
+    value.</dd>
+  <dt style="font-family: courier;">rateOfChange</dt>
+    <dd>If incrementalOutput is true this is the amount the value will change
+      each time the record is processed.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Event">Event Support</h2>
+<hr />
+<pre>    public class EventFactory {
+        public static Support create(PVField pvField);
+    }</pre>
+
+<p>EventFactory implements record or structure support for announcing a scan
+event. The event name is given in the field:</p>
+<dl>
+  <dt style="font-family: courier;">value</dt>
+    <dd>This must be a string field named located in the parent of this
+      field, which is normally the value field itself.</dd>
+</dl>
+
+<p>Whenever the record is processed eventScanner.announce is called, i.e. the
+support announces an event. All event scanned records with the event name
+associated with the value field are processed. Each time process is called,
+the event support checks to see if the event name has changed.</p>
+<hr />
+
+<h2 style="text-align: center;" id="DelaySuppo">DelaySupport</h2>
+<hr />
+
+<p>This is link support that simulates asynchronous support. It uses a
+configStructure that has the definition:</p>
+<pre>&lt;structure name = "delayFactory"&gt;
+ &lt;scalar name = "supportFactory" type = "string"&gt;
+   org.epics.ioc.support.basic.DelayFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "delay"&gt;
+  &lt;auxInfo name = "supportFactory" type = "string"&gt;delayFactory&lt;/auxInfo&gt;
+  &lt;!-- min, max, inc are delay in milliseconds --&gt;
+  &lt;scalar name = "min" type = "long" /&gt;
+  &lt;scalar name = "max" type = "long" /&gt;
+  &lt;scalar name = "inc" type = "long" /&gt;
+&lt;/structure&gt;</pre>
+
+<p>where</p>
+<dl>
+  <dt style="font-family: courier;">min</dt>
+    <dd>The minimum delay</dd>
+  <dt style="font-family: courier;">max</dt>
+    <dd>The maximum delay</dd>
+  <dt style="font-family: courier;">inc</dt>
+    <dd>The delay increment between process requests</dd>
+</dl>
+
+<p>Each time process is called it delays a number of milliseconds determined
+by min,max, and inc. It starts with a delay on min. Each time it proceses it
+increases the delay by inc until it reaches max. It then goes back to a delay
+of min.</p>
+
+<p>The factory definition is:</p>
+<pre>    public class DelaySupportFactory {
+        public static Support create(PVStructure pvStructure);
+    }</pre>
+</body>
+</html>

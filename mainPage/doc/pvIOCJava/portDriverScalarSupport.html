@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: portDriver scalar support</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: scalar support<br />
+package: org.epics.ioc.support.pdrv.scalar<br />
+2009.03.25</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Int32">Int32</a></li>
+  <li><a href="#Float64">Float64</a></li>
+  <li><a href="#Java">Java Definitions</a></li>
+</ul>
+</div>
+
+<p></p>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This package implements portDriver support for scalars. Currently it only
+has support for Int32 and Float64. In the future support will also be
+provided for all the ScalarTypes types.</p>
+<hr />
+
+<h2 style="text-align: center" id="Int32">Int32</h2>
+<hr />
+
+<p>The xml definitions are:</p>
+<pre>&lt;structure name = "pdrvInt32InputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvInt32Input"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvInt32InputFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvInt32InterruptFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvInt32Interrupt" type = "portDriverInterruptLink"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvInt32InterruptFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "process" type = "boolean"&gt;false&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvInt32AverageFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvInt32Average"  type = "portDriverInterruptLink"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvInt32AverageFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvInt32OutputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvInt32Output"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvInt32OutputFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;</pre>
+
+<p>An example is:</p>
+<pre>&lt;record name = "syncInt32Out"&gt;
+    &lt;scalar name = "value" type = "int"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "outlink" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;syncInt32Port&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "output" type = "pdrvInt32Output"/&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "link" type = "caProcessLink"&gt;
+         &lt;scalar name = "pvname"&gt;syncInt32In&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "syncInt32In"&gt;
+    &lt;scalar name = "value" type = "int"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "link" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;syncInt32Port&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "input" type = "pdrvInt32Input"/&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "syncInt32Interrupt"&gt;
+    &lt;scalar name = "value" type = "int"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "input" type = "pdrvInt32Interrupt"&gt;
+        &lt;scalar name = "portName"&gt;syncInt32Port&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "process" &gt;true&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+&lt;record name = "syncInt32InAverage"&gt;
+    &lt;scalar name = "value" type = "double"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "scan" type = "scan"&gt;
+        &lt;structure name = "type"&gt;&lt;scalar name = "choice"&gt;periodic&lt;/scalar&gt;&lt;/structure&gt;
+        &lt;scalar name = "rate"&gt;5.0&lt;/scalar&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "link" type = "pdrvInt32Average"&gt;
+        &lt;scalar name = "portName"&gt;syncInt32Port&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+<hr />
+
+<h2 style="text-align: center" id="Float64">Float64</h2>
+<hr />
+
+<p>The xml definitions are:</p>
+<pre>&lt;structure name = "pdrvFloat64InputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64Input"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvFloat64InputFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvFloat64InterruptFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64Interrupt" type = "portDriverInterruptLink"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvFloat64InterruptFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "process" type = "boolean"&gt;false&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvFloat64AverageFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64Average" type = "portDriverInterruptLink"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvFloat64AverageFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvFloat64OutputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64Output"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvFloat64OutputFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64InputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64Input"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvFloat64InputFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvFloat64InterruptFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64Interrupt" type = "portDriverInterruptLink"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvFloat64InterruptFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "process" type = "boolean"&gt;false&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvFloat64AverageFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64Average" type = "portDriverInterruptLink"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvFloat64AverageFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvFloat64OutputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.scalar.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvFloat64Output"&gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvFloat64OutputFactory&lt;/auxInfo&gt;
+&lt;/structure&gt;</pre>
+
+<p>An example is:</p>
+<pre>&lt;record name = "syncFloat64Out"&gt;
+    &lt;scalar name = "value" type = "double"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "outlink" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;syncFloat64Port&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "output" type = "pdrvFloat64Output"/&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "link" type = "caProcessLink"&gt;
+         &lt;scalar name = "pvname"&gt;syncFloat64In&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "syncFloat64In"&gt;
+    &lt;scalar name = "value" type = "double"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "link" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;syncFloat64Port&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "input" type = "pdrvFloat64Input"/&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "syncFloat64Interrupt"&gt;
+    &lt;scalar name = "value" type = "double"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "input" type = "pdrvFloat64Interrupt"&gt;
+        &lt;scalar name = "portName"&gt;syncFloat64Port&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "process" &gt;true&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "syncFloat64InAverage"&gt;
+    &lt;scalar name = "value" type = "double"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "scan" type = "scan"&gt;
+        &lt;structure name = "type"&gt;&lt;scalar name = "choice"&gt;periodic&lt;/scalar&gt;&lt;/structure&gt;
+        &lt;scalar name = "rate"&gt;5.0&lt;/scalar&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "link" type = "pdrvFloat64Average"&gt;
+        &lt;scalar name = "portName"&gt;syncFloat64Port&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+<hr />
+
+<h2 style="text-align: center" id="Java">Java Definitions</h2>
+<hr />
+
+<p>The Java definitions are:</p>
+<pre>public class SupportFactory {
+    public static Support create(PVStructure pvStructure);
+}
+
+public class BaseInt32Input;
+public class BaseInt32Average;
+public class BaseInt32Output;
+public class BaseInt32Interrupt;
+public class BaseFloat64Input;
+public class BaseFloat64Average;
+public class BaseFloat64Output;
+public class BaseFloat64Interrupt;</pre>
+
+<p>The factory creates all the supported types. Each base class is a complete
+implementation.</p>
+</body>
+</html>

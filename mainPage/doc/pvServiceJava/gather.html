@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>PVService: gather</title>
+</head>
+
+<body>
+<h1 style="text-align: center">PVService: gather<br />
+Overview<br />
+2010.07.16</h1>
+
+<div class="toc">
+<ul>
+  <li><a href="#Introducti">Introduction</a></li>
+  <li><a href="#Create">Create Gather</a>
+    <ul>
+      <li><a href="#CreateGath">CreateGatherFactory</a></li>
+      <li><a href="#CreateGath1">CreateGather</a></li>
+      <li><a href="#Example">Example</a></li>
+    </ul>
+  </li>
+  <li><a href="#Gather">Gather</a>
+    <ul>
+      <li><a href="#GatherFact">GatherFactory</a></li>
+      <li><a href="#Gather1">Gather</a></li>
+      <li><a href="#GatherData">GatherData</a></li>
+      <li><a href="#GatherMoni">GatherMonitor</a></li>
+    </ul>
+  </li>
+  <li><a href="#Example1">Example</a></li>
+  <li><a href="#Create1">Create Gather Client Implementation</a></li>
+  <li><a href="#Create2">Create Gather Record Implementation</a></li>
+  <li><a href="#Gather2">Gather Client Implementation</a></li>
+  <li><a href="#Gather3">Gather Record Implementation</a></li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="Introducti">Introduction</h2>
+<hr />
+
+<p>Gather is a sevice that "gathers" data from a set of channels and makes
+the data available via arrays of data.</p>
+
+<p>This package provides two services:</p>
+<dl>
+  <dt>createGather</dt>
+    <dd>This service creates new gather records. The service is implemented
+      via a javaIOC record.</dd>
+  <dt>gather</dt>
+    <dd>This is based on a record that has links to a set of records. This
+      service is also implemented via a javaIOC record.</dd>
+</dl>
+
+<p>This overview discusses the following topics:</p>
+<dl>
+  <dt>Create Gather</dt>
+    <dd>The methods for CreateGather and CreateGatherFactory.</dd>
+  <dt>Gather</dt>
+    <dd>The methods for Gather and GatherFactory.</dd>
+  <dt>Example</dt>
+    <dd>A description of how to execute the examples for CreateGather and
+      Gather.</dd>
+  <dt>Create Gather Client Implementation</dt>
+    <dd>A description of the implementation code for the client side of
+      CreateGather.</dd>
+  <dt>Create Gather Record Implementation</dt>
+    <dd>A description of the implementation code for the server side of
+      CreateGather.</dd>
+  <dt>Gather Client Implementation</dt>
+    <dd>A description of the implementation code for the client side of
+      Gather.</dd>
+  <dt>Gather Record Implementation</dt>
+    <dd>A description of the implementation code for the server side of
+      Gather.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Create">Create Gather</h2>
+<hr />
+
+<h3 id="CreateGath">CreateGatherFactory</h3>
+
+<p>CreateGatherFactory creates a client that connects to a createGather
+record, which implements the createGather service.</p>
+<pre>class CreateGatherFactory {
+    public static CreateGather create(String serverName,Requester requester);
+}</pre>
+
+<p>The arguments to create are:</p>
+<dl>
+  <dt>serverName</dt>
+    <dd>The name of a javaIOC record with support that implements the
+      createGather service.</dd>
+  <dt>requester</dt>
+    <dd>The caller must implement interface Requester which is defined in
+      project pvData.</dd>
+</dl>
+
+<h3 id="CreateGath1">CreateGather</h3>
+<pre>interface CreateGather {
+    void destroy();
+    Status connect();
+    Status waitConnect(double timeout);
+    Status sendRequest(String[] channelNames,boolean channelsAreArrays,String gatherRecordName,
+        boolean temporary,boolean monitor);
+    Status waitRequest();
+}</pre>
+
+<p>where:</p>
+<dl>
+  <dt>destroy</dt>
+    <dd>This is called by the client to cleanup all client resources used by
+      createGather. It destroys the connection to the createGather
+    record.</dd>
+  <dt>connect</dt>
+    <dd>This is called once by the client to create a connection to the
+      createGather record.</dd>
+  <dt>waitConnect</dt>
+    <dd>Wait until connect is done.</dd>
+  <dt>sendRequest</dt>
+    <dd>Send a request to create a gather record. The arguments to
+      sendRequest are: 
+      <dl>
+        <dt>channelNames</dt>
+          <dd>An array of caV3 channel names. This is the set of channels
+            that are gathered by the gather record created by this
+          service.</dd>
+        <dt>channelsAreArrays</dt>
+          <dd>Are the caV3 channels expected to be arrays?</dd>
+        <dt>gatherRecordName</dt>
+          <dd>The name of the gather record created by this request.</dd>
+        <dt>temporary</dt>
+          <dd>If this is true then the gather record will be destroyed when
+            it is no longer being used.</dd>
+        <dt>monitor</dt>
+          <dd>If this is true then the gather record will monitor each of the
+            caV3 channels.</dd>
+      </dl>
+    </dd>
+  <dt>waitRequest</dt>
+    <dd>Wait until the request is done. The client can then connect to the
+      gather record.</dd>
+</dl>
+
+<p>After creating a new implementation of createGather the client must
+connect and then wait for connection to complete. Connect and waitConnect are
+separate calls so the client can do other things while connecting.</p>
+
+<p>Once the connection is complete the client can call sendRequest and
+waitRequest. Again these are separate requests so that the client can do
+other things while sendRequest is active.</p>
+
+<p>When the client is done with createGather.destroy should be called.</p>
+
+<p>Thus life cycle for a client must follow the following order:</p>
+<pre>     CreateGather createGather = CreateGatherFactory.create(...)
+     createGather.connect(...)
+     createGather.waitConnect(...)
+     REPEAT
+         createGather.sendRequest(...)
+         gather.waitRequest(...)
+     ENDREPEAT
+     createGather.destroy()</pre>
+
+<p>If the order is violated an exception is thrown.</p>
+
+<p>The Status return should always be checked to see that status.isOK()
+returns true.</p>
+
+<p>If waitRequest returns status.isOK() true then the gather record has been
+created. If the record already exists status.isOK() is true but
+requester.message is called with a warning message stating that the record
+already exists.</p>
+
+<h3 id="Example">Example</h3>
+<pre>public class CreateGatherRecords {
+private static final String requesterName = "createGatherRecords";
+private static final String serverName = "createGather";
+
+private static String putGetPrefix = "putGetExample";
+private static String putGetRecordName = putGetPrefix;
+private static int numberPutGetRecords = 5;
+
+private static String gatherPrefix = "gatherExample";
+private static String gatherRecordName = gatherPrefix;
+private static int numberGatherRecords = 5;
+
+private static String arrayPrefix = "array";
+private static String arrayRecordName = arrayPrefix;
+private static int numberArrayRecords = 3;
+
+public static void main(String[] args) {
+    
+    org.epics.ca.ClientFactory.start();
+    Requester requester = new RequesterImpl();
+    CreateGather create = CreateGatherFactory.create(serverName, requester);
+    Status status = create.connect();
+    if (!status.isSuccess()) messageAndExit(status);
+    status = create.waitConnect(1.0);
+    if (!status.isSuccess()) messageAndExit(status);
+
+    String[] channelNames = new String[numberPutGetRecords];
+    for (int i = 0; i &lt; numberPutGetRecords; i++){
+        channelNames[i] = putGetPrefix + String.format("%04d", i);
+    }
+    status = create.sendRequest(channelNames, putGetRecordName,false,false,false);
+    if (!status.isSuccess()) messageAndExit(status);
+    status = create.waitRequest();
+    if (!status.isSuccess()) messageAndExit(status);
+
+    channelNames = new String[numberGatherRecords];
+    for (int i = 0; i &lt; numberGatherRecords; i++){
+        channelNames[i] = gatherPrefix + String.format("%04d", i);
+    }
+    status = create.sendRequest(channelNames, gatherRecordName,false,true,false);
+    if (!status.isSuccess()) messageAndExit(status);
+    status = create.waitRequest();
+    if (!status.isSuccess()) messageAndExit(status);
+
+    channelNames = new String[numberArrayRecords];
+    for (int i = 0; i &lt; numberArrayRecords; i++){
+        channelNames[i] = arrayPrefix + String.format("%04d", i);
+    }
+    status = create.sendRequest(channelNames, arrayRecordName,false,true,true);
+    if (!status.isSuccess()) messageAndExit(status);
+    status = create.waitRequest();
+    if (!status.isSuccess()) messageAndExit(status);
+
+    create.destroy();
+}
+
+private static void messageAndExit(Status status) {
+    System.out.printf("status %s message %s%n", status.getType().name(),
+    status.getMessage(), status.getStackDump());
+     System.exit(1);
+}
+
+private static class RequesterImpl implements Requester {
+    public String getRequesterName() {return requesterName;}
+
+    public void message(String meage, MessageType messageType) {
+        System.out.printf("%s %s%n", messageType.name(), message);
+    }
+}
+}
+</pre>
+
+<p><hr />
+
+<h2 style="text-align: center" id="Gather">Gather</h2>
+<hr />
+</p>
+
+<h3 id="GatherFact">GatherFactory</h3>
+
+<p>The definitions for are:</p>
+<pre>class GatherFactory {
+    public static Gather create(String serverName,boolean channelsAreArrays,Requester requester,
+        String commands,String properties);
+} </pre>
+
+<p>The GatherFactory is called to create a new client that connects to a
+gather record with the name serverName. The caller must implement interface
+Requester. Once a Gather is created the client can call it as many times as
+desired.</p>
+
+<p>The arguments to create are:</p>
+<dl>
+  <dt>serverName</dt>
+    <dd>The name of the record that implements the gather service.</dd>
+  <dt>channelsAreArrays</dt>
+    <dd>Are the caV3 channels expected to be arrays?</dd>
+  <dt>requester</dt>
+    <dd>The client must implement interface Requester, which is described in
+      pvData.</dd>
+  <dt>commands</dt>
+    <dd>This is a list of commands the client will issue to gather. This is
+      any combination of "get,processGet,putValue,putBad". If a command not
+      given in this list is issued an exception is thrown.</dd>
+  <dt>properties</dt>
+    <dd><p>The properties the client will access from GatherData. This can be
+      any combination of "value,isBad,isConnected,severityIndex". If a
+      property is not specified here then GatherData will return a null value
+      for that property when it is requested. For each of isBad, isConnected,
+      and severityIndex the gather client creates a monitor on the
+      corresponding field of the gather record if the property is
+      requested.</p>
+    </dd>
+</dl>
+
+<h3 id="Gather1">Gather</h3>
+<pre>interface GatherMonitorRequester {
+    void monitorEvent();
+}
+
+interface GatherMonitor {
+    boolean poll();
+}
+
+interface Gather {
+    void destroy();
+    Status connect();
+    Status waitConnect(double timeout);
+    GatherDataScalar getGatherDataScalar();
+    GatherDataArray getGatherDataArray();
+    Status createMonitor(GatherMonitorRequester gatherMonitorRequester);
+    Status waitCreateMonitor();
+    GatherMonitor getGatherMonitor();
+    Status processGet();
+    Status waitProcessGet();
+    Status get();
+    Status waitGet();
+    Status putBad(boolean[] isBad);
+    Status waitPutBad();
+    Status putValue(double[] value);
+    Status waitPutValue();
+}</pre>
+
+<p>where:</p>
+<dl>
+  <dt>destroy</dt>
+    <dd>This should be called when the client is done using gather. It
+      disconnects from the gather record.</dd>
+  <dt>connect</dt>
+    <dd>This is called one time by the client to connect to the gather
+      record. It also creates GatherDataScalar or GatherDataArray. This
+      method does not block</dd>
+  <dt>waitConnect</dt>
+    <dd>Wait for connect to complete. This method blocks until connect is
+      done or until timeout.</dd>
+  <dt>getGatherDataScalar</dt>
+    <dd>Get the interface for gatherDataScalar. This must not be called until
+      waitConnect returns with status.isOK() is true. It returns a non null
+      value only if waitConnect returned status OK and the client requested
+      scalar data.</dd>
+  <dt>getGatherDataArray</dt>
+    <dd>Get the interface for gatherDataArray. This must not be called until
+      waitConnect returns with status.isOK() is true. It returns a non null
+      value only if waitConnect returned status OK and the client requested
+      array data.</dd>
+  <dt>createMonitor</dt>
+    <dd>Create a monitor for the gather record. See below for details about
+      monitoring. The client can call this at most once.</dd>
+  <dt>waitCreateMonitor</dt>
+    <dd>Wait for the monitor to be created.</dd>
+  <dt>getGatherMonitor</dt>
+    <dd>Get the channelMonitor that was created.</dd>
+  <dt>processGet</dt>
+    <dd>Issue a processGet to the gather record. this will make the gather
+      record issue a caV3 get to each of the channels.</dd>
+  <dt>waitProcessGet</dt>
+    <dd>Wait for processGet to complete.</dd>
+  <dt>get</dt>
+    <dd>Get the current data stored in the gather record.</dd>
+  <dt>waitGet</dt>
+    <dd>Wait for get to complete.</dd>
+  <dt>putBad</dt>
+    <dd>Write to the isBad array of the gather record.</dd>
+  <dt>waitPutBad</dt>
+    <dd>Wait for putBad to complete.</dd>
+  <dt>putValue</dt>
+    <dd>Change the value array. This will change the value array in the
+      gather record AND cause the value of each caV3 channel to be changed.
+      Note that this is only supported if the caV3 channels are scalars.</dd>
+  <dt>waitPutValue</dt>
+    <dd>Wait for putValue to complete.</dd>
+</dl>
+
+<p>After creating a new implementation of gather the client must connect and
+then wait for connection to complete. This is done via separate calls so the
+the client can do other things while connecting.</p>
+
+<p>Once the connection is complete the client can issue a single
+createMonitor request and multiple get and wait requests. Each has a separate
+request and wait. These are separate so that the client can do other things
+while the request is being implemented.</p>
+
+<p>When the client is done with the gather destroy should be called.</p>
+
+<p>Thus life cycle for a client must follow the following order:</p>
+<pre>     Gather gather = GatherFactory.create(...)
+     gather.connect(...)
+     gather.waitConnect(...)]
+     gather.getGatherDataScalar()
+     or
+     gather.getGatherDataArray()
+     IF_WANT_MONITOR
+         gather.createMonitor()
+         gather.waitCreateMonitor()
+         gather.getMonitor()
+     ENDIF_WANT_MONITOR
+     REPEAT
+         gather.get(...)
+         gather.waitGet(...)
+         and/or
+         gather.processGet()
+         gather.waitProcessGet()
+         and/or
+         gather.putBad()
+         gather.waitPutBad()
+         and/or
+         gather.putValue()
+         gather.waitPutValue()
+     ENDREPEAT
+     gather.destroy()</pre>
+
+<p>If the order is violated an exception is thrown.</p>
+
+<p>The Status returns should always be checked to see that status.isOK()
+returns true.</p>
+
+<h3 id="GatherData">GatherData</h3>
+
+<p>After the client has successfull connected to the gather record either a
+GatherDataScalar or a GatherDataArray is created. It holds data obtained for
+the client. For isBad, isConnected, and severityIndex a monitor is placed on
+the corresponding field of the gather record. GatherData is updated when a
+monitor occurs. The value field is updated either because of a get request or
+because gatherMoitor.poll() is called. Thus the update of the value field is
+under the complete control of the client.</p>
+<pre>interface GatherData {
+    Alarm getAlarm();
+    TimeStamp getTimeStamp();
+    int getNumberChannels();
+    boolean anyBad();
+    boolean isBad(int index);
+    boolean badChange();
+    boolean allConnected();
+    boolean isConnected(int index);
+    boolean connectionChange();
+    int getSeverityIndex(int index);
+    boolean severityIndexChange();
+}
+
+interface GatherDataScalar extends GatherData {
+    double[] getValue();
+}
+
+interface GatherDataArray extends GatherData {
+    double[] getValue(int index);
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>getAlarm</dt>
+    <dd>Get the alarm for the gather record.</dd>
+  <dt>getTimeStamp</dt>
+    <dd>Get the timeStamp for the gather record.</dd>
+  <dt>getNumberChannels</dt>
+    <dd>Get the number of channels the gather record is gathering.</dd>
+  <dt>anyBad</dt>
+    <dd>Have any of the channel been set bad.</dd>
+  <dt>isBad</dt>
+    <dd>Is the channel with the specified index bad.</dd>
+  <dt>badChange</dt>
+    <dd>Has any channel changed bad status since the last call to badChange?
+      This initially is true When this is called it is set back to false.</dd>
+  <dt>allConnected</dt>
+    <dd>Are all channels connected.</dd>
+  <dt>isConnected</dt>
+    <dd>Is the channel with the specified index connected.</dd>
+  <dt>connectionChange</dt>
+    <dd>Has any channel changed connection status since the last call to this
+      method? This initially is true When this is called it is set back to
+      false.</dd>
+  <dt>getSeverityIndex</dt>
+    <dd>Get the severity index for the specified channel.</dd>
+  <dt>severityIndexChange</dt>
+    <dd>Has the severity index for any channel changed since the last call to
+      this method? This initially is true When this is called it is set back
+      to false.</dd>
+</dl>
+
+<p>GatherDataScalar extends GatherData. It is implemented only if the gather
+record accesses channels that are each a scalar. It implements the following
+method:</p>
+<dl>
+  <dt>getValue</dt>
+    <dd>This returns and array of doubles.</dd>
+</dl>
+
+<p>GatherDataArray extends GatherData. It is implemented only if the gather
+record accesses channels that are each an array. It implements the following
+method:</p>
+<dl>
+  <dt>getValue</dt>
+    <dd>This method has an argument that specifies the channel value desired
+      and returns the data array from that channel.</dd>
+</dl>
+
+<h3 id="GatherMoni">GatherMonitor</h3>
+
+<p>As shown above a client can ask to monitor a gather record. In this case
+the client must implement interface GatherMonitorRequester, which has a
+single method monitorEvent. This method is called whenever a monitor is sent
+from the gather record. The client calls gatherMonitor.poll() to see if more
+monitior events are queued for the client. If there is more, the data is put
+into GatherData. Thus the client has code like:</p>
+<pre>  if(monitorEvent) {
+      while(true)
+          if(!gatherMonitor.poll()) break;
+          // data is in gatherDataScalar or gatherDataArray
+      }
+  }
+</pre>
+<hr />
+
+<h2 style="text-align: center" id="Example1">Example</h2>
+<hr />
+
+<p>An example client and a caV3 database is provided in
+gather/test/org/epics/pvService/gather/example/gather.zip. Somewhere unzip
+this file and:</p>
+<ul>
+  <li>Edit gather/caV3/configuration/RELEASE so that it references your
+    version of EPICS base.</li>
+  <li>In gather/caV3 execute make</li>
+  <li>In gather/caV3/iocBoot/iocexample start the caV3 as follows: 
+    <pre>../../bin/&lt;arch&gt;/example st.cmd
+    </pre>
+  </li>
+  <li>cd to gather/java</li>
+  <li>Check the source file to see if it is appropriate for your
+  environment.</li>
+  <li>In one window type 
+    <pre>./serviceExample</pre>
+  </li>
+  <li>In another window type 
+    <pre>./clientExample
+    </pre>
+  </li>
+</ul>
+
+<p>File gather/test/org/epics/pvService/gather/example/package.html provides
+more details about running the examples. </p>
+<hr />
+
+<h2 style="text-align: center" id="Create1">Create Gather Client
+Implementation</h2>
+<hr />
+
+<p>The client side of createGather implements the methods of CreateGather as
+follows:</p>
+<dl>
+  <dt>delete</dt>
+    <dd>Calls channel.destroy which destroys all pvAccess connections to the
+      createGather record.</dd>
+  <dt>connect</dt>
+    <dd>Asks pvAccess to connect to the server record that create gather
+      records. When pvAccess has connected it creates a ChannelPutGet with
+      option to process. After the ChannelPutGet is created it verifies that
+      the record has the fields required for creating a gather record. All
+      this is done without blocking the client.</dd>
+  <dt>waitConnect</dt>
+    <dd>Waits until pvAccess has connected and created the ChannelPutGet. It
+      sets status indicating if it has properly created a ChannelPutGet for
+      requesting creation of gather records.</dd>
+  <dt>sendRequest</dt>
+    <dd>It uses the arguments supplied by the client to set fields in the put
+      PVStructure of the ChannelPutGet request. It then issues a putGet
+      request. This is a non blocking call.</dd>
+  <dt>waitRequest</dt>
+    <dd>Waits until the putGet request completes and then returns a status
+      showing the results of the request. If the gather record already exists
+      requester.message is called with a warning message but returns an OK
+      status.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Create2">Create Gather Record
+Implementation</h2>
+<hr />
+
+<p>The gather create service is implemented via support. The xml definitions
+for the gather create support and record are defined in
+pvService/xml/structure/gather.xml:</p>
+<pre>&lt;structure structureName = "org.epics.pvService.createGatherFactory"&gt;
+  &lt;scalar name = "supportFactory" scalarType = "string"&gt;
+     org.epics.pvService.gather.support.CreateGatherFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure structureName = "org.epics.pvService.createGather" extends = "generic"&gt;
+  &lt;structure name = "alarm" extends = "alarm"/&gt;
+  &lt;structure name = "timeStamp" extends = "timeStamp" /&gt;
+  &lt;structure name = "arguments"&gt;
+      &lt;auxInfo name = "supportFactory" scalarType = "string"&gt;org.epics.pvService.createGatherFactory&lt;/auxInfo&gt;
+      &lt;array name = "channelNames" scalarType = "string" /&gt;
+      &lt;scalar name = "gatherRecordName" scalarType = "string" /&gt;
+      &lt;scalar name = "temporary" scalarType = "boolean" /&gt;
+      &lt;scalar name = "channelsAreArrays" scalarType = "boolean" /&gt;
+      &lt;scalar name = "monitor" scalarType = "boolean" /&gt;
+  &lt;/structure&gt;
+  &lt;structure name = "result"&gt;
+      &lt;scalar name = "status" scalarType = "string" /&gt;
+  &lt;/structure&gt;
+  &lt;scalar name = "removeRecordRecord" scalarType = "string" /&gt;
+&lt;/structure&gt;</pre>
+
+<p>An example of creating records for createGather is given in the zip file
+for the example. The file is gather.xml:</p>
+<pre>&lt;database&gt;
+&lt;import name = "org.epics.ioc.*" /&gt;
+&lt;import name = "org.epics.pvData.*" /&gt;
+&lt;record recordName = "recordRemoveRPC" extends = "recordRemove" /&gt;
+&lt;record recordName = "createGather" extends = "org.epics.pvService.createGather" &gt;
+    &lt;scalar name = "removeRecordRecord"&gt;recordRemoveRPC&lt;/scalar&gt;
+&lt;/record&gt;
+&lt;/database&gt;</pre>
+
+<p>The two records are:</p>
+<dl>
+  <dt>recordRemoveRPC</dt>
+    <dd>This is a record that removes an installed record from a javaIOC
+      database. It is used by the gather service the delete temporary gather
+      records. It can be accessed by any pvAcess client to remove records.
+      For example it can be used to remove a non-tempry gather record.</dd>
+  <dt>createGather</dt>
+    <dd>This is the record with support for creating and installing a gather
+      record.</dd>
+</dl>
+
+<p>When a gather create record is processed the gather support does the
+following:</p>
+<ul>
+  <li>Reads the gatherRecordName. If the record already exists, the support
+    just writes a message in resul.status and completes processing.</li>
+  <li>If the record does not exist the support uses a separate thread that
+    creates and installs the new gather record using the install facility
+    provided by the javaIOC. When this is done the support completes record
+    processing. The details of gather support are described below.</li>
+  <li>If the gather record is temporary, then after creating the gather
+    record, the createGather support starts another process that uses a timer
+    to wake up every two minutes. If it wakes up and finds the gather record
+    with no clients attached, the gather record is removed from the master
+    database and also uninitialized. An example of an attached client is a
+    pvAccess client such as a gather client.</li>
+</ul>
+<pre></pre>
+<hr />
+
+<h2 style="text-align: center" id="Gather2">Gather Client Implementation</h2>
+<hr />
+
+<p>The client must call GatherFactory.create, which has the arguments:</p>
+<dl>
+  <dt>serverName</dt>
+    <dd>The name of the gather record created by CreateGather.</dd>
+  <dt>requester</dt>
+    <dd>An interface the client must implement. It is defined in project
+      pvData.</dd>
+  <dt>commands</dt>
+    <dd>A list of the commands the client will call. It must be some
+      combination of: get,getNew,putValue,putBad. Each of these is a method
+      of Gather.</dd>
+  <dt>properties</dt>
+    <dd>A list of the properties the client will access via the methods of
+      GatherData. This is some combination of:
+      value,isBad,isConnected,severityIndex</dd>
+</dl>
+
+<p>Create returns interface Gather. The client side of gather implements the
+methods of Gather as follows:</p>
+<dl>
+  <dt>destroy</dt>
+    <dd>Calls channel.destroy which destroys all pvAccess connections to the
+      gather record.</dd>
+  <dt>connect</dt>
+    <dd>Asks pvAccess to connect to the gather record. When pvAccess has
+      connected it creates a separater object for each of the commands the
+      client gave when creating Gather. Each results on a ChannelGet or
+      ChannelPut than implements the associated command. In addition a
+      Monitor is created for each property (except value) specified in the
+      create call. Thus isBad, isConnected, and severityIndex all implemened
+      via monitors. The implementation also create an object that implements
+      GatherData. </dd>
+  <dt>waitConnect</dt>
+    <dd>Waits until connect is complete.</dd>
+  <dt>getGatherDataScalar</dt>
+  <dt>getGatherDataArray</dt>
+    <dd>Get the interface for the gather data. This can only be called after
+      waitConnect returns status.isOK() true. Note that the data will be
+      updated as the result of commands or monitors. This is the only way the
+      client accesses gather data. </dd>
+  <dt>processGet</dt>
+    <dd>Issue a get command asking that the record be processed. This will
+      result in a get to each of the caV3 channels.</dd>
+  <dt>waitProcessGet</dt>
+    <dd>Wait until the processGet request completes. The data is put into
+      GatherData.</dd>
+  <dt>get</dt>
+    <dd>Issue a get command that does not ask that the record be processed,
+      i.e. the current values stored in the gather record are returned.</dd>
+  <dt>waitGet</dt>
+    <dd>Wait until the get request completes. The data is put into
+    GatherData.</dd>
+  <dt>putBad</dt>
+    <dd>Write the bad status (true or false) for each channel. The values are
+      put into the gather record.</dd>
+  <dt>waitPutBad</dt>
+    <dd>Wait until putBad is finished.</dd>
+  <dt>putValue</dt>
+    <dd>Put a value for each channel. The gathe support will issues a caV3
+      put for each channel that is connected.</dd>
+  <dt>waitPutValue</dt>
+    <dd>Wait until putValue completes, which means the values have also been
+      written to the caV3 channels.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Gather3">Gather Record Implementation</h2>
+<hr />
+
+<p>The gather service is implemented via support. The xml definitions for the
+gather support and record are defined in
+pvService/xml/structure/gather.xml:</p>
+<pre>&lt;structure structureName = "org.epics.pvService.gatherFactory"&gt;
+  &lt;scalar name = "supportFactory" scalarType = "string"&gt;
+    org.epics.pvService.gather.support.GatherFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure structureName = "org.epics.pvService.gatherScalar" extends = "generic"&gt;
+  &lt;structure name = "alarm" extends = "alarm"/&gt;
+  &lt;structure name = "timeStamp" extends = "timeStamp" /&gt;
+  &lt;scalar name = "command" scalarType = "string"&gt;get&lt;/scalar&gt;
+  &lt;scalar name = "options" scalarType = "string" /&gt;
+  &lt;array name = "value" scalarType = "double" /&gt;
+  &lt;array name = "isBad" scalarType = "boolean" /&gt;
+  &lt;array name = "isConnected" scalarType = "boolean" /&gt;
+  &lt;array name = "severityIndex" scalarType = "byte" /&gt;
+  &lt;array name = "channelNames" scalarType = "string"&gt;
+      &lt;auxInfo name = "supportFactory" scalarType = "string"&gt;org.epics.pvService.gatherFactory&lt;/auxInfo&gt;
+  &lt;/array&gt;
+&lt;/structure&gt;
+
+&lt;structure structureName = "org.epics.pvService.gatherArrayElement"&gt;
+    &lt;scalar name = "value" scalarType = "double" /&gt;
+&lt;/structure&gt;
+
+&lt;structure structureName = "org.epics.pvService.gatherArray" extends = "generic"&gt;
+  &lt;structure name = "alarm" extends = "alarm"/&gt;
+  &lt;structure name = "timeStamp" extends = "timeStamp" /&gt;
+  &lt;scalar name = "command" scalarType = "string"&gt;get&lt;/scalar&gt;
+  &lt;scalar name = "options" scalarType = "string" /&gt;
+  &lt;array name = "value" scalarType = "structure" extends = "org.epics.pvService.gatherArrayElement" /&gt;
+  &lt;array name = "isBad" scalarType = "boolean" /&gt;
+  &lt;array name = "isConnected" scalarType = "boolean" /&gt;
+  &lt;array name = "severityIndex" scalarType = "byte" /&gt;
+  &lt;array name = "channelNames" scalarType = "string"&gt;
+      &lt;auxInfo name = "supportFactory" scalarType = "string"&gt;org.epics.pvService.gatherFactory&lt;/auxInfo&gt;
+  &lt;/array&gt;
+&lt;/structure&gt;</pre>
+
+<p>These definitions must be part of the structures defined in the javaIOC
+master database. The gather create support uses these definitions to create
+gather records. Note that a gather record has array fields for the data of
+interest to clients.</p>
+
+<p>For each channelName, the gather support creates a caV3 channel for
+communication with the caV3 channel. The support also has support to get and
+put values to the caV3 channels.</p>
+</body>
+</html>

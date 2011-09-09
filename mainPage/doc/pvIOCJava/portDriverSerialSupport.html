@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: portDriver serial support</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: serial support<br />
+package: org.epics.ioc.support.pdrv.serial<br />
+2009.03.25</h1>
+CONTENTS 
+<hr />
+
+<h2 style="text-align: center">Overview</h2>
+<hr />
+
+<p>This package implements portDriver support for serial I/O, i. e. it
+interfaces to port drivers that implement interface Serial. It currently
+supports the following:</p>
+<dl>
+  <dt>serialInput</dt>
+    <dd>Serial to string.</dd>
+  <dt>serialOutput</dt>
+    <dd>String to serial.</dd>
+  <dt>scalarCommand</dt>
+    <dd>Send a command to a serial device.</dd>
+  <dt>scalarQuery</dt>
+    <dd>Send a request to a serial device, get a response, and convert the
+      response to a scalar.</dd>
+</dl>
+
+<p>In addition two additional supports are provided.</p>
+<dl>
+  <dt>BaseStringNoop</dt>
+    <dd>This does nothing except call PortDriverSupport for fields in the
+      structure it supports.</dd>
+  <dt>BaseSerialDiscard</dt>
+    <dd>This call Serial.read and just discards what it receives. This is
+      useful for devices that respond to writes.</dd>
+</dl>
+
+<p>Communication with a serial device normally uses more than one support.
+Most communication with a serial device consists of either a command or a
+query. For devices that support SCPI (Standard Commands for Programmable
+Instruments) this is the normal mode of communication.</p>
+
+<p>An example of a command is:</p>
+<pre>&lt;record name = "intToSerial"&gt;
+    &lt;scalar name = "value" type = "int"&gt;1000&lt;/scalar&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "link" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;serialPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;3&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "command" type = "pdrvScalarCommand"&gt;
+            &lt;scalar name = "prefix"&gt;:VOLT:DC:RANG:UPP&lt;/scalar&gt;
+            &lt;structure name = "output" type = "pdrvSerialOutput"/&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+
+<p>When the record is processed the following happens:</p>
+<ul>
+  <li>The portDriverLink support issues a queueRequest. When the callback is
+    called the embeded PortDriverSupport is called.</li>
+  <li>The scalarCommand support gives a value to the string field
+    intToSerial.link.command.command. The value is
+    intToSerial.link.command.prefix concatenated with the intToSerial.value
+    converted to a string.</li>
+  <li>The serialOutput support converts intToSerial.link.command.command to a
+    byte array and calls the portDriver Serial.write.</li>
+</ul>
+
+<p>An example of a query that returns a double value is:</p>
+<pre>&lt;record name = "serialToDouble"&gt;
+    &lt;scalar name = "value" type = "double"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "link" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;serialPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;3&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "query" type = "pdrvScalarQuery"&gt;
+            &lt;scalar name = "request"&gt;:FETC?&lt;/scalar&gt;
+            &lt;structure name = "output" type = "pdrvSerialOutput"/&gt;
+            &lt;structure name = "input" type = "pdrvSerialInput"/&gt;
+        &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+
+<p>When the record is processed the following happens:</p>
+
+<p></p>
+<ul>
+  <li>The portDriverLink support issues a queueRequest. When the callback is
+    called the embeded PortDriverSupport is called.</li>
+  <li>The serialOutput support converts serialToDouble.link.query.request to
+    a byte array and calls portDriver Serial.write.</li>
+  <li>The serialInput support calls portDriver Serial.read and converts the
+    returned byte array to a string anot puts it into
+    serialToDouble.link.query.result.</li>
+  <li>The scalarQuery support converts tserialToDouble.link.query.result to a
+    double and puts it into serialToDouble.value.</li>
+</ul>
+
+<p>An example of a query that returns a string value is:</p>
+<pre>&lt;record name = "getIDN"&gt;
+    &lt;scalar name = "value" type = "string"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "link" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;serialPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;3&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "query" type = "pdrvScalarQuery"&gt;
+            &lt;scalar name = "request"&gt;*IDN?&lt;/scalar&gt;
+            &lt;structure name = "output" type = "pdrvSerialOutput"/&gt;
+        &lt;/structure&gt;
+        &lt;structure name = "input" type = "pdrvSerialInput"/&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+<hr />
+
+<h2 style="text-align: center">UInt32Digital</h2>
+<hr />
+
+<p>The xml definitions are:</p>
+<pre>&lt;structure name = "pdrvSerialInputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.serial.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvSerialInput" &gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvSerialInputFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "size" type = "int"&gt;80&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvSerialInterruptFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.serial.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvSerialInterrupt" type = "portDriverInterruptLink" &gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvSerialInterruptFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "size" type = "int"&gt;80&lt;/scalar&gt;
+   &lt;scalar name = "process" type = "boolean"&gt;false&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvSerialOutputFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.serial.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvSerialOutput" &gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvSerialOutputFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "size" type = "int"&gt;80&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvStringNoopFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.serial.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvStringNoop" &gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvStringNoopFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "value" type = "string"/&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvScalarCommandFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.serial.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvScalarCommand" &gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvScalarCommandFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "prefix" type = "string"/&gt;
+   &lt;scalar name = "command" type = "string"/&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "pdrvScalarQueryFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.serial.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvScalarQuery" &gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvScalarQueryFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "request" type = "string"/&gt;
+   &lt;scalar name = "prefix" type = "string"/&gt;
+   &lt;scalar name = "response" type = "string" /&gt;
+&lt;/structure&gt;
+
+
+&lt;structure name = "pdrvSerialDiscardFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.pdrv.serial.SupportFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+&lt;structure name = "pdrvSerialDiscard" &gt;
+   &lt;auxInfo name = "supportFactory" type = "string"&gt;pdrvSerialDiscardFactory&lt;/auxInfo&gt;
+   &lt;scalar name = "size" type = "int"&gt;80&lt;/scalar&gt;
+&lt;/structure&gt;</pre>
+<hr />
+
+<h2 style="text-align: center">Java Definitions</h2>
+<hr />
+
+<p>The Java definitions are:</p>
+<pre>public class SupportFactory {
+    public static Support create(PVStructure pvStructure);
+}
+
+public class BaseSerialInput;
+public class BaseSerialOutput;
+public class BaseSerialInterrupt;
+public class BaseScalarCommand;
+public class BaseScalarQuery;
+public class BaseSerialNoop;
+public class BaseSerialDiscard;</pre>
+
+<p>The factory creates all the supported types. Each base class is a complete
+implementation.</p>
+</body>
+</html>

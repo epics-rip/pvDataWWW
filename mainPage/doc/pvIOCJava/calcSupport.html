@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: calculation support</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS javaIOC: support<br />
+package: org.epics.ioc.support.calc<br />
+2010.04.30</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Basic">Basic Calculation Support</a> 
+    <ul>
+      <li><a href="#Database">Database Definitions for Calculations</a></li>
+      <li><a href="#Performing">Performing Calculations</a></li>
+      <li><a href="#calcArgs">calcArgs</a></li>
+    </ul>
+  </li>
+  <li><a href="#Expression">ExpressionCalculator</a> 
+    <ul>
+      <li><a href="#Simple">Simple Examples</a></li>
+      <li><a href="#Expression1">Expression Syntax</a></li>
+      <li><a href="#Expression2">Expression Arguments</a></li>
+      <li><a href="#Unary">Unary Operators</a></li>
+      <li><a href="#Binary">Binary Operators</a></li>
+      <li><a href="#Ternary">Ternary Operator</a></li>
+      <li><a href="#Math">Math Functions</a></li>
+      <li><a href="#Constant">Constant optimization</a></li>
+      <li><a href="#Test">Test</a></li>
+    </ul>
+  </li>
+</ul>
+</div>
+
+<p></p>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This package provides support for calculations. A calculation computes a
+result that is assigned to the value field. This package provides:</p>
+<ol>
+  <li>ExpressionCalculator<br />
+    This is support for an expression that has the same syntax as a Java
+    scalar expression. For example: 
+    <pre>      a + b*c * Math.sin(d)
+   </pre>
+    For such expressions a complete expression factory is provided. </li>
+  <li>Calculation Intrastructure Support<br />
+    CalcArgArray support,AbstractCalculatorSupport, and the Database
+    Definitions related to calculations. </li>
+</ol>
+
+<p>Basic calculation support is described first and then
+ExpressionCalculator.</p>
+<hr />
+
+<h2 style="text-align: center" id="Basic">Basic Calculation Support</h2>
+<hr />
+
+<h3 id="Database">Database Definitions for Calculations</h3>
+
+<p>xml/structure/calx.xml defines the following:</p>
+<pre>&lt;structure name = "calcArgsFactory"&gt;
+  &lt;scalar name = "supportFactory" type = "string"&gt;
+     org.epics.ioc.support.calc.CalcArgsFactory&lt;/scalar&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "calcArg" &gt;
+  &lt;auxInfo name = "supportFactory" type = "string"&gt;genericFactory&lt;/auxInfo&gt;
+  &lt;!-- instance must define value --&gt;
+  &lt;scalar name = "name" type = "string" /&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "expressionCalculator" &gt;
+  &lt;auxInfo name = "supportFactory" type = "string"&gt;expressionCalculatorFactory&lt;/auxInfo&gt;
+  &lt;scalar name = "expression" type = "string" /&gt;
+&lt;/structure&gt;
+
+&lt;structure name = "calculation" &gt;
+  &lt;auxInfo name = "supportFactory" type = "string"&gt;genericFactory&lt;/auxInfo&gt;
+  &lt;structure name = "calcArgs"&gt;
+     &lt;!-- each field of calcArgs must be a calcArg structure --&gt;
+     &lt;auxInfo name = "supportFactory" type = "string"&gt;calcArgsFactory&lt;/auxInfo&gt;
+  &lt;/structure&gt;
+  &lt;structure name = "calculator" type = "expressionCalculator" /&gt;
+  &lt;structure name = "alarm" type = "alarm" /&gt;
+&lt;/structure&gt;</pre>
+
+<p><span style="font-family: courier">calculation</span> is the structure
+used for calculations. The parent of <span
+style="font-family: courier">calculation</span> must have a field with the
+name <span style="font-family: courier">value</span> and must have a type
+compatible with the calculator. </p>
+
+<p>Structure <span style="font-family: courier">calculation</span> has the
+fields: </p>
+<dl>
+  <dt><span style="font-family: courier">calcArgs</span></dt>
+    <dd>A field is a sequence of structures with each being a <span
+      style="font-family: courier">calcArg</span> structure and the support
+      <span style="font-family: courier">calcArgArray</span>. If the
+      calculator uses any arguments from calcArgs this must be present. The
+      name assigned to a calcArg field is the argument name for the
+      calculation.</dd>
+  <dt style="font-family: courier;">calculator</dt>
+    <dd>This field has support that implements the calculation. The default
+      support and structure name is expressionCalculator. This field must be
+      present and must have support.</dd>
+  <dt style="font-family: courier;">alarm</dt>
+    <dd>This is present so that a record can be put in alarm if a calculation
+      finds problems.</dd>
+</dl>
+
+<p><span style="font-family: courier">calcArg</span> is a structure that must
+contain at least the field</p>
+<dl>
+  <dt><span style="font-family: courier">value</span></dt>
+    <dd>This must be defined in record instances with a type that is
+      compatible with the expression.</dd>
+  <dt>other</dt>
+    <dd>Other fields can also be defined. For example a field named <span
+      style="font-family: courier">input</span> can be defined as a structure
+      with associated support that puts data into the <span
+      style="font-family: courier">value</span> field.</dd>
+</dl>
+
+<p><span style="font-family: courier">expressionCalculator</span> is the
+default structure for the <span
+style="font-family: courier">calculator</span> field of structure <span
+style="font-family: courier">calculation</span>. It is the structure required
+by support <span style="font-family: courier">expressioncalculator</span>. It
+has a single field:</p>
+<dl>
+  <dt><span style="font-family: courier">expression</span></dt>
+    <dd>The expression using Java syntax.</dd>
+  <dt></dt>
+</dl>
+
+<p>Support <span style="font-family: courier">calcArgsFactory</span> is the
+support for field <span style="font-family: courier">calcArgs</span>. Support
+<span style="font-family: courier">expressionCalculator</span> is the support
+described in the next section.</p>
+
+<h3 id="Performing">Performing Calculations</h3>
+
+<p>A calculation is performed by a calculation support. The following is
+done. When the calculation support, which is generic, is called it calls the
+calcArgArray support and the calculator support. For each element of
+calcArgArray, the calcArgArray support calls The support for any subfields
+that have support. The calcArgArray support extends Support to provide the
+additional method <pre>    PVField getPVField(String argName);</pre>
+which is used by the calculator support to get arguments. The calculator
+support uses the calcArgArray values to compute the calculated value.</p>
+
+<h3 id="calcArgs">calcArgs</h3>
+
+<p>This support implements support for a structure than is a sequence of
+calcArg structures, which has the fields:</p>
+<dl>
+  <dt style="font-family: courier;">value</dt>
+    <dd>A value for this argument. NOTE that record instances must define a
+      value specifying the type required by the calculation expression.</dd>
+  <dt style="font-family: courier;">other</dt>
+    <dd>Other fields can be defined. For example a field input which is a
+      link for obtaining the value for this argument. If no additional field
+      specified then no input is read and the value field can just be set by
+      the user.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="Expression">ExpressionCalculator</h2>
+<hr />
+
+<p>This is support for an expression that has the form of a valid java
+expression.</p>
+
+<h3 id="Simple">Simple Examples</h3>
+
+<p>The following example is a counter, i.e. each time the record is processed
+the value field is incremented by 1.</p>
+<pre>&lt;record name = "reallySimpleCounter"&gt;
+    &lt;scalar name = "value" type = "byte" /&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "input" type = "calculation" &gt;
+      &lt;structure name = "calculator"&gt;
+        &lt;scalar name="expression"&gt;value+1&lt;/scalar&gt;
+      &lt;/structure&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+
+<p>The following is an example that has arguments min, max, and inc. Each
+time the record is processed the current value is incremented by inc. If the
+result is less than or equal to max it becomes the new value; otherwise value
+is set to max. Note that &lt; must be given as the xml escape sequence for
+&lt; , i.e. &amp;lt;</p>
+<pre>&lt;record name = "counter"&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;scalar name = "value" type = "double" /&gt;
+    &lt;structure name = "input" type = "calculation" &gt;
+       &lt;structure name = "calcArgs"&gt;
+          &lt;structure name = "min"&gt;
+            &lt;scalar name = "value" type = "double" &gt;0.0&lt;/scalar&gt;
+          &lt;/structure&gt;
+          &lt;structure name = "max"&gt;
+            &lt;scalar name = "value" type = "double" &gt;10.0&lt;/scalar&gt;
+          &lt;/structure&gt;
+          &lt;structure name = "inc"&gt;
+            &lt;scalar name = "value" type = "double" &gt;0.5&lt;/scalar&gt;
+          &lt;/structure&gt;
+       &lt;/structure&gt;
+       &lt;structure name = "calculator"&gt;
+         &lt;scalar name = "expression"&gt;(value+inc)&amp;lt;=max ? value+inc : min&lt;/scalar&gt;
+       &lt;/structure&gt;
+    &lt;/structure&gt;    
+&lt;/record&gt;</pre>
+
+<p>The next example computes the sin of an argument given in radians:</p>
+<pre>&lt;record name = "sin"&gt;
+    &lt;scalar name = "value" type = "double" /&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "input" type = "calculation" &gt;
+       &lt;structure name = "calcArgs"&gt;
+          &lt;structure name = "a"&gt;
+            &lt;scalar name = "value" type = "double" &gt;0.5&lt;/scalar&gt;
+          &lt;/structure&gt;
+       &lt;/structure&gt;
+       &lt;structure name = "calculator"&gt;
+         &lt;scalar name = "expression"&gt;
+             Math.sin(Math.PI*a)
+         &lt;/scalar&gt;
+       &lt;/structure&gt;
+    &lt;/structure&gt;   
+&lt;/record&gt;</pre>
+
+<p>The last example demonstrates the use of the ?: operator:</p>
+<pre>&lt;record name = "check"&gt;
+    &lt;scalar name = "value" type = "boolean" /&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "input" type = "calculation" &gt;
+       &lt;structure name = "calcArgs"&gt;
+          &lt;structure name = "a"&gt;
+            &lt;scalar name = "value" type = "byte" &gt;0&lt;/scalar&gt;
+          &lt;/structure&gt;
+          &lt;structure name = "b"&gt;
+            &lt;scalar name = "value" type = "byte" &gt;1&lt;/scalar&gt;
+          &lt;/structure&gt;
+       &lt;/structure&gt;
+       &lt;structure name = "calculator"&gt;
+         &lt;scalar name = "expression"&gt;
+            (a-b)==0 ? true : false
+         &lt;/scalar&gt;
+       &lt;/structure&gt;    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+
+<h3 id="Expression1">Expression Syntax</h3>
+
+<p>A expression is has the form of a valid Java scalar expression. The result
+of the expression is assigned to the value field.</p>
+
+<p>The precedence is the same as the Java precedence. For example the
+following:</p>
+<pre>   a + b*c + Math.sin(e*f)</pre>
+Is the same as: 
+<pre>   ((a + (b*c)) + Math.sin((e*f)))</pre>
+
+<h3 id="Expression2">Expression Arguments</h3>
+
+<p>An argument can be one of the following:</p>
+<dl>
+  <dt>variable</dt>
+    <dd>The argument is one of the calcArgArray names.</dd>
+  <dt>value</dt>
+    <dd>The "value" appears as an argument than the argument is the value
+      field itself. Note that this is the first value field found searching
+      up the parent tree.</dd>
+  <dt>boolean constant</dt>
+    <dd>The argument is "true" or "false"</dd>
+  <dt>string constant</dt>
+    <dd>A argument enclosed in "" is a string constant.</dd>
+  <dt>integer constant</dt>
+    <dd>The argument is a valid java integer constant. It becomes an int
+      constant unless it is terminated with the character L, which means it
+      is a long integer constant. The value can also be given as a valid hex
+      integer, e.g. 0x0fff. </dd>
+  <dt>real constant</dt>
+    <dd>The argument is a valid java real constant, i.e. it is either a float
+      or double constant.</dd>
+  <dt>Math constant</dt>
+    <dd>The argument is either Math.PI or Math.E</dd>
+</dl>
+
+<h3 id="Unary">Unary Operators</h3>
+
+<p>The supported unary operators are:</p>
+<dl>
+  <dt>+</dt>
+    <dd>Unary plus. The argument can be any numeric type.</dd>
+  <dt>-</dt>
+    <dd>Unary minus. The argument can be any numeric type.</dd>
+  <dt>~</dt>
+    <dd>Bitwise Complement. The argument can be any integer type.</dd>
+  <dt>!</dt>
+    <dd>Boolean not. The argument must be boolean.</dd>
+</dl>
+
+<h3 id="Binary">Binary Operators</h3>
+
+<p>The supported binary operators are:</p>
+<dl>
+  <dt>*</dt>
+    <dd>Multiplication. The argument can be any numeric type.</dd>
+  <dt>/</dt>
+    <dd>Division. The argument can be any numeric type.</dd>
+  <dt>%</dt>
+    <dd>Remainder. The argument can be an integer type.</dd>
+  <dt>+</dt>
+    <dd>Binary plus. The arguments can be any numeric type.</dd>
+  <dt>+</dt>
+    <dd>String concatenation. The first argument must be a string.</dd>
+  <dt>-</dt>
+    <dd>Binary minus. The arguments can be any numeric type.</dd>
+  <dt>&lt;&lt;</dt>
+    <dd>Left shift. The arguments must be an integer type.</dd>
+  <dt>&gt;&gt;</dt>
+    <dd>Right shift sign extended. The arguments must be an integer type.</dd>
+  <dt>&gt;&gt;&gt;</dt>
+    <dd>Right shift zero extended. The arguments must of an integer type.</dd>
+  <dt>&lt;</dt>
+    <dd>Less than. The arguments must be numeric.</dd>
+  <dt>&lt;=</dt>
+    <dd>Less than or equal. The arguments must be numeric.</dd>
+  <dt>&gt;</dt>
+    <dd>Greater than. The arguments must be numeric.</dd>
+  <dt>&gt;=</dt>
+    <dd>Greater than or equal. The arguments must be numeric.</dd>
+  <dt>==</dt>
+    <dd>Equal. The arguments can be any supported type.</dd>
+  <dt>!=</dt>
+    <dd>Not equal. The arguments can be any supported type.</dd>
+  <dt>&amp; </dt>
+    <dd>Integer and. The arguments must be integer.</dd>
+  <dt>&amp; </dt>
+    <dd>Boolean and. The arguments must be boolean.</dd>
+  <dt>^</dt>
+    <dd>Bitwise XOR. The arguments must be integer.</dd>
+  <dt>^</dt>
+    <dd>Boolean XOR. The arguments must be boolean.</dd>
+  <dt>|</dt>
+    <dd>Bitwise or. The arguments must be integer.</dd>
+  <dt>|</dt>
+    <dd>Boolean or. The arguments must be boolean.</dd>
+  <dt>&amp;&amp;</dt>
+    <dd>Conditional and. The arguments must be boolean.</dd>
+  <dt>||</dt>
+    <dd>Conditional or. The arguments must be boolean.</dd>
+</dl>
+
+<h3 id="Ternary">Ternary Operator</h3>
+
+<p>The ternary operator ?: is supported.</p>
+
+<h3 id="Math">Math Functions</h3>
+
+<p>All the functions defined in java.lang.Math are supported.</p>
+
+<h3 id="Constant">Constant optimization</h3>
+
+<p>If the arguments of an operator are all constants then the result is
+determioned during initialization and the operation not performed when the
+record is processed.</p>
+
+<h3 id="Test">Test</h3>
+
+<p>test/calc contains tests for ExpressionCalculator. After the test is
+initialized use the swtshell to bring up the introspectDatabase screen.
+Select the showBadRecordss button. No records should appear except possibly
+active records. The only records without checks are random,
+calcSimpleCounter, and calcCounter. These can be checked manually. For random
+issue get with process requests. For calcSimpleCounter and calcCounter just
+monitor the records.</p>
+</body>
+</html>

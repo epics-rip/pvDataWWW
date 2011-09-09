@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: portDriver Serial</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: portDriver Serial<br />
+package: org.epics.ioc.pdrv.serial<br />
+2009.03.23</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Configurat">Configuration</a></li>
+  <li><a href="#Implementa">Implementation</a></li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>Consult package org.epics.ioc.support.pdrv.serial for an explaination of
+how to communicate with a serial device.</p>
+
+<p>This is the first support for talking to serial devices. Currently the
+only support is for internet to serial servers like the MOXA boxes. Only very
+simple tests have been done. In the future more support, including local
+serial ports will be implemented. </p>
+<hr />
+
+<h2 style="text-align: center" id="Configurat">Configuration</h2>
+<hr />
+
+<p>A structure IPSerialDriver defines fields for configuring an Internet
+Protocol driver.</p>
+<pre>&lt;structure name = "IPSerialDriver"&gt;
+    &lt;scalar name = "host" type = "string" /&gt;
+    &lt;scalar name = "port" type = "int" /&gt;
+    &lt;scalar name = "eosInput" type = "string" /&gt;
+    &lt;scalar name = "eosOutput" type = "string" /&gt;
+&lt;/structure&gt;</pre>
+
+<p>A record must be defined for each port to a vxi11 controller.</p>
+<pre>&lt;record name = "???" type = "portCreate"&gt;
+    &lt;scalar name = "factoryName"&gt;org.epics.ioc.pdrv.serial.IPSerialDriverFactory&lt;/scalar&gt;
+    &lt;scalar name = "portName"&gt;???&lt;/scalar&gt;
+    &lt;structure name = "driverParameters" type = "IPSerialDriver" &gt;
+        &lt;scalar name = "host"&gt;???&lt;/scalar&gt;
+        &lt;scalar name = "port"&gt;???&lt;/scalar&gt;
+        &lt;scalar name = "eosInput"&gt;???&lt;/scalar&gt;
+        &lt;scalar name = "eosOutput"&gt;???&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+
+<p>The following example creates a port and a record instance that sends a
+string to serial port of a MOXA UC7408 and reads the response. The MOXA has a
+null modem connector attached to the serial port so it just receives what is
+sent.</p>
+<pre>&lt;record name = "IPSerialPort" type = "portCreate"&gt;
+    &lt;scalar name = "factoryName"&gt;org.epics.ioc.pdrv.serial.IPSerialDriverFactory&lt;/scalar&gt;
+    &lt;scalar name = "portName"&gt;IPserialPort&lt;/scalar&gt;
+    &lt;structure name = "driverParameters" type = "IPSerialDriver" &gt;
+        &lt;scalar name = "host"&gt;192.168.1.9&lt;/scalar&gt;
+        &lt;scalar name = "port"&gt;4001&lt;/scalar&gt;
+        &lt;scalar name = "eosInput"&gt;LFCR&lt;/scalar&gt;
+        &lt;scalar name = "eosOutput"&gt;LFCR&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "stringOut"&gt;
+    &lt;scalar name = "value" type = "string"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "outlink" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;IPserialPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "output" type = "pdrvOctetOutput"/&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "link" type = "caProcessLink"&gt;
+         &lt;scalar name = "pvname"&gt;stringIn&lt;/scalar&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+
+&lt;record name = "stringIn"&gt;
+    &lt;scalar name = "value" type = "string"/&gt;
+    &lt;structure name = "alarm" type = "alarm" /&gt;
+    &lt;structure name = "timeStamp" type = "timeStamp" /&gt;
+    &lt;structure name = "link" type = "portDriverLink"&gt;
+        &lt;scalar name = "portName"&gt;IPserialPort&lt;/scalar&gt;
+        &lt;scalar name = "deviceName"&gt;0&lt;/scalar&gt;
+        &lt;scalar name = "timeout"&gt;.2&lt;/scalar&gt;
+        &lt;structure name = "input" type = "pdrvOctetInput"/&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;</pre>
+<hr />
+
+<h2 style="text-align: center" id="Implementa">Implementation</h2>
+<hr />
+
+<p>The code currently consists of just one implementation module:</p>
+<ul>
+  <li>IPSerialDriverFactory<br />
+    This implements the code for PortDriver, DeviceDriver,and Octet.</li>
+</ul>
+
+<p>In the future code will be implemented for local serial ports.</p>
+</body>
+</html>

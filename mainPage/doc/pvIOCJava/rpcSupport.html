@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: support.rpc</title>
+</head>
+
+<body>
+<h1 style="text-align: center">EPICS JavaIOC: support.rpc<br />
+package: org.epics.ioc.support.rpc<br />
+2010.04.01</h1>
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#Overview">Overview</a>
+    <ul>
+      <li><a href="#putProcess">putProcessGet RPC</a></li>
+      <li><a href="#channelRPC">channelRPC</a></li>
+    </ul>
+  </li>
+  <li><a href="#ExampleCha">ExampleChannelRPC</a></li>
+  <li><a href="#RecordList">RecordList</a></li>
+  <li><a href="#StructureL">StructureList</a></li>
+  <li><a href="#IocShow">IocShow</a></li>
+  <li><a href="#RecordShow">RecordShow</a></li>
+  <li><a href="#SupportSta">SupportStateSet</a></li>
+</ul>
+</div>
+<hr />
+
+<h2 style="text-align: center" id="Overview">Overview</h2>
+<hr />
+
+<p>This package provides support for remote procedure calls from a channel
+access client. Two types of RPCs are possible:</p>
+<dl>
+  <dt>putProcessGet</dt>
+    <dd>This is used if the PVStructure for the data returned by a request
+      always has the same structure.</dd>
+  <dt>channelRPC</dt>
+    <dd>This is used if a new PVStructure must be send for each request.</dd>
+</dl>
+
+<h3 id="putProcess">putProcessGet RPC</h3>
+
+<p>A RPC is implemented via a structure that has the following fields:</p>
+<dl>
+  <dt>arguments</dt>
+    <dd>A structure that has a set of fields that are defined by the
+      implementation. It defines the arguments required by the RPC. </dd>
+  <dt>result</dt>
+    <dd>Also a structure that has a set of fields that are defined by the
+      implementation. It contains the results.</dd>
+</dl>
+
+<p>The client issues a putGet with process request. The put contains the
+arguments and the get retrieves the result.</p>
+
+<p>javaIOC/xml/structure/rpc.xml has the definitions for the structures
+required by the support provided by this package. The following sections
+provide a brief description of the arguments and result for each support.</p>
+
+<h3 id="channelRPC">channelRPC</h3>
+
+<p>A ChannelRPC allows a different PVStructure to be created and returned to
+the client for each request.</p>
+<hr />
+
+<h2 style="text-align: center" id="ExampleCha">ExampleChannelRPC</h2>
+<hr />
+
+<p>This is an example of how to implement support for a record that supports
+a ChannelRPC request. See the package description for org.epics.ca.client for
+details about ChannelRPC.</p>
+
+<p>The example uses the record instance that is in
+test/channelRPC/channelRPCDB.xml :</p>
+<pre>&lt;record recordName = "exampleChannelRPC"&gt;
+    &lt;scalar name = "factoryName" scalarType = "string"&gt;
+      org.epics.ioc.support.rpc.ExampleChannelRPCFactory
+    &lt;/scalar&gt;
+    &lt;structure name = "arguments"&gt;
+        &lt;scalar name = "size" scalarType = "int"&gt;2&lt;/scalar&gt;
+    &lt;/structure&gt;
+    &lt;structure name = "element"&gt;
+        &lt;scalar name = "value" scalarType = "double"/&gt;
+        &lt;structure name = "alarm" extends = "alarm"/&gt;
+        &lt;structure name = "timeStamp" extends = "timeStamp"/&gt;
+    &lt;/structure&gt;
+&lt;/record&gt;
+&lt;/database&gt;
+</pre>
+
+<p>Note that factoryName field. It must give the name of the factory that
+creates an objec that implements interface RPCServer. The example create a
+PVStructure that has size subfields each of which is a clone of element. Look
+at the source code for details.</p>
+<pre>
+</pre>
+<hr />
+
+<h2 style="text-align: center" id="RecordList">RecordList</h2>
+<hr />
+
+<p>This returns a list of the names of a set of records specified by a
+regular expression. The arguments are:</p>
+<dl>
+  <dt>database</dt>
+    <dd>A scalar string that specifies the name of the database, e. g.
+    master.</dd>
+  <dt>regularExpression</dt>
+    <dd>A scalar string that is the regular expression. The expression ".*"
+      will return a list of all the records in the database.</dd>
+</dl>
+
+<p>The result fields are:</p>
+<dl>
+  <dt>status</dt>
+    <dd>A scalar string that is used to report errors.</dd>
+  <dt>names</dt>
+    <dd>An array wih element type of string. It contains the record
+    names.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="StructureL">StructureList</h2>
+<hr />
+
+<p>This returns a list of the names of a set of structures specified by a
+regular expression. The arguments are:</p>
+<dl>
+  <dt>database</dt>
+    <dd>A scalar string that specifies the name of the database, e. g.
+    master.</dd>
+  <dt>regularExpression</dt>
+    <dd>A scalar string that is the regular expression. The expression ".*"
+      will return a list of all the structures in the database.</dd>
+</dl>
+
+<p>The result fields are:</p>
+<dl>
+  <dt>status</dt>
+    <dd>A scalar string that is used to report errors.</dd>
+  <dt>names</dt>
+    <dd>An array wih element type of string. It contains the structure
+    names.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="IocShow">IocShow</h2>
+<hr />
+
+<p>This provides some useful commands for getting information about a
+JavaIOC. The arguments are:</p>
+<dl>
+  <dt>command</dt>
+    <dd>This is an enumerated structure that has the following choices: 
+      <dl>
+        <dt>showBadRecords</dt>
+          <dd>This gets a list of all records than have something unusual
+            about them.</dd>
+        <dt>showThreads</dt>
+          <dd>This provides a list of the names of all the threads created by
+            ThreadCreate.</dd>
+        <dt>showMemory</dt>
+          <dd>Produces a report of memory usage by Java.</dd>
+        <dt>garbageCollect</dt>
+          <dd>Asks java to collect garbage and then get memory usage.</dd>
+      </dl>
+    </dd>
+</dl>
+
+<p>The result fields are:</p>
+<dl>
+  <dt>value</dt>
+    <dd>A scalar string that provides the result for the request.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="RecordShow">RecordShow</h2>
+<hr />
+
+<p>This provides some useful commands for getting information about a record
+The arguments are:</p>
+<dl>
+  <dt>command</dt>
+    <dd>This is an enumerated structure that has the following choices: 
+      <dl>
+        <dt>showState</dt>
+          <dd>Get the state of the record.</dd>
+        <dt>setTraceOn</dt>
+          <dd>Set trace on for the record.</dd>
+        <dt>setTraceOff</dt>
+          <dd>Set trace off for the record.</dd>
+        <dt>timeProcess</dt>
+          <dd>Time how many times per second the record can be processed.
+            This will only succeed if the record does not already have a
+            record process requester.</dd>
+        <dt>setEnableOn</dt>
+          <dd>Enable the record.</dd>
+        <dt>setEnableOff</dt>
+          <dd>Disable the record. This prevents the record from
+          processing.</dd>
+        <dt>releaseProcessor</dt>
+          <dd>Release the current record processor. This should only be used
+            as a last attempt to fee a record with a record process requester
+            that crashed.</dd>
+      </dl>
+    </dd>
+</dl>
+
+<p>The result fields are:</p>
+<dl>
+  <dt>value</dt>
+    <dd>A scalar string that provides the result for the request.</dd>
+</dl>
+<hr />
+
+<h2 style="text-align: center" id="SupportSta">SupportStateSet</h2>
+<hr />
+
+<p>This allows the support state of a record to be changed The arguments
+are:</p>
+<dl>
+  <dt>command</dt>
+    <dd>This is an enumerated structure that has the following choices: 
+      <dl>
+        <dt>idle</dt>
+          <dd>A do nothing request.</dd>
+        <dt>initialize</dt>
+          <dd>Initialize the record. The record must be in the
+            readyForInitialize state.</dd>
+        <dt>start</dt>
+          <dd>Start the record. It must be in the readyForStart state.</dd>
+        <dt>stop</dt>
+          <dd>Stop the record and put it in the readyForStart state. It must
+            be in the ready state. </dd>
+        <dt>uninitialize</dt>
+          <dd>Uninitialize the record and put it in the readyForeInitialize
+            state. It must be in the ready or readyForStart state. </dd>
+      </dl>
+    </dd>
+</dl>
+
+<p>The result fields are:</p>
+<dl>
+  <dt>message</dt>
+    <dd>A scalar string that provides the result for the request.</dd>
+</dl>
+</body>
+</html>

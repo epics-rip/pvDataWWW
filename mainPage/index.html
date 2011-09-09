@@ -14,9 +14,13 @@ alt="Get EPICS-pvData at SourceForge.net. Fast, secure and Free Open Source soft
 
 <h2 align="center">EPICS PVData</h2>
 
-<h2 align="center">2011.08.05</h2>
+<h2 align="center">2011.09.09</h2>
 
 <h3>Introduction</h3>
+
+<p><span style="font-size: 16pt">Full documentation is available via</span>: <a
+href="doc/index.html"><span style="font-size: 18pt">Documentation</span></a>
+</p>
 
 <p>EPICS PVData is a software tool kit for implementing a Distributed Control
 System.</p>
@@ -34,11 +38,7 @@ System.</p>
     <dd>A set of services for High Level Applications.</dd>
 </dl>
 
-<p>A pvIOC is an implementation of an EPICS Input Output Controller (IOC). A
-pvIOC is similar to an EPICS Version 3 IOC ( the 3.13 and 3.14 releases of
-EPICS base) but extends the data types to support structured data. The
-pvService component provides a service layer for accessing a set of V3 IOCs
-and/ot pvIOCs<a href="http://www.aps.anl.gov/epics"></a></p>
+<p>This page provides a brief overview of the EPICS PVData.</p>
 
 <p><a href="http://www.aps.anl.gov/epics">EPICS</a> is a set of Open Source
 software tools, libraries and applications developed collaboratively and used
@@ -48,6 +48,12 @@ scientific experiments. An IOC (Input/Output Controller) is a network node that
 controls and/or monitors a collection of devices. An IOC contains a memory
 resident real time database. The real time database has a set of "smart"
 records.</p>
+
+<p>A pvIOC is an implementation of an EPICS Input Output Controller (IOC). A
+pvIOC is similar to an EPICS Version 3 IOC ( The 3.14 releases of EPICS base)
+but extends the data types to support structured data. The pvService component
+provides a service layer for accessing a set of V3 IOCs and/or pvIOCs<a
+href="http://www.aps.anl.gov/epics"></a></p>
 
 <h3>Uses</h3>
 
@@ -92,12 +98,11 @@ implemented in both C++ and Python.</p>
 </p>
 <dl>
   <dt>pvData</dt>
-  <dt></dt>
   <dt>pvAccess</dt>
   <dt>javaIOC</dt>
     <dd>This is the Java version of pvIOC</dd>
 </dl>
-To install the software create eclipse projects. The steps are:
+To install the software create eclipse projects. The steps are: 
 <ul>
   <li>Install eclipse</li>
 </ul>
@@ -106,8 +111,7 @@ To install the software create eclipse projects. The steps are:
           Password: Just click enter key.
    Connection Type:  extssh
               Host: epics-pvdata.cvs.sourceforge.net
-   Repository Path: /cvsroot/epics-pvdata
-</pre>
+   Repository Path: /cvsroot/epics-pvdata</pre>
 <ul>
   <li>In eclipse select Window=&gt;Open Perspective=&gt;SynchronizeView</li>
   <li>Select the newly created repository</li>
@@ -126,8 +130,8 @@ To install the software create eclipse projects. The steps are:
 
 <p>The C++ and Python code uses a mercurial repository. The EPICS V3 build
 system is used as the development system. V3 libCom is used for threading and
-other support. Thus it requires that You have a recent release of EPICS base.
-The following sourceforge mercurial repositories exist:</p>
+other support. Thus it requires a recent release of EPICS base. The following
+sourceforge mercurial repositories exist:</p>
 <dl>
   <dt>epics-pvdata/pvDataCPP</dt>
   <dt>epics-pvdata/pvAccessCPP</dt>
@@ -151,8 +155,8 @@ mrk&gt; hg clone ssh://mrkraimer@epics-pvdata.hg.sourceforge.net/hgroot/epics-pv
   <dt>interface definitions</dt>
     <dd>The Java package org.epics.pvData.pv has Java interface definitions
       that define PVData. Package org.epics.ca.client has java interface
-      definitions that define channelAccess. pvDataCPP provides the C++
-      definitions.</dd>
+      definitions that define channelAccess. pvDataCPP and pvAccessCPP provide
+      the C++ definitions.</dd>
   <dt>implementation</dt>
     <dd>Projects pvData and pvDataCPP each provide a complete implementation of
       pvData. Projects pvAccess and pvAccessCPP provides network support for
@@ -163,7 +167,8 @@ mrk&gt; hg clone ssh://mrkraimer@epics-pvdata.hg.sourceforge.net/hgroot/epics-pv
       more functionality than pvIOCCP, which is in it's early stages of
       development. </dd>
   <dt>efficient</dt>
-    <dd>Small memory footprint, low cpu overhead, and concise code base.</dd>
+    <dd>Small memory footprint, low cpu overhead, high network bandwith, and
+      concise code base.</dd>
   <dt>data storage</dt>
     <dd>PVData defines separate introspection and data interfaces. The
       introspection interfaces provide access to immutable objects, which
@@ -196,26 +201,13 @@ mrk&gt; hg clone ssh://mrkraimer@epics-pvdata.hg.sourceforge.net/hgroot/epics-pv
 <h3>Getting Started</h3>
 
 <p>The javaIOC project provides a GUI based shell. See Getting Started in <a
-href="javaIOC/doc/index.html">javaIOC/doc/index.html</a> For how to start it
+href="doc/pvIOCJava/overview.html">Overview of JavaIOC</a> For how to start it
 with an example database.</p>
 
 <p>Each project has a JavaDoc overview document and each java package has a
 package overview document. It is suggested that you first read the project
 overview document first: pvData, then channelAccess, and then javaIOC. The
-latest javaDOC is available via links in the next section.</p>
-
-<h3>EPICS PVData Projects</h3>
-
-<p>The following is the documentation as of 2011.08.05:</p>
-<dl>
-  <dt><a href="pvData/doc/index.html">pvData</a></dt>
-  <dt><a href="pvAccess/doc/index.html">pvAccess</a></dt>
-  <dt><a href="javaIOC/doc/index.html">javaIOC</a></dt>
-  <dt><a href="pvService/doc/index.html">pvService</a></dt>
-  <dt><a href="pvDataCpp.html">pvDataCPP.html</a></dt>
-  <dt><a href="pvIOCCP.html">pvIOCCP.html</a></dt>
-  <dt><a href="pvServiceCPP.html">pvServiceCPP.html</a></dt>
-  <dt><a href="pvServicePy.html">pvServicePy.html</a></dt>
-</dl>
+latest documentation is available via the link at the beginning of this
+document.</p>
 </body>
 </html>
