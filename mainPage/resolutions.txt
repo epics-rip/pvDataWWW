@@ -1,0 +1,25 @@
+RESOLUTIONS of the EPICS v4 Working Group
+=========================================
+
+===============================
+7-Sep-2011 telecon: http://epics-pvdata.sourceforge.net/meeting_07092011.txt
+
+1. PVManager shall be in scope. 
+
+2. A Directory Service is in scope. This is likely to be based on
+ChannelFinder.
+
+3. Archive service shall be in scope.
+
+4.  Gather service will not be in scope for now. It may be put in
+scope after a review.
+
+5. PVioc c++ for controls is in scope, but not high priority. Present
+work on completing pvIOCCPP specifically for use in a V3 IOC to act as
+a pvAccess server endpoint, should be completed before putting this
+work aside though.  
+
+6. Work on pvget work should be divided into two priority steps. Short
+term, iron out connection and just produce Strings from whatever you
+get. Longer term, figure out type, and return and actually useful
+type.

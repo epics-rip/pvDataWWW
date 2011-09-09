@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+ <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+ <title>EPICS v4 Working Group Home Page</title>
+ <link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css"
+ type="text/css" media="screen" />
+ <link rel="stylesheet" type="text/css"
+ href="http://www.w3.org/Guide/pubrules-style.css" />
+ <link rel="stylesheet" type="text/css" href="epicsv4.css" />
+ <style type="text/css">
+   @media print {
+     body { margin-right: 10%;
+     font-size: smaller }
+   }
+   @media screen {
+     body { margin-right: 10% }
+   }
+ </style>
+ </style>
+</head>
+<body>
+<h1>EPICS v4 Working Group</h1>
+<table class="masthead" vspace="4px" width="100%">
+  <tbody align="center">
+    <tr>
+      <td align="center" style="background-color: rgb(0,128,255);"><span class="selectedtab" >GROUP</span></td>
+      <td align="center"><a  target="_blank" href="index.html">HOME</a></td>
+      <td align="center"><a  target="_blank" href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">MAIL ARCHIVE</a></td>
+      <td align="center"><a  target="_blank" href="AIs.txt">ACTION ITEMS</a></td>
+      <td align="center"><a  target="_blank" href="issues.txt">ISSUES</a></td>
+      <td align="center"><a  target="_blank" href="resolutions.txt">RESOLUTIONS</a></td>
+    </tr>
+</table>
+
+<p>This is the group home page of the EPICS v4 Working Group.</p>
+
+<p><a href="index.html">EPICS v4</a> is a set of computer
+communications protocols, and a software framework, for high
+performance distributed control, message passing, and high level
+software services, as may be used in large scientific instruments and
+industrial plants. EPICS v4 was previously called "PvData", hence the 
+name of the sourceforge project.
+</p>
+<p>The EPICS v4 working group</a> is a collaborative effort of members
+invited by Brookhaven Lab, to bring EPICS v4 to its full
+potential. BNL and PSI support is subject to
+the <a href="charter.html">EPICS v4 Charter</a>. </p>
+<hr />
+
+<!-- ----------------------------------------- -->
+<h2 id="status">Status</h2>
+<p>Status 4-Aug-2011</p> 
+
+<p>The implementation statuses of the core packages of Epics v4,
+pvData, pvAccess, pvIOC, and PvService, given by language support,
+are:<p>
+
+<h3 id="java:status">Java</h3>
+
+<p>pvData, pvAccess, pvIOC, and PvService packages exist and are being
+developed as Eclipse projects, made available through sourceforge
+project epics-pvdata. The Java version of the pvIOC is named
+"javaIOC".</p>
+
+<p>The following services are implemented. Presently they can be found in
+PvService:</p>
+
+<ul>
+<li>itemFinder - Get a list of channel names and properties.  Both client 
+and server are implemented</li>
+<li>gather - get/put/monitor a set of V3 channels, Both client and server 
+are implemented</li>
+<li>model - Guobao can give status</li>
+</ul>
+
+<h3 id="cpp:status">C++</h3> 
+
+<p>pvDataCPP and pvAccessCPP are completed and available via sourceforge 
+mercurial projects.</p>
+
+<p>pvIOCCPP is started. It is implemented as EPICS V3 IOC applications. It has a 
+pvAccess server that accesses EPICS V3 records. Much work remains.</p>
+
+<p>pvServiceCPP has client side support for gather. It requires that a Java 
+gather server be running.</p>
+
+
+<h3 id="py:status">Python</h3>
+
+<p>pvData and pvAccess - Guobao is working on wrapping pvDataCPP and 
+pvAccessCPP</p>
+
+<p>pvService - The client side of gather is implemented by using the C++ 
+gather client support. Note about Python gather client:</p>
+
+<p>
+A performance tests shows results equivalent to C++.
+This is because all the real work is done by C++ code not by Python.
+The V3 channel data is provided as a numPy 1-d double array that uses 
+the underlying double array from the C++ array.
+It is expected that the Python client will pass the numPy array to other 
+numPy or sciPy based Python code.
+</p>
+
+<!----------------------------------------------------------- -->
+<h2 id="usefulinfo">Useful Information</h2>
+
+<p><strong>Weekly Telecon:</strong></p>
+<p>Time: <a href="http://www.timeanddate.com/worldclock/meetingtime.html?iso=20110907&p1=37&p2=736&p3=268&p4=179&p5=1233&p6=224">UTC (GMT) Wednesdays, 14:00</a>. During observance of summer time:</p>
+<ul >
+  <li>Zürich (Switzerland)	Wednesdays, 16:00:00	CEST	UTC+2 hours</li>
+  <li>New York (U.S.A. - New York)	Wednesdays, 10:00:00	EDT	UTC-4 hours</li>
+  <li>Oxford (United Kingdom - England)	Wednesdays, 15:00:00	BST	UTC+1 hour</li>
+  <li>San Francisco (U.S.A. - California)	Wednesdays, 07:00:00	PDT	UTC-7 hours</li>
+  <li>Ljubljana (Slovenia)	Wednesdays 16:00:00	CEST	UTC+2 hours</li>
+  <li>Berlin (Germany - Berlin)	Wednesdays, 16:00:00	CEST	UTC+2 hours</li>
+</ul>
+<p>Meeting
+URL: <a href="https://collab.switch.ch/r73247618/">https://collab.switch.ch/r73247618/</a>. Meeting
+Name: "EPICSv4". To join the meeting you will need the passcode, supplied
+individually by email. If you join as a "guest", you'll be asked for a name - that's
+your name, not the name of the meeting.</p>
+<p>You will need:</p>
+<ul>
+<li>A recent browser with the respective Flash Plugin 9 or higher (10 is best). It
+appears that there is no Adobe Connect for 64 bit Linux. So, you know, don't use
+that. Some linux installations work better than others. We don't know the success
+factors yet. Mac Safari works fine.
+</li>
+<li>A headset <strong>with microphone</strong></li>
+<li>A webcam if you like to send video</li>
+<li>Please try to plan for the meeting with Audio Optimizer in the Adobe Connect
+plugin to, what, optimize audio! In particular set your baseline silent level.</li>
+<li>At beginning of meeting, click the mic icon, to "Connect my Audio". Click the
+camera icon, to "Start my Webcam" and then "Start Sharing" (or not, that's OK)</li>
+</ul>
+
+<!-- --------------------------------------------------------- -->
+<h2 id="meetings">Meetings</h2>
+<ul>
+  <li>7-Sep-2011: <a href="http://sourceforge.net/mailarchive/forum.php?thread_name=EBE9CC70-86A6-4720-BB19-113ED79A2C09%40slac.stanford.edu&forum_name=epics-pvdata-devel">Agenda</a>, <a href="minutes_07092011.txt">Minutes</a></li>
+</ul>
+
+<!-- --------------------------------------------------------- -->
+<h2 id="membership">Membership</h2>
+
+<p>The EPICS v4 Working group presently has the following members:</p>
+<table>
+  <tr>
+    <th>
+      Name
+    </th>
+    <th>
+      Member Organisation
+    </th>
+    <th>
+      Status
+    </th>
+    <th>
+      Interests
+    </th>
+    <th>
+      Charter Deliverables
+    </th>
+    <th>
+      Scribe date
+    </th>
+  </tr>
+  <tr>
+    <td>Gabriele Carassi</td>
+    <td><a href="http://www.bnl.gov/">BNL</a></td>
+    <td>Participant</td>
+    <td>General purpose services, client tools and their interoperability, such as
+    PvManager, BOY, ChannelFinder, and data types </td>
+    <td><a href="charter.html#de:dirservice_doc">Directory Service
+    specification</a>, <a href="charter.html#de:dirservice_impl">Directory Service
+    implementation and pvlist
+    tool</a>, <a href="charter.html#de:interopdatatypes">Interoperable Data Types
+    specification</a>, <a href="charter.html#commandline_impl">pvget, pvput,
+    pvmonitor command line
+    tools</a>, <a href="charter.html#pvmanager">pvManager</a></td>
+    <td>7-Sep-2011</td>
+  </tr>
+  <tr>
+    <td>Daron Chabot</td>
+    <td><a href="http://www.bnl.gov/">BNL</a></td>
+    <td><a href="charter.html#obs">Observer</a></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Bob Dalesio</td>
+    <td><a href="http://www.bnl.gov/">BNL</a></td>
+    <td><a href="charter.html#part">Participant</a>, co-chair</td>
+    <td>Core architecture for control, administration</td>
+    <td>Money</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Michael Davidsaver</td>
+    <td><a href="http://www.bnl.gov/">BNL</a></td>
+    <td>Observer</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Timo Korhonen</td>
+    <td><a href="http://www.psi.ch/">PSI</a></td>
+    <td>Observer</td>
+    <td>Services for physics.</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Marty Kramer</td>
+    <td><a href="http://www.bnl.gov/">BNL</a></td>
+    <td>Participant</td>
+    <td>Core architecture, protocol standards and Java implementations of
+    standards.</td>
+    <td><a href="charter.html#de:pvdata_doc">pvData
+    Specification</a>, <a href="charter.html#de:iocpipe_doc">IOC Pipeline
+    Specification</a>, <a href="charter.htmlde:pvaccess_impl">pvAccess
+    Implementations</a>, <a href="charter.html#de:pvdata_impl">pvData
+    Implementations</a>, <a href="charter.html#de:pvioc_impl">pvIOC
+    Implementations</a>, <a href="charter.html#de:interop_doc">EPICS v3 to EPICS v4
+    Interoperability report</a>, <a href="charter.html#de:iocdev_doc">Controls
+    Application Developers
+    Guide</a>, <a href="charter.html#de:protocoldev_doc">Protocol Developers
+    Guide</a></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Ralph Lange</td>
+    <td><a href="http://www.helmholtz-berlin.de">HZB</a></td>
+    <td>Observer</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Nikolay Malitsky</td>
+    <td><a href="http://www.helmholtz-berlin.de">BNL</a></td>
+    <td>Participant</td>
+    <td>Archiver, IOC, physics</td>
+    <td><a href="charter.html#de:pvioc_impl">pvIOC
+    Implementations</a>, <a href="charter.html#de:archive_service">Archive
+    service</a></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td>James Roland</td>
+    <td><a href="http://www.diamond.ac.uk/">Diamond</a></td>
+    <td>Participant</td>
+    <td>CSS/BOY client side for EPICS v4.</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Matej Sekornaja</td>
+    <td><a href="http://www.cosylab.com/">Cosylab</a></td>
+    <td>Participant</td>
+    <td>Core architecture, protocol standards and C/C++ implementations of standards.</td>
+    <td>
+      <a href="charter.html#de:pvaccess_doc">pvAccess
+	Specification</a>, <a href="charter.htmlde:pvaccess_impl">pvAccess
+	implementations</a>, <a href="charter.html#de:pvdata_impl">pvData
+	implementations</a>, <a href="charter.html#de:pvioc_impl">pvIOC
+	implementations</a>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Guobao Shen</td>
+    <td><a href="http://www.bnl.gov/">BNL</a></td>
+    <td>Participant</td>
+    <td>Services for physics.</td>
+    <td><a href="charter.html#de:perf_doc">Performance Report</a></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Kunal Shroff</td>
+    <td><a href="http://www.bnl.gov/">BNL</a></td>
+    <td>Participant</td>
+    <td>General purpose services, client tools and their
+    interoperability, such as PvManager, ChannelFinder, data
+    types.</td>
+    <td><a href="charter.html#de:dirservice_doc">Directory Service
+	specification</a>, <a href="charter.html#de:dirservice_impl">Directory
+	Service implementation and pvlist tool</a>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Greg White</td>
+    <td><a href="http://www.psi.ch/">PSI</a>, <a href="http://www.slac.stanford.edu/">SLAC</a></td>
+    <td>Participant, co-chair</td>
+    <td>Core architecture for services, Services architecture, model service</td>
+    <td><a href="charter.html#de:interopdatatypes">Interoperable Data Types
+    specification</a>, <a href="charter.html#de:servicesAPI">Services API
+    Specification</a>, <a href="charter.html#de:getstarted_doc">Getting Started
+    documentation</a></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Ernest Williams</td>
+    <td><a href="http://www.slac.stanford.edu/">SLAC</a></td>
+    <td>Observer</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+</body>
+</html>

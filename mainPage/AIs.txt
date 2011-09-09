@@ -1,0 +1,25 @@
+ACTION ITEMS of the EPICS v4 Working Group
+==========================================
+
+Completed 1. AI on GW 1-Sep: Set up meeting and invite all
+participants. Tell them to send what they're presently working on to
+Bob.
+
+
+Completed 2. AI on All, 6-sep: Everyone please send what they are
+working on, and short term plans, to Bob, in preparation for Sep 7
+telecon.
+
+========================================================
+7-Sep-2011 telecon: 
+http://epics-pvdata.sourceforge.net/meeting_07092011.txt
+--------------------------------------------------------
+
+3. AI on GC by Sep-30-2011: 
+pvget/pvmonitor/pvput that understands normative types [but not arguments of the 
+form attribute=value, that will be added in a nw AI]. See also RES 6.
+
+4. AI on GC (and KS) by Sep-30-2011: pvlist that uses channel finder to execute queries.
+
+5. AI on MS [no date]: Complete work on pvIOCCPP specifically for use in a 
+V3 IOC to act as a pvAccess server endpoint. See RES 5.

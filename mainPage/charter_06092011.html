@@ -29,7 +29,7 @@
 <h1>Charter of the EPICS v4 Working Group</h1>
 
 <!-- Maturity -->
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 8-Sep-2011</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 1-Sep-2011</h2>
 
 <!-- Versioning. When modifying, always upload a file with date
 appended as 'This Version', and an unappended file as Latest Version
@@ -38,7 +38,7 @@ appended as 'This Version', and an unappended file as Latest Version
 <dl>
 <dt>This version:</dt>
 <dd><a href=
-"http://epics-pvdata.sourceforge.net/charter_08092011.html">charter_04092011.html</a></dd>
+"http://epics-pvdata.sourceforge.net/charter_06092011.html">charter_04092011.html</a></dd>
 <dt>Latest version:</dt>
 <dd><a href=
 "http://epics-pvdata.sourceforge.net/charter.html">charter.html</a></dd>
@@ -50,11 +50,11 @@ appended as 'This Version', and an unappended file as Latest Version
 </div> <!-- header material -->
 
 <h2 class="nocount" id="abstract">Abstract</h2>
-<p><a href="index.html">EPICS v4</a> is a set of computer communications protocols, and a
+<p>EPICS v4 is a set of computer communications protocols, and a
 software framework, for high performance distributed control, message
 passing, and high level software services, as may be used in large
 scientific instruments and industrial
-plants. <a href="home.html">The EPICS v4
+plants. <a href="http://epics-pvdata.sourceforge.net/">The EPICS v4
 working group</a> is a collaborative effort of members invited by
 Brookhaven Lab, to bring EPICS v4 to its full potential. </p>
 
@@ -69,8 +69,8 @@ of the <a href="http://www.aps.anl.gov/epics/">Experimental Physics
 and Industrial Control System.</a></p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
-<p>This is the 8th Sept 2011 working draft version of the Charter, awaiting approval by the
-group. This version includes deliverables added in the meeting of 7-Sep-2011.</p>
+<p>This is a working draft of the Charter, awaiting approval by the
+group.</p>
 <p> After approval, this document will form the basis for the
 collaboration.</p>
 </p>
@@ -109,7 +109,7 @@ collaborating organizations, subject to their following this Charter.
 <h2 id="mission">Mission</h2>
 
 <p>The main objective of the EPICS v4 Working Group
-(<abbr title="EPICS v4 Working Group">EPICS v4</abbr>) is to specify, publish and implement, a
+(<abbr title="EPICS v4 Working Group">EPICS v4</abbr>) is to develop a
 core network messaging system, data format, and client and server APIs,
 that enable development of efficient distributed control and
 application services for large scientific instruments and industrial
@@ -127,7 +127,7 @@ been optimal for all purposes. Firstly, the underlying network
 protocol has not been documented and standardized, and so is not
 suitable for independent implementation or extension. Secondly, the
 network codec and message passing system has not supported passing
-semi-structured data, nor arguments, and so not been suitable for
+semi-structured data, nor arguments, and so not been been suitable for
 use as a services layer in support of host level scientific
 applications. </p>
 
@@ -335,63 +335,41 @@ site, <a href="http://epics-pvdata.sourceforge.net">http://epics-pvdata.sourcefo
 
 <h3 class="sub" id="Deliverables">Deliverables</h3>
 
-<p>The group is expected to produce the following normative deliverables:</p>
+<p>The group is expected to produce:</p>
 <ol>
-  <li id="de:pvaccess_doc">A normative document of the pvAccess protocol</li>
-  <li id="de:pvdata_doc">A normative document of the pvData protocol. The document must
-    include the user API - how a programmer creates data objects for the
-    wire, and extracts them on the other side</li>
-  <li id="de:iocpipe_doc">A normative document of the EPICS v4 IOC processing pipeline</li>
-  <li id="de:pvaccess_impl">A reference implementation of pvAccess in each of C++ and Java language bindings</li>
-  <li id="de:pvdata_impl">A reference implementation of pvData in each of C++ and Java language bindings</li>
-  <li id="de:pvioc_impl">A reference implementation of the EPICS v4 IOC in each of C++ and
-    Java language bindings. The Java version has high priority.</li>
-  <li id="de:interopdatatypes">A normative document of the EPICS v4
-    interoperable data types. These data types must be universally
-    understood by every client and service which claims EPICS v4
-    compatibility. The requirement for this deliverable is distinct from
-    the pvData document deliverable, since pvData can encode any type,
-    this deliverable recommends the confined set of data objects that will
-    be used by EPICS v4 interoperable services</li>
-  <li id="de:servicesAPI">A normative document of the EPICS v4 services
-    API. This defines the form for encoding parameters and status
-    descriptions between clients and services and back</li>
-  <li id="de:interop_doc">A report of interoperability of the EPICS v4 IOC with EPICS v3
-    record processing</li>
-  <li id="de:perf_doc">A performance report, comparing EPICS v3 to
-    EPICS v4 for some common EPICS v3 control and read tasks, plus
-    report of the expected performance of EPICS v4 service
-    support. For instance, round trip time for network
-    encoding/deserialization of results of 4 or 5 common service
-    queries such as archive data, orbit data, whole beamline model
-    etc</li>
-  <li id="de:getstarted_doc">A "Getting Started" document for EPICS v4 Service developers</li>
-  <li id="de:iocdev_doc">A User Guide for EPICS v4 IOC control application developers</li>
-  <li id="de:protocoldev_doc">A Programmers Guide for EPICS v4 protocol implementers (for
-    developing implementations of pvAccess, pvData or pvIOC)</li>
-  <li id="commandline_impl">A command line tool similar to caget (call
-    it say pvget), which understands all
-    the <a href="#interopdatatypes">interoperable data types</a>
-    above, and conforms to the <a href="#servicesAPI">EPICS v4
-      services API</a> above.</li>
-  <li id="de:dirservice_doc">A normative document of the EPICS v4
-    Directory Service function, API, and unix command line tool.</li>
-  <li id="de:dirservice_impl">A reference implementation of the EPICS
-  v4 Directory Service.</li>
-</ol>
-
-<p>Additionally, the group is expected to produce the following
-"extensions" of EPICS v4, as non-normative deliverables (as decided in
-meeting of <a href="minutes_07092011.txt">meeting of
-7-Sep-2011</a>):</p>
-
-<ol start="17">
-  <li id="de:pvmanager"><a href="http://pvmanager.sourceforge.net/">pvManager</a>, a
-    framework and client side application software library for
-    managing sets of EPICS v4 PV acquisitions. </li>
-  <li id="de:archive_service">An archive data retrieval service. [TBD: A new architecture for
-    archive storage, or just the pvAccess server endpoint that serves
-    archive data?]</li>
+<li>A normative document of the pvAccess protocol</li>
+<li>A normative document of the pvData protocol. The document must
+include the user API - how a programmer creates data objects for the
+wire, and extracts them on the other side</li>
+<li>A normative document of the EPICS v4 IOC processing pipeline</li>
+<li>A reference implementation of pvAccess in each of C++ and Java language bindings</li>
+<li>A reference implementation of pvData in each of C++ and Java language bindings</li>
+<li>A reference implementation of the EPICS v4 IOC in each of C++ and
+Java language bindings</li>
+<li id="de:interopdatatypes">A normative document of the EPICS v4
+interoperable data types. These data types must be universally
+understood by every client and service which claims EPICS v4
+compatibility. The requirement for this deliverable is distinct from
+the pvData document deliverable, since pvData can encode any type,
+this deliverable recommends the confined set of data objects that will
+be used by EPICS v4 interoperable services</li>
+<li id="de:servicesAPI">A normative document of the EPICS v4 services
+API. This defines the form for encoding parameters and status
+descriptions between clients and services and back</li>
+<li>A report of interoperability of the EPICS v4 IOC with EPICS v3
+record processing</li>
+<li>A performance report, comparing EPICS v3 to EPICS v4 for some
+EPICS v3 tasks [TBD], and report of the expected performance of EPICS
+v4 service support. For instance, round trip time for network
+encoding/deserialization of results of a query for archive data</li>
+<li>A "Getting Started" document for EPICS v4 Service developers</li>
+<li>A User Guide for EPICS v4 IOC control application developers</li>
+<li>A Programmers Guide for EPICS v4 protocol implementers (for
+developing implementations of pvAccess, pvData or pvIOC)</li>
+<li>A command line tool similar to caget (call it say pvget), which
+understands all the <a href="#interopdatatypes">interoperable data
+types</a> above, and conforms to the <a href="#servicesAPI">EPICS v4
+services API</a> above.</li>
 </ol>
 
 <h3 class="sub" id="Duration">Duration</h3>
@@ -400,7 +378,6 @@ meeting of <a href="minutes_07092011.txt">meeting of
 the group may seek to recharter with BNL and PSI, or determine that
 EPICSv4 should be discontinued. </p>
 
-<!-- ------------------------------------ -->
 <h2 id="milestones">Expected Milestones</h2>
 
 <p>[TBD]</p>

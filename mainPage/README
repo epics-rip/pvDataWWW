@@ -1,29 +1,39 @@
-This is the html doc for the source-forge epics-pvdata project.
+README
+
+This directory (pvDataWWW/mainPage/) contains the html files for 
+the sourceforge epics-pvdata project. 
+
+Installing files on the sourceforge web site
+--------------------------------------------
 In order to put it into the sourceforge area do the following:
 
-scp <file> userid,epics-pvdata@web.sourceforge.net:htdocs/<parent>
+    scp <file> <userid>,epics-pvdata@web.sourceforge.net:htdocs/<parent-directory>
 
-In order to put the javaDOC in place the old doc must be removed and the
+
+In order to put the javadoc in place the old javadoc must be removed and the
 new installed. The following uses pvData as an example:
 
-To remove the old doc 
-
-ssh -t USER,PROJECT@shell.sourceforge.net create
-
-then
-sf-help
-
-LAST TIME THE FOLLOWING WORKED
-
-cd /home/project-web/epics-pvdata
-cd htdocs
-
-then go to project and delete doc. For example
-rm -fr javaIOC
+[This seems suspicious - is this really how to remove javadoc?]
+--??--
+To remove the old doc:
+   ssh -t USER,PROJECT@shell.sourceforge.net create
 
 then
+   sf-help
+??
 
-shutdown
+Example:
+
+    cd /home/project-web/epics-pvdata
+    cd htdocs
+
+  Then go to project and delete doc. For example
+
+    rm -fr javaIOC
+
+  Then
+
+    shutdown
 
 To put the new files in place:
 1) use eclipse to generate javaDoc
@@ -32,4 +42,5 @@ To put the new files in place:
 4) cd to the export top level and execute the command:
  scp -r javaIOC  <user>,epics-pvdata@web.sourceforge.net:htdocs
 
+[Above scp line is inconsistent with the scp line at the top? ]
 

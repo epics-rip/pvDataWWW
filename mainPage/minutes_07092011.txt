@@ -1,0 +1,146 @@
+=========== Meeting 7-Sep-2011 =========
+ Timo Tapani Korhonen:I forgot my headset, so I will be listening and possibly post text comments
+ Timo Tapani Korhonen:hi everybody
+ Timo Tapani Korhonen:my mike is off
+ malitsky:hi
+ Timo Tapani Korhonen:could it be the webcam? I switch it off
+ Gabriele and Bob:Can anybody hear us?
+ Gregory White:Present: GC, BD, TK, MK, JR, MS, GS, GW, EW
+ Gregory White:http://epics-pvdata.sourceforge.net/home.html
+ Timo Tapani Korhonen:I barely hear Gabriele...not well enough to follow
+ James:gabriele turn up your mike
+ Gregory White:GC: SAid saomething very bizarre
+ Gabriele and Bob:Is the mike better?
+ Gabriele and Bob:GW: First item on the agenda. Review of the charter.
+ Gabriele and Bob:GW: Production services in scope?
+ Gabriele and Bob:GW: No, only framework (archive, bpm, ...) and references
+ Gabriele and Bob:GW: Clarify scope: scope for the group Epics v4
+ Gabriele and Bob:GW: Guobao, can you mute your mike?
+ Guobao Shen:I turn off my mike
+ Gabriele and Bob:GW: That's a lot better
+ Gabriele and Bob:GW: *giggles*
+ Gabriele and Bob:GC: *winks*
+ Gabriele and Bob:BD: PVManager is made to gather Epics v3 data and produce v4 structures
+ Gabriele and Bob:GW: Ok, PVManager is in scope, because is a general purpose utility
+ Gabriele and Bob:GW: [Resolution] PVManager shall be in scope!
+ Gabriele and Bob:BD: Archiver service in scope?
+ Timo Tapani Korhonen:I agree. To me something like a model service belongs to each institutes domain.
+ Gabriele and Bob:MK: Gather server in scope?
+ Timo Tapani Korhonen:Oops. I am not quite in phase with the discussion. Sorry.
+ Gabriele and Bob:GW: Worried about timing
+ James:who's going to work on the archive service?
+ malitsky:BNL
+ Guobao Shen:We need to make gather function as a production service
+ Guobao Shen:The basic function is there already
+ Gabriele and Bob:GW: [Resolution] Directory service (ChannelFinder) is in scope
+ Timo Tapani Korhonen:we have a couple of people who could work (part time) on the archiver issues, if there is something that fits to the plans.
+ Gabriele and Bob:GW: [Resolution] Archive service is in scope - at least for now
+ Guobao Shen:You can config it as a orbit service easily
+ Guobao Shen:or magnet service
+ malitsky:archiver: BNL, SLAC, Diamond, ...
+ James:I was planning on working on the archiver interface but the XMLRPC is good for our clients for the forseeable future
+ Gabriele and Bob:BD: BNL needs to resolve gather service with PVManager
+ Timo Tapani Korhonen:archiver: potentially, PSI could be added as a contributor
+ malitsky:great
+ Gabriele and Bob:GW: [Resolution] Gather service for now is not in scope, until BNL resolves
+ Gabriele and Bob:GW: Need to attach names deliverables
+ Gabriele and Bob:GW: Matej 1
+ Gabriele and Bob:GW: Marty 2
+ Gabriele and Bob:GW: Marty 3
+ Gabriele and Bob:GW: 4-> Matej + Marty
+ Gabriele and Bob:BD: What is the time frame for deliverables?
+ Gabriele and Bob:GS: For the year
+ Gabriele and Bob:GW
+ Gabriele and Bob:GW: 5 -> Matej + Marty
+ Gabriele and Bob:GW: 6 -> Marty
+ Gabriele and Bob:GW: 7 -> Gabriele + Greg
+ Gabriele and Bob:GW: 8 -> Greg
+ Gabriele and Bob:GW: 9 -> Marty
+ Gabriele and Bob:GW: 10 -> Guobao
+ Guobao Shen:Where to put it?
+ Gabriele and Bob:GW: 11 -> Greg
+ Gabriele and Bob:GW: 12 -> Marty
+ Timo Tapani Korhonen:where can I find the V4 IOC user guide?
+ Guobao Shen:http://epics-pvdata.sourceforge.net
+ James:greg where is this numbered list of devliverables?
+ Matej Sekoranja:@James: http://epics-pvdata.sourceforge.net/charter.html#deliverables
+ James:thanks
+ Gregory White:thanks MS
+ Timo Tapani Korhonen:for a beginner user it can be a bit hard to get started based on javadoc...even if it is good. (maybe I am just slow...)
+ Gabriele and Bob:He has just put the html page in the front of the javadocs, instead of being a separate PDF/Word file
+ Gabriele and Bob:The important thing is the content
+ Gabriele and Bob:The content is there...
+ Gregory White:http://epics-pvdata.sourceforge.net/normative_header.html
+ Gabriele and Bob:GW: 13 -> Mary + Matej
+ Gabriele and Bob:GW: 14 -> Gabriele
+ Guobao Shen:for 14, Matej has provided one in pvAccessCPP already
+ Guobao Shen:in command line
+ Guobao Shen:pvget, pvput
+ Matej Sekoranja:regarding 14: pvget/pvput already exists... it's a caget/caput "eqvivalent"
+ Gregory White:Example pvget XCR:LI32:343:twiss -mode=hard_xray -run=gold
+ James:This is ChannelRPC through a name server?
+ Guobao Shen:Where is the underlying datasource?
+ Gabriele and Bob:Is that an RPC? or you also monitor?
+ Matej Sekoranja:can we use different name from the start (not to confuse with pure pvAccess get), e.g. pvServiceGet or sth (Bob for sure will have some nice ideas for the name :) )
+ Gregory White:Example pvmonitor XCR:LI32:343:twiss -mode=hard_xray -run=gold
+ Gregory White:$ pvget XCR:LI32:343:twiss -mode=hard_xray -run=gold
+ Gregory White:Thewn all you need is toString()
+ Gregory White:Vector result = pvget('XCR:LI32:343:twiss','mode=hard_xray'.'run=gold');
+ Gabriele and Bob:GW: pvget/pvmonitor/pvput that understands normative types -> Gabriele
+ Gabriele and Bob:GW: pvlist that uses channel finder to execute queries -> Gabriele + Kunal
+ Gabriele and Bob:GW: How long does that take?
+ Gabriele and Bob:GC: the plumbing for creating the command line tools is there. What will take time is the definition of the types and the deserialization of pvAccess/pvData, which will be done when the data types are formalized.
+ Gabriele and Bob:GW: [Resolution] PVioc for controls is in scope, but not high priority
+ Guobao Shen 2:Bob is that true?
+ Timo Tapani Korhonen:our (PSI) plan looks the same as yours (BNL). v3 for control for the time being.
+ Gabriele and Bob:Reapeat the question?
+ Gabriele and Bob:Can GW repeat?
+ Gabriele and Bob:Can't hear Marty
+ Timo Tapani Korhonen:we do not see an immediate need for pvIOC. 
+ Gabriele and Bob:MK: cpp version of the ioc is high priority? To host v3 ioc?
+ Guobao Shen 2:Yes, I agree with James
+ Guobao Shen 2:with support of RPC
+ Gabriele and Bob:BD: using v3 ioc with pvAccess should be high in scope
+ Timo Tapani Korhonen:agree about v3 + pvAccess high in scope.
+ Guobao Shen 2:I need a pvAccess server with RPC function
+ Guobao Shen 2:I believe this is the same requirement with James
+ malitsky:This is the item 6
+ James:I don't need RPC function, I need a put endpoint
+ Guobao Shen 2:Ok
+ Gabriele and Bob:MK: [Resolution] ....
+ Marty:pvIOCCPP is not a high priority item for the next few months
+ malitsky:good, but pvIOCCPP is the item 6. Correct?
+ Marty:Item 6 can be changed to state Java version first
+ malitsky:sure
+ Matej Sekoranja:"toString() out of introspection data" already exists: pvget command line; this should be enough for the epics meeting demo... and it also has "terse" mode - looks like a table!
+ James:yes matej
+ Gabriele and Bob:GC: [Resolution] Divide the work in the client in two steps.
+ Gabriele and Bob:GC: Short term, iron out connection and just produce Strings from whatever you get
+ Gabriele and Bob:GC: Longer term, figure out type, and return and actually useful type
+ Gabriele and Bob:GW: Apartment, will work on data types (table)
+ Timo Tapani Korhonen:I can hear you, but you do not want to hear what has kept me busy...trust me.
+ Gabriele and Bob:GC: CSS ChannelFinder based widgets, CSS release end of month, BOY integrations with PVManager, pvlist/pvget clients
+ Gabriele and Bob:BD: keep the money coming
+ Gabriele and Bob:MK: python support, fixing memory leaks, waiting to see where to what to do
+ Matej Sekoranja:MS: stability and performance improvements of pvAccessCPP + pvAccess, support others; update of pvAccess protocol specification in the future 
+ Gabriele and Bob:GW: Ralph, thank you for not talking
+ Gabriele and Bob:JR: ....position... ...ndarrays... ....pvaccess...
+ James:unpack into areadetector ndarray type on the other end too, save to hdf5
+ James:may have full areadetector processing pipeline on the server
+ James:windows detector areadetector -> pvAccess transport -> linux server areadetecotr
+ Gabriele and Bob:He already typed it
+ Gabriele and Bob:GS: python for pvData/pvAccess
+ Gabriele and Bob:GC If we can find something with less delay
+ James:better than I expected
+ Gabriele and Bob:BD: future meeting should be more terse
+ Marty:Will  you send a summary of action items
+ James:maybe we should skip the video
+ Gabriele and Bob:BD: good
+ Gregory White:http://epics-pvdata.sourceforge.net/home.html
+ Gabriele and Bob:GW: final thing, home page for the group
+ Gabriele and Bob:It's not ItemFinder!
+ Gregory White:bye
+ Gabriele and Bob:It's ChannelFinder!
+ James:thanks, bye
+ malitsky:bye
+ Guobao Shen 2:bye
