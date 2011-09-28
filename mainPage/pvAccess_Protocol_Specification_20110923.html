@@ -89,7 +89,7 @@ with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>
 
 <p>TCP/IP is used for data transmission, UDP/IP for discovery (discovery over TCP/IP is also allowed). The procotol itself supports IPv6, i.e. all addresses are IPv6 encoded.</p>
 
-<p>pvAccess heavily depends on pvData – all the data is sent as pvData objects.  Protocol is optimized to send minimum amount of data. It supports segmented messages and allows sending huge amount of data using small buffers (there is no limitation on maximum message size limited by send/receive buffer).</p>
+<p>pvAccess heavily depends on <a href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>] – all the data is sent as pvData objects.  Protocol is optimized to send minimum amount of data. It supports segmented messages and allows sending huge amount of data using small buffers (there is no limitation on maximum message size limited by send/receive buffer).</p>
 
 <p>The pvAccess protocol definition consists of three major parts:
 <ul>
@@ -117,7 +117,7 @@ Many of the types involved in the data encoding, as well as several protocol mes
 </p>
 <h3 id="dataEncoding:basicTypes">Basic Types</h3>
 
-<p>The basic types are encoded as shown in. Integer types (byte, short, int, long) are represented as two’s complement numbers, and floating point types (float, double) use the IEEE standard formats.</p>
+<p>The basic types are encoded as shown in. Integer types (byte, short, int, long) are represented as two’s complement numbers, and floating point types (float, double) use the IEEE-754 standard formats [<a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a>].</p>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Encoding for basic types.</caption>
@@ -127,13 +127,13 @@ Many of the types involved in the data encoding, as well as several protocol mes
 <tr><td style="text-align:right;font-weight:bold">short</td><td>Signed 16-bit integer.</td></tr>
 <tr><td style="text-align:right;font-weight:bold">int</td><td>Signed 32-bit integer.</td></tr>
 <tr><td style="text-align:right;font-weight:bold">long</td><td>Signed 64-bit integer.</td></tr>
-<tr><td style="text-align:right;font-weight:bold">float</td><td>32-bit float (23-bit fractional mantissa, 8-bit exponent, sign bit).</td></tr>
-<tr><td style="text-align:right;font-weight:bold">double</td><td>64-bit float (52-bit fractional mantissa, 11-bit exponent, sign bit).</td></tr>
+<tr><td style="text-align:right;font-weight:bold">float</td><td>32-bit float (IEEE-754 single-precision float).</td></tr>
+<tr><td style="text-align:right;font-weight:bold">double</td><td>64-bit float (IEEE-754 double-precision float).</td></tr>
 </table>
 
 
 <h3 id="dataEncoding:strings">Strings</h3>
-<p>Strings are encoded as a size, followed by the string contents in ASCII format array of bytes. Strings are not NULL-terminated. An empty string is encoded with a size of zero.
+<p>Strings are encoded as a size, followed by the string contents in UTF-8 format array of bytes. Strings are not NULL-terminated. An empty string is encoded with a size of zero.
 </p>
 
 <h3 id="dataEncoding:arrays">Arrays</h3>
@@ -146,7 +146,7 @@ Many of the types involved in the data encoding, as well as several protocol mes
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Field encoding.</caption>
 <tr><th>Field Encoding</th><th>Type</th><th>Description</th></tr>
-<tr><td>0xFF</td><td style="font-weight:bold">NULL_TYPE_CODE</td><td>NULL.</td></tr>
+<tr><td>0xFF</td><td style="font-weight:bold">NULL_TYPE_CODE</td><td>No introspection data.</td></tr>
 <tr><td>0xFE + ID</td><td style="font-weight:bold">ONLY_ID_TYPE_CODE</td><td>Serialization contains only an ID (that was assigned by one of the previous FULL_WITH_ID descriptions).</td></tr>
 <tr><td>0xFD + ID + FieldDesc</td><td style="font-weight:bold">FULL_WITH_ID_TYPE_CODE</td><td>Serialization contains an ID (that can be used later, if cached) and full interface description.</td></tr>
 </table>
@@ -157,7 +157,7 @@ Actual Field introspection description (FieldDesc) is encoded as a byte that con
 <caption style="font-weight:bold">FieldDesc encoding.</caption>
 <tr><th>FieldDesc Encoding</th><th>Type</th><th>Description</th></tr>
 <tr><td>0x00 | ScalarType (0b0000xxxx) + name</td><td style="font-weight:bold">scalar</td><td>Scalar.</td></tr>
-<tr><td>0x10 | ScalarType (0b0001xxxx) + name</td><td style="font-weight:bold">scalarArray</td><td>Array of scalars.</td></tr>
+<tr><td>0x10 | ScalarType (0b0000xxxx) + name</td><td style="font-weight:bold">scalarArray</td><td>Array of scalars.</td></tr>
 <tr><td>0x20 (0b00100000) + name + Field[]</td><td style="font-weight:bold">structure</td><td>Structure.</td></tr>
 <tr><td>0x30 (0b00110000) + name + (structure name + Field[])</td><td style="font-weight:bold">structureArray</td><td>Array of structures.</td></tr>
 </table>
@@ -187,11 +187,11 @@ Actual Field introspection description (FieldDesc) is encoded as a byte that con
 <p>
 Data (i.e. PVField) basically encodes only its data. The only exception is structureArray. Before each structure of an array there is a boolean flag indicating whether structure is null or not.
 </p>
-<p>Each structure can have a BitSet instance defining what subset of all structure fields have been actually serialized. This allows partial serialization of structures, e.g. sending only fields that have changed and not entire structure. Each node of a structure corresponds to one bit; if a bit is set its corresponding field has been serialized, otherwise has been ignored. BitSet does not apply to array elements.</p>
+<p>Each structure can have a BitSet instance defining what subset of that structure's fields have been serialized. This allows partial serialization of structures, e.g. sending only fields that have changed and not entire structure. Each node of a structure corresponds to one bit; if a bit is set its corresponding field has been serialized, otherwise not. BitSet does not apply to array elements.</p>
 <h4 id="data:example">Example</h4>
 <pre>bit#    field0    structure 1        structure timeStamp2            long secondsPastEpoch 12965642963            int nanoSeconds 8190000004        structure[] value             structure org.epics.ioc.test.testStructure                double value 100                structure location                    double x 0                    double y 0            structure org.epics.ioc.test.testStructure                double value 200                structure location                    double x 5                    double y 105        string factoryRPC org.epics.ioc.support.rpc.ExampleChannelRPCFactory6        structure arguments7            int size 28        structure element9            double value 010            structure alarm11                int severity 012                string message 13            structure timeStamp14                long secondsPastEpoch 015                int nanoSeconds 0</pre>
 <p>The structure above requires 16 bits, i.e. 2 bytes.<br/>
-Remark: for performance reasons BitSet implementation stores bits as longs, however serialization is optimized to send only least possible number of bytes.<br/>If bit on a structure node is set then all its fields has to be de-/serialized.</p>
+Remark: for performance reasons BitSet implementation stores bits as longs, however serialization is optimized to send only least possible number of bytes (LSB part that covers all the bits set).<br/>If bit on a structure node is set then all its fields have to be de-/serialized.</p>
 <p>The example below is a simple example where entire structure is sent, i.e. bit 0 is set.<br/>
 NOTE: first six bytes are erased since they are not part of structure serialization.</p>
 <pre>                   01 01  00 00 00 00  4D 48 00 48         .. .... MH.H 30 D0 F2 C0  02 01 40 59  00 00 00 00  00 00 00 00  0... ..@Y .... .... 00 00 00 00  00 00 00 00  00 00 00 00  00 00 01 40  .... .... .... ...@ 69 00 00 00  00 00 00 40  14 00 00 00  00 00 00 40  i... ...@ .... ...@ 24 00 00 00  00 00 00 32  6F 72 67 2E  65 70 69 63  $... ...2 org. epic 73 2E 69 6F  63 2E 73 75  70 70 6F 72  74 2E 72 70  s.io c.su ppor t.rp 63 2E 45 78  61 6D 70 6C  65 43 68 61  6E 6E 65 6C  c.Ex ampl eCha nnel 52 50 43 46  61 63 74 6F  72 79 00 00  00 02 00 00  RPCF acto ry.. .... 00 00 00 00  00 00 00 00  00 00 00 00  00 00 00 00  .... .... .... .... 00 00 00 00  00 00 00                               .... ...</pre>
@@ -231,9 +231,12 @@ Each protocol message has a fixed 8-byte header that is encoded as if it were th
 <tr><td style="text-align:right;font-family:monospace">7</td><td>Little/Big [0/1] endian byte order.</td></tr>
 </table>
     <p>
-NOTE: If bits 4 and 5 are both sets this indicates message between first and last message of segmented messages. If none set then message is not segmented.</p>
+NOTE: If bits 4 and 5 are both set this indicates message between first and last message of a set of segmented messages. If none set then message is not segmented.</p>
 
 <h2 id="protocolMessages:applicationMessages">Application Messages</h2>
+<p>
+This section describes all the application messages (0-th bit of <i>pvAccessHeader.flags</i> is not set) for different  <i>pvAccessHeader.messageType</i> values.
+</p>
 
 <h3 id="protocolMessages:applicationMessages:beacon">Beacon (0x00)</h3><p>
 Send over UDP to clients. Beacons are only used to detect new servers and server restarts. </p>
@@ -255,7 +258,7 @@ Send over UDP to clients. Beacons are only used to detect new servers and server
 
 <p>    A beacon from yet unknown serverAdddressIPv6:serverPort means new server. A beacon with the same serverAdddressIPv6:serverPort address and different startupTime{Seconds,Nanos} means that server was restarted.</p>
 
-<p>NOTE: it was agreed that servers would have time set on every restart (via NTP).<br/>NOTE: beacons are no logger used to report server-alive status (this is done by monitoring TCP/IP traffic – if there is traffic from server, then server is alive). This reduces UDP traffic. Server must at least send a couple of beacons to notify that it is alive (e.g. 1Hz). After this it can stop sending them, or does it with a low rate (one per every couple of minutes) to report serverStatus.
+<p>NOTE: it was agreed that servers would have time set on every restart (via NTP).<br/>NOTE: beacons are no longer used to report server-alive status (this is done by monitoring TCP/IP traffic – if there is traffic from server, then server is alive). This reduces UDP traffic. Server must at least send a couple of beacons to notify that it is alive (e.g. 1Hz). After this it can stop sending them, or does it with a low rate (one per every couple of minutes) to report serverStatus.
 </p>
 
 
@@ -369,6 +372,9 @@ Proper UDP congestion control needs to be implemented to prevent flooding the ne
 </p>
 
 <h2 id="controlMessages">Control Messages</h2>
+<p>
+This section describes all the control messages (0-th bit of <i>pvAccessHeader.flags</i> is set) for different  <i>pvAccessHeader.messageType</i> values.
+</p>
 
 <h3 id="protocolMessages:controlMessages:mark">Mark Total Byte Sent (0x00)</h3><p>
 Payload size field holds the value of total bytes sent.</p>
