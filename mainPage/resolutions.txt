@@ -3,6 +3,7 @@ RESOLUTIONS of the EPICS v4 Working Group
 
 ===============================
 7-Sep-2011 telecon: http://epics-pvdata.sourceforge.net/meeting_07092011.txt
+----------------------------------------------------------------------------
 
 1. PVManager shall be in scope. 
 
@@ -23,3 +24,18 @@ work aside though.
 term, iron out connection and just produce Strings from whatever you
 get. Longer term, figure out type, and return and actually useful
 type.
+
+
+14-Sep-2011 telecon: http://epics-pvdata.sourceforge.net/meeting_14092011.txt
+----------------------------------------------------------------------------
+
+7. The charter as of the 14-Sept-2011, with modifications made for performance,
+is agreed to by the group. [As updated http://epics-pvdata.sourceforge.net/charter_15092011.html]
+
+
+22-Sep-2011 telecon: http://epics-pvdata.sourceforge.net/meeting_22092011.txt
+-----------------------------------------------------------------------------
+
+8. We will publish the pvAccess specification as a First Public Working Draft prior
+to the EPICS meeting at PSI. 
+

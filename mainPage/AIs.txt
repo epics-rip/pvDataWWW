@@ -23,3 +23,12 @@ form attribute=value, that will be added in a nw AI]. See also RES 6.
 
 5. AI on MS [no date]: Complete work on pvIOCCPP specifically for use in a 
 V3 IOC to act as a pvAccess server endpoint. See RES 5.
+
+========================================================
+14-Sep-2011 telecon: 
+http://epics-pvdata.sourceforge.net/meeting_15092011.txt
+--------------------------------------------------------
+
+6. AI on GW by 30-Sep-2011: Produce a database access service using only what 
+support exists in EPICS V4 at the present time. 
+

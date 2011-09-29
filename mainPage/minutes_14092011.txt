@@ -1,0 +1,84 @@
+
+ ========== Meeting 14-Sep-2011
+
+ Gabriele:No, Kunal is not coming...
+ Gregory White:Present: GC, BD, MK, NM, JR, MS, GS, GW
+ Gabriele:Bob can't hear you right now...
+ Gabriele:I am trying to set him up...
+ Gabriele:But he has issues...
+ Gregory White:Scribe "gregory White"
+ Gregory White:http://tinyurl.com/3ksqb2h
+ Marty Kraimer:Marty temporily taking minutes
+ Marty Kraimer:Discussion is Directory service
+ Marty Kraimer:Gettimg info is more that just list of PV names
+ Marty Kraimer:Can channelFinder do this.
+ Marty Kraimer:Can I get history of something
+ Marty Kraimer:Gabrellle says you give search string get result
+ Marty Kraimer:Channel gives a list of names + tag names + properties
+ Marty Kraimer:Is channelFinder a service?
+ Marty Kraimer:Yes it is a web service
+ Marty Kraimer:Greg asks is intent to provided a pvService that uses WEB service to talk to database
+ Gabriele:Bob is taking notes... on his laptop....
+ Marty Kraimer:But no one is currently assigned to implement this.
+ Marty Kraimer:Greg is it fast enough?
+ Marty Kraimer:Gabriele: It will me made fast enough.
+ Gabriele:It's Ralph's documentation...
+ Marty Kraimer:OK no more notes from Marty
+ James:Keep epics build system for c++
+ guobao:agree
+ Nikolay:for Java, Maven is important
+ Nikolay:I agree with James
+ James:No pods on mine
+ James:no
+ James:switch, meeting, volume control, mike, cam, high 5
+ James:yes something popped up
+ James:yes that
+ James:i can see the mouse
+ James:i can see it now
+ James:desktop
+ Marty Kraimer:I want doc telling me what eclipse pugins I need and also getting started doc
+ James:have you got the maven plugin for eclipse?
+ guobao:I believe Kunal is using maven+eclipse
+ Gregory White:http://epics-pvdata.sourceforge.net/charter.html
+ Gregory White:BD Would rather be better than CA for get / put
+ Gregory White:MK: GS data shows that for large arrays we're better than CA
+ guobao:Yes
+ guobao:The test is based on Java version
+ James:For streaming data make performance 80% of raw tcp stream socket.
+ guobao:For C++, we need benchmark it again
+ James:Sorry rather relative to stream socket no matter what percentage.
+ Gabriele:Bob: yes yes yes
+ Gabriele:Bob: that's a good point
+ James:yes
+ James:yes that or more
+ Gabriele:Bob: 120%
+ Matej:Let's aim for 101% of CA.
+ Matej::)
+ Gabriele:Bob: Ok 101%
+ Gabriele:Bob: no no no
+ Gabriele:Bob: the requirement should not be what we can do, but what we require
+ Matej:end-to-end... why? compression/more optimize messages will lower network usage, but end-to-end (what data was actually sent) might be the same (not thinking of CPU usage)
+ James:I need 600MB/s streaming over 10gbe
+ Gregory White:get/put 100%, monitor 100% (of comparable simple data), stream: 80 % of raw tcp 
+ Gregory White:multicast: 100 of ca when available
+ James:sounds god
+ James:good
+ Gabriele:Bob: *nods*
+ Gabriele:Whatever Bob says
+ Gabriele:He's right next to me
+ Gabriele:And he has a mallet
+ Gabriele:Bob: *typing*
+ Gabriele:Can we put this as a milestone: put together quickly whatever it can given the stuff that we have?
+ Gabriele:Right, with whatever we have
+ Gabriele:End- to-end
+ Gabriele:Yes
+ Gabriele:Bob: ye
+ Gabriele:Bob: yes
+ James:bye
+ Marty Kraimer:bye
+ Gabriele:Ciao!
+ Gregory White:bye
+ Nikolay:bye
+ Gregory White:Bob, can you send me the notes? Cheers
+
+Directory service --- Channel Finder can put any information to a name……. ----- list of names, each name can have tags, and properties (key, value pairs)----- This sounds perfect as long as it is fast enough----- Channel finder is available as a web service----- talking about connecting the web service to a PVService to provide this result as a PVTable----- Not clear who would do the work…. Looking for someone to do this.----- Is the directory service general enough……. CF update. Directory service, IOCs update PVs on boot up. Parent is IOC name. host name. Something listens to this change, gets the new update, opens the file and updates the delta and sends one transaction to the service.  Phyiscs group adds things to the directory service already.  Data can be taken from IRMIS to stick it in. Other things could populate this table – such as the archiver. There is a CSS application that also interacts with this service. Requested documentation to do the back end and add things to this service.Mercurial / MavenDemonstration of how the source control is being done in mercurial / mavenDemonstration of Maven in this repositoryShowing repository, unit testing,, etc……Want a cheat Sheat? Want to use It and learn the tools……Do not need to learn everything – Gabriele did that.First add a hello world and a unit test.Matej is already using this. Marty is having trouble with Eclipse. Gabriele is using Netbeans. Matej supports using what Gabriele has set it up (Marty together with Matej and Kunal to support Eclipse).CharterDirectory service and gatherTBDs taken out.Please review this everyone……… URL to be attached here.Need a formal buy off on this target.Section by section review:MissionScope and goals:  acceptedInteroperatbility Goals: appropriatePerformance Goals:Better than 101% of CA:  for scalars, large data, and metadataUnder streams     80% of the capacity of the media and     90% of the stream socket capacityOut of scope:Windows service side is out, client side is inSuccess criteria:Directory service – deliverPolicy:EPICS open licenseBy consensus the charter is approved.Milestones:These were not included. They need to be listed out.Send these to Greg ---- we want to capture the low hanging fruit first.Directory service through PV accessGather service through PVAccessTable serviceStatistics serviceImage serviceAction item: greg produce a real service to the database ( which one from above? Table?) Sept 31st.

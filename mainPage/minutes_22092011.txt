@@ -1,0 +1,80 @@
+========== Meeting 22-Sep-2011 ==========
+ Gregory White:Present: GW, BD, GC, GS, MK, MS, NM
+ guobao:hi
+ Gregory White:hi Guobao
+ guobao:Bob?
+ Bob and Gabriele (mainly Bob):Bob: I'll scribe
+ Bob and Gabriele (mainly Bob):He's in my office
+ Bob and Gabriele (mainly Bob):Gabriele: Bob's in my office
+ Bob and Gabriele (mainly Bob):Gabriele: he couldn't setup his thingy...
+ Bob and Gabriele (mainly Bob):Gabriele could
+ Bob and Gabriele (mainly Bob):Bob couldn't\
+ Bob and Gabriele (mainly Bob):I can see it
+ guobao:I can not go
+ Bob and Gabriele (mainly Bob):Bob: data types need to be in there
+ Bob and Gabriele (mainly Bob):Bob: I'll do the introduction
+ Bob and Gabriele (mainly Bob):Bob: no
+ Bob and Gabriele (mainly Bob):Bob: forgot
+ Bob and Gabriele (mainly Bob):It was about something before..
+ Bob and Gabriele (mainly Bob):Yes: no mike
+ Bob and Gabriele (mainly Bob):Bob: we are checking
+ Bob and Gabriele (mainly Bob):Gabriele: I am not going there
+ Bob and Gabriele (mainly Bob):Gabriele is not there, cannot give a talk
+ guobao:No
+ guobao:I can not give a talk
+ guobao:no, I will not be there
+ Bob and Gabriele (mainly Bob):Bob: of... course
+ guobao:Thanks Bob
+ Bob and Gabriele (mainly Bob):Bob: Gabriele prepares it
+ Bob and Gabriele (mainly Bob):Bob: I will present it
+ Nikolay:yes
+ Bob and Gabriele (mainly Bob):Bob: what am I doing?
+ Bob and Gabriele (mainly Bob):We were distracted...
+ Bob and Gabriele (mainly Bob):Bob: ok
+ Bob and Gabriele (mainly Bob):Bob: good
+ Bob and Gabriele (mainly Bob):Bob: sure
+ guobao:I can type
+ guobao:Yes
+ guobao:please
+ guobao:Marty, please go ahead
+ guobao:my mike echos
+ Bob and Gabriele (mainly Bob):Yes, you have to install a plugin
+ Bob and Gabriele (mainly Bob):And then you get disconnected
+ Bob and Gabriele (mainly Bob):And then you reboot
+ Bob and Gabriele (mainly Bob):And then you come in again
+ Bob and Gabriele (mainly Bob):And then Greg is to share again
+ Bob and Gabriele (mainly Bob):And then you can
+ Bob and Gabriele (mainly Bob):It's very simple, really
+ Bob and Gabriele (mainly Bob):Why don't I do it?
+ Bob and Gabriele (mainly Bob):Yes
+ guobao:yes
+ Bob and Gabriele (mainly Bob):Yes we can
+ Nikolay:yes
+ Gregory White:Marty, you there?
+ Gregory White:yes, we can hear you very faintly
+ Gregory White:We were waiting for marty to get back on
+ Matej:I suggest everybody opens this document locally.
+ guobao:Not exact I guess
+ guobao:in some case, client wants to get data from same channel many times
+ Nikolay:service can be shared by different clients
+ Nikolay:both
+ Nikolay:I think we assume several gather-based services
+ Nikolay:we should assume
+ guobao:adding to marty
+ Nikolay:no
+ guobao:there are 2 ways to do it
+ guobao:as I said before
+ guobao:what do you really want
+ guobao:depend what you really want
+ Nikolay:money
+ Bob and Gabriele (mainly Bob):You need to install stuff
+ Bob and Gabriele (mainly Bob):The browser will close
+ Bob and Gabriele (mainly Bob):And then you install
+ Bob and Gabriele (mainly Bob):And then you go back in
+ Bob and Gabriele (mainly Bob):Because I am brilliant
+ Bob and Gabriele (mainly Bob):No, I did not
+ Bob and Gabriele (mainly Bob):I did not have it installed
+ Bob and Gabriele (mainly Bob):No
+ Nikolay:bye
+ Gregory White:bye
+ Timo Tapani Korhonen:bye
