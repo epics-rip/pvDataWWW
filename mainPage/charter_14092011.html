@@ -6,7 +6,7 @@
  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <meta http-equiv="PRAGMA" content="NO-CACHE">
   <meta http-equiv="EXPIRES" content="0">
- <title>Charter of the EPICS V4 Working Group</title>
+ <title>Charter of the EPICS v4 Working Group</title>
  <link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css" type="text/css" media="screen" />
  <link rel="stylesheet" type="text/css" href="http://www.w3.org/2006/02/charter-style.css" />
  <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" />
@@ -28,10 +28,10 @@
 
 
 <div class="head">
-<h1>Charter of the EPICS V4 Working Group</h1>
+<h1>Charter of the EPICS v4 Working Group</h1>
 
 <!-- Maturity -->
-<h2 class="nocount">EPICS V4 Working Group, 15-Sep-2011</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 14-Sep-2011</h2>
 
 <!-- Versioning. When modifying, always upload a file with date
 appended as 'This Version', and an unappended file as Latest Version
@@ -40,7 +40,7 @@ appended as 'This Version', and an unappended file as Latest Version
 <dl>
 <dt>This version:</dt>
 <dd><a href=
-"http://epics-pvdata.sourceforge.net/charter_15092011.html">charter_15092011.html</a></dd>
+"http://epics-pvdata.sourceforge.net/charter_14092011.html">charter_14092011.html</a></dd>
 <dt>Latest version:</dt>
 <dd><a href=
 "http://epics-pvdata.sourceforge.net/charter.html">charter.html</a></dd>
@@ -52,14 +52,14 @@ appended as 'This Version', and an unappended file as Latest Version
 </div> <!-- header material -->
 
 <h2 class="nocount" id="abstract">Abstract</h2>
-<p><a href="index.html">EPICS V4</a> is a set of computer communications protocols,
+<p><a href="index.html">EPICS v4</a> is a set of computer communications protocols,
 and a software framework, for high performance distributed control, message passing,
 and high level software services, as may be used in large scientific instruments and
-industrial plants. <a href="home.html">The EPICS V4 working group</a> is a
-collaborative effort of members invited by Brookhaven Lab, to bring EPICS V4 to its
+industrial plants. <a href="home.html">The EPICS v4 working group</a> is a
+collaborative effort of members invited by Brookhaven Lab, to bring EPICS v4 to its
 full potential. </p>
 
-<p>This Charter is a statement of the basis for the work of the of the EPICS V4
+<p>This Charter is a statement of the basis for the work of the of the EPICS v4
 working group, the intended outcomes for that work, its deliverables and success
 criteria. It also outlines some administrative matters of the organization of the
 group, and its working practices. </p>
@@ -69,10 +69,10 @@ the <a href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
 Control System.</a></p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
-<p>This is the 15th Sept 2011 version of the charter. This version was approved by a
-meeting of the group on 14-Sept as the basis charter of the group from that date
-on. This version includes modifications to the performance objectives of the core
-protocols, as agreed in that meeting, but is otherwise unchanged from 14th Sept.</p>
+<p>This is the 14th Sept 2011 working draft version of the Charter, awaiting approval by the
+group. This version includes modifications to scope and deliverables for experimental data acquisition,
+Windows client, and directory service functionalities, plus some others. 
+It also adds which license the work is under.</p>
 </p>
 <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY
 when highlighted (through style sheets, and in uppercase in the
@@ -102,14 +102,14 @@ with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>
 
 <h2 id="process">Basis for Work</h2>
 
-<p>The EPICS V4 working group is supported by Brookhaven Lab (BNL) and
+<p>The EPICS v4 working group is supported by Brookhaven Lab (BNL) and
 collaborating organizations, subject to their following this Charter.
 </p>
 
 <h2 id="mission">Mission</h2>
 
-<p>The main objective of the EPICS V4 Working Group
-(<abbr title="EPICS V4 Working Group">EPICS V4</abbr>) is to specify, publish and implement, a
+<p>The main objective of the EPICS v4 Working Group
+(<abbr title="EPICS v4 Working Group">EPICS v4</abbr>) is to specify, publish and implement, a
 core network messaging system, data format, and client and server APIs,
 that enable development of efficient distributed control and
 application services for large scientific instruments and industrial
@@ -129,7 +129,7 @@ extension. Secondly, the network codec and message passing system has not suppor
 passing semi-structured data, nor arguments, and so not been suitable for use as a
 services layer in support of host level scientific applications. </p>
 
-<p>The EPICSV4 Working Group is chartered to define and publish an open control
+<p>The EPICSv4 Working Group is chartered to define and publish an open control
 protocol for control system endpoints, which functionally extends channel access to
 suitability for both device control and high level services. This must include data
 types suitable for high level services, including at least a heterogeneous table (as
@@ -140,12 +140,12 @@ or <a href="http://www.w3.org/TR/XMLHttpRequest/">XMLHTTPRequest</a> object (the
 basis of Web Services).
 </p>
 
-<p>Specifically, the EPICSV4 group is chartered to procedure a standard for the
+<p>Specifically, the EPICSv4 group is chartered to procedure a standard for the
 interface of user level clients, for updating displays, control, and application
 level data, to services and device control, and experimental data acquisition,
 implemented in an
-<a href="#EPICSv4IOC">EPICS V4 IOC</a>, or in an EPICS v3 IOC (where a
-client may itself be an EPICS V4 IOC).</p>
+<a href="#EPICSv4IOC">EPICS v4 IOC</a>, or in an EPICS v3 IOC (where a
+client may itself be an EPICS v4 IOC).</p>
 
 <p>Java, C or C++, bindings must be supplied for all implementations
 of each normative standard. 
@@ -181,13 +181,13 @@ of each normative standard.
     must be interoperable with EPICS v3.14. See <a href="#interopv3">Interoperability
     with EPICS v3 below</a></li>
 
-  <li id="go:interopv4">Intra-EPICS V4 interoperability and Directory Service. The
+  <li id="go:interopv4">Intra-EPICS v4 interoperability and Directory Service. The
     client side API must be able to acquire any suitably named item, control PV or
-    otherwise, that an EPICS V4 IOC knows how to acquire without specifying itself,
+    otherwise, that an EPICS v4 IOC knows how to acquire without specifying itself,
     from which service to get the value of the named item. Additionally, the client
-    side API must be able to report the EPICS (v3 and V4) acquirable names of all
+    side API must be able to report the EPICS (v3 and v4) acquirable names of all
     items in its network matching a
-    pattern. See <a href="#interoppv4">Interoperability within EPICS V4</a>
+    pattern. See <a href="#interoppv4">Interoperability within EPICS v4</a>
     below. </li>
 
   <li id="go:perf">High Performance. The above protocols and
@@ -199,7 +199,7 @@ of each normative standard.
   <li id="go:adopt">Exceptionally easy adoptability. The above
     protocols and framework must be transparent, documented, and
     delivered so that it is very easy for a developer to create EPICS
-    V4 IOC applications and services</li>
+    v4 IOC applications and services</li>
 
   <li id="go:impl">Implementability. The above protocols, and the
     processing of message I/O, must be documented in such as way that
@@ -210,22 +210,22 @@ of each normative standard.
     implementations must handle and log all errors in such a way that
     distributed users can see both the causes and outcomes of all
     errors. In practice, this will mean the creation and adoption of a
-    single error messaging standard, perhaps an EPICS V4 service whose
+    single error messaging standard, perhaps an EPICS v4 service whose
     job it is to receive and log errors from all other endpoints.</li>
 
 </ol>
 
 
 <h3 id="interopv3">Interoperability with EPICS v3</h3>
-<p>EPICS V4 clients must be interoperable with EPICS v3
+<p>EPICS v4 clients must be interoperable with EPICS v3
 IOCs. Specifically, PvAccess must run in version 3 IOCs and serve all
 v3 type structures.</p>
 
 <p>This mechanism must satisfy the expected use case of device control
-including EPICS V4 in the medium term; in which device control will
+including EPICS v4 in the medium term; in which device control will
 continue to be through EPICS v3, with control wire protocols and
-client sides in EPICS V4. It is expected that in the longer term, past the
-duration of this charter, the EPICS V4 IOC will be properly extended
+client sides in EPICS v4. It is expected that in the longer term, past the
+duration of this charter, the EPICS v4 IOC will be properly extended
 into device control.</p>
 
 <p>The extent and any limitations of compatibility with adjacent
@@ -233,7 +233,7 @@ layers in the EPICS v3 protocol stack must be documented as
 a <a href="#normative">normative document</a> of the working group.
 </p>
 
-<h3 id="interopv4">Interoperability within EPICS V4</h3>
+<h3 id="interopv4">Interoperability within EPICS v4</h3>
 <p>Each normative standard must be demonstrated to be interoperable
 with adjacent layers in the EPICS v4 protocol stack by production of,
 and testing, at least one implementation.</p>
@@ -242,11 +242,11 @@ and testing, at least one implementation.</p>
 <p>The following minimum performance goals are expected:</p>
 
 <ul>
-  <li>put &#47; get: 100% of Channel Access in equivalent scenario</li>
-  <li>monitors: 100% of Channel Access in an equivalent scenario</li>
-  <li>multicast: when available, 100% of Channel Access, but more scalable</li>
-  <li>streams: 90% of the raw TCP socket throughput, and 80% of the capacity of the media.  For
-    example, over 10GBit Ethernet, then a little less than 8GBits of data transfer on a
+  <li>put &#47; get - 80% if channel access</li>
+  <li>monitors - 80% of channel access</li>
+  <li>multicast - each point is 80% but it is more scalable</li>
+  <li>streams (bulk data) - 80% of the capability of the media.  For
+    example, over 10GBit Ethernet, then 8GBits of data transfer on a
     dedicated VLAN. This should be optimized for sending images and
     multidimensional arrays, and by implication should minimize
     copying.</li>
@@ -271,7 +271,7 @@ and testing, at least one implementation.</p>
   wide variety of applications, and the group should not spend time optimizing for
   any given service. For instance, inclusion of specific type designs for archiving,
   images, scanning, are out of scope. Rather, it's expected that
-  the <a href="#interopdatatypes">EPICS V4 Interoperable Types</a> specification,
+  the <a href="#interopdatatypes">EPICS v4 Interoperable Types</a> specification,
   will define one or two general purpose types that can be used for semi-structured
   data, and include a dynamic type that can be used to construct highly application
   specific types. A few reference application specific data types may be published,
@@ -285,34 +285,34 @@ and testing, at least one implementation.</p>
 
 <p>With respect to development of support for specific services in the core
   protocols, or development of specific services, being out of scope: any user,
-  including a member of EPICS V4, is free to use the products of the EPICS V4 group
+  including a member of EPICS v4, is free to use the products of the EPICS v4 group
   to develop controls, extend any protocol, or create production services, but the
   group itself should concentrate on the normative standards and their
   implementations. A separate group may choose to produce some production
   interoperable services and applications, but they are out of scope for EPICS
-  V4.</p>
+  v4.</p>
 
 <h2 id="success">Success Criteria</h2>
 
 <p>Derived from the goals above, success criteria are at least:</p>
 <ol>
- <li>Adoption or planned adoption of EPICS V4 in the EPICS
+ <li>Adoption or planned adoption of EPICS v4 in the EPICS
  community</li>
- <li>Demonstrated interoperability of EPICS V4 clients and EPICS V4
+ <li>Demonstrated interoperability of EPICS v4 clients and EPICS v4
  services</li>
  <li>Demonstrated interoperability with EPICS v3</li>
  <li>Demonstrated high performance</li>
- <li>Demonstrated easy to implement an EPICS V4 service, taking
+ <li>Demonstrated easy to implement an EPICS v4 service, taking
  arguments, and returning semi-structured data</li>
- <li>Demonstrated easy to implement an EPICS V4 client, taking data 
- from EPICS v3 records, packaged by an EPICS V4 service</li>
+ <li>Demonstrated easy to implement an EPICS v4 client, taking data 
+ from EPICS v3 records, packaged by an EPICS v4 service</li>
  <li>Demonstrated easy for an end user to get a list of all PVs and named entities in
 an EPICS network, through an EPICS client, given a name pattern</li>
  <li>Easy for a developer to acquire, understand, and build, a
  reference implementation of pvAccess and pvData (independently of
- their server side housing in an EPICS V4 IOC)</li>
+ their server side housing in an EPICS v4 IOC)</li>
  <li>Easy for a developer to acquire, understand, build and deploy, a
- reference implementation of EPICS V4 Java IOC or C/C++ IOC. </li>
+ reference implementation of EPICS v4 Java IOC or C/C++ IOC. </li>
 </ol>
 
 <h2 id="deliverables">Deliverables and Duration</h2>
@@ -320,7 +320,7 @@ an EPICS network, through an EPICS client, given a name pattern</li>
 <p>The outputs of the working group will be delivered as a system of
 documented standards, plus reference implementation source code where
 relevant. These documents and source codes will all be available from
-the EPICS V4 web
+the EPICS v4 web
 site, <a href="http://epics-pvdata.sourceforge.net">http://epics-pvdata.sourceforge.net/</a>. </p>
 
 <h3 class="sub" id="Deliverables">Deliverables</h3>
@@ -331,56 +331,56 @@ site, <a href="http://epics-pvdata.sourceforge.net">http://epics-pvdata.sourcefo
   <li id="de:pvdata_doc">A normative document of the pvData protocol. The document must
     include the user API - how a programmer creates data objects for the
     wire, and extracts them on the other side</li>
-  <li id="de:iocpipe_doc">A normative document of the EPICS V4 IOC processing pipeline</li>
+  <li id="de:iocpipe_doc">A normative document of the EPICS v4 IOC processing pipeline</li>
   <li id="de:pvaccess_impl">A reference implementation of pvAccess in each of C++ and Java language bindings</li>
   <li id="de:pvdata_impl">A reference implementation of pvData in each of C++ and Java language bindings</li>
-  <li id="de:pvioc_impl">A reference implementation of the EPICS V4 IOC in each of C++ and
+  <li id="de:pvioc_impl">A reference implementation of the EPICS v4 IOC in each of C++ and
     Java language bindings. The Java version has high priority.</li>
-  <li id="de:interopdatatypes">A normative document of the EPICS V4
+  <li id="de:interopdatatypes">A normative document of the EPICS v4
     interoperable data types. These data types must be universally
-    understood by every client and service which claims EPICS V4
+    understood by every client and service which claims EPICS v4
     compatibility. The requirement for this deliverable is distinct from
     the pvData document deliverable, since pvData can encode any type,
     this deliverable recommends the confined set of data objects that will
-    be used by EPICS V4 interoperable services</li>
-  <li id="de:dirservice">A directory service accessible through the EPICS V4 API itself,
+    be used by EPICS v4 interoperable services</li>
+  <li id="de:dirservice">A directory service accessible through the EPICS v4 API itself,
   from which can be found at least PV and entity names, and associated service names </li>
-  <li id="de:servicesAPI">A normative document of the EPICS V4 services
+  <li id="de:servicesAPI">A normative document of the EPICS v4 services
     API. This defines the form for encoding parameters and status
     descriptions between clients and services and back</li>
-  <li id="de:interop_doc">A report of interoperability of the EPICS V4 IOC with EPICS v3
+  <li id="de:interop_doc">A report of interoperability of the EPICS v4 IOC with EPICS v3
     record processing</li>
-  <li id="de:perf_doc">A performance report, comparing EPICS v3 to EPICS V4 for some
+  <li id="de:perf_doc">A performance report, comparing EPICS v3 to EPICS v4 for some
     common EPICS v3 control and read tasks, plus report of the expected performance
-    of EPICS V4 service support. For instance, round trip time for network
+    of EPICS v4 service support. For instance, round trip time for network
     encoding/deserialization of results of 4 or 5 common service queries such as
     archive data, orbit data, whole beamline model etc. Comparisons to at least 2
     other common high performance data interconnects should be made, eg ICE, ASN.1,
     EXI Web Service. </li>
-  <li id="de:getstarted_doc">A "Getting Started" document for EPICS V4 Service developers</li>
-  <li id="de:iocdev_doc">A User Guide for EPICS V4 IOC control application developers</li>
-  <li id="de:protocoldev_doc">A Programmers Guide for EPICS V4 protocol implementers (for
+  <li id="de:getstarted_doc">A "Getting Started" document for EPICS v4 Service developers</li>
+  <li id="de:iocdev_doc">A User Guide for EPICS v4 IOC control application developers</li>
+  <li id="de:protocoldev_doc">A Programmers Guide for EPICS v4 protocol implementers (for
     developing implementations of pvAccess, pvData or pvIOC)</li>
   <li id="commandline_impl">A command line tool similar to caget (call
     it say pvget), which understands all
     the <a href="#interopdatatypes">interoperable data types</a>
-    above, and conforms to the <a href="#servicesAPI">EPICS V4
+    above, and conforms to the <a href="#servicesAPI">EPICS v4
       services API</a> above.</li>
-  <li id="de:dirservice_doc">A normative document of the EPICS V4
+  <li id="de:dirservice_doc">A normative document of the EPICS v4
     Directory Service function, API, and unix command line tool.</li>
   <li id="de:dirservice_impl">A reference implementation of the EPICS
-  V4 Directory Service.</li>
+  v4 Directory Service.</li>
 </ol>
 
 <p>Additionally, the group is expected to produce the following
-"extensions" of EPICS V4, as non-normative deliverables (as decided in
+"extensions" of EPICS v4, as non-normative deliverables (as decided in
 meeting of <a href="minutes_07092011.txt">meeting of
 7-Sep-2011</a>):</p>
 
 <ol start="17">
   <li id="de:pvmanager"><a href="http://pvmanager.sourceforge.net/">pvManager</a>, a
     framework and client side application software library for
-    managing sets of EPICS V4 PV acquisitions. </li>
+    managing sets of EPICS v4 PV acquisitions. </li>
   <li id="de:archive_service">An archive data retrieval service. Only the EPICS
   service endpoint is in scope, not the archiver architecture itself. This may be
   modified in a future charter amendment.</li>
@@ -391,7 +391,7 @@ meeting of <a href="minutes_07092011.txt">meeting of
 
 <p>The expiration date of this charter is 1-Sep-2012. At that time,
 the group may seek to recharter with BNL and PSI, or determine that
-EPICSV4 should be discontinued. </p>
+EPICSv4 should be discontinued. </p>
 
 <!-- ------------------------------------ -->
 <h2 id="milestones">Expected Milestones</h2>
@@ -406,15 +406,15 @@ the requirements of the following bodies:</p>
 <dl>
  <dt>BNL NSLS Controls</dt> 
  <dd>[TBD: What specific requirements are
-   there of EPICSV4 to satisfy BNL requirements. Are these solely with
+   there of EPICSv4 to satisfy BNL requirements. Are these solely with
    respect to services, and if so which? Is BNL expecting work on
-   EPICS V4 database or record support?] </dd> 
+   EPICS v4 database or record support?] </dd> 
  <dt>PSI SwissFEL</dt>
- <dd>PSI requires EPICS V4 services framework, for online accelerator
-   modelling in particular, and interoperability of the EPICS V4 based
+ <dd>PSI requires EPICS v4 services framework, for online accelerator
+   modelling in particular, and interoperability of the EPICS v4 based
    services with EPICS v3 IOCs and their associated record support.</dd>
  <dt>SLAC FEL accelerators (LCLS/LCLS-II)</dt> 
-   <dd>SLAC requires EPICS V4 services framework
+   <dd>SLAC requires EPICS v4 services framework
    in general, and for online accelerator modelling in
    particular.
    </dd> 
@@ -432,8 +432,8 @@ followed.
 </p>
 <p><span id="part"><strong>Participant Status:</strong></span>
 Prospective group participants should ask their primary EPICS contact
-or manager to send an email to one of the EPICS V4 chairs, showing
-that they understand the participant will be involved with EPICS V4
+or manager to send an email to one of the EPICS v4 chairs, showing
+that they understand the participant will be involved with EPICS v4
 and the commitment level expected.</p>
 <p><span id="obs"><strong>Observer Status:</strong></span> Individuals
 who are not active at the full participation level, may join meetings
@@ -489,11 +489,11 @@ License</a>.</p>
 <dl>
 <li id="normative">Normative. "Normative" indicates whether a document or source code
 should be considered a core product of the working group and as such follows the
-standards for quality control of EPICS V4 deliverables. Normative documents will have
+standards for quality control of EPICS v4 deliverables. Normative documents will have
 standard headers. Normative code will be documented to an agreed standard
 level. Documents and code additionally made available by the group, for illustration,
 as minor test code, or incidental, are "non-normative".</li>
-<li id="EPICSv4IOC">EPICS V4 IOC. An Input Output Control computer or virtual
+<li id="EPICSv4IOC">EPICS v4 IOC. An Input Output Control computer or virtual
 machine, which implements and responds to pvAccess, has facilities to manage data
 with pvData, and implements a functional programming scheme for efficient process
 control using "smart records".</li>
@@ -501,9 +501,9 @@ control using "smart records".</li>
 
 <hr />
 <address class="author">
- Greg White, EPICS V4 group co-chair<br />
- Bob Dalesio, BNL Controls Group leader, and EPICS V4 co-chair<br />
- Last modified $ Date: 2011/09/15 17:21:49 $
+ Greg White, EPICS v4 group co-chair<br />
+ Bob Dalesio, BNL Controls Group leader, and EPICS v4 co-chair<br />
+ Last modified $ Date: 2011/09/14 13:06:49 $
 </address>
 
 </div> <!-- contents -->
