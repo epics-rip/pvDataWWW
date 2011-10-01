@@ -1,75 +1,284 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-  <title>EPICS PVData</title>
+ <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="PRAGMA" content="NO-CACHE">
+  <meta http-equiv="EXPIRES" content="0">
+ <title>EPICS Version 4 Home Page</title>
+ <link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css"
+ type="text/css" media="screen" />
+ <link rel="stylesheet" type="text/css"
+ href="http://www.w3.org/Guide/pubrules-style.css" />
+ <link rel="stylesheet" type="text/css" href="epicsv4.css" />
+ <style type="text/css">
+   @media print {
+     body { margin-right: 10%;
+     font-size: smaller }
+   }
+   @media screen {
+     body { margin-right: 10% }
+   }
+ </style>
 </head>
-
 <body>
-<img src="logo101.gif" alt="EPICS" align="right" height="101" width="101"> <a
-href="http://sourceforge.net/projects/epics-pvdata"><img
-src="http://sflogo.sourceforge.net/sflogo.php?group_id=249167&amp;type=10"
-width="80" height="15" align="left"
-alt="Get EPICS-pvData at SourceForge.net. Fast, secure and Free Open Source software downloads"></a> 
-
-<h2 align="center">EPICS PVData</h2>
-
-<h2 align="center">2011.09.14</h2>
-
-<div><a href="home.html">Link to Working Group Home</a></div>
-<h3>Introduction</h3>
-
-<p><span style="font-size: 16pt">Full documentation is available via</span>: <a
-href="doc/index.html"><span style="font-size: 18pt">Documentation</span></a>
-</p>
-
-
-<p>EPICS PVData is a software tool kit for implementing a Distributed Control
-System.</p>
-
-<p>The toolkit consists of the following components:</p>
-<dl>
-  <dt>pvData</dt>
-    <dd>Definition and implementation of memory resident structured data.</dd>
-  <dt>pvAccess</dt>
-    <dd>Channel Access Version 4: Network Support for pvData. Note</dd>
-  <dt>pvIOC</dt>
-    <dd>An Input Output Controller (IOC) that supports pvData and implements
-      "smart" records.</dd>
-  <dt>pvService</dt>
-    <dd>A set of services for High Level Applications.</dd>
-</dl>
-
-<p>A pvIOC is an implementation of an EPICS Input Output Controller (IOC). A
-pvIOC is similar to an EPICS Version 3 IOC ( the 3.13 and 3.14 releases of
-EPICS base) but extends the data types to support structured data. The
-pvService component provides a service layer for accessing a set of V3 IOCs
-and/ot pvIOCs<a href="http://www.aps.anl.gov/epics"></a></p>
+<h1>EPICS Version 4</h1>
+<table class="masthead" vspace="4px" width="100%">
+  <tbody align="center">
+    <tr>
+      <td align="center" style="background-color: rgb(0,128,255);"><span class="selectedtab" >HOME</span</td>
+      <td align="center" ><a  target="_blank" href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE HOME</a></td>      
+      <td align="center" ><a  target="_blank" href="home.html">GROUP</a></td>
+      <td align="center"><a  target="_blank" href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">MAIL ARCHIVE</a></td>
+      <td align="center"><a  target="_blank" href="AIs.txt">ACTION ITEMS</a></td>
+      <td align="center"><a  target="_blank" href="issues.txt">ISSUES</a></td>
+      <td align="center"><a  target="_blank" href="resolutions.txt">RESOLUTIONS</a></td>
+    </tr>
+</table>
 
 <p><a href="http://www.aps.anl.gov/epics">EPICS</a> is a set of Open Source
 software tools, libraries and applications developed collaboratively and used
 worldwide to create distributed soft real-time control systems for scientific
 instruments such as a particle accelerators, telescopes and other large
-scientific experiments. An IOC (Input/Output Controller) is a network node that
+scientific experiments. </p>
+
+<h2 id="whatdoesitbring">What is EPICS Version 4?</h2>
+<p>
+EPICS Version 4 (V4) brings support for managed distributed data acquisition, service oriented architecture, and complex data structures to
+EPICS. </p>
+<p>
+EPICS V4 is composed of a number of core standards and APIs, reference
+implementations of those standards in C++ and Java, plus associated other components
+and tools. The intention is for the standards and APIs to go through a public review
+process, leading to published protocols and APIs that may be independently
+implemented.</p>
+<p> The work adds support for "structured" data to EPICS records. That is, a PV's
+value need no longer be a simple type or a waveform, but potentially an arbitrarily
+complex
+structure. A <a href="http://en.wikipedia.org/wiki/Remote_procedure_call">"Remote
+Procedure Call"</a> like processing pattern has been added, which supports passing
+arguments within the context of asynchronous record processing. In this way services
+may be defined. A new IOC design supports the protocol and new record architecture
+for high efficiency services and controls.
+</p>
+<p>
+The <a href="home.html">EPICS V4 Working Group</a> is a collaborative effort to
+define, publish, and provide a reference implementations for, the EPICS V4 standards. The group is
+<a href="charter.html">chartered</a> to provide open protocols and standards for both
+controls and services interconnection through a public process [yes, we've been 
+very bad at this part so far, but it's about to get much better with the first 
+public working draft of the pvAccess protocol]. 
+</p>
+
+<h2 id="nutshell">EPICS Version 4 in a Nutshell</h2>
+<p>In EPICS V3 and before, an IOC (Input/Output Controller) is a network node that
 controls and/or monitors a collection of devices. An IOC contains a memory
 resident real time database. The real time database has a set of "smart"
 records.</p>
+<p>In EPICS V4, <a href="#pvioc">pvIOC</a> is the implementation of an EPICS IOC. A
+pvIOC is similar to an EPICS Version 3 IOC (at least the 3.13
+and 3.14 releases of EPICS base) but extends the data types to support structured
+data. These data objects, simple or structured, are defined through
+the <a href="#pvdata">pvData</a> interface. So, records are processed by pvIOC, the
+PV data I/O is described through pvData, and the client - IOC interconnect is through
+a new protocol for structured data, <a href="#pvaccess">pvAccess</a>.  An adjunct
+component, <a href="#pvservice">pvService</a>, provides an API for synchronous or
+asynchronous services for accessing a set of V3 IOCs and/or pvIOCs. </p>
 
-<h3>Uses</h3>
+<h2 id="summarystatus">Summary Status</h2>
+<p>This section is a very short summary of the status of EPICS V4 overall, and gives
+help on how an interested engineer might want to use it now.</p>
+<p>
+<strong>Overall, the project is in pre-beta</strong>. The standards of EPICS V4, and their
+implementations, are each at different levels of development. Some are largely mature
+and ready for use. Others are at an early stage.  Some parts are ready for early
+adopters. Other parts await definition.</p>
+<p>In acute summary, support for managed distributed data acquisition is quite far
+along and can be used now. This includes acquisition from EPICS V3 PVs via EPICS V4
+tools or components. The basis for services and "RPC in EPICS" is at beta, and there
+are early prototype services, but there is not yet an easy to use framework for
+Service Oriented Architecture (SOA). The area in which EPICS V4 is not yet ready for
+use is that part which is the core value of the EPICS V3 IOC, record processing for
+controls. This is because we are adding to EPICS first, then will re-implement the
+exiting excellent functionality in EPICS version 3. See below for a complete
+breakdown.
+</p>
 
-<p>Some uses are:</p>
+<h2 id="lit">Software Specifications and Implementations</h2>
+<p>EPICS V4 is a body of core specifications, reference implementations, and some
+associated tools. The core specifications, we
+call <a href="charter.html#normative">"normative"</a>. The normative specifications
+will be open, collaboratively defined, and may be implemented and extended by any
+interested party. We provide reference implementations for adopters of EPICS V4, and
+to test the specifications' performance and effectiveness. Associated other documents
+are "non-normative" and no guarantees will be made about them. </p>
+<h3>Normative Specifications</h3>
+<dl class="normativeproddescr">
+<dt id="pvaccess">pvAccess</dt>
+<dd>The description of network support for pvData. A complete implementation is available for both Java and for C++, although documentation has not been written for the C++ implementation.</dd>
+<dd><strong>Literature:</strong> <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess Protocol Specification</a>. <em>Status is pre Public Working Draft</em></dd>
+<dd>
+    <strong>Implementations:</strong>
+    <ul>
+    <li>Java reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/">pvAccessJava</a>. Status: Usable beta. pvAccessJava <a href="pvAccessJava/index.html">Documentation </a>
+    </li>
+    <li>C++ reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessCPP/">pvAccessCPP</a>. Status: Usable beta. Documentation for the CPP reference implementation has not been written.
+    </li>
+  </ul>
+</dd>
+</dl>
+
+<dl class="normativeproddescr">
+  <dt id="pvdata">pvData</dt>
+  <dd>The description of how memory resident data types are described and defined. Complete implementations are available for both Java and for C++.</dd>
+  <dd><strong>Literature:</strong> The pvData interface has not yet been specified independently of its implementations, though that is an expected deliverable of the EPICS V4 Working Group</dd>
+  <dd><strong>Implementations:</strong>
+  <ul>
+    <li>Java reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/">pvDataJava</a>. Status: usable beta. pvDataJava <a href="pvDataJava/index.html">Documentation</a></li>
+    <li>C++ reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/">pvDataCPP</a>. Status: usable beta. pvDataCPP <a href="pvDataCPP.html">Documentation</a>.</li>
+  </ul>
+</dd>
+</dl>
+
+<dl class="normativeproddescr">
+<dt id="pvioc">pvIOC</dt>
+<dd>The description of an IOC (Input Output Controller) that supports pvData.  The
+Java version has lots of functionality.  The C++ version is in the early stages of
+development.</dd>
+<dd><strong>Literature:</strong> pvIOC has not yet been specified independently of
+its implementations, though that is an expected deliverable of the EPICS V4 Working
+Group</dd>
+  <dd><strong>Implementations:</strong>
+  <ul>
+    <li>Java reference
+    implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/">pvIOCJava</a>. Status: usable late beta with respect to service support. pvIOCJava <a href="pvIOCJava/index.html">Documentation</a></li>
+    <li>C++ reference
+    implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/">pvIOCCPP</a>. Status: alpha. pvIOCCPP <a href="pvIOCCPP.html">Documentation</a>.</li>
+</dd>
+</dl>
+
+<dl class="normativeproddescr">
+<dt id="pvservice">pvService</dt>
+<dd>Support for services based on the above EPICS V4 normative standards.  Both the
+Java and C++ versions are in early stages of development, though services are now
+being prototyped.  It's expected that a framework for a Service Oriented Architecture
+will be specified above pvService, making its interface easier to write
+services. There is also a python version of part of the C++ services. </dd>
+<dd><strong>Literature:</strong> pvService has not yet been specified independently
+of its implementations, though that is an expected deliverable of the EPICS V4
+Working Group</dd>
+<dd><strong>Implementations</strong>
+<ul>
+  <li>Java reference
+  implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/">pvServiceJava</a>. Status: RPC support itself is late beta. Services are alpha. pvServiceJava <a href="pvServiceJava/index.html">Documentation</a></li>
+    <li>C++ reference
+    implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceCPP/">pvServiceCPP</a>. Status: RPC support itself is late beta. Services are alpha. pvServiceCPP <a href="pvServiceCPP.html">Documentation</a>. <a href="pvServicePy.html">pvServicePy.html</a></li>
+</ul>
+</dd>
+</dl>
+
+
+<h3 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h3>
+
+<p>This section outlines how one might use EPICS V4 right now, given its present
+status</p>
+
+<p>It is expected that, for a significant period of time, an institutional user of
+EPICS Version 4 would use it <strong>in parallel</strong> with EPICS version 3. In
+particular, EPICS Version 3 would continue to be the basis of controls. In its
+present state, EPICS Version 4 concentrates on so called "high level" software
+services. It provides a framework for fast distributed message passing. This is like
+remote procedure calls, but with a programming model optimized for efficient
+distributed synchronous or asynchronous processes.
+</p>
+<p>In a hybrid environment, EPICS V4 is at beta for use for managed distributed data
+acquisitions. See <a href="http://pvmanager.sourceforge.net/">pvManager</a>, which is
+a client side tool for making acquisitions of a large number of PVs
+efficiently. pvManager is mature enough for use now, contact Gabriele Carassi at
+BNL. Also see
+the <a href="http://epics-pvdata.sourceforge.net/doc/pvServiceJava/gather.html">Gather
+service framework</a>. This is a server side software framework that uses the new
+facilities of EPICS V4 for services, to help a user define, save, and execute, a
+named coordinated acquisition of many PVs. The Gather service framework is alpha
+stage software; it's complete, but not yet field tested. Contact Marty Kramer or
+Guobao Shen at BNL.
+</p>
+<p>
+Although record processing is presently part of EPICS V4, it is not mature enough to
+supplant EPICS V3 record processing for controls.  Record processing for controls is
+expected in about 1 year. Contact Marty Kramer or Matej Sekornaja at COSYLAB for more
+details and estimates.
+</p>
+<p>Support for essentially Remote Procedure Calls (RPC) through EPICS V4, is in
+pvService.  This is at early beta but looks good. So if you have a need for host
+level services, it is worth looking there now. You will find some early services
+there too, including a model service harness. A framework for a SOA on top of pvService is under way and expected very soon. Contact
+Greg White at PSI or SLAC.
+</p>  
+<p>EPICS V4 is also being used now developing beamline image data acquisition and
+storage, using the facilities of pvData for structured data. Contact James Roland at
+DIAMOND.</p>
+
+<h2 id="softwaredevel">Software Development</h2>
+
+<p>At the present time code is only available via source-forge.</p>
+
+<p>All projects use a mercurial repository. They can all be checked out via a
+bash command. </p>
+
+<p>As an example of how to check out the pvDataCPP mercurial module:</p>
+<pre>&gt; hg clone ssh://&lt;your-sourceforge-iserid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
+
+<h3>Java</h3>
+
+<p>Presently the easiest way to develop the Java implementations, is using Eclipse. We haven't 
+yet written makes or ants. The relevant Mercurial modules are: pvDataJava, pvAccessJava, pvIOCJava,
+pvServiceJava.
+</p>
+<p>To use or develop these, the steps might be: </p>
+<ul>
+  <li>Install eclipse</li>
+  <li>Use a shell command to clone the mercurial repository as described
+  above.</li>
+  <li>If you cloned the Java projects into directory hg/ change workspace to
+  hg/.</li>
+  <li>In eclipse import from local mercurial repository.</li>
+  <li>Make pvAccessJava depend on pvDataJava.</li>
+  <li>Make pvIOCJava depend on pvDataJava and pvAccessJava.</li>
+  <li>Make pvServiceJava depend on pvDataJava, pvAccessJava, and pvIOCJava.</li>
+</ul>
+
+<h3>C++ and Python</h3>
+
+<p>The C++ and Python code also uses the mercurial repository. The EPICS V3 build
+system is used rather than Eclipse. V3 libCom is used for threading and
+other support. Thus it requires that you have a recent release of EPICS base.
+These are the relevant sourceforge mercurial modules: pvDataCPP, pvAccessCPP, pvIOCCPP, pvServiceCPP
+</p>
+
+<h2>EPICS V4 Solutions</h2>
+
+<p>This section outlines some general "solutions" provided by EPICS Version 4 (in marketing-speak - basically, what might you use EPICS version 4, for):</p>
 <dl>
-  <dt>Service Layer</dt>
+  <dt>Scientific or "high level" Services</dt>
     <dd>This is the current emphasis. An example is the gather service. It
       allows a gather client to get/put/monitor the values of a set of V3
-      records. The data is given to the client as an array.</dd>
+      records. The data is given to the client as an array. Another example might be a 
+      accelerator modelling service, in which the optics of an entire accelerator may be
+      computed and returned as a single table to the client. Other examples are
+      synchronized beam orbit acquisition, synchronized magnet setting, relational database I/O.
+      Such services are characterized by two things: large payload I/O (eg whole tables),
+      and the need to ask for the value of a "PV" subject to arguments. These two characteristics 
+      are supported by pvData and pvAccess. 
+   </dd>
   <dt>I/O Controller</dt>
     <dd>The pvIOC can be used as a soft real-time Input/Output controller. It
       implements portDriver, which is a facility for accessing hardware I/O
-      devices such as Analog, Digital, Serial, GPIB, etc. (Much work remains on
-      implementing low level drivers).</dd>
+      devices such as Analog, Digital, Serial, GPIB, etc. However, much work remains on
+      implementing low level drivers.</dd>
   <dt>Distributed Control System</dt>
-    <dd>EPICS PVData provides a toolkit for building a DCS.</dd>
+    <dd>EPICS PvData provides a toolkit for building a DCS.</dd>
   <dt>SCADA</dt>
     <dd>EPICS PVData can be used to implement Supervisory Control And Data
       Acquisition (SCADA) applications.</dd>
@@ -77,134 +286,60 @@ records.</p>
     <dd>An application can use the pvIOC or just channelAccess/pvData to serve
       data to network clients.</dd>
   <dt>Gateway</dt>
-    <dd>A pvIOC can be the basis for transfering data between different types
+    <dd>A pvIOC can be the basis for transferring data between different types
       of control systems. </dd>
+  <dt>Separation of Time Domains</dt>
+  <dd>A pvIOC hosted service, or pvManager, can be used to make acquisitions at a
+rate suitable for one component, such as a client display, independently of the
+refresh or change rate of the events.</dd>
+  <dt>Aggregated Data Acquisition</dt>
+  <dd>A pvIOC hosted service may be used to collect data from a large number of PVs in
+a coordinated way, process it as a whole, such as fitting, or tabulating, and pass these
+data on to consumers</dd>
+  <dt>OLAP, OLTP, ETL</dt>
+  <dd>In general, EPICS V4 services allow the EPICS site to include host level architecture patterns. </dd>
 </dl>
 
-<h3>SourceForge Projects</h3>
-
-<p>The implementation code consists of a combination of Java, C++, and Python.
-The Java implementation is the most complete. C++ implementations of pvData and
-pvAccess are also complete. The C++ implementations of pvIOC and pvService are
-in the early stages of development. The Python implementation of pvData and
-pvAccess is in progress. The client side of the gather service has been
-implemented in both C++ and Python.</p>
-
-<p>At the present time code is only available via source-forge.</p>
-
-<p>All projects use a mercurial repository. They can all be checked out via a
-bash command. </p>
-
-<p>As an example of how to check out pvDataCPP I can execute:</p>
-<pre>mrk&gt; pwd
-/home/mrk/hg/pvDataTemp
-mrk&gt; hg clone ssh://mrkraimer@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
-
-<p>A repository can be checked out read only via a command like:</p>
-<pre>hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataCPP</pre>
-
-<h4>Java</h4>
-
-<p>The Java code uses a mercurial repository and is developed as eclipse
-projects: </p>
+<h2>EPICS V4 Features</h2>
+<p>This section lists some of the features of EPICS V4, which make is suitable as 
+a platform for a unified controls and services environment for large experimental facilities.</p> 
 <dl>
-  <dt>pvDataJava</dt>
-  <dt>pvAccessJava</dt>
-  <dt>pvIOCJava</dt>
-  <dt>pvServiceJava</dt>
-</dl>
-
-<p>The java projects </p>
-
-<p>To install the software create eclipse projects. The steps are: </p>
-<ul>
-  <li>Install eclipse</li>
-  <li>Use a shell command to clone the mercurial repository as described
-  above.</li>
-  <li>If You cloned the Java projects into directory hg change workspace to
-  hg.</li>
-  <li>In eclipse import from local mercurial repository.</li>
-  <li>make pvAccessJava depend on pvDataJava.</li>
-  <li>Make pvIOCJava depend on pvDataJava and pvAccessJava.</li>
-  <li>Make pvServiceJava depend on pvDataJava, pvAccessJava, and pvIOCJava.</li>
-</ul>
-
-<h4>C++ and Python</h4>
-
-<p>The C++ and Python code also use a mercurial repository. The EPICS V3 build
-system is used as the development system. V3 libCom is used for threading and
-other support. Thus it requires that You have a recent release of EPICS base.
-The following sourceforge mercurial repositories exist:</p>
-<dl>
-  <dt>pvDataCPP</dt>
-  <dt>pvAccessCPP</dt>
-  <dt>pvIOCCPP</dt>
-  <dt>pvServiceCPP</dt>
-</dl>
-
-<h3>Features</h3>
-<dl>
-  <dt>PVData</dt>
-    <dd>PVData (Process Variable Data) defines and implements an efficent way
-      to store, access, and create memory resident structured data.</dd>
-  <dt>channel access - network access</dt>
-    <dd>pvAccess implements a version of channel access that provides network
-      support for transfering PVData.</dd>
-  <dt>interface definitions</dt>
+  <dt>Structured Data</dt>
+    <dd>pvData (Process Variable Data) defines and implements an efficient way
+      to store and remotely interact with structured data</dd>
+  <dt>Open, well defined, channel access protocol</dt>
+    <dd>pvAccess implements a version of channel access that provides network support
+      for transferring PVData, is documented and may be independently implemented and
+      developed</dd>
+  <dt>Well defined interface definitions</dt>
     <dd>The Java package org.epics.pvData.pv has Java interface definitions
-      that define PVData. Package org.epics.ca.client has java interface
+      that define pvData. Package org.epics.ca.client has java interface
       definitions that define channelAccess. pvDataCPP provides the C++
-      definitions.</dd>
-  <dt>implementation</dt>
+      definitions</dd>
+  <dt>Implementation interop</dt>
     <dd>Projects pvData and pvDataCPP each provide a complete implementation of
       pvData. Projects pvAccess and pvAccessCPP provides network support for
-      pvData. The network protocal for the two languages is identical. Project
+      pvData. The network protocol for the two languages is identical. Project
       pvIOC implements a smart memory resident soft real time database. Each
       field of each record can optionally have attached support code which is
       called when a record is processed. The java version (javaIOC) has much
-      more functionality than pvIOCCP, which is in it's early stages of
-      development. </dd>
-  <dt>efficient</dt>
-    <dd>Small memory footprint, low cpu overhead, and concise code base.</dd>
-  <dt>data storage</dt>
+      more functionality than pvIOCCP, which is in its early stages of
+      development </dd>
+  <dt>Efficient</dt>
+    <dd>Small memory footprint, low cpu overhead, and concise code base</dd>
+  <dt>Efficient Complex Data Interconnect </dt>
     <dd>PVData defines separate introspection and data interfaces. The
       introspection interfaces provide access to immutable objects, which
       allows introspection instances to be freely shared. The introspection
       interface for a process variable can be accessed without requiring access
-      to the data.</dd>
-  <dt>data access</dt>
+      to the data, and what data is transferred is done efficiently because 
+      the metadata of the data need not also be transferred</dd>
+  <dt>Functional Data Types</dt>
     <dd>Client code can access PVData via the introspection and data
-      interfaces. For "well known" data, e.g. timeStamp, specialized interfaces
-      can be provided without requiring any changes to the core software.</dd>
-  <dt>data transfer</dt>
-    <dd>The separation of introspection and data interfaces allows for
-      efficient network data transfer. At connection time introspection
-      information can be passed from server to client. Each side can create a
-      data instance. The data is transferred between these instances. The data
-      in the network buffers does not have to be self describing since each
-      side has the introspection information.</dd>
-  <dt>memory resident</dt>
-    <dd>PVData only defines memory resident data.</dd>
-  <dt>structured data</dt>
-    <dd>PVData has three types: scalar, array, and structure. A scalar can be
-      one of the following: boolean, byte, short, int, long, float, double,
-      string. An array is a one dimensional array with the element type being
-      one of the scalar types. A structure is an ordered set of fields where
-      each field has a name and type. Since a field can have type structure
-      complex structures are supported. No other types are needed since
-      structures can be defined that simulate types.</dd>
+      interfaces. For "well known" data, such as timeStamp, or table of orbit data, 
+      specialized interfaces can be provided without requiring any changes 
+      to the core software</dd>
 </dl>
-
-<h3>Getting Started</h3>
-
-<p>The javaIOC project provides a GUI based shell. See Getting Started in <a
-href="javaIOC/doc/index.html">javaIOC/doc/index.html</a> For how to start it
-with an example database.</p>
-
-<p>Each project has a JavaDoc overview document and each java package has a
-package overview document. It is suggested that you first read the project
-overview document first: pvData, then channelAccess, and then javaIOC. The
-latest javaDOC is available via links in the next section.</p>
 
 </body>
 </html>
