@@ -29,7 +29,7 @@
     <tr>
       <td align="center" style="background-color: rgb(0,128,255);"><span class="selectedtab" >HOME</span</td>
       <td align="center" ><a  target="_blank" href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE HOME</a></td>      
-      <td align="center" ><a  target="_blank" href="home.html">GROUP</a></td>
+      <td align="center" ><a  target="_blank" href="home.html">WORKING GROUP</a></td>
       <td align="center"><a  target="_blank" href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">MAIL ARCHIVE</a></td>
       <td align="center"><a  target="_blank" href="AIs.txt">ACTION ITEMS</a></td>
       <td align="center"><a  target="_blank" href="issues.txt">ISSUES</a></td>
@@ -71,7 +71,7 @@ very bad at this part so far, but it's about to get much better with the first
 public working draft of the pvAccess protocol]. 
 </p>
 
-<h2 id="nutshell">EPICS Version 4 in a Nutshell</h2>
+<h2 id="nutshell">EPICS Version 4 Components in a Nutshell</h2>
 <p>In EPICS V3 and before, an IOC (Input/Output Controller) is a network node that
 controls and/or monitors a collection of devices. An IOC contains a memory
 resident real time database. The real time database has a set of "smart"
@@ -85,6 +85,10 @@ PV data I/O is described through pvData, and the client - IOC interconnect is th
 a new protocol for structured data, <a href="#pvaccess">pvAccess</a>.  An adjunct
 component, <a href="#pvservice">pvService</a>, provides an API for synchronous or
 asynchronous services for accessing a set of V3 IOCs and/or pvIOCs. </p>
+
+<p>There are also "extensions" of EPICS V4 being developed,
+see <a href="#nonnormative">Tools, Accessories and other Associated Work</a>
+below</p>
 
 <h2 id="summarystatus">Summary Status</h2>
 <p>This section is a very short summary of the status of EPICS V4 overall, and gives
@@ -117,7 +121,7 @@ are "non-normative" and no guarantees will be made about them. </p>
 <dl class="normativeproddescr">
 <dt id="pvaccess">pvAccess</dt>
 <dd>The description of network support for pvData. A complete implementation is available for both Java and for C++, although documentation has not been written for the C++ implementation.</dd>
-<dd><strong>Literature:</strong> <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess Protocol Specification</a>. <em>Status is pre Public Working Draft</em></dd>
+<dd><strong>Specification:</strong> <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess Protocol Specification</a>. <em>Status is pre Public Working Draft</em></dd>
 <dd>
     <strong>Implementations:</strong>
     <ul>
@@ -132,7 +136,7 @@ are "non-normative" and no guarantees will be made about them. </p>
 <dl class="normativeproddescr">
   <dt id="pvdata">pvData</dt>
   <dd>The description of how memory resident data types are described and defined. Complete implementations are available for both Java and for C++.</dd>
-  <dd><strong>Literature:</strong> The pvData interface has not yet been specified independently of its implementations, though that is an expected deliverable of the EPICS V4 Working Group</dd>
+  <dd><strong>Specification:</strong> The pvData interface has not yet been specified independently of its implementations, though that is an expected deliverable of the EPICS V4 Working Group</dd>
   <dd><strong>Implementations:</strong>
   <ul>
     <li>Java reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/">pvDataJava</a>. Status: usable beta. pvDataJava <a href="pvDataJava/index.html">Documentation</a></li>
@@ -146,7 +150,7 @@ are "non-normative" and no guarantees will be made about them. </p>
 <dd>The description of an IOC (Input Output Controller) that supports pvData.  The
 Java version has lots of functionality.  The C++ version is in the early stages of
 development.</dd>
-<dd><strong>Literature:</strong> pvIOC has not yet been specified independently of
+<dd><strong>Specification:</strong> pvIOC has not yet been specified independently of
 its implementations, though that is an expected deliverable of the EPICS V4 Working
 Group</dd>
   <dd><strong>Implementations:</strong>
@@ -165,10 +169,10 @@ Java and C++ versions are in early stages of development, though services are no
 being prototyped.  It's expected that a framework for a Service Oriented Architecture
 will be specified above pvService, making its interface easier to write
 services. There is also a python version of part of the C++ services. </dd>
-<dd><strong>Literature:</strong> pvService has not yet been specified independently
+<dd><strong>Specification:</strong> pvService has not yet been specified independently
 of its implementations, though that is an expected deliverable of the EPICS V4
 Working Group</dd>
-<dd><strong>Implementations</strong>
+<dd><strong>Implementations:</strong>
 <ul>
   <li>Java reference
   implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/">pvServiceJava</a>. Status: RPC support itself is late beta. Services are alpha. pvServiceJava <a href="pvServiceJava/index.html">Documentation</a></li>
@@ -178,6 +182,29 @@ Working Group</dd>
 </dd>
 </dl>
 
+<h3 id="nonnormative">Tools, Accessories and other Associated Work</h3>
+
+<p>A number of software projects are associated with EPICS V4:</p>
+
+<dl class="normativeproddescr">
+<dt id="pvmanager">pvManager</dt>
+<dd>PVManager is a client side utility library, that helps to manage complex objects'
+retrival and scanning. It allows client programs of EPICS V4 or EPICS V4, to decouple
+the rate of events on the network from the rate of refresh needed by the user
+interface itself. It provides a clean, simple, well designed high level programming
+interface for the problem of multi-threaded GUI updates of EPICS record data.
+</dd>
+<dd><strong>Homepage:</strong> <a href="http://pvmanager.sourceforge.net/">http://pvmanager.sourceforge.net/</a></dd>
+<dd><strong>Literature:</strong> <a href="http://sourceforge.net/apps/trac/pvmanager/">Getting
+Started</a>. See also <a href="#literature">literature</a> below</dd>
+<dd><strong>Status:</strong> (updated 1-Oct-2011) Beta, ready for use. A CSS BOY
+widget plugin is being developed and is expected shortly. </dd>
+<dd><strong>Contact:</strong> Ralph Lange (HZB), Gabriele Carcassi (BNL).</dd>
+</dl>
+
+<p> Some of the above are in scope of the EPICS Version 4 working group specifically,
+and others not. Those in scope are being managed as part of the develiverables of the
+group, though they may not be normative.</p>
 
 <h3 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h3>
 
@@ -257,7 +284,7 @@ other support. Thus it requires that you have a recent release of EPICS base.
 These are the relevant sourceforge mercurial modules: pvDataCPP, pvAccessCPP, pvIOCCPP, pvServiceCPP
 </p>
 
-<h2>Literature</h2>
+<h2 id="literature">Literature</h2>
 <p>The following are white-papers, talks, and various other documentation associated
 with EPICS Version 4, in most recent first order.</p>
 <ul>
@@ -273,6 +300,7 @@ http://epics-pvdata.sourceforge.net/talks/2011/marty_pvDataEtc.ppt</li>
 Gabriele Carcassi, talk given at EPICS 2010 spring meeting (BNL), powerpoint
 http://epics-pvdata.sourceforge.net/talks/2010/gabriele_PVManager.pptx</li>
 </ul>
+
 <h2>EPICS V4 Solutions</h2>
 
 <p>This section outlines some general "solutions" provided by EPICS Version 4 (in marketing-speak - basically, what might you use EPICS version 4, for):</p>
