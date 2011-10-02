@@ -125,7 +125,7 @@ are "non-normative" and no guarantees will be made about them. </p>
 <dd>
     <strong>Implementations:</strong>
     <ul>
-    <li>Java reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/">pvAccessJava</a>. Status: Usable beta. pvAccessJava <a href="pvAccessJava/doc/index.html">Documentation </a>
+    <li>Java reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/">pvAccessJava</a>. Status: Usable beta. pvAccessJava <a href="doc/pvAccessJava/index.html">Documentation </a>
     </li>
     <li>C++ reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessCPP/">pvAccessCPP</a>. Status: Usable beta. Documentation for the CPP reference implementation has not been written.
     </li>
@@ -139,7 +139,7 @@ are "non-normative" and no guarantees will be made about them. </p>
   <dd><strong>Specification:</strong> The pvData interface has not yet been specified independently of its implementations, though that is an expected deliverable of the EPICS V4 Working Group</dd>
   <dd><strong>Implementations:</strong>
   <ul>
-    <li>Java reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/">pvDataJava</a>. Status: usable beta. pvDataJava <a href="pvDataJava/doc/index.html">Documentation</a></li>
+    <li>Java reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/">pvDataJava</a>. Status: usable beta. pvDataJava <a href="doc/pvDataJava/index.html">Documentation</a></li>
     <li>C++ reference implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/">pvDataCPP</a>. Status: usable beta. pvDataCPP <a href="doc/pvDataCPP.html">Documentation</a>.</li>
   </ul>
 </dd>
@@ -156,7 +156,7 @@ Group</dd>
   <dd><strong>Implementations:</strong>
   <ul>
     <li>Java reference
-    implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/">pvIOCJava</a>. Status: usable late beta with respect to service support. pvIOCJava <a href="pvIOCJava/doc/index.html">Documentation</a></li>
+    implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/">pvIOCJava</a>. Status: usable late beta with respect to service support. pvIOCJava <a href="doc/pvIOCJava/index.html">Documentation</a></li>
     <li>C++ reference
     implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/">pvIOCCPP</a>. Status: alpha. pvIOCCPP <a href="doc/pvIOCCPP.html">Documentation</a>.</li>
 </dd>
@@ -175,7 +175,7 @@ Working Group</dd>
 <dd><strong>Implementations:</strong>
 <ul>
   <li>Java reference
-  implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/">pvServiceJava</a>. Status: RPC support itself is late beta. Services are alpha. pvServiceJava <a href="pvServiceJava/doc/index.html">Documentation</a></li>
+  implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/">pvServiceJava</a>. Status: RPC support itself is late beta. Services are alpha. pvServiceJava <a href="doc/pvServiceJava/index.html">Documentation</a></li>
     <li>C++ reference
     implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceCPP/">pvServiceCPP</a>. Status: RPC support itself is late beta. Services are alpha. pvServiceCPP <a href="doc/pvServiceCPP.html">Documentation</a>. <a href="pvServicePy.html">pvServicePy.html</a></li>
 </ul>
@@ -257,6 +257,9 @@ projects above are each in distinct mercurial repositories in the Sourceforge pr
 epics-pvdata</a>. There are separate repos for the C++ and Java of each normative
 project. They can all be checked out via the unix shell command hg, or using a
 Mercurial client suitable for your platform. </p>
+
+<p>Permissions are presently set such that any sourceforge userid can download, but only 
+epics-pvdata members can push commits.</p>
 
 <p>As an example of how to check out the pvDataCPP Mercurial repository, using the hg unix command:</p>
 <pre>&gt; hg clone ssh://&lt;your-sourceforge-iserid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
