@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>Marty's Issues and Notes on EPICS V4 Development</title>
+  <meta name="generator" content="Amaya, see http://www.w3.org/Amaya/">
+</head>
+
+<body>
+<h1>Marty's Issues and Notes of EPICS V4 Development</h1>
+
+<h2>Documentation Standards</h2>
+
+<p>What is the difference between documentation of a software component of EPICS V4, and
+its specification. Will there be a difference?</p>
+
+<p>What are the documentation standards?</p>
+
+<p>There already are several separate mercurial projects. Will each keep it's
+own set of documentation?</p>
+
+<p>We have a combination of Java, C++, and Python. Java and Pythgon each have
+documentation standards. As far as I know C++ does not.</p>
+
+<p>For java pvDataJava, etc use the eclipse javadoc generator to produce html
+documentation. I think channelFinder and pvManager both use maven to produce
+the documentation. What will be the standard? What are the standards for
+project and package overviews?</p>
+
+<p>What about documentation guidelines for C++?</p>
+
+<h2>Licensing</h2>
+
+<p>What is the status?</p>
+
+<p>Source files carry license, or refer to a license? This goes with 
+documentation stndards above.</p>
+
+<p>GW: Suggest all source carries a standard header but that it is functional - 
+it describes the file, authorship and modifications their authors and dates. 
+It only should refer to a license page elsewhere.</p>
+
+<h2>Release Naming and Project Dependences</h2>
+
+<p>There are already quite a few separate projects. If each service is a
+separate project there will be even more. This compatiblity problems must be
+addressed.</p>
+
+<p>There seems to be agreement on the following</p>
+<ol>
+  <li>Releases will be named x.y.z. First release of pvDayta, etc will be named
+    1.0.0</li>
+  <li>x will be incremented when and only when the network protocol changes</li>
+  <li>When x changes all projects that communicate with each other must have a
+    new release.</li>
+</ol>
+
+<p>MK: But what about y and z? There are at least two issues.</p>
+<dl>
+  <dt>introspection changes</dt>
+    <dd>If two services communicate and the introspection interface for data
+      passed between them changes they may require new releases</dd>
+  <dt>multiple projects within a single process</dt>
+    <dd>If the projects both use a common jar (Java) or shared library (C++)
+      then the projects must share the same release of the jar or shared
+    library</dd>
+</dl>
+
+<p>GW: Suggest major, minor, dot. MAJOR is not forward compatible, minor is not backward compatible.
+Don't make it depedent on network protocol specifically, nor introspection specifically. There 
+will be anumber of things in each class. </p>
+
+
+<h2>PVAccess protocol</h2>
+
+<p>MK: Is it ready to be declared normative document?</p>
+<p>GW: Is it ready to be published as a FPWD - we voted yes. Is it normative? - The way I use 
+"Normative" indicates intention more than readiness. A standard is normative if you 
+intend it to be. Normative means basically a formal spec. If we say a pvData "is"
+normative - we are making a statement about the documentation, openness, and formality of
+its specification.</p>
+
+<h2>Use Cases</h2>
+
+<p>To help motivate the next sections lets consider some use cases. Others
+(GW, GS, BD) should suggest some. E.g.</p>
+<ul>
+  <li>Collect beam synchronous data at 10 Hz.</li>
+  <li>Collect a set of turn by turn data.</li>
+</ul>
+
+<p>For each use case discuss:</p>
+<dl>
+  <dt>what client gets</dt>
+    <dd>What is presented on a OPI screen or what is given to an archive
+      service.</dd>
+  <dt>data sources</dt>
+    <dd>What is real time data from IOCS. What comes from database. What
+      control messages have to be passed to IOCs</dd>
+  <dt>services</dt>
+    <dd>What are the actual services.</dd>
+</dl>
+
+
+<h2>Aida architecture</h2>
+
+<p>Topics include:</p>
+<dl>
+  <dt>What is a service</dt>
+    <dd>Is it a process or a thread or a combination of both? </dd>
+  <dt>How many services?</dt>
+    <dd>Just rough estimate. Is the number still growing?</dd>
+  <dt>Where are services located</dt>
+    <dd>Is each service network addressable? If yes it it via corba or WEB
+      services or both or others?</dd>
+  <dt>How is data transfered between services</dt>
+    <dd>If corba is it via IDLs or "corba any" or a combination? If within a
+      process then how? If " corba any" how does service introspect?</dd>
+</dl>
+
+<h2>pvServices architecture</h2>
+
+<h3>Uses cases for services</h3>
+<p>Need to make everyone clear on the use cases of services, which motivates then the architecture.</p>
+
+<p>To make this managable first consider services based on magnets and bpms.</p>
+
+<p>Some topics are:</p>
+<dl>
+  <dt>sources of data</dt>
+    <dd>What does an IOC provide? What does a database provide? What do other
+      services provide?</dd>
+  <dt>what is being serviced?</dt>
+    <dd>An entire machine like a storage ring is one example. A local bump is
+      another</dd>
+  <dt>magnet related services</dt>
+    <dd>What is a complete set?</dd>
+  <dt>bpm related services</dt>
+    <dd>What is a complete set?</dd>
+  <dt>What is generic and what is site specific</dt>
+    <dd>Some things must have knowledge of specific machine. But what?</dd>
+</dl>
+
+<p>Other services to discuss?</p>
+
+<p>How is data made network available. We already have a combination of WEB
+services, caV3 and pvAccess. Is this it? </p>
+
+<h3>Source code organization in pvService</h3>
+
+<p>Presently both the core "support for" services, ie org.epics.pvService.rpc, and
+essentially prototype frameworks for services, and services themeselves, are all 3
+in org.epics.pvService! Need to spearate core, from frameworks, from services. </p>
+
+
+<h2>Data Types and pvManager</h2>
+
+<p>A suggestion was made that standard types be provided as pvManager types.</p>
+
+<p>What does this mean? </p>
+
+<p>Take VDouble for example.</p>
+
+<p>Is this what defines VDouble?</p>
+<pre>    public interface VDouble extends Scalar&lt;Double&gt;, Alarm, Time, Display {}
+    ...
+    public interface Scalar&lt;T&gt; {
+        T getValue();
+    }
+    public interface Alarm {
+        AlarmSeverity getAlarmSeverity();
+        AlarmStatus getAlarmStatus()
+    }
+    ....</pre>
+
+<p>Or is VDouble defined via metadata syntax?</p>
+<pre>    structure VDouble
+        double value
+        alarm alarm
+        timeStamp timeStamp
+        display display</pre>
+
+<p>GW: Alarm and timestamp are controls ideas, they have no place in defining any
+kind of double used at a high level, any more than theweb service your bank offers
+encodes timestamp and alarm when it sends you the amounts of transactions. </p>
+
+<p>And why would standard types be defined in terms of pvManager anyway? Surely
+it's pvManager's job to understand the normative aggregate types and normative functional 
+types, not the other way around.</p>
+ 
+<p>Five basic data types which come from the epicsV3 DBR types are enum,
+timeStamp, alarm, display, and control. Both pvManager and pvData (called
+properties) provide alternate ways to package what is in the DBR types defined
+in EPICS V3. But they do it in different ways.</p>
+
+<p>What other standard data types will the charter define?</p>
+
+<p>It looks like are least statistics, table, and image.</p>
+
+<p>What about others?</p>
+
+
+<p>GW: I think we need to define a taxonomy: type (Field, PVField), display
+"V<types>", aggregate type (table, multi-channel array, possibly image data
+too). Those would be nomative. On top of the normative types we <strong>might
+</strong> also suggest non-normative functional types: archive data retrival record,
+bpm orbit data, Twiss Parameters, Transfer Matrix, etc</p>
+
+
+</body>
+</html>

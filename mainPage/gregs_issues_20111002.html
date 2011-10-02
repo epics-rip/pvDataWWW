@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>Greg's Issues and Notes on EPICS V4 Development</title>
+  <meta name="generator" content="Amaya, see http://www.w3.org/Amaya/">
+</head>
+
+<body>
+<h1>Issues and Notes of EPICS V4 Development</h1>
+<p>The following are broad issues of the working group that should be addressed
+at the PSI face-to-face meeting and soon after.</p>
+
+<h2>Priorities</h2>
+<ul>
+  <li>Clarify Marty's medium term schedule. Python support should be scaled
+  back. Defining and writing "ezpv" should be started</li>
+  <li>Matej's medium term objectives and schedule?</li>
+</ul>
+<h3>Issues and Worries</h3>
+<h4>Gather Data</h4>
+<ul>
+  <li>My feeling is Gather Data is getting more work than its use cases warrant</li>
+  <li>How would gather data be used by services?</li>
+  <li>It seems to me the intended architecture patterns for Gather Data are not well
+  understood, so a lot of time is going into it to make sure it does everything. If
+  its UCs were better known, it could be more targeted. For instance, is it seen or
+  known how arguments are communicated to a single "gather service?"</li>
+  <li>Is gather "service" really a single service, or intended to be a framework for
+  services? </li>
+  <li>The gather service review didn't help me. It seems to be a way simply of telling a
+  server to make a lot of acquisitions for you and return them as a record. That does
+  not strike me as useful for services because services are distinguished by their
+  need to make acquisitions subject to parameters and for pre and post processing. It
+  may be useful as is for "beamline" acquisitions - I don't know.</li>
+  <li>Need an architecture tip for when to use pvManager (whose UC I do see) and
+  gather service/es. To do an orbit acquisition for orbit display, that seems like
+  pvManager, if it's a value added graphical display, I take it that's still
+  pvManager. If I use pvManager library (normally intended for display clients - I
+  know) to write a service, how's that different functionally from "a" gather service
+  (ie, a service that uses the gather service framework, once written as such)?</li>
+  <li>Why was server side so hard it occupied Marty for 2 years?</li> 
+</ul>
+
+<h4>Difficulty of Getting Started</h4>
+<ul>
+  <li>We have a very difficult client side (and server side) programmer API.</li>
+  <li>What steps can we take to cookie cutter the API, or ideally wrap it away completely?</li>
+  <li>Good news is, for a services framework, this wrapping looks easy.</li>
+</ul>
+
+<h2>Communications and communicating nominal architectures</h2>
+<ul>
+  <li>External communications has been just awful. We need to more than make up</li>
+  <li>"Home page" recently fixed.</li>
+  <li>Need FAQ urgently - by pvAccess FPWD announcement</li>
+  <li>All normative work must be under the same web roof</li>
+  <li>Things in orbit around EPICS V4 are not in the EPICS V4 web site. need some
+  predictable scheme for that. is it that all normative work is in epics-pvdata and
+  non-normative isn't? That would be OK, but it needs to be explicit for a
+  reader. Note, this works for pvManager as it is now so that's good. Doesn't work
+  for services Guobao has made because they're non-normative but in the epics-pvdata
+  web site and in epics-pvdata sourceforge.</li>
+  <li>Need a list of nominal patterns. Both architectural diagrams and source code
+  would be idea. Starting right at the beginning</li>
+  <li>Need a graphical map of all technologies/standards and how they fit together,
+  as well as nominal architectures </li>
+  <li>Need to publish a road map.</li>
+</ul>
+
+
+<h2>Services architecture</h2>
+
+<h3>Directory Service Requirement</h3>
+<ul>
+  <li>There is no specific "directory service" functionality, though there are tools
+  with which a directory service could be constructed. That needs to be
+  fixed. Services often "don't know that they know", eg relational database service,
+  model service, archive service, so they can't answer broadcasts. Also, you can't
+  have a list without a directory.</li>
+  <li>Should the directory service be implemented in terms of channel finder? To do
+  so means Channel Finder support has to be open, willing, in scope, and to be an
+  EPICS v4 core product not require a web service I think (because getting web
+  servers approved in labs is hard!). It's easy to do without channel finder - is
+  using channel finder worth it?</li>
+  <li>Whatever directory service we write, I think it has to do query aliasing aka translation</li>
+</ul>
+
+
+<h3>Uses cases for services</h3>
+<ul>
+  <li>Need to make everyone clear on the use cases of services, which motivates then the architecture</li>
+  <li>This suggests a <strong>Use cases</strong> document, to illustrate services,
+  their requirements and user interfaces. </li>
+  <li>The basic UCs are also a great starting reference for a reference services description document</li>
+  <li>UCs -> UC patterns -> illustrates APIs -> Determines function of reference
+services. </li>
+<li><strong>Having got UCs, set priorities</strong></li>
+</ul>
+
+
+<h3>pvService role in services</h3>
+
+<p>Presently both the core "support for" services, ie org.epics.pvService.rpc, and
+essentially prototype frameworks for services, and services themselves, are all 3
+in org.epics.pvService! Need to separate core, from frameworks, from services. </p>
+
+<h3>EPICS services architecture</h3>
+<p>Suggest we write a services architecture framework. Wouldn't be hard. I can do a
+synchronous version easily. I think this will be done prior to doing the model
+service for PSI, which would then be in it.
+ </p>
+
+<h2>Data Types and pvManager</h2>
+
+<p>MK: A suggestion was made that standard types be provided as pvManager types. What
+does this mean? </p>
+
+<p>GW: Alarm and timestamp are controls ideas, they have no place in defining any
+kind of double used at a high level, any more than the web service your bank offers
+encodes timestamp and alarm when it sends you the amounts of transactions. </p>
+
+<p>And why would standard types be defined in terms of pvManager anyway? Surely
+it's pvManager's job to understand the normative aggregate types and normative functional 
+types, not the other way around.</p>
+ 
+<p>We need to define a taxonomy: type (Field, PVField), display
+"V<types>", aggregate type (table, multi-channel array, possibly image data
+too). Those would be normative. On top of the normative types we <strong>might
+</strong> also suggest non-normative functional types: archive data retrieval record,
+bpm orbit data, Twiss Parameters, Transfer Matrix, etc</p>
+
+<h2>Practices</h2>
+<p>We need guidelines for practices. This is the same as what Marty called
+Documentation Standards I think. I have a list I'd like to see.</p>
+
+<h2>Naming</h2>
+<ul>
+  <li>The web site is called epics-pvdata, but pvdata is just one component. Confusing for new users</li>
+  <li>The web site is called epics-pvdata, but it's about EPICS Version 4!</li>
+  <li>The "PV" says Process Variables, but what it concentrates on is specifically
+  not about process variables</li>
+  <li>All in all, I think we should rename the project and all internal references to EPICS V</li>
+</ul>
+
+
+</body>
+</html>

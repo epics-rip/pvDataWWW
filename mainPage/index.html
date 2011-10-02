@@ -93,6 +93,7 @@ below</p>
 <h2 id="summarystatus">Summary Status</h2>
 <p>This section is a very short summary of the status of EPICS V4 overall, and gives
 help on how an interested engineer might want to use it now.</p>
+<p><strong>Last updated 02-Oct-2011:</strong></p>
 <p>
 <strong>Overall, the project is in pre-beta</strong>. The standards of EPICS V4, and their
 implementations, are each at different levels of development. Some are largely mature
@@ -175,7 +176,7 @@ Working Group</dd>
 <dd><strong>Implementations:</strong>
 <ul>
   <li>Java reference
-  implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/">pvServiceJava</a>. Status: RPC support itself is late beta. Services are alpha. pvServiceJava <a href="doc/pvServiceJava/index.html">Documentation</a></li>
+  implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/">pvServiceJava</a>. Status: RPC support itself is late beta. Specifically the Gather service framework is early beta. Services themeselves are alpha. pvServiceJava <a href="doc/pvServiceJava/index.html">Documentation</a></li>
     <li>C++ reference
     implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceCPP/">pvServiceCPP</a>. Status: RPC support itself is late beta. Services are alpha. pvServiceCPP <a href="doc/pvServiceCPP.html">Documentation</a>. <a href="pvServicePy.html">pvServicePy.html</a></li>
 </ul>
@@ -197,28 +198,35 @@ EPICS record data, for instance, a table of Beam Position Monitor (BPM) data of 
 </dd>
 <dd><strong>Homepage:</strong> <a href="http://pvmanager.sourceforge.net/">http://pvmanager.sourceforge.net/</a></dd>
 <dd><strong>Literature:</strong> <a href="http://sourceforge.net/apps/trac/pvmanager/">Getting
-Started</a>. See also <a href="#literature">literature</a> below</dd>
+Started</a>. <a href="http://pvmanager.sourceforge.net/apidocs/org/epics/pvmanager/package-summary.html#contents">Combined package summary javadoc and programmers guide</a>. See also <a href="#literature">literature</a> below</dd>
 <dd><strong>Status:</strong> (updated 1-Oct-2011) Beta, ready for use. A CSS BOY
 widget plugin is being developed and is expected shortly. </dd>
 <dd><strong>Contact:</strong> Ralph Lange (HZB), Gabriele Carcassi (BNL).</dd>
 </dl>
 
-<p> Some of the above are in scope of the EPICS Version 4 working group specifically,
-and others not. Those in scope are being managed as part of the develiverables of the
-group, though they may not be normative.</p>
+<dl class="normativeproddescr">
+<dt id="pythoninterface">python interfaces</dt>
+<dd>Python wrappers for pvData, pvAccess and pvService are being worked on.  </dd>
+<dd><strong>Contact:</strong>Guobao Shen (BNL)</dd>
+</dl>
 
-<h3 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h3>
+<p> Some of the above are in scope of the EPICS Version 4 working group specifically,
+and others not. Those in scope are being managed as part of
+the <a href="charter.html#deliverables">develiverables of the group</a>, though they
+are not considered <a href="charter.html#normative">normative</a>.</p>
+
+<h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
 
 <p>This section outlines how one might use EPICS V4 right now, given its present
 status</p>
 
-<p>It is expected that, for a significant period of time, an institutional user of
-EPICS Version 4 would use it <strong>in parallel</strong> with EPICS version 3. In
-particular, EPICS Version 3 would continue to be the basis of controls. In its
-present state, EPICS Version 4 concentrates on so called "high level" software
-services. It provides a framework for fast distributed message passing. This is like
-remote procedure calls, but with a programming model optimized for efficient
-distributed synchronous or asynchronous processes.
+<p>It is expected that, for a significant period of time, an
+institutional <strong>user of EPICS Version 4 would use it in parallel with EPICS
+version 3</strong>. In particular, EPICS Version 3 would continue to be the basis of
+controls. In its present state, EPICS Version 4 concentrates on so called "high
+level" software services. It provides a framework for fast distributed message
+passing. This is like remote procedure calls, but with a programming model optimized
+for efficient distributed synchronous or asynchronous processes.
 </p>
 <p>In a hybrid environment, EPICS V4 is at beta for use for managed distributed data
 acquisitions. See <a href="http://pvmanager.sourceforge.net/">pvManager</a>, which is
