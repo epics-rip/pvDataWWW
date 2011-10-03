@@ -44,7 +44,7 @@ p("</ol>")
 p("<ol>")
 for i, row in enumerate(table):
     p('<li class="faq" id="entry%d">%s</li>' % (i, row[0]))
-    p("%s" % "<p>".join(row[1:]))
+    p('<div class="faa">%s</div>' % "\n".join(row[1:]))
 p("</ol>")
 
 print >> faq, template % {"INSERTFAQ": "\n".join(text)}
