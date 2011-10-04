@@ -20,14 +20,14 @@ EPICS V4 FAQ
 <a href="#entry1"><li class="faq">What is the goal of the project?</li></a>
 <a href="#entry2"><li class="faq">What is the implementation language?</li></a>
 <a href="#entry3"><li class="faq">What platforms are supported?</li></a>
-<a href="#entry4"><li class="faq">What is the line from top to bottom for controls?</li></a>
+<a href="#entry4"><li class="faq">What is the top to bottom architecture of an EPICS V4 system?</li></a>
 <a href="#entry5"><li class="faq">What's going to be different from EPICS V3?</li></a>
 <a href="#entry6"><li class="faq">Do I have to re-write drivers?</li></a>
 <a href="#entry7"><li class="faq">What relevance does this have to controls?</li></a>
 <a href="#entry8"><li class="faq">How does it work with the EPICS display tools, DM, EDM, CSS etc?</li></a>
 <a href="#entry9"><li class="faq">What's the relationship of EPICS V4 to channel access?</li></a>
 <a href="#entry10"><li class="faq">Can I use EPICS V4 in a mixed environment with EPICS V3?</li></a>
-<a href="#entry11"><li class="faq">How does PVAS interface to an IOC?</li></a>
+<a href="#entry11"><li class="faq">How does the pvAccess Server (PVAS) interface to an IOC?</li></a>
 <a href="#entry12"><li class="faq">What's the performance?</li></a>
 </ol>
 <ol>
@@ -43,8 +43,8 @@ The approach used, is to create infrastructure that can support dynamically addi
 <div class="faa">Java and C++ implementations exist. pvData and pvAccess in C++ are working. pvData, pvAccess and pvIOC in Java are working. Some example pvServices have been written in Java. Work is in progress on a Python interface to the C++ libraries.</div>
 <li class="faq" id="entry3">What platforms are supported?</li>
 <div class="faa">For Java, any Java SE 1.5 platform. For C++, EPICS V4 uses the EPICS V3 libCom platform abstraction layer and standards-compliant C++. The C++ implementation is working on Linux, OSX, Windows and RTEMS.</div>
-<li class="faq" id="entry4">What is the line from top to bottom for controls?</li>
-<div class="faa">What does this mean? Is this the non-executive overview?</div>
+<li class="faq" id="entry4">What is the top to bottom architecture of an EPICS V4 system?</li>
+<div class="faa">The simplest installation would have one pvAccess client, and one pvAccess server. The architecture from top to bottom in any given real world installation would be different from case to case. It would depend on such things as whether the installation was using EPICS V4 in a hybrid environment with version 3 at this stage of development, and whether EPICS V4 high level middleware services were being used. One simple architecture which utilises presently existing EPICS V4 functionality, is that in which EPICS V3 IOCs would incorporate the EPICS V4 pvIOC PVAS and so be able to serve control data over pvAccess. The pvManager client side tool, or the gather middleware toolkit, could be used to acquire those data efficiently. The envisaged overall architecture of EPICS V4 installations is one that uses a service oriented architecture, as well as the basic controls network, in which services make the acquisitions from devices, and present collected data to clients, such as the bpm readings of all BPMs, the model of a whole machine, the energy profile of a whole LINAC, etc.</div>
 <li class="faq" id="entry5">What's going to be different from EPICS V3?</li>
 <div class="faa">EPICS V3 does not support structured data types at the record level or on the wire. There is also no method for implementing services in EPICS V3 as the put with callback in Channel Access does not return a payload. EPICS V4 does not require pre-allocated buffers for the full size of any payload so there is no longer a initialization-time limit on the maximum payload size. EPICS V4 has a single codebase for data types, client and server side networking. EPICS V3 has one client-side network library, one portable server and one server tied to the IOC.</div>
 <li class="faq" id="entry6">Do I have to re-write drivers?</li>
@@ -57,8 +57,8 @@ The approach used, is to create infrastructure that can support dynamically addi
 <div class="faa">EPICS V4 has a new network protocol pvAccess that is not compatible but provides extra functionality such RPC, does not require fixed-size network buffers, and supports transferring structured types.</div>
 <li class="faq" id="entry10">Can I use EPICS V4 in a mixed environment with EPICS V3?</li>
 <div class="faa">So far C++ implementation of pvIOC is a regular EPICS V3 IOC that provides access to EPICS V3 records via pvAccess, so new clients can talk to old servers.</div>
-<li class="faq" id="entry11">How does PVAS interface to an IOC?</li>
-<div class="faa">What is PVAS??</div>
+<li class="faq" id="entry11">How does the pvAccess Server (PVAS) interface to an IOC?</li>
+<div class="faa">The EPICS V3 support module V3Channel is a pvAccess Server that talks to the EPICS V3 database using dbNameToAddr to resolve pvAccess connection requests, dbGetField and dbPutField to transfer data. V3Channel is started from the startup script, from that point the EPICS V3 IOC database serves both Channel Access and pvAccess.</div>
 <li class="faq" id="entry12">What's the performance?</li>
 <div class="faa">pvAccess network performance should be at least equivalent to Channel Access. See <a href="http://www.c-ad.bnl.gov/pac2011/proceedings/papers/mop252.pdf">Server Development for NSLS-II Physics Applications and Performance Analysis</a></div>
 </ol>
