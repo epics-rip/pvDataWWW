@@ -145,4 +145,14 @@ ii) for some reason the hg push ssh didn't accept my password
 as valid (even though it definately was) and then it proceeded
 to do the remote push successfully anyway!
 
+Get other people's updates
+--------------------------
+Like putting your changes in the shared repository is a 2 step process, so is updating you copy with other people's changes.
+
+1. Do an hg pull to pull down the differences between your repo and the shared:
+> hg pull    
+(give your sourceforge pssowrd)
+
+2. Now do an hg update to be able to modify the files the other people changed
+hg update
 
