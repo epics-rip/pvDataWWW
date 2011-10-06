@@ -106,7 +106,7 @@ with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>
 <h2 id="dataEncoding">Data Encoding</h2>
 
 <p>The key goals of the pvData data encoding are simplicity and efficiency. In keeping with these principles, the encoding does not align primitive types on word boundaries and therefore eliminates the wasted space and additional complexity that alignment requires. The pvAccess data encoding simply produces a stream of contiguous bytes; data contains no padding bytes and need not be aligned on word boundaries.<br/>
-<i>NOTE: alignment of arrays is considered to be required to avoid non-aligned element access of huge arrays.</i>
+However, the exception are arrays. All the arrays needs to be aligned to 64-bit. This requires message header is also 64-bit aligned.
 </p>
 
 <p>
@@ -140,6 +140,9 @@ Many of the types involved in the data encoding, as well as several protocol mes
 
 <h3 id="dataEncoding:strings">Strings</h3>
 <p>Strings are encoded as a size, followed by the string contents in UTF-8 format array of bytes. Strings are not NULL-terminated. An empty string is encoded with a size of zero.
+</p>
+<p>
+On the wire, pvAccess transmits all strings as Unicode strings in UTF-8 encoding. Non-C++ bindings of the pv normative implementations (pvAccess and pvData in particular) will use strings in their language-native Unicode representation and convert automatically to and from UTF-8 for transmission, so applications can transparently use characters from non-English alphabets.However, for C++, how strings are represented inside a process depends on the platform as well as the mapping that is chosen for a particular string: the default mapping to std::string.
 </p>
 
 <h3 id="dataEncoding:arrays">Arrays</h3>
@@ -209,7 +212,7 @@ The pvAccess protocol uses two protocol message types:
 </ul>
 </p>
 
-<p>As with the data encoding described, protocol messages have no alignment restrictions. Each message consists of a message header and (optionally) a message payload that immediately follows the header.</p>
+<p>Each message consists of a message header and (optionally) a message payload that immediately follows the header. Message needs to aligned to 64-bits.</p>
 <h3 id="protocolMessages:messageHeader">Message header</h3>
 <p>
 Each protocol message has a fixed 8-byte header that is encoded as if it were the following structure:</p>
@@ -219,11 +222,11 @@ Each protocol message has a fixed 8-byte header that is encoded as if it were th
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">pvAccess header members.</caption>
 <tr><th>Member</th><th>Description</th></tr>
-<tr><td style="text-align:right;font-family:monospace">magic</td><td>pvAccess protocol magic, 0xCA.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">magic</td><td>pvAccess protocol magic code, 0xCA.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">version</td><td>Protocol version, 2 nibbles (major, minor).</td></tr>
 <tr><td style="text-align:right;font-family:monospace">flags</td><td>Message flags.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">messageType</td><td>Message type (i.e. create, get, put, process, etc.).</td></tr>
-<tr><td style="text-align:right;font-family:monospace">payloadSize</td><td>Message payload size (in bytes).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">payloadSize</td><td>Message payload size (non-aligned, in bytes).</td></tr>
 </table>
 
 <table style="caption-side:bottom">
@@ -366,6 +369,9 @@ Usually flow control algorithms wait for congestion to occur before they are tri
 <li>the difference between total byte sent and last acknowledged marker received tells how much other party receive buffers are full; this number should never exceed total sum of receive buffers</li>
 </ul>
 pvAccess always tries to send as much monitoring data it can, however the upper limit is limited by the calculated amount of other party free receive buffer size. When this is reached, monitors are starting pilling up in monitors' circular buffer queues.
+</p>
+<p>
+NOTE: this part of the specification is still in progress.
 </p>
 
 <h2 id="channelDiscovery">Channel Discovery</h2>
