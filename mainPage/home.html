@@ -56,8 +56,34 @@ the <a href="charter.html">EPICS v4 Charter</a>. </p>
 <hr />
 
 <!-- ----------------------------------------- -->
-<h2 id="status">Status</h2>
-<p><strong>Status 4-Aug-2011</strong></p> 
+<h2 id="status">Working Group Activity Status</h2>
+
+
+<h3 id="presentwork">Present Work</h3>
+<p>As of <strong>Status 6-Oct-2011</strong> present work is concentrating on:</p>
+<ul>
+<li>Normative types. Definitions and binding implementations of the so called,
+normative types. These are the data types that it is expected all general purpose
+clients will understand, and it is encouraged that services and IOC applications
+should supply.</li>
+<li>First services, writing and deployment. In particular, a general relational
+database access service, and lattice modelling services are being actively
+developed</li>
+<li>Display tools and frameworks. pvManager, and CSS plugins</li>
+<li>Directory service support, in particular channelFinder, and associated CSS plugins</li>
+<li>The Gather Service Framework. This is a server side distributed data acquisition
+framework, which helps a programmer to construct a service that collects data from a
+number of sources (EPICS v4 or EPICS V4 records), and makes it available in the
+normative types suiatble for displaying data of a number of devices. For instance,
+useful for BPM orbit, or linac energy management services. </li>
+<li>Fully implementing the
+the <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess
+specification</a> working draft.</li>
+</ul>
+
+<h3>Code bases</h3>
+
+<p><strong>Status 6-Oct-2011</strong></p> 
 
 <p>The implementation statuses of the core packages of Epics v4,
 pvData, pvAccess, pvIOC, and PvService, given by language support,
@@ -67,18 +93,20 @@ are:<p>
 
 <p>pvData, pvAccess, pvIOC, and PvService packages exist and are being
 developed as Eclipse projects, made available through sourceforge
-project epics-pvdata. The Java version of the pvIOC is named
+project epics-pvdata. The Java version of the pvIOC is now named
 "javaIOC".</p>
 
-<p>The following services are implemented. Presently they can be found in
-PvService:</p>
+<p>The following services have been started. Presently they can be found in
+PvService, though pvService is likely to be broken up into core support for
+services, and the services themselves removed: </p>
 
 <ul>
-<li>itemFinder - Get a list of channel names and properties.  Both client 
+<li>itemFinder- Get a list of channel names and properties.  Both client 
 and server are implemented</li>
-<li>gather - get/put/monitor a set of V3 channels, Both client and server 
+<li>gather service framework- get/put/monitor a set of V3 channels, Both client and server 
 are implemented</li>
-<li>model - Guobao can give status</li>
+<li>model service - a framework for hosting beamline optics modelling codes as services. The framework is complete, but no modelling is implemented</li>
+<li>Relational Database - code is complete, about to enter testing.
 </ul>
 
 <h3 id="cpp:status">C++</h3> 
@@ -100,7 +128,6 @@ pvAccessCPP</p>
 
 <p>pvService - The client side of gather is implemented by using the C++ 
 gather client support. Note about Python gather client:</p>
-
 <p>
 A performance tests shows results equivalent to C++.
 This is because all the real work is done by C++ code not by Python.
