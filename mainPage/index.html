@@ -282,8 +282,10 @@ Mercurial client suitable for your platform. </p>
 <p>Permissions are presently set such that any sourceforge userid can download, but only 
 epics-pvdata members can push commits.</p>
 
-<p>As an example of how to check out the pvDataCPP Mercurial repository, using the hg unix command:</p>
-<pre>&gt; hg clone ssh://&lt;your-sourceforge-iserid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
+<p>As an example of how to check out the pvDataCPP Mercurial repository, using the hg unix command via anonymous access:</p>
+<pre>&gt; hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataCPP</pre>
+<p>or via ssh with your sourceforge userid:</p>
+<pre>&gt; hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
 
 <h3>Java</h3>
 
