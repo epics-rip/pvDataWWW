@@ -270,21 +270,32 @@ DIAMOND.</p>
 
 <h2 id="softwaredevel">Software Development</h2>
 
-<p>At the present time code is only available via source-forge.</p>
+<p>At the present time code is only available via its source-forge Mercurial
+repositories (there are no zip or jars yet, though they are planned). </p>
 
 <p>All of
 the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata">normative
-projects above are each in distinct mercurial repositories in the Sourceforge project
-epics-pvdata</a>. There are separate repos for the C++ and Java of each normative
-project. They can all be checked out via the unix shell command hg, or using a
+projects above are each in distinct mercurial repositories in the SourceForge project
+epics-pvdata</a>. There are separate Mercurial repos for each of the C++ and Java
+implementations of each normative project. They can all be checked out via the unix shell command hg, or using a
 Mercurial client suitable for your platform. </p>
 
-<p>Permissions are presently set such that any sourceforge userid can download, but only 
-epics-pvdata members can push commits.</p>
-
-<p>As an example of how to check out the pvDataCPP Mercurial repository, using the hg unix command via anonymous access:</p>
+<p>Download from the Mercurial repositories can be done annonymously, or using a
+sourceForge account.</p>
+<p>The annonymous checkout is using the http URI below, note that
+we have seen that some people get a "cannot connect" timeout using this method, while
+the idetical command works for other people. Probably reated to blocked port 8000,
+but we don't know. 
+<p>Below is an example of how to check out the pvDataCPP Mercurial repository, using
+the hg unix command via anonymous access:</p>
 <pre>&gt; hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataCPP</pre>
-<p>or via ssh with your sourceforge userid:</p>
+
+<p>To use the developers checkout mechanism, which uses the ssh URI,
+permissions are presently set such that only epics-pvdata members can check out or
+push commits, so contact <a
+href="http://epics-pvdata.sourceforge.net/home.html#membership" >any one of the
+participants</a> to get added first:</p>
+
 <pre>&gt; hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
 
 <h3>Java</h3>
