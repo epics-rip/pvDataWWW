@@ -1,0 +1,18 @@
+#!/bin/bash
+#!
+#! Abs: getais extracts the action items from a text file of meeting minutes. 
+#! 
+#! Usage: 
+#!        ./getais minutesfile
+#!    Eg:
+#!        ./getais meeting_19102011.txt
+#! 
+#!--------------------------------------------------------------------------
+#! Auth: 20-Oct-2011, Greg White (greg@slac.stanford.edu
+#! Mod: 
+#!==========================================================================
+
+awk -f getais.awk $1
+
+exit $?
+
