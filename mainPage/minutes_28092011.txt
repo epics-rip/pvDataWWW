@@ -1,0 +1,51 @@
+==========  Meeting 28-Sep-2011 ===========
+ 
+ Present: GC, BD, MK, RL, NM, JR, MS, GS, GW
+ Scribe: Bob
+ 
+ Gabriele and Bob:There is no channelfinder talk in [EPICS V4 session of EPICS meeting] 
+ Gabriele and Bob:No
+ Timo Tapani Korhonen:hi. just joined in from another meeting.
+ Gabriele and Bob:Ah, we can't write at the same time...
+ Gabriele and Bob:Bob: I agree
+ Gabriele and Bob:Bob: I thought I was trying to give that
+ Gabriele and Bob:Bob: did you look at the slides I sent?
+ Gabriele and Bob:Bob: isn't that an introduction?
+ James:Looks good, I'd suggest putting in a slide explaining what V4 adds before showing the architecture of a full system:- Runtime structured data types and serialization format- network protocol that supports these types- new message exchange patterns such as putprocessget and RPC (if you want to make the distinction). Lack of request / response is a hard limit on the type of service that V3 can provide- quick reason for not choosing everyone's favorite alternatives (corba, ICE, SOAP)
+ Gabriele and Bob:Bob: uh?
+ James:Sorry I just copied that from an email
+ Gabriele and Bob:Bob *looks surprised*
+ Gabriele and Bob:That this is not simple enough
+ Gabriele and Bob:Who?
+ James:Bob's slide 4 is the whole system diagram. Start with what V4 is for
+ Gabriele and Bob:Bob: ok
+ James:Slide 16 is about history, doesn't say what V4 does over and above V3
+ Gabriele and Bob:Right
+ Gabriele and Bob:The pvManager talk is a simple introduction on how to use it...
+ Matej:http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html
+ James:Not how to use it, just a slide saying what it does
+ James:Yes briefly why not ICE etc
+ James:And things it's similar to like ICE
+ Nikolay:I would suggest to avoid it ...
+ James:Yes major point
+ Nikolay:EPICS vs Google ?
+ James:Does that mean insterting pad bytes in the byte buffer for alignment?
+ James:could you use qemu?
+ Gregory White:what's qemu?
+ James:I don't mind the lack of unsigned types as long as they don't appear in the IOC either
+ James:ASCII only is my preference
+ James:UTF-8 covers all of unicode
+ Gabriele and Bob:UTF-8 does not cover all of unicode...
+ James:If you don't look decode the multi-byte characters then it doesn't affect the protocol
+ Gabriele and Bob:Bob: compression is good
+ Gabriele and Bob:Bob: we are happy
+ Gabriele and Bob:Bob: resolution: we shall be happy
+ Gabriele and Bob:Matej
+ Gabriele and Bob:Ok, Bob
+ Gabriele and Bob:Bob is agreeing
+ Gabriele and Bob:Next week, at the meeting
+ Gabriele and Bob:Resolution: we'll publish next week
+ Gabriele and Bob:He is already
+ James:Bye
+ Gabriele and Bob:Bye!
+ Gregory White:bye, and thanks matej

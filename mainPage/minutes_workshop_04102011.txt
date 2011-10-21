@@ -1,0 +1,36 @@
+======  Workshop Meeting 4-Oct-2011 =========
+
+Present: MK, TK, MS, BD, RL, NM, GW, Observer: Andrew Starritt. 
+Scribes: Marty, Gregory White
+
+ GW: Normative means well defined, understood by many geneal purpose clients..
+
+ BD: Issue: error handling to be resolved
+
+ Issue: Display meta data (e.g. EGU)
+
+ Resolution - send data as a set of arrays (as opposed to an array of structures)
+
+Resolution: MCA type: Timestamp + Severity + four arrays (delata time, value severity, position).
+
+ Issue: Are all four arrays always sent, or can client select which one are sent. 
+
+ RESOLUTION: On the wire, pvAccess transmits all strings as Unicode strings in UTF-8 encoding.Non-C++ bindings of the pv normative implementations (pvAccess and pvData in particular) will use strings in their language-native Unicode representation and convert automatically to and from UTF-8 for transmission, so applications can transparently use characters from non-English alphabets.
+
+ RESOLUTION con't: However, for C++, how strings are represented inside a process depends on the platform as well as the mapping that is chosen for a particular string: the default mapping to std::string.
+
+ RESOLUTION: All Control-normative and Specific-normative types shall be encoded as PVStructure.
+
+ All control-control normative and specific normative types shall have a name that being NT, eg NTTable 
+
+ GUIDANCE: Definers of non-normative types should put the name of their types "eg BPMorbit" as the name of the structure instance. That is, teh PVStructure's name, would be BPMOrbit. 
+
+ GUIDANCE: Don't name a non-normative type beginning "NT" since that is the magic code that tells clients that they should be able to natively decode the PVStructure.
+
+ ISSUE: The definition of NTAlarm is yet to be defined. 
+
+ AI on MK by Oct 7: Write proposal for NTAlarm definition.
+
+ NEW TOPIC: Use Cases for Checking the Normative Types
+
+ http://www.slac.stanford.edu/~greg/Epicsv4CoreServicesDraft_1.05.pdf

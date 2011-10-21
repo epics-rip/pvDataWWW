@@ -1,1 +1,2 @@
-/AI/ {print $0}
+# IGNORECASE=1
+/AI:/||/AI on/ {print $0}

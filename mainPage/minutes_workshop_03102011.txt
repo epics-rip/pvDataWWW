@@ -1,0 +1,211 @@
+======  Workshop Meeting 3-Oct-2011 =========
+
+Present: MK, TK, MS, BD, RL, NM, GW, Observers: Eric Berryman, Andrew Starritt.
+Scribes: Marty, Timo Tapani Korhonen, Matej
+
+ -------------- New Topic: Agenda ----------------
+
+ Had short review.
+
+ Usaing message Greg sent
+
+ Status Reports
+
+ Greg first
+
+ Doing protype service to undersstsnd pvSerice
+
+ Database first
+
+ real app
+
+ first step is installing V4 stuff at PSI\
+
+ framework above pvService
+
+ Aim rellational data base usable
+
+ User can ask "Get datbase:
+
+ Then get something from database
+
+ Return with table
+
+ ask all elements from ??\
+
+ ask all elements from swiss  FEL
+
+ Service will  really really hard to get data and return table 
+
+ Greg's service will have a table with two columns
+
+ Furst column is nwhat uses asks for
+
+ second is sql statements to get data from oracle database
+
+ database developers will maintain this table
+
+ After database service  done then modeling service
+
+Gregory White: What's Marty doing
+
+Gregory White: MK: Get core sw to stage to where we can make real releases
+
+Gregory White: MK: getting used to working with more people
+
+Gregory White: MK: Have now to decide what medium range priorities should be.
+
+ Matej next
+
+ Mainly reliability
+
+ Still have way to go
+
+ Guobao reporting threading issues
+
+ Trying to finish some protocal changes before official releases.
+
+ Greg: OK to make changes in  alpha versions that affect protocol without new majorv release number
+
+ Greg: must make API for V4 simpler for new users.
+
+ This afternoon Marty will give demo of pvget, pvput
+
+ Nikolat working on new archiver
+
+ Next interface to  real beamline data.
+
+ Involves V4
+
+ 1st task support V4 data types.
+
+ Imaging first.
+
+ User will want to get both HTF5 data as well as Archiver data with same intrerface
+
+ HDF5 is correct name.
+
+  NEW TOPIC: Worries and Concerns --------
+
+: GW. move to "user worries"
+
+: MK: Channel finder will probably first want to use the ChannelFinder
+
+: GW: not clear how much utility will it have
+
+ GW: Gather Data, how useful will it be for services?
+
+ GW: services typically need to process the data that is collected.
+
+ DIscussion about orbit service.
+
+ MK: do we mean the raw readings or the offsets to a real orbit
+
+ ..offsets to the ideal orbit...
+
+ BD: Gather service is in any case needed for a service, regardless where it is implemented.
+
+ GW: another example: energy correction
+
+ Terminology discussion: a service or a framework?
+
+ What components do we need to compose services?
+
+ What is epics 4 about?
+
+ GW: adding value to the collected data by providing intelligence
+
+ BD: building modular blocks that can be put together
+
+ NM A framework is something that can be used to specialize common patterns
+
+ Is the data returned by a service a channel in epics 4 sense?
+
+ BD: it should be?
+
+ Gather is a process running on a server, thus a service
+
+ GW: is this a reasonable implementation? Why not a framework?
+
+ Gather as a shared library?
+
+ NM: provide both a library and a service
+
+ MK: what about language issues? need to provide support for many languages, if a library
+
+ it would force the language on an implenter of services
+
+ BD: modularity is the most important issue. Clear, modular and interoperable
+
+ MK: this is then a process on the network, be it local or remote.
+
+ BD: interoperable services are better than libraries
+
+ BD: stated goal of EPICS 3 was to reduce effort device integration effort
+
+ BD: emphasis on V4 to handle things that support phzysics applications better
+
+ GW: how easy would it be to make services as embeddable frameworks
+
+ MK: easy, but brings up the language issue
+
+ GW: can we take an action item write how the gather service could be implemented as an embeddable service (by MK)
+
+ GW: write the steps of implementation as a service
+
+ Speializations of the service framework will be the most common case
+
+ service writing has to be really simple
+
+ MK&MS : we need users to tell us if the implementations make sense.
+
+ BD: what Marty and Matej will do is instructions how to set up Gather as a service (not an API)
+
+ MS: it is an API
+
+ a mistake in AIDA was not to standardize the return format (not a table)
+
+ GW: everything that a service returns should be in normative types
+
+ GW: resolution: gather functionality will be generaized to be useable either as a process or a library
+
+ MK: GW needs to put together a description how that is supposed to be used
+
+ AI: Greg writes a first level users requirements  doc for the API
+
+ MK: Start iterating with Marty and Matej about how it is implemented
+
+ ------------------------ "Use Cases" Topic ------------------------
+
+ MK: Show us AIDA...
+
+ GW: Shows his old-email with examples.
+
+ 1. Getting list of names (PVs, services, ...)
+
+ 2. Getting values
+
+ 3. Getting archive data
+
+ .... DaObject introduced ....
+
+ (break)
+
+ 4. Get data from the RDB (e.g. to get golden orbit)
+
+ GW suggest to support: a scalar or a array of scalars or a table
+
+ table is flat
+
+ table is organized by column
+
+ GW+BD: think of the order of data returned
+
+ BD: normative type (e.g. table) should contain timestamp, GW: timestamp is not a common dominator
+
+ Discussion on "how to get s-position"?
+
+ BD point-of -view on normative data-type: timeStamp, severity, value, position, alarm (?)
+
+  ... and we where kicked out of the room. END.
+
