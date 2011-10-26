@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content=
+"coding, code, style, guidelines" />
+
+<link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" href="http://www.w3.org/2006/02/charter-style.css" />
+ 
+<link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" />
+<link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+<title>Coding Style Guidelines</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/
+</style>
+</head>
+<body>
+
+
+<div class="head">
+<h1>Coding Style Guidelines</h1>
+
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+<h2 class="nocount">EPICS v4 Working Group, First Working Draft, 26-Oct-2011</h2>
+
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/Coding_Style_Guidelines_20111026.html">Coding_Style_Guidelines_20111026.html</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/Coding_Style_Guidelines.html">Coding_Style_Guidelines.html</a></dd>
+<dt>Editors:</dt>
+<dd>Matej Sekoranja, Cosylab</dd>
+</dl>
+<hr />
+</div>
+<h2 class="nocount" id="abstract">Abstract</h2>
+
+<p>This document defines EPICS v4 coding guidelines for C++</p>
+
+<h2 class="nocount" id="status">Status of this Document</h2>
+
+<!-- Statement about why this version exists -->
+<p>This is the 26 October 2011 version of the coding style guidelines.</p>
+<p>
+The present code does not completely follow guidelines described in this document.
+</p>
+
+<!-- Please always include this statement of terms, unless it's really silly -->
+<p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY
+when highlighted (through style sheets, and in uppercase in the
+source) are used in accordance
+with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>
+[<a href="refs.html#ref-RFC2119">RFC2119</a>]. The term NOT REQUIRED
+(not defined in RFC 2119) indicates exemption.
+</p>
+
+
+
+<!--NewPage-->
+<!-- this is for html2ps -->
+<div class="toc"/>
+<h2 id="toc">Table of Contents</h2>
+<ol>
+    <li><a href="#toc0">General rules</a></li>
+    <li><a href="#toc1">Comments</a></li>
+    <li><a href="#toc2">Identifiers</a></li>
+    <li><a href="#toc3">Code blocks</a></li>
+    <li><a href="#toc4">Operators</a></li>
+    <li><a href="#toc5">Other coding rules</a></li>
+</ol>
+
+
+
+
+<h2 id="toc0"><span>General rules</span></h3>
+<ul>
+<li>Maximal line length is limited to 80 characters.</li>
+<li>If a statement has to be broken into two lines, second (and any subsequent) line should be indented by one level.</li>
+<li>Indentation is always done using spaces, tabs are never used.</li>
+<li>One level of indentation is 4 characters long.</li>
+<li>Each file starts with a header containing the short license text.</li>
+</ul>
+
+
+
+
+<h2 id="toc1"><span>Comments</span></h3>
+<p>Both C and C++ style comments are allowed.</p>
+<ul>
+<li>C style comments (<span style="white-space: pre-wrap;">/*&#32;*/</span>) should be used for large block of comments, mostly at the beginning of the file.</li>
+<li>The code itself should be commented by C++ line comments (<span style="white-space: pre-wrap;">//</span>).</li>
+<li>Code should be broken to small pieces (couple of lines each), every piece doing one simple task.</li>
+<li>Each piece should be preceded by a comment explaining what is its intent.</li>
+<li>Each code piece should be followed by a blank line.</li>
+<li>C++ style line comment starts with two slashes followed by two spaces.</li>
+<li>The text of comment begins with a capital letter and ends by a period.</li>
+</ul>
+<div class="code">
+<pre>
+<code>// Compute the factorial.
+int factorial = 1;
+for (int i = 2; i != 11; i++)
+    factorial *= i;
+
+// Present the result to the user.
+cout &lt;&lt; &quot;Factorial of 10 is &quot; &lt;&lt; factorial &lt;&lt; &quot;.&quot; &lt;&lt; endl;</code>
+</pre></div>
+
+
+
+
+
+<h2 id="toc2"><span>Identifiers</span></h3>
+<p>Identifiers follow Java naming convention using mixed case, e.g. <em>bufferSize.</em></p>
+<p>Identifiers should be meaningful rather than arbitrary. The only exception are control variables of short cycles where short names like <em>i</em>, <em>iter</em> etc. can be used.</p>
+<div class="code">
+<pre>
+<code>int sum = 0;
+for (int i = 0; i != 100; i++)
+     sum += i;</code>
+</pre></div>
+<p>The type of the variable should not be explicitly marked in the identifier. I.e. no hungarian notation.</p>
+
+
+
+
+<h2 id="toc3"><span>Code blocks</span></h3>
+<p>For functions, structures, classes, enums and namespaces both opening bracket and closing bracket are placed on separate lines:</p>
+<div class="code">
+<pre>
+<code>void fx()
+{
+    // Code goes here.
+}</code>
+</pre></div>
+<p>With <em>for</em>, <em>while</em>, <em>if</em> and <em>else</em> blocks opening bracket is on the same line as the control statement:</p>
+<div class="code">
+<pre>
+<code>if (sum &gt; 1000) {
+    // Code goes here.
+}</code>
+</pre></div>
+<p>Even if <em>for</em>, <em>while</em>, <em>if</em> or <em>else</em> block contains only a single statement, the statement should be placed on a separate line:</p>
+<div class="code">
+<pre>
+<code>if (end)
+    exit(1);</code>
+</pre></div>
+<p>If the indenting of the controlled block incidentally collides with the control statement that's broken into two lines, second line of the control statement should be indented by 6 spaces rather than 4 to prevent confusion:</p>
+<div class="code">
+<pre>
+<code>if (veryLongVariableName == 10000 &amp;&amp;
+      anotherHorrendousVariableName == 1000000 &amp;&amp;
+      ludicrouslyLongVariableName == 1000000000)
+    counter++;</code>
+</pre></div>
+
+
+
+
+<h2 id="toc4"><span>Operators</span></h3>
+<p>Unary operators are not separated from the expression in any way:</p>
+<div class="code">
+<pre>
+<code>counter++;</code>
+</pre></div>
+<p>Binary operators should be separated from adjacent expression by spaces:</p>
+<div class="code">
+<pre>
+<code>z = x + y;</code>
+</pre></div>
+<p>Method and function calls are not separated from the expression by space(s):</p>
+<div class="code">
+<pre>
+<code>someFunction(myArray[0]);</code>
+</pre></div>
+
+
+
+<h2 id="toc5"><span>Other coding rules</span></h3>
+<ul>
+<li>Never import namespaces in header files.</li>
+<li>Use C++-style casts instead of C-style, e.g. <em>static_cast&lt;Cat&gt;(animal)</em> instead of <em>(Cat)animal</em>.</li>
+<li>Use std::exception as exception base class.</li>
+<li>Write exception-safe code, e.g. usage of <em>auto_ptr</em>-s.</li>
+<li>Use JavaDoc for Java, Doxygen for C++ for API documentation.</li>
+</ul>
+
+
+
+</body>
+</html>
+
