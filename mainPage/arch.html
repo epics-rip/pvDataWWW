@@ -16,31 +16,80 @@
 
 <hr />
 
-<h2>Introduction</h2>
-EPICSv4 extends the scope of EPICSv3 with structured data types and request/response messaging patterns (Note that broadcast name resolution and the EPICSv3 architecture of distributed clients and servers without a central name server is still valid).
+<h2>INTRODUCTION</h2>
+EPICSv4 extends the scope of EPICSv3 with structured data types and request/response messaging patterns.
 <p>
 EPICSv3 systems consist of I/O controllers (IOCs) connected to temperatures, magnet currents, beam positions, and other scalars and vectors of timestamped primitive types. Above this layer are objects such as response matrices, machine lattice descriptions and backup and restore groups that are not easily modelled in the limited range of data types available in EPICSv3. Facilities use tools such as Matlab and SDDS to model high level concepts. Similarly many high-level services are request/response, returning the result of some processing or retrieval in response to a query. Tools such as Corba or Web Services fill this role, as EPICSv3 only has 'put with callback', a response that indicates that processing has completed but carries no payload.
 
-<h2>Case Studies</h2>
-<h3></h3>
+<h2>EXAMPLES</h2>
 
-<h3>Components</h3>
+These examples illustrate the potential for standardization. Each of these high-level tools uses a different data model and network procotol, and are all used at the same facility. Reasonably universal standards exist for some high-level applications, such as HDF5 files for experimental data.
+
+<h3>Back Up and Restore</h3>
+BURT is the EPICS Back Up and Restore tool. It uses the SDDS library which provides self-describing files of tabular data. 
+These data files are used to select a list of channels and to store the saved channel data. 
+The only mechanism for sharing files between processes on different machines is the Network File System (NFS). 
+
+<h3>Matlab Middlelayer</h3>
+Matlab Middlelayer is a set of tools for accelerator physics measurement and control. Machine descriptions and system models are stored in Matlab data structures on disk. Again NFS is the only network protocol.
+
+<h3>EPICS Channel Archiver</h3>
+EPICS archivers are a family of specialized time-series databases. The EPICS Channel Archiver (RTree) is an XMLRPC server, this is a web service protocol using XML to serialize requests and responses over an HTTP connection. The Archiver returns vectors of EPICSv3 data types as the result of time range queries.
+
+<h3>Data Acquisition</h3>
+X-Ray detectors produce image frames annotated with experimental metadata. 10 Gigabit Ethernet is increasingly used to transport these images from the acquisition machine to a storage server. Protocols for this include network or distributed file systems such as NFS or Lustre, or custom TCP protocols. Each custom TCP protocol must deal with connection handing, error handing and serialization. Data is stored in HDF5 files.
+
+<h2>COMPONENTS</h2>
+
+The EPICSv4 implementation languages are C++ and Java. 
+Python is supported using Boost.Python on top of the C++ libraries.
+
 <ul>
 <li>pvData
 <p>
 Run-time data types and serialization
+
 <li>pvAccess
 <p>
 Network protocol above TCP
+
+<li>pvIOC
+<p>
+The pvIOC is a pvAccess server with a configuration file format to allow the user to instantiate a number of Records (Channel endpoints),
+attach a variety of processing, and connect them together in a dataflow system.
+
 <li>pvService
 <p>
-What is it?
-<li>pvIOC
-What is it?
-<p>
+This project contains the implementation of the Gather service and the ItemFinder service as well as some client-side helper functions.
+It requires pvIOC. The Gather and ItemFinder service are Java only.
 </ul>
 
-<h2>Protocol</h2>
+<h2>ARCHITECTURES</h2>
+
+Currently EPICSv4 focusses on high-level applications. 
+It is expected that facilities will continue to use EPICSv3 IOCs for I/O until drivers are available for EPICSv4 IOCs.
+
+<h3>First Steps</h3>
+The simplest EPICSv4 archicture is client-server with broadcast name resolution. Clients and servers must use pvData and pvAccess. There is no central service.
+
+<h3>Integrating with Existing EPICSv3 Installations</h3>
+v3Channel is an EPICSv4 pvAccess server that runs on an EPICSv3 IOC, serving up existing EPICSv3 records as EPICSv4 data types.
+
+<h3>ItemFinder (Directory Server)</h3>
+The EPICSv4 Directory Service is called the itemFinder. 
+It is an optional service that can return lists of Channel names and properties associated with a particular key.
+This can be used to answer queries such as 'return a list of channels that are connected to a magnet'.
+Other high-level services such as Backup and Restore may depend on the information in the itemFinder.
+The itemFinder may store information in a relational database but the goal is to have a simple interface that models the
+connections between items in a typical control system in a standard way.
+
+<h3>Gather Service (Channel Aggregator)</h3>
+Many facilites need to concatenate and summarize information from many sensors into a single location, for example the electron beam position in a synchrotron is presented to the user as a vector but is read from many devices throughout the facility. The Gather service is a standard implementation of this pattern.
+
+<h3>Name Resolution Server</h3>
+EPICSv3 includes a little-used name server that can respond to UDP name requests with the target IP address and TCP port of the server, replacing the UDP broadcast name resolution. It would be possible to have a Name Server of this type in EPICSv4 but current development focuses on the itemFinder.
+
+<h2>PROTOCOL</h2>
 See also <a href="pvAccess_Protocol_Specification_20110923.html">pvAccess Protocol Specification (Technical Document)</a>
 <p>
 The EPICSv4 network protocol is <strong>pvAccess</strong>. pvAccess is connection based, endpoints are <strong>Channels</strong>. Channels have unique names within an installation, and the default name resolution method is broadcast prior to connection.
@@ -83,10 +132,6 @@ unavoidable latency. PutGet is more efficient for services that do not need to v
 <h3>Monitor</h3>
 Client subscribes to a channel, the server pushes values to the client. The type is determined at connection time.
 
-<h2>Architectures</h2>
-The EPICSv4 libraries have implementations in Java and C++. pvData and pvAccess. 
-
 </body>
 
 </html>
-
