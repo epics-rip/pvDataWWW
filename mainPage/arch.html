@@ -1,0 +1,92 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" />
+<link rel="stylesheet" type="text/css" href="epics4.css" />
+<title>EPICSv4 Architectures</title>
+</head>
+
+<body>
+
+<h1>EPICSv4 Architectures</h1>
+<dl>
+<dt>Editors:</dt>
+<dd>James Rowland, Diamond</dd>
+</dl>
+
+<hr />
+
+<h2>Introduction</h2>
+EPICSv4 extends the scope of EPICSv3 with structured data types and request/response messaging patterns (Note that broadcast name resolution and the EPICSv3 architecture of distributed clients and servers without a central name server is still valid).
+<p>
+EPICSv3 systems consist of I/O controllers (IOCs) connected to temperatures, magnet currents, beam positions, and other scalars and vectors of timestamped primitive types. Above this layer are objects such as response matrices, machine lattice descriptions and backup and restore groups that are not easily modelled in the limited range of data types available in EPICSv3. Facilities use tools such as Matlab and SDDS to model high level concepts. Similarly many high-level services are request/response, returning the result of some processing or retrieval in response to a query. Tools such as Corba or Web Services fill this role, as EPICSv3 only has 'put with callback', a response that indicates that processing has completed but carries no payload.
+
+<h2>Case Studies</h2>
+<h3></h3>
+
+<h3>Components</h3>
+<ul>
+<li>pvData
+<p>
+Run-time data types and serialization
+<li>pvAccess
+<p>
+Network protocol above TCP
+<li>pvService
+<p>
+What is it?
+<li>pvIOC
+What is it?
+<p>
+</ul>
+
+<h2>Protocol</h2>
+See also <a href="pvAccess_Protocol_Specification_20110923.html">pvAccess Protocol Specification (Technical Document)</a>
+<p>
+The EPICSv4 network protocol is <strong>pvAccess</strong>. pvAccess is connection based, endpoints are <strong>Channels</strong>. Channels have unique names within an installation, and the default name resolution method is broadcast prior to connection.
+<p>
+Channels support the following messaging patterns:
+
+<ul>
+<li>Request/Response
+<ul>
+<li>Put
+<li>Get
+<li>PutGet
+<li>Remote Procedure Call (RPC, see below for the difference between PutGet and RPC)
+</ul>
+<li>Publish/Subscribe
+<ul>
+<li>Monitor
+</ul>
+</ul>
+
+These messaging patterns are also connection based, eg. a Put connection must be established after a Channel connection before Puts can happen.
+This messaging connection exchanges type information between the client and the server.
+
+<h3>Put</h3>
+Client puts a value to a channel. The type is determined at connection time.
+
+<h3>Get</h3>
+Client gets a value from a channel. The type is determined at connection time.
+
+<h3>PutGet</h3>
+Client puts a value to a channel and gets a result. The type is determined at connection time.
+
+<h3>RPC</h3>
+Client puts a value to a channel and gets a result. The type is determined at request time.
+<p>
+RPC is a performance optimization for services that need to send or receive a difference type each call. 
+It would be possible to do the same using PutGet by creating a messaging connection before each call, but this would introduce 
+unavoidable latency. PutGet is more efficient for services that do not need to vary the type from call to call.
+
+<h3>Monitor</h3>
+Client subscribes to a channel, the server pushes values to the client. The type is determined at connection time.
+
+<h2>Architectures</h2>
+The EPICSv4 libraries have implementations in Java and C++. pvData and pvAccess. 
+
+</body>
+
+</html>
+
