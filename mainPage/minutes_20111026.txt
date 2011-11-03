@@ -1,0 +1,34 @@
+Minutes of EPICS V4 Working Group 26.10.2011
+Scribe: Timo
+
+-NTTable and other normative types need a clear definition (Greg)
+
+-channelRPC: accept the inefficiency and make it symmetric
+
+-NTTable as "corba any" is too flexible. Allow any for both arguments and result instead of just the result.
+
+-drop channelGetOnce, channelPutOnce and channelPutGetOnce
+
+-callbacks in channelGet: to recover from timeout, it is necessary to re-create the channelGet? Yes. Cancel is lacking. Talk to 
+Matej. However, probably ok as it is.
+
+-what happens if a new request is issued before getDone was called for the previous get? (Matej)
+
+-comparison of pvAccess and simple tcp communication. pvAccess gets to about 80% of raw tcp, however, depends a lot on 
+several options.
+
+-to pack data into structures, packers need to be written by hand (corba: dd compiler)
+
+-Rename SyncPVA instead of EZPVA. Removes the callback interfaces
+
+-For non-normative types, the callback interface has to be used.
+
+-comments to action items should be added
+
+-specifically for this discussion to "start proposal for simplifying the programmers API"
+
+-Marty at Brookhaven next week tue,wed,thu (1.-3..11)
+
+-NTTable definition a high priority
+
+-a snapshot-restore service needed in 2 months (Guobao), NTTable required for that.

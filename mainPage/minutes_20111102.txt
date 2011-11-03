@@ -1,0 +1,83 @@
+Minutes of EPICS V4 Working Group 02.11.2011
+
+Gregory White: ========= Meeting 2-Nov-2011 ===========
+
+Gregory White: Present: GW, JR, MK, GS, NM
+
+Gregory White: Scribe: gregory
+
+Marty & Guobao: Marty: Just did not thin k about it
+
+Gregory White: TOPIC: EZPVA
+
+Gregory White: JR: Has file for Marty to look at. 
+
+Gregory White: JR: Would like to see
+
+James: result = putget(input)
+
+Gregory White: JR: requires user to create their own structure
+
+Gregory White: presenly it's 2 stage, but that's not fitting in with a synchornous interface
+
+Gregory White: JR: Want the scalar and scalar array methods as is, but to simplify the method interface for PVStructure as above
+
+James: result = putget(channel, input, timeout)
+
+James: result = channelrpc(channel, input, timeout)
+
+Gregory White: JR: It's not clear why we have channelrpc if tehre are no types that use channelrpc.
+
+James: wow
+
+Gregory White: MK: Decided its going to be called SyncPVA!
+
+Gregory White: MK: For channelrpc, will we change function so that both input and output args can be different call to call
+
+James: you can encode the nttable without a new fielddesc each time
+
+James: it's true if the list of  possible field types is fixed
+
+James: exatly a variant union
+
+James: that's how qt represents database tables, for example
+
+Marty, Bob, & Guobao: for RDB related services, the field often changes each time
+
+James: yes but the list of possible field types is fixed
+
+Marty, Bob, & Guobao: if fixed, then we can use putget for efficiency
+
+Marty, Bob, & Guobao: and the fixed structure will be a giant
+
+Marty, Bob, & Guobao: fixed for input, variable for output, is it?
+
+Gregory White: MK: MK will change the interfaces for channelRPC so that the definition of the input arguments (their structure) can change from call to call
+
+Gregory White: MK: MK does anticipate monitors. There is nothing about the architecture that forbids it
+
+James: result = putget(channel, input, timeout)
+
+Gregory White: NEW TOPIC: Coding standards
+
+Gregory White: MK: Lets change 80 col limit to "no unusually long lines"
+
+Gregory White: GW: Let's adopt a standard header
+
+Gregory White: Let's generalize the document to Cpp and Java
+
+Gregory White: MK: Exception handling guidelines must be added
+
+Gregory White: MK: Asks what he needs to do to support Doxygen in code
+
+Gregory White: Ans: Doxygne uses the same tags as javadoc
+
+James: same as javadoc
+
+James: javadoc can generate docs without special comments
+
+James: but it's nicer with special tags
+
+Gregory White: Argument ensues about how closely the standard for commenting using Javadoc/Doxygen must be specified
+
+Gregory White: AI on GW: Write strawman proposal for source code headers and minimum document markup for coding standard
