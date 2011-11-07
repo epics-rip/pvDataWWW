@@ -20,6 +20,7 @@
    @media screen {
      body { margin-right: 10% }
    }
+   li { margin-bottom:0.9em }
  </style>
  </style>
 </head>
@@ -64,30 +65,47 @@ the <a href="charter.html">EPICS v4 Charter</a>. </p>
 
 
 <h3 id="presentwork">Present Work</h3>
-<p>As of <strong>Status 6-Oct-2011</strong> present work is concentrating on:</p>
-<ul>
-<li>Normative types. Definitions and binding implementations of the so called,
-normative types. These are the data types that it is expected all general purpose
-clients will understand, and it is encouraged that services and IOC applications
-should supply.</li>
-<li>First services, writing and deployment. In particular, a general relational
-database access service, and lattice modelling services are being actively
-developed</li>
-<li>Display tools and frameworks. pvManager, and CSS plugins</li>
-<li>Directory service support, in particular channelFinder, and associated CSS plugins</li>
-<li>The Gather Service Framework. This is a server side distributed data acquisition
-framework, which helps a programmer to construct a service that collects data from a
-number of sources (EPICS v4 or EPICS V4 records), and makes it available in the
-normative types suiatble for displaying data of a number of devices. For instance,
-useful for BPM orbit, or linac energy management services. </li>
-<li>Fully implementing the
-the <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess
-specification</a> working draft.</li>
-</ul>
+<p>As of <strong>Status 7-November-2011</strong>, work is concentrating on
+simplifying EPICS V4 for the user programmer and regularizing APIs. Specifically,
+present activities include:</p>
+<ol>
+  <li>Review of ezpva and "gather" continue </li>
+  <li>ezpva rename. Question of whether to rename, and if so to do it. Depends on whether
+  ezpva will include async acquisition</li>
+  <li>Implementation of ezpva specification (Marty, Matej)</li>
+  <li>NT type definitions specifications (Bob)</li>
+  <li>NT type id definition (requires lead)</li>
+  <li>NT type implementations (requires lead)</li>
+  <li>Question of how to encode NTTable; in CORBA Any style, or as variant union</li>
+  <li>Unsigned Int handling. Document, republish to observers, and implement</li>
+  <li>Comments on pvAccess specification. Integration of remarks from Michael and
+  others. Edits for lingo. (Matej, Marty, Greg).</li>
+  <li>pvAccess publication to techtalk</li>
+  <li>Reorganisation of pvData & pvIOC javadoc into "classical" javadoc plus
+  reference doc (Marty)</li>
+  <li>Example and tests of use of pvAccess for async 'monitoring'. (Paul Gibbons,
+  Marty, Bob). Outcome should be 1) example code in pvData, 2) Text for a getting
+  started document</li>
+  <li>Twiss model service design (Guobao, Greg)</li>
+  <li>Model simulation service (aka "Online Calculator") design (Guobao, Greg)</li>
+  <li>EPICS V4 getting started developer's guide document preparation (Greg, Matej)</li>
+  <li>Publishing javadoc for EPICS V4 modules through Maven (Matej, Gabriele)</li>
+  <li>Logging and setpoint save tool, design and implementation (Guobao, Marty)</li>
+  <li>Moving meeting hosting service from Adobe Connect to something else (Greg)</li>
+  <li>Development, code, and documentation standards (Matej, Greg)</li>
+  <li>use of Doxygen for documentation generation. What standards must be in place so
+  you get useful output, bit just pretty pages with nothing in them (needs lead)</li>
+  <li>Question: Sending pvStructure to a service. Is it supported? How do you do it? Need demo</li>
+  <li>Sending pvStructure that changes call to call through ezpva. Requires code changes (Matej, Marty)</li>
+  <li>Question: Build environment for EPICS V4 in a deployed lab setting (ie, Maven or just
+  Make?)</li>
+  <li>Deploying rdbService at PSI (Greg)</li>
+</ol>
+<a href="activities_archive.html">Archive of previous activities.</a>
 
 <h3>Code bases</h3>
 
-<p><strong>Status 6-Oct-2011</strong></p> 
+<p><strong>Status 7-Nov-2011</strong></p> 
 
 <p>The implementation statuses of the core packages of Epics v4,
 pvData, pvAccess, pvIOC, and PvService, given by language support,
@@ -98,19 +116,23 @@ are:<p>
 <p>pvData, pvAccess, pvIOC, and PvService packages exist and are being
 developed as Eclipse projects, made available through sourceforge
 project epics-pvdata. The Java version of the pvIOC is now named
-"javaIOC".</p>
+"javaIOC". We have moved to a Mercurial repository, and Maven is doing all interna
+build and test</p>
 
 <p>The following services have been started. Presently they can be found in
 PvService, though pvService is likely to be broken up into core support for
 services, and the services themselves removed: </p>
 
 <ul>
+<li>Relational Database - code is complete and tested, about to enter deployment at PSI</li>
 <li>itemFinder- Get a list of channel names and properties.  Both client 
 and server are implemented</li>
 <li>gather service framework- get/put/monitor a set of V3 channels, Both client and server 
 are implemented</li>
-<li>model service - a framework for hosting beamline optics modelling codes as services. The framework is complete, but no modelling is implemented</li>
-<li>Relational Database - code is complete, about to enter testing.
+<li>modelling - a framework for hosting beamline optics modelling codes as
+services. The framework is complete, but no modelling is implemented.</li>
+<li>Logging Service is being started</li>
+
 </ul>
 
 <h3 id="cpp:status">C++</h3> 
