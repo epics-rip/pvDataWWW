@@ -1,0 +1,48 @@
+Telecon Meeting 09-Nov-2011.
+===================
+
+[09/11/2011 16:14:15] Greg White: PRESENT: TK, JR, BD, GS, MK, GW
+[09/11/2011 16:15:04] bob.dalesio: I can do it
+[09/11/2011 16:15:20] Martin Kraimer: Marty takes notes
+[09/11/2011 16:15:37] bob.dalesio: ok
+[09/11/2011 16:15:42] Greg White: SCRIBE: Martin Kraimer
+[09/11/2011 16:17:16] Greg White: NEW TOPIC: review of present activities
+[09/11/2011 16:18:04] Greg White: Marty is erging ezpva and gather
+[09/11/2011 16:18:24] Greg White: ^erging^merging
+[09/11/2011 16:18:41] Martin Kraimer: Activity Item 1 being discused
+[09/11/2011 16:19:32] Martin Kraimer: ezpva will include a client side gather
+[09/11/2011 16:20:28] Greg White: Marty's priorities: MK working on log score facility
+[09/11/2011 16:25:10] Timo Korhonen: Bob: logscore should be the priority, is there a pressing need for ezpv?
+[09/11/2011 16:26:02] Timo Korhonen: Apparently not. RDB services seem to be the focus.
+[09/11/2011 16:27:05] bob.dalesio: not the put part
+[09/11/2011 16:27:06] Timo Korhonen: Marty concentrates on the data flow from IRMIS
+[09/11/2011 16:28:13] Timo Korhonen: Marty adds RPC facility to C++ pvAccess. Right?
+[09/11/2011 16:29:34] guobao shen: I can not hear well
+[09/11/2011 16:30:29] Timo Korhonen: BNL priority taken, we need however get back to the core development soon.
+[09/11/2011 16:32:26] Timo Korhonen: Prototype for logscore as a service (BNL)
+[09/11/2011 16:35:44] Timo Korhonen: pvService - should it be RPC only or include e.g. PutGet?
+[09/11/2011 16:38:43] Timo Korhonen: I hear Greg's talk twice, directly and delayed...I have a bit hard time of taking minutes
+[09/11/2011 16:40:13] Timo Korhonen: pvService definition should be cleaned up before publishing services
+[09/11/2011 16:41:22] bob.dalesio: sounds like we have an AI
+[09/11/2011 16:41:59] Timo Korhonen: I have a bit of problems...could somebody else scribe? Sorry.
+[09/11/2011 16:43:35] Greg White: I've got a lot of droppouts
+[09/11/2011 16:44:04] Timo Korhonen: How about classifying some services to be general? (BD)
+[09/11/2011 16:44:37] bob.dalesio: So - we have an AI: to make services have nothing in there - except what is required to write services
+[09/11/2011 16:44:39] bob.dalesio: ??
+[09/11/2011 16:47:22] Timo Korhonen: The goal is to make logscore generic, not dependent on IRMIS etc.
+[09/11/2011 16:49:46] bob.dalesio: it is the C++ implementation for the support of services
+[09/11/2011 16:50:15] bob.dalesio: It should lead there and I would really like that too!!!!
+[09/11/2011 16:51:00] bob.dalesio: Yes
+[09/11/2011 16:52:59] Timo Korhonen: A C++ binding to services would be useful soon, to do e.g. archive service.
+[09/11/2011 16:58:13] Greg White: Ai on MK by 11/11: Check whether cpp version of pvService rpc is done
+
+[09/11/2011 17:11:05] guobao shen: AI for bob: lead NTType definition
+[09/11/2011 17:12:36] guobao shen: lead developer for implementation for NT type needed
+[09/11/2011 17:13:55] guobao shen: MK: need a separated repo for NT type
+[09/11/2011 17:15:18] Greg White: AI on Greg by 12/Nov: to create repo NTTypes
+[09/11/2011 17:19:37] Greg White: ISSUE: We would like ot merge cpp, java, python repos, but so far have noone to do it
+[09/11/2011 17:21:12] Greg White: ISSUE: It should probably be the case that pvData and pvAccess are combined, but it's work and impacts specifications
+[09/11/2011 17:23:38] Greg White: We have to get back to deciding unsigned int alert
+[09/11/2011 17:24:44] Greg White: AI on Greg and Matej 15/Nov: edits in pvAccess and publish to techtalk
+[09/11/2011 17:33:26] Greg White: AI on JR 13/11: Write short cheatsheet for Docxygen in our SF.
+[09/11/2011 17:37:32] Greg White: bye
