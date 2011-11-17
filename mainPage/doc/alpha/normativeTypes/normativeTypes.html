@@ -25,7 +25,7 @@
 <h1>EPICS V4 Normative Types</h1>
 
 <h2 class="nocount" id="L49">EPICS V4 Normative Types, Editors Draft,
-16-Nov-2011</h2>
+17-Nov-2011</h2>
 <dl>
   <dt>Editors:</dt>
     <dd>Bob Dalesio, Brookhaven National Lab</dd>
@@ -61,10 +61,10 @@ Control System.</a></p>
   <li><a href="#L71">Status of this Document</a></li>
   <li><a href="#L91">Contents</a></li>
   <li><a href="#L95">Introduction</a></li>
-  <li><a href="#L128">Normative Type Fields</a>
+  <li><a href="#L128">Normative Type Fields</a> 
     <ul>
       <li><a href="#L170">scalar_t</a></li>
-      <li><a href="#L187">Structure normative fields</a>
+      <li><a href="#L187">Structure normative fields</a> 
         <ul>
           <li><a href="#L191">enum_t</a></li>
           <li><a href="#L213">timeStamp_t</a></li>
@@ -74,7 +74,7 @@ Control System.</a></p>
           <li><a href="#L320">control_t</a></li>
         </ul>
       </li>
-      <li><a href="#L337">Structure Array Normative Fields</a>
+      <li><a href="#L337">Structure Array Normative Fields</a> 
         <ul>
           <li><a href="#L341">enum_t[]</a></li>
           <li><a href="#L353">timeStamp_t[]</a></li>
@@ -85,7 +85,7 @@ Control System.</a></p>
     </ul>
   </li>
   <li><a href="#L391">Normative Type Classes</a></li>
-  <li><a href="#L441">Argument Normative Types</a>
+  <li><a href="#L441">Argument Normative Types</a> 
     <ul>
       <li><a href="#L447">NTArgNameValue</a></li>
       <li><a href="#L453">NTArgTable</a></li>
@@ -113,13 +113,10 @@ Control System.</a></p>
 <h2 id="L95">Introduction</h2>
 <hr />
 
-<p>EPICS version 4 supplies basic types types. Additionally, EPICS V4 defines a
-set of Normative types that build on the data types defined by pvData, which
-defines memory resident structured data. In particular the normative types are
-defined via pvData Structure introspection interfaces and PVStructure data
-intefaces.</p>
+<p>EPICS version 4 supplies types for memory resident structured data. EPICS V4
+Normative Types defines a set types that build on the pvData.</p>
 
-<p>The Normative types provide a standard set of structure definitions so that
+<p>The normative types are a standard set of structure definitions so that
 tools can be implemented which support these normative types.</p>
 
 <p>The syntax for describing the normative types is an extension of the meta
@@ -127,7 +124,7 @@ data syntax defined by pvData.</p>
 
 <p><span style="font-weight:bold;">Definition</span>: Normative Type</p>
 <ol>
-  <li>Is a top level PVStructure</li>
+  <li>Is a top level structure</li>
   <li>The fieldName of the Structure introspection interface is the name of the
     normative type.</li>
   <li>The Structure for a normative type contains an ordered set of fields. The
@@ -146,12 +143,12 @@ data syntax defined by pvData.</p>
 <h2 id="L128">Normative Type Fields</h2>
 <hr />
 
-<p>A fields of a normative type can be any of the following or an array of the
-following:</p>
+<p>A field of a normative type, which is called ndfield_T, can be any of the
+following or an array of any of the following:</p>
 <dl>
   <dt>scalar_t</dt>
     <dd>The pvData type is scalar</dd>
-  <dt>scalar_t</dt>
+  <dt>scalarArray_t</dt>
     <dd>The pvData type is scalarArray</dd>
   <dt>enum_t</dt>
     <dd>The pvData type is structure and the structure is a enumerated
@@ -208,7 +205,7 @@ string[]   // array of UTF-8 *</pre>
     <dd>The name of the structure can be any valid name.</dd>
   <dt>index</dt>
     <dd>The is a index of the current choice</dd>
-  <dt>cloices</dt>
+  <dt>choices</dt>
     <dd>An array of strings specifying the valid choices.</dd>
 </dl>
 
@@ -242,13 +239,13 @@ PVTimeStamp.</p>
 <p>where</p>
 <dl>
   <dt>severity</dt>
-    <dd>severity is defined as an int (not an enum_t), but should be
-      functionally interpreted only as the enumeration {NONE, MINOR, MAJOR,
-      INVALID, UNDEFINED }</dd>
+    <dd>severity is defined as an int (not an enum_t), but MUST be functionally
+      interpreted as the enumeration {NONE, MINOR, MAJOR, INVALID, UNDEFINED
+    }</dd>
   <dt>status</dt>
-    <dd>status is defined as an int (not an enum_t), but should be functionally
-      interpreted only as the enumeration {NONE, DEVICE, DRIVER, RECORD, DB,
-      CONF, UNDEFINED, CLIENT } </dd>
+    <dd>status is defined as an int (not an enum_t), but must be functionally
+      interpreted as the enumeration {NONE, DEVICE, DRIVER, RECORD, DB, CONF,
+      UNDEFINED, CLIENT } </dd>
   <dt>message</dt>
     <dd>A message string.</dd>
 </dl>
@@ -293,7 +290,7 @@ PVAlarm.</p>
     <dd>A description for the value field.</dd>
   <dt>format</dt>
     <dd>A format for converting the value field to a string.</dd>
-  <dt>uniuts</dt>
+  <dt>units</dt>
     <dd>The units for the value field.</dd>
 </dl>
 
@@ -371,6 +368,8 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
 <p>The syntax for a normative type definition follows the pattern:</p>
 <pre>structure NTXXX
    ntfield_t fieldName
+   // or
+   ntfield_t[] fieldName
    ...</pre>
 where 
 <dl>
@@ -412,18 +411,11 @@ where
 <pre>structure NTArgTable
    string function
    string[] labels
-   &lt;some normative type&gt;[] xxx
+   ntfield_t[] xxx
    ...</pre>
 
 <p>labels is a array with length either zero or equal to the number of fields
-which follow. An arbitrary number of fields can follow field label. Each field
-must be one of:</p>
-<ol>
-  <li>Atomic normative type.</li>
-  <li>Array of atomic normative type.</li>
-  <li>Atomic Control Type.</li>
-  <li>Array of atomic control type.</li>
-</ol>
+which follow. An arbitrary number of fields can follow field label.</p>
 <hr />
 
 <h2 id="L476">NTScalar</h2>
