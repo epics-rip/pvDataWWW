@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS v4 Normative Document</title>
+  <link rel="stylesheet" type="text/css"
+  href="normative_types_specification_files/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="normative_types_specification_files/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
+</head>
+
+<body>
+
+<div class="head">
+<h1 id="L47">EPICS V4 Normative Types Specification</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date. -->
+
+<h2 class="nocount" id="L52">EPICS V4 Normative Types Specification, Editors
+Draft, 15-Nov-2011</h2>
+<dl>
+  <dt>This version:</dt>
+    <dd><a
+      href="http://epics-pvdata.sourceforge.net/normative_types_specification_20111110.html">normative_types_specification_20111110.html</a></dd>
+  <dt>Latest version:</dt>
+    <dd><a
+      href="http://epics-pvdata.sourceforge.net/normative_types_specification.html">normative_types_specification.html</a></dd>
+  <dt>Editors:</dt>
+    <dd>Bob Dalesio, Brookhaven National Lab</dd>
+    <dd>Greg White, SLAC, PSI</dd>
+    <dd>Marty Kraimer, Brookhaven National Lab</dd>
+</dl>
+<hr />
+
+<h2 class="nocount" id="L80">Abstract</h2>
+
+<p>For more information about EPICS, please refer to the home page of the <a
+href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
+Control System.</a></p>
+
+<h2 class="nocount" id="L86">Status of this Document</h2>
+<!-- Statement about why this version exists -->
+
+<p>This is the working copy of this document. Comments are welcome.</p>
+<!-- Additional free form content goes here
+ PLease always include this statement of terms, unless it's really silly -->
+
+<p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
+highlighted (through style sheets, and in uppercase in the source) are used in
+accordance with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a> [<a
+href="http://epics-pvdata.sourceforge.net/refs.html#ref-RFC2119">RFC2119</a>].
+The term NOT REQUIRED (not defined in RFC 2119) indicates exemption. </p>
+<!--NewPage-->
+<!-- this is for html2ps -->
+CONTENTS 
+
+<div class="toc">
+<ul>
+  <li><a href="#L47">EPICS V4 Normative Types Specification</a>
+    <ul>
+      <li><a href="#L52">EPICS V4 Normative Types Specification, Editors Draft,
+        15-Nov-2011</a></li>
+      <li><a href="#L80">Abstract</a></li>
+      <li><a href="#L86">Status of this Document</a></li>
+    </ul>
+  </li>
+  <li><a href="#L114">Introduction</a></li>
+  <li><a href="#L120">The Normative Types</a>
+    <ul>
+      <li><a href="#L122">General Normative Types</a>
+        <ul>
+          <li><a href="#L124">Atomic</a></li>
+        </ul>
+      </li>
+      <li><a href="#L137">Atomic Control Types</a>
+        <ul>
+          <li><a href="#L139">typeIdentifier</a></li>
+          <li><a href="#L153">Structured Atomic Control Types</a></li>
+        </ul>
+      </li>
+      <li><a href="#L171">Array of atomic type:</a>
+        <ul>
+          <li><a href="#L175">Array of Control Types:</a></li>
+        </ul>
+      </li>
+      <li><a href="#L179">Structures of General-Normative Types</a></li>
+      <li><a href="#L227">Argument General-Normative Types</a>
+        <ul>
+          <li><a href="#L231">NTArgNameValue</a></li>
+          <li><a href="#L237">NTArgTable</a></li>
+        </ul>
+      </li>
+      <li><a href="#L258">Control General-Normative Types</a>
+        <ul>
+          <li><a href="#L260">Scalar Types</a></li>
+          <li><a href="#L272">Array Types</a></li>
+        </ul>
+      </li>
+      <li><a href="#L282">Specific Normative Types</a>
+        <ul>
+          <li><a href="#L290">NTMultichannelArray</a></li>
+          <li><a href="#L296">NTTimeDomainArray</a></li>
+          <li><a href="#L302">NTHistogram</a></li>
+          <li><a href="#L306">NTNDArray</a></li>
+          <li><a href="#L310">NTFrequencyDomainArray</a></li>
+          <li><a href="#L314">NTStatistic</a></li>
+          <li><a href="#L320">NTImage</a></li>
+          <li><a href="#L324">NTTable</a></li>
+          <li><a href="#L349">NTChannelFinderDirectory</a></li>
+          <li><a href="#L355">NTXAlarm</a></li>
+        </ul>
+      </li>
+      <li><a href="#L359">Non-Normative Types</a></li>
+    </ul>
+  </li>
+</ul>
+</div>
+
+<h1 id="L114">Introduction</h1>
+
+<p>EPICS version 4 supplies basic types types. Additionally, EPICS V4 defines a
+set of Normative types that build on the data types defined by pvData, which
+defines memory resident structured data. In particular the normative types are
+defined via pvData Structure introspection interfaces and PVStructure data
+intefaces.</p>
+
+<p>The syntax for describing types is the meta data syntax defined by
+pvData.</p>
+
+<h1 id="L120">The Normative Types</h1>
+
+<h2 id="L122">General Normative Types</h2>
+
+<h3 id="L124">Atomic</h3>
+
+<p>The atomic types are that same as the pvData scalar types, which are:</p>
+<pre>boolean  // true or false
+byte     // 8 bit signed integer
+short    // 16 bit signed integer
+int      // 32 bit signed integer
+long     // 64 bit signed integer
+float    // single precision IEEE 754
+double   // double precision IEEE 754
+string   // UTF-8 *</pre>
+
+<p><strong>NOTE:</strong> There is no specific support for unsigned types. *
+See definition in <a
+href="https://sourceforge.net/tracker/?func=detail&amp;aid=3426964&amp;group_id=249167&amp;atid=2483530">RESOLUTION
+of 4-Oct</a>.</p>
+
+<h2 id="L137">Atomic Control Types</h2>
+
+<h3 id="L139">typeIdentifier</h3>
+
+<p>A type identifier is a field that is defined as:</p>
+<pre>   typeIdentifier_t typeIdentifier</pre>
+
+<p>typeIdentifier is a long integer whose bitfield value is used to uniquely
+identify a PVStructure instance as an example of a normative data type. The low
+order 16 bits (of 64) are reserved to identify the standard normative types.
+Applications that have special requirements can define special normative types
+but must have the low order 16 bits of the typeIdentifier set equal to 0. </p>
+
+<p>The following uses C++ syntax to define the standard normative types.</p>
+<pre>// definition of normative types
+// argument
+#define NTTypeArgNameValue 0x0000000000000001
+#define NTTypeArgTable     0x0000000000000002
+
+// result
+#define NTTypeBoolean 0x0000000000000100
+#define NTTypeByte    0x0000000000000200
+#define NTTypeShort   0x0000000000000300
+#define NTTypeInt     0x0000000000000400
+#define NTTypeLong    0x0000000000000500
+#define NTTypeFloat   0x0000000000000600
+#define NTTypeDouble  0x0000000000000700
+#define NTTypeString  0x0000000000000800
+#define NTTypeEnum    0x0000000000000900
+
+#define NTTypeBooleanArray 0x0000000000001100
+#define NTTypeByteArray    0x0000000000001200
+#define NTTypeShortArray   0x0000000000001300
+#define NTTypeIntArray     0x0000000000001400
+#define NTTypeLongArray    0x0000000000001500
+#define NTTypeFloatArray   0x0000000000001600
+#define NTTypeDoubleArray  0x0000000000001700
+#define NTTypeStringArray  0x0000000000001800
+#define NTTypeEnumArray    0x0000000000001900
+
+#define NTTypeStatistic              0x0000000000002100
+#define NTTypeMultiChannelArray      0x0000000000002200
+#define NTTypeTimeDomainArray        0x0000000000002300
+#define NTTypeFrequencyDomainArray   0x0000000000002400
+#define NTTypeTable                  0x0000000000002500
+#define NTTypeChannelFinderDirectory 0x0000000000002600
+#define NTTypeImage                  0x0000000000002700
+#define NTTypeNDArray                0x0000000000002800</pre>
+
+<p>Since normative types are transported via pvAccess it is essential that all
+language implementations of the normative types use the above encoding.</p>
+
+<h3 id="L153">Structured Atomic Control Types</h3>
+
+<p>A structured atomic control type is defined as a pvData structureArray. In
+the remainder of this document the terminology will be shortened to just
+"atomic control type".</p>
+
+<p>The following are the standard atomic control types:</p>
+<pre>structure enum_t
+    int index
+    string[] choices</pre>
+<pre>structure timeStamp_t
+   long secsPastEpoch
+   int  nanoseconds
+   int  userTag</pre>
+<pre>structure alarm_t
+   int severity*
+   int status*
+   string message</pre>
+<pre>structure nameValuePair_t
+   string name
+   string value </pre>
+
+<p>*severity is defined as an int (not an enum_t), but should be functionally
+interpreted only as the enumeration {NONE, MINOR, MAJOR, INVALID, UNDEFINED
+}</p>
+
+<p>*status is defined as an int (not an enum_t), but should be functionally
+interpreted only as the enumeration {NONE, DEVICE, DRIVER, RECORD, DB, CONF,
+UNDEFINED, CLIENT } </p>
+
+<h2 id="L171">Array of atomic type:</h2>
+<pre>boolean[]  // array of true or false
+byte[]     // array of 8 bit signed integer
+short[]    // array of 16 bit signed integer
+int[]      // array of 32 bit signed integer
+long[]     // array of 64 bit signed integer
+float[]    // array of single precision IEEE 754
+double[]   // array of double precision IEEE 754
+string[]   // array of UTF-8 *</pre>
+
+<h3 id="L175">Array of Control Types:</h3>
+<pre>enum_t[]
+timeStamp_t[]
+alarm_t[]
+nameValuePair_t[]</pre>
+
+<h2 id="L179">Structures of General-Normative Types</h2>
+
+<p>There are two classes of Structures of General-Normative Types:</p>
+<dl>
+  <dt>Argument</dt>
+    <dd>These are for an argument sent from a client to a service.</dd>
+  <dt>Control</dt>
+    <dd>These are for the result returned from a service to a client.</dd>
+</dl>
+
+<p>The syntax for a normative type definition follows the pattern:</p>
+<pre>structure type-name 
+   typeIdentifier_t typeIdentifier
+   type-name field-name
+   ...</pre>
+where 
+<dl>
+  <dt><span style="font-weight:bold;">type-name</span></dt>
+    <dd>The name of the normative type.</dd>
+  <dt>typeIdentifier_t</dt>
+    <dd>This is an long integer with encoding that identies the normative
+    types.</dd>
+  <dt>typeIdentifier</dt>
+    <dd>This MUST be the name of the typeIdentifier_t fields and MUST be the
+      first field in the structure.</dd>
+  <dt>type-name</dt>
+    <dd>MUST be a General Normative Type.</dd>
+  <dt>field-name</dt>
+    <dd>Must follow the pvData field naming conventions.</dd>
+</dl>
+
+<h2 id="L227">Argument General-Normative Types</h2>
+
+<p>These are types that a client passes to a service.</p>
+
+<h3 id="L231">NTArgNameValue</h3>
+
+<p>This is a type appropriate for many RPC (Remote Procedure Call) requests:</p>
+<pre>structure NTArgNameValue
+   typeIdentifier_t typeIdentifier
+   string function
+   nameValuePair_t[] args</pre>
+
+<h3 id="L237">NTArgTable</h3>
+
+<p>This is a type appropriate for more complex RPC calls.</p>
+<pre>structure NTArgTable
+   typeIdentifier_t typeIdentifier
+   string function
+   string[] labels
+   &lt;some normative type&gt;[] xxx
+   ...</pre>
+
+<p>labels is a array with length either zero or equal to the number of fields
+which follow. An arbitrary number of fields can follow field label. Each field
+must be one of:</p>
+<ol>
+  <li>Atomic normative type.</li>
+  <li>Array of atomic normative type.</li>
+  <li>Atomic Control Type.</li>
+  <li>Array of atomic control type.</li>
+</ol>
+
+<h2 id="L258">Control General-Normative Types</h2>
+
+<h3 id="L260">Scalar Types</h3>
+
+<p>The set of control general-normative types is the composed of each of the
+general-normative types, plus timestamp and severity. These are encoded as
+PVStructure. </p>
+
+<p>There are definitions for the following:</p>
+<pre>    NTBoolean
+    NTByte (8 bit)
+    NTShort (16 bit)
+    NTInt  (32 bit)
+    NTLong (64 bit)
+    NTFloat
+    NTDouble
+    NTString (see resolution 4-Oct-2011 meeting)
+    NTEnum</pre>
+
+<p>All are the same except for the last field. Some examples are:</p>
+<pre>structure NTFloat
+   typeIdentifier_t typeIdentifier
+   alarm_t alarm 
+   timeStamp_t timeStamp
+   float value
+
+structure NTFloat
+   typeIdentifier_t typeIdentifier
+   alarm_t alarm 
+   timeStamp_t timeStamp
+   string value
+structure NTFloat
+   typeIdentifier_t typeIdentifier
+   alarm_t alarm 
+   timeStamp_t timeStamp
+   enum_t value</pre>
+
+<h3 id="L272">Array Types</h3>
+
+<p>These are like the array types except that the last field is an array. The
+complete set of types is:</p>
+<pre>    NTBooleanArray
+    NTByteArray (8 bit)
+    NTShortArray (16 bit)
+    NTIntArray  (32 bit)
+    NTLongArray (64 bit)
+    NTFloatArray
+    NTDoubleArray
+    NTStringArray (see resolution 4-Oct-2011 meeting)
+    NTEnumArray</pre>
+
+<p>All are the same except for the last field. Some examples are:</p>
+<pre>structure NTFloat
+   typeIdentifier_t typeIdentifier
+   alarm_t alarm 
+   timeStamp_t timeStamp
+   float[] value
+
+structure NTFloat
+   typeIdentifier_t typeIdentifier
+   alarm_t alarm 
+   timeStamp_t timeStamp
+   string[] value
+structure NTFloat
+   typeIdentifier_t typeIdentifier
+   alarm_t alarm 
+   timeStamp_t timeStamp
+   enum_t[] value</pre>
+
+<h2 id="L282">Specific Normative Types</h2>
+
+<p>Specific normative types are types defined by the EPICS V4 working group,
+that are oriented towards specific uses. These are also encoded as PVStructure.
+</p>
+
+<p>Times are always in seconds.</p>
+
+<p>Frequencies are always in Hz.</p>
+
+<h3 id="L290">NTMultichannelArray</h3>
+
+<p>MultichannelArray is a type to aggregate an array of scalar values into a
+single array variable. </p>
+<pre>structure NTMultichannelArray
+  typeIdentifier_t typeIdentifier
+  alarm_t alarm
+  timeStamp_t timeStamp
+  double[] values
+  int[] severities
+  double[] positions      // The real absolute or relative position of each scalar. If not relevant, should be valued 0.0. 
+  double[] deltaTimes      // The time relative to the timeStamp in seconds. If not relevant, should be valued 0.0</pre>
+
+<p>Each array must have the same number of elements or have a length of 0. A
+length on 0 signifies that the service does not provide that field.</p>
+
+<h3 id="L296">NTTimeDomainArray</h3>
+
+<p>NTTimeDomainArray expresses an array of values that have a constant time
+between each value. </p>
+<pre>structure NTTimeDomainArray
+  typeIdentifier_t typeIdentifier
+  alarm_t alarm
+  timeStamp_t timeStamp    // Time of the first sample
+  &lt;atomic-type&gt;[] values
+  double deltaTime           // Time in seconds between each sample.</pre>
+
+<h3 id="L302">NTHistogram</h3>
+<pre>structure NTHistogram
+  typeIdentifier_t typeIdentifier
+  alarm_t alarm
+  timeStamp_t timeStamp    
+  double firstValue
+  double lastValue  
+  enum_t mode                 // LINEAR and LOGARITHMIC 
+  long   Nbuckets             // array size
+  long[] values</pre>
+
+<h3 id="L306">NTNDArray</h3>
+TBD 
+
+<h3 id="L310">NTFrequencyDomainArray</h3>
+<pre>structure NTFrequencyDomainArray
+  typeIdentifier_t typeIdentifier
+  alarm_t alarm
+  timeStamp_t timeStamp           // Time of the first sample
+  &lt;atomic-type&gt;[] values      
+  double deltaFrequency           // Frequency in Hz.
+  double firstFrequency           // frequency of the value[0].</pre>
+
+<h3 id="L314">NTStatistic</h3>
+
+<p>NTStatistic is a type to compress time domain data. It may be used for
+archive data, or compressing time domain data, or time domain rebasing. For
+instance, you have an FPGA sending data at 10KHz, and you want to archive its
+output, but you can't archive at the native rate. </p>
+<pre>structure NTStatistic
+  typeIdentifier_t typeIdentifier
+  alarm_t alarm              // May be worst alarm from the N samples, or alarm of the aggregation. Which is not defined.
+  timeStamp_t timeStamp      // Nominally, the time of aggregation.
+  double firstValue
+  timeStamp_t firstValueTimeStamp
+  double lastValue
+  timeStamp_t lastValueTimeStamp
+  double highValue
+  double lowValue
+  double meanValue  
+  double stdDev
+  long N</pre>
+
+<h3 id="L320">NTImage</h3>
+TBD 
+
+<h3 id="L324">NTTable</h3>
+
+<p>NTTable is intended to be used when exchanging data which looks like a
+table. For instance table of BPM values of a whole accelerator section, or
+contents of a JDBC ResultSet. </p>
+<pre>
+structure NTTable
+  typeIdentifier_t typeIdentifier
+  alarm_t alarm
+  timeStamp_t timeStamp
+  string[] labels
+  &lt;some normative type&gt;[] xxx
+  ...</pre>
+
+<p>labels is a array with length either zero or equal to the number of fields
+which follow. An arbitrary number of fields can follow field label. Each field
+must be one of:</p>
+<ol>
+  <li>Atomic normative type.</li>
+  <li>Array of atomic normative type.</li>
+  <li>Atomic Control Type.</li>
+  <li>Array of atomic control type.</li>
+</ol>
+
+<h3 id="L349">NTChannelFinderDirectory</h3>
+
+<p>NTChannelFinderDirectory can be used for exchanges of ChannelFinder query
+results. </p>
+<pre>structure channelFinderInfo_t
+  string[] tags
+  nameValuePair_t[] properties;
+
+structure NTChannelFinderDirectory
+  typeIdentifier_t typeIdentifier
+  alarm_t alarm
+  timeStamp_t timeStamp
+  string[] channelNames
+  channelFinderInfo_t[] channelInfos</pre>
+
+<p>The length of channelInfos must either be zero or the same as the length of
+channelNames</p>
+<pre>
+  </pre>
+
+<h3 id="L355">NTXAlarm</h3>
+TBD 
+
+<h2 id="L359">Non-Normative Types</h2>
+
+<p>Users and developers using EPICS V4 are free to defined their own special
+purpose types on top of PVStructure (or the other PV Types) but should note
+that only the normative types deifned here (NT*) above, are guaranteed to be
+understood by EPICS V4 services and clients. </p>
+</div>
+</body>
+</html>
