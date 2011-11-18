@@ -194,13 +194,13 @@ Working Group</dd>
 <p>A number of software projects are associated with EPICS V4. Some of the above are
 in scope of the EPICS Version 4 working group specifically, and others not. Those in
 scope are being managed as part of
-the <a href="charter.html#deliverables">develiverables of the group</a>, though they
+the <a href="charter.html#deliverables">deliverables of the group</a>, though they
 are not considered <a href="charter.html#normative">normative</a>.</p>
 
 <dl class="normativeproddescr">
   <dt id="pvmanager">pvManager</dt>
   <dd>PVManager is a client side utility library, that helps to manage complex
-    objects' retrival and scanning. It allows client programs of EPICS V4 or EPICS
+    objects' retrieval and scanning. It allows client programs of EPICS V4 or EPICS
     V3, to decouple the rate of events on the network from the rate of refresh needed
     by the user interface itself. It provides a clean, simple, well designed high
     level programming interface for the problem of multi-threaded GUI acquisition and
@@ -283,11 +283,11 @@ epics-pvdata</a>. There are separate Mercurial repos for each of the C++ and Jav
 implementations of each normative project. They can all be checked out via the unix shell command hg, or using a
 Mercurial client suitable for your platform. </p>
 
-<p>Download from the Mercurial repositories can be done annonymously, or using a
+<p>Download from the Mercurial repositories can be done anonymously, or using a
 sourceForge account.</p>
-<p>The annonymous checkout is using the http URI below. Note that
+<p>The anonymous checkout is using the http URI below. Note that
 we have seen that some people get a "cannot connect" timeout using this method, while
-the identical command works for other people. It's probably reated to blocked port 8000,
+the identical command works for other people. It's probably related to blocked port 8000,
 but we don't know. Below is an example of how to check out the pvDataCPP Mercurial repository, using
 the hg unix command via anonymous access:</p>
 <pre>&gt; hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataCPP</pre>
@@ -328,12 +328,56 @@ These are the relevant sourceforge mercurial modules: pvDataCPP, pvAccessCPP, pv
 </p>
 
 <h2 id="literature">Literature</h2>
-<p>The following are white-papers, talks, and various other documentation associated
-with EPICS Version 4, in most recent first order.</p>
+<p>The following are the present publications of the EPICS V4 Working Group, in most
+recent first order.</p>
+<h3 id="normativedocs">Normative</h3>
+<p>The following are normative works of the EPICS V4 Working Group. That is, these
+represent core deliverables of the working group, and should be treated as standards
+on which implementations of EPICS V4 should be based. As such, these documents go
+through a long term iterative public review process:</p>
 <ul>
+  <li><a
+  href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess
+  Protocol Specification</a>. <em>Status is First Public Working Draft</em>
+  </li>
+  <li><a href="alpha/normativeTypes/normativeTypes.html">Normative Types Specification</a>. <em>Status is Editors Draft</em></li>
+</ul>
+<h3 id="informativedocs">Informative</h3>
+<p>The following are works of the EPICS V4 Working Group that are intended to
+supply supporting material. They may be concerned with tools and utilities supplied
+by EPICS V4, but they should not be considered standards or
+recommendations for EPICS Version 4:</p>
+<ul>
+  <li><a
+  href="alpha/EZPVA.html">Easy PvAccess (EZPVA)</a>. This is a draft proposal for a
+  simple wrapper interface to pvAccess and pvData. Presently its status is in
+  progress but not receiving work, and when we return to it, it will probably be merged with support for
+  gathering record data from many sources (so called "gather" support). 
+  </li>
+</ul>
+<h3 id="internal">Internal</h3>
+<p>The following are internal documents of the EPICS v4 Working Group:</p>
+<ul>
+  <li><a
+  href="Coding_Style_Guidelines.html">Coding Style Guidelines</a>. This is the
+  standard for source code to be followed for EPICS V4 reference software
+  implementations. Status is it includes only Java, and requires some edits with
+  respect to comments in the review telecon.
+  </li>
+</ul>
+  
+<h2 id="talks">Talks</h2>
+<p>The following are slides and materials of EPICS V4 presentations, most recent first:</p>
+<ul>
+  <li><a href="talks/2011/FRBHMULT06.pptx">EPICS V4 Expands Support to Physics Application, Data Acquisition, and Data
+  Analysis</a>, Bob Daleso, oral 
+  given at ICALEPCS 2011, Powerpoint, http://epics-pvdata.sourceforge.net/talks/2011/FRBHMULT06.pptx</li>
+   <li><a href="talks/2011/EPICSv4roadmap.pdf">EPICS V4 Roadmap</a>, Greg White,  talk
+  given at EPICS 2011 fall meeting (PSI), PDF, http://epics-pvdata.sourceforge.net/talks/2011/EPICSv4roadmap.pdf</li>
+  <li><a href="talks/2011/EV4Services.pdf">EPICS V4 Services</a>, Greg White,  talk
+  given at EPICS 2011 fall meeting (PSI), PDF, http://epics-pvdata.sourceforge.net/talks/2011/EV4Services.pdf</li>
 <li><a href="http://epics-pvdata.sourceforge.net/talks/2011/bob_V4EPICS201109.pptx">
-EPICS Version 4 Development Plan</a>, Bob Dalesio, talk given at EPICS 2011 fall meeting (PSI),
-powerpoint,
+EPICS Version 4   Development Plan</a>, Bob Dalesio, talk given at EPICS 2011 fall meeting (PSI), powerpoint,
 http://epics-pvdata.sourceforge.net/talks/2011/bob_V4EPICS201109.pptx</li>
 <li><a href="http://epics-pvdata.sourceforge.net/talks/2011/marty_pvDataEtc.ppt">pvData,
 pvAccess, pvIOC, pvService, Overview and Status</a>, Marty Kramer et al, talk given at
@@ -344,7 +388,7 @@ Gabriele Carcassi, talk given at EPICS 2010 spring meeting (BNL), powerpoint
 http://epics-pvdata.sourceforge.net/talks/2010/gabriele_PVManager.pptx</li>
 <li><a href="http://www.c-ad.bnl.gov/pac2011/proceedings/papers/mop252.pdf">Server
 Development for NSLS-II Physics Applications and Performance Analysis</a>, Guobao
-Shen and Marty Kraimer (BNL), procedings of the Particle Accelerator Conference 2011.
+Shen and Marty Kraimer (BNL), proceedings of the Particle Accelerator Conference 2011.
 </ul>
 
 <h2>EPICS V4 Solutions</h2>
@@ -357,8 +401,8 @@ Shen and Marty Kraimer (BNL), procedings of the Particle Accelerator Conference 
       records. The data is given to the client as an array. Another example might be a 
       accelerator modelling service, in which the optics of an entire accelerator may be
       computed and returned as a single table to the client. Other examples are
-      synchronized beam orbit acquisition, synchronized magnet setting, relational database I/O.
-      Such services are characterized by two things: large payload I/O (eg whole tables),
+      synchronised beam orbit acquisition, synchronised magnet setting, relational database I/O.
+      Such services are characterised by two things: large payload I/O (eg whole tables),
       and the need to ask for the value of a "PV" subject to arguments. These two characteristics 
       are supported by pvData and pvAccess. 
    </dd>
@@ -427,7 +471,7 @@ a platform for a unified controls and services environment for large experimenta
   <dt>Functional Data Types</dt>
     <dd>Client code can access PVData via the introspection and data
       interfaces. For "well known" data, such as timeStamp, or table of orbit data, 
-      specialized interfaces can be provided without requiring any changes 
+      specialised interfaces can be provided without requiring any changes 
       to the core software</dd>
 </dl>
 
