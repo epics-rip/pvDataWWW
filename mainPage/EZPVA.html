@@ -1,0 +1,1186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>EZPVA - Easy PVAccess</title>
+  <meta name="generator" content="Amaya, see http://www.w3.org/Amaya/">
+</head>
+
+<body>
+<h1 style="text-align:center;margin-left:auto;margin-right:auto;">EZPVA - Easy
+PVAccess<br>
+2011.10.21</h1>
+
+<p>CONTENTS</p>
+
+<div class="toc">
+<ul>
+  <li><a href="#L30">Introduction</a></li>
+  <li><a href="#L48">Hello World Examples</a>
+    <ul>
+      <li><a href="#L50">Get</a></li>
+      <li><a href="#L64">ArrayGet</a></li>
+      <li><a href="#L70">MultiGet</a></li>
+      <li><a href="#L76">Put</a></li>
+      <li><a href="#L86">ArrayPut</a></li>
+      <li><a href="#L92">MultiPut</a></li>
+    </ul>
+  </li>
+  <li><a href="#L98">EZPVA</a></li>
+  <li><a href="#L160">EZChannel</a></li>
+  <li><a href="#L270">EZGet</a></li>
+  <li><a href="#L409">EZArrayGet</a></li>
+  <li><a href="#L545">EZPut</a></li>
+  <li><a href="#L735">EZArrayPut</a></li>
+  <li><a href="#L919">EZMultiChannel</a></li>
+  <li><a href="#L975">EZMultiGet</a></li>
+  <li><a href="#L1136">EZMultiPut</a></li>
+</ul>
+</div>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L30">Introduction</h2>
+
+<p>EZPVA is a synchronous API for accessing PVData via PVAccess. It provides a
+synchronous interface to most of the features provided by pvData/pvAccess.</p>
+
+<p>The API has the following features:</p>
+<ol>
+  <li>It makes common requests easy to use.</li>
+  <li>Provides full access to the pvAccess API for more demanding
+  applcations.</li>
+  <li>It allows an efficent implementation.</li>
+</ol>
+
+<p>The following describes the Java version of EZPVA. There will also be C++
+version and wrapper code for Python and for Mathlab.</p>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L48">Hello World Examples</h2>
+
+<h3 id="L50">Get</h3>
+
+<p>The following gets a single value from a single scalar channel:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    EZChannel channel = ezpva.createChannel("someChannelName");
+    // following will block until channel is created
+    EZGet get = channel.createGet();
+    // following will block until get is created.
+    double value=get.getDouble();
+    System.out.println("value = ",Double.toString(value));
+    ezpva.destroy();</pre>
+
+<p>The following is also gets a single value from a single scalar channel:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    double value = ezpva.createChannel("someChannelName").createGet().getDouble();
+    System.out.println("value = ",Double.toString(value));
+    ezpva.destroy();</pre>
+
+<p>The following gets multiple values from multiple channels. A request is made
+to process the associated record before getting the data:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    EZChannel channel0 = ezpva.createChannel("someChannelName");
+    EZChannel channel1 = ezpva.createChannel("someOtherChannelName");
+    // note that the two gets will be done in parallel
+    EZGet get0 = channel0.createGet("record[process=true]field[value]");
+    EZGet get1 = channel1.createGet("record[process=true]field[value]");
+    double value0=get0.getDouble();
+    double value1=get1.getDouble();
+    System.out.println(
+        "value0 = ",Double.toString(value0),
+        " value1 = ",Double.toString(value1));
+    ezpva.destroy();</pre>
+
+<h3 id="L64">ArrayGet</h3>
+
+<p>The following gets a single value from a single scalar channel:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    EZChannel channel = ezpva.createChannel("someChannelName");
+    EZArrayGet get = channel.createArrayGet();
+    double[] values=get.getDoubleArray();
+    System.out.println("values");
+    for(double value : values) {
+        System.out.println(" " + Double(value));
+    }
+    ezpva.destroy();</pre>
+
+<h3 id="L70">MultiGet</h3>
+
+<p>The following gets an array of scalar values from a set of scalar
+channels:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    String[] channelNames = new String[2]{"someChannelName","someOtherChannelName"};
+    EZMultiChannel channels = ezpva.createMultiChannel(channelNames);
+    EZMultiGet multiget = channels.createGet();
+    double[] values = multiGet.getDoubleArray();
+    System.out.println("values");
+    for(double value : values) {
+        System.out.println(" " + Double(value));
+    }
+    ezpva.destroy()</pre>
+
+<h3 id="L76">Put</h3>
+
+<p>The following puts a single value to a single scalar channel:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    EZChannel channel = ezpva.createChannel("someChannelName");
+    // following will block until channel is created
+    EZPut put = channel.createPut();
+    // following will block until put is created.
+    put.putDouble(10.0);
+    ezpva.destroy();</pre>
+
+<p>The folllowing also puts a single value to a single scalar channel:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    ezpva.createChannel("someChannelName").createPut().putDouble(10.0);
+    ezpva.destroy();</pre>
+
+<p>The following puts multiple values to multiple channels. A request is made
+to process the associated record after putting the data:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    EZChannel channel0 = ezpva.createChannel("someChannelName");
+    EZChannel channel1 = ezpva.createChannel("someOtherChannelName");
+    // note that the two puts will be done in parallel
+    EZPut put0 = channel0.createPut("record[process=true]field[value]");
+    EZPut put1 = channel1.createPut("record[process=true]field[value]");
+    put0.putDouble(10.0);
+    put1.putDouble(10.0);
+    // note that the following each block until the previous put completes
+    put0.putDouble(20.0);
+    put1.putDouble(20.0);
+    ezpva.destroy();</pre>
+
+<h3 id="L86">ArrayPut</h3>
+
+<p>The following puts a single value to a single scalar channel:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    EZChannel channel = ezpva.createChannel("someChannelName");
+    EZArrayPut put = channel.createArrayPut();
+    double[] values = new double[]{1.0,2.0,3.0};
+    put.putDoubleArray(values);
+    ezpva.destroy();</pre>
+
+<h3 id="L92">MultiPut</h3>
+
+<p>The following puts an array of scalar values to a set of scalar channels:</p>
+<pre>    EZPVA ezpva = EZPVAFactory.create();
+    String[] channelNames = new String[2];
+    channelNames[0] = "someChannelName";
+    channelNames[1] = "someOtherChannelName";
+    EZMultiChannel channels = ezpva.createMultiChannel(channelNames);
+    EZMultiPut multiput = channels.createPut();
+    double[] values = new double[]{1.0,2.0,3.0};
+    multiPut.putDoubleArray(values)
+    ezpva.destroy()</pre>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L98">EZPVA</h2>
+
+<p>The EZPVAFactory API is:</p>
+<pre>    class EZPVAFactory {
+        static EZPVA create();
+        static EZPVA create(String defaultProvider);
+        static void registerProvider(ChannelProvider channelProvider);
+    }</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">create</span></dt>
+    <dd>Creates a EZPVA instance. A default provider can be specified.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">registerProvider</span></dt>
+    <dd>Registers a new channel provider.</dd>
+</dl>
+
+<p>The EZPVA API is:</p>
+<pre>    interface EZPVA{
+        destroy();
+        setProvider(String providerName);
+        EZChannel createChannel(String channelName);
+        EZChannel createChannel(String channelName,double timeout);
+        EZMultiChannel createMultiChannel(String[] channelNames);
+        EZMultiChannel createMultiChannel(String[] channelNames,double timeout);
+    }
+} </pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>This will cleanup all resourcs created via this instance of EZPVA.</dd>
+    <dd></dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">setProvider</span></dt>
+    <dd>Changes the provider. Future calls to search or multiSearch will be
+      made via this provider.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">createChannel</span></dt>
+    <dd>Creates an instance of EZChannel and make it start the search.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">createMultiChannel</span></dt>
+    <dd>Create an instance of EZMultiChannel and make it start the search.</dd>
+</dl>
+
+<p><span style="font-weight:bold;">NOTE</span>: pvIOCJava has a package named
+caV3. It has a caV3 server that allows a caV3 client to access records in
+pvIOCJava BUT it also has client code that allows a pvAccess client to use
+jca/caj to communicate with a V3 record. This client code <span
+style="font-weight:bold;">SHOULD</span> be moved to pvAccess and become a
+standard provider.</p>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L160">EZChannel</h2>
+
+<p>An <span style="font-family: Courier New,Courier,monospace">EZChannel</span>
+is created via a call to <span
+style="font-family: Courier New,Courier,monospace">ezpva.createChannel()</span>.
+The first call to a <span
+style="font-family: Courier New,Courier,monospace">EZChannel</span> method
+blocks until the channel is connected or a timeout occurs. If a channel can not
+be created then the first time a <span
+style="font-family: Courier New,Courier,monospace">EZChannel</span> method is
+called an exception is thrown. The only exception is <span
+style="font-family: Courier New,Courier,monospace">getStatus</span>. If there
+was a problem creating the channel, status will provide the reason.</p>
+
+<p>The EZChannel API is:</p>
+<pre>    interface EZChannel {
+        destroy();
+        Status getStatus();
+        // EAField TBD
+        // EZProcess TBD
+        EZGet createGet();
+        EZGet createGet(String request);
+        EZGet createGet(PVstructure pvRequest);
+        EZArrayGet createArrayGet();
+        EZArrayGet createArrayGet(String request);
+        EZArrayGet createArrayGet(PVstructure pvRequest);
+        EZPut createPut();
+        EZPut createPut(String request);
+        EZPut createPut(PVstructure pvRequest);
+        EZArrayPut createArrayGet();
+        EZArrayPut createArrayPut(String request);
+        EZArrayPut createArrayPut(PVstructure pvRequest);
+        // EZPutGet TBD
+        // EZRPC TBD
+        // EZArray TBD
+        // EZMonitor TBD
+    } </pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Destroy this channel and all resources that have been created via this
+      channel.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStatus</span></dt>
+    <dd>Get the current status.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">createGet</span></dt>
+    <dd>Creates an <span
+      style="font-family: Courier New,Courier,monospace">EZGet</span>. If no
+      request is specified then "<span
+      style="font-family: Courier New,Courier,monospace">field(value,alarm,timeStamp</span>)"
+      is assumed). The other two methods use the syntax defined by <span
+      style="font-family: Courier New,Courier,monospace">ChannelRequest</span>
+      as described in package <span
+      style="font-family: Courier New,Courier,monospace">org.epics.ca.client</span>.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">createArrayGet</span></dt>
+    <dd>Creates an <span
+      style="font-family: Courier New,Courier,monospace">EZArrayGet</span>. If
+      no request is specified then "<span
+      style="font-family: Courier New,Courier,monospace">value,alarm,timeStamp</span>"
+      is assumed. The other two methods use the syntax defined by <span
+      style="font-family: Courier New,Courier,monospace">ChannelRequest</span>
+      as described in package <span
+      style="font-family: Courier New,Courier,monospace">org.epics.ca.client</span>.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">createPut</span></dt>
+    <dd>Creates an <span
+      style="font-family: Courier New,Courier,monospace">EZPut</span>. If no
+      request is specified then "<span
+      style="font-family: Courier New,Courier,monospace">value,alarm,timeStamp</span>"
+      is assumed. The other two methods use the syntax defined by <span
+      style="font-family: Courier New,Courier,monospace">ChannelRequest</span>
+      as described in package <span
+      style="font-family: Courier New,Courier,monospace">org.epics.ca.client</span>.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">createArrayPut</span></dt>
+    <dd>Creates an <span
+      style="font-family: Courier New,Courier,monospace">EZArrayPut</span>. If
+      no request is specified then "<span
+      style="font-family: Courier New,Courier,monospace">value,alarm,timeStamp</span>"
+      is assumed. The other two methods use the syntax defined by <span
+      style="font-family: Courier New,Courier,monospace">ChannelRequest</span>
+      as described in package <span
+      style="font-family: Courier New,Courier,monospace">org.epics.ca.client</span>.</dd>
+</dl>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L270">EZGet</h2>
+
+<p>An <span style="font-family: Courier New,Courier,monospace">EZGet</span> is
+created via a call to <span
+style="font-family: Courier New,Courier,monospace">ezchannel.createGet</span>.
+The first call to an <span
+style="font-family: Courier New,Courier,monospace">EZGet</span> method will
+block until create is complete. If a channel can not be created then the first
+time a <span style="font-family: Courier New,Courier,monospace">EZGet</span>
+method is called an exception is thrown. The only exception is <span
+style="font-family: Courier New,Courier,monospace">getStatus</span>. If there
+was a problem creating, status will provide the reason.</p>
+
+<p>The EZGet API is:</p>
+<pre>    interface EZGet {
+        destroy();
+        void get();
+        Status getStatus();
+        Alarm getAlarm();
+        TimeStamp getTimeStamp();
+        boolean getBoolean(); // If not boolean throws expection
+        byte getByte();   //Byte,...,Double require numeric Scalar otherwise throws exception
+        short getShort();
+        int getInt();
+        long getLong();
+        float getFloat();
+        double getDouble();
+        String getString();
+        PVStructure getPVStructure();
+        BitSet getBitSet();
+    }</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Destroy this <span
+      style="font-family: Courier New,Courier,monospace">EZGet</span></dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">get</span></dt>
+    <dd>Do another get. This is only necessary for a client that accesses data
+      via the top level structure rather than calling one of the getXXX
+      methods. When <span
+      style="font-family: Courier New,Courier,monospace">EZGet</span> is
+      successfully created it automatically does the first get. If a get fails
+      than the next call to another method will throw an exception. The only
+      exception is <span
+      style="font-family: Courier New,Courier,monospace">getStatus</span>. If
+      there was a problem, status will provide the reason.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStatus</span></dt>
+    <dd>Get the current status.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarm</span></dt>
+    <dd>Get the alarm. If the create request did not specify alarm the status
+      and severity will both be <span
+      style="font-family: Courier New,Courier,monospace">NONE</span> and the
+      message will be "<span
+      style="font-family: Courier New,Courier,monospace">alarm not
+      implemented</span>".</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamp</span></dt>
+    <dd>Get the time stamp. If the create request did not specify timeStamp all
+      elements of the timeStamp will have the value 0.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBoolean</span></dt>
+    <dd>Get the boolean value. If value is not a boolean and exception is
+      thrown,</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getByte</span></dt>
+    <dd>Get the value as a byte. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getShort</span></dt>
+    <dd>Get the value as a short. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getInt</span></dt>
+    <dd>Get the value as an int. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getLong</span></dt>
+    <dd>Get the value as a long. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getFloat</span></dt>
+    <dd>Get the value as a float. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getDouble</span></dt>
+    <dd>Get the value as a double. If value is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getString</span></dt>
+    <dd>Get the value as a string. If value is not a scalar an exception is
+      thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getPVStructure</span></dt>
+    <dd>Get top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span> for
+      the data. The client can use nor<span
+      style="font-family: Courier New,Courier,monospace"></span>mal pvData
+      introspection to access the data.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBitSet</span></dt>
+    <dd>Get the bitSet for the top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span>.</dd>
+</dl>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L409">EZArrayGet</h2>
+
+<p>An <span
+style="font-family: Courier New,Courier,monospace">EZArrayGet</span> is created
+via a call to <span
+style="font-family: Courier New,Courier,monospace">ezchannel.createArrayGet</span>.
+The first call to a <span
+style="font-family: Courier New,Courier,monospace">EZArrayGet</span> method
+will block until creation is complete. If a channel can not be created then the
+first time a <span
+style="font-family: Courier New,Courier,monospace">EZArrayGet</span> method is
+called an exception is thrown. The only exception is <span
+style="font-family: Courier New,Courier,monospace">getStatus</span>. If there
+was a problem creating, status will provide the reason.</p>
+
+<p>The EZArrayGet API is:</p>
+<pre>    interface EZArrayGet {
+        destroy();
+        void get();
+        Status getStatus();
+        Alarm getAlarm();
+        TimeStamp getTimeStamp();
+        boolean[] getBooleanArray();
+        byte[] getByteArray();
+        short[] getShortArray();
+        int[] getIntArray();
+        long[] getLongArray();
+        float[] getFloatArray();
+        double[] getDoubleArray();
+        String[] getStringArray();
+        PVStructure getPVStructure();
+        BitSet getBitSet();
+    }</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Destroy this <span
+      style="font-family: Courier New,Courier,monospace">EZGet</span></dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">get</span></dt>
+    <dd>Do another get. This is only necessary for a client that accesses data
+      via the top level structure rather than calling one of the getXXX
+      methods. When <span
+      style="font-family: Courier New,Courier,monospace">EZArrayGet</span> is
+      successfully created it automatically does the first get. If a get fails
+      than the next call to another method will throw an exception. The only
+      exception is <span
+      style="font-family: Courier New,Courier,monospace">getStatus</span>. If
+      there was a problem, status will provide the reason.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStatus</span></dt>
+    <dd>Get the current status.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarm</span></dt>
+    <dd>Get the alarm. If the create request did not specify alarm the status
+      and severity will both be <span
+      style="font-family: Courier New,Courier,monospace">NONE</span> and the
+      message will be "<span
+      style="font-family: Courier New,Courier,monospace">alarm not
+      implemented</span>".</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamp</span></dt>
+    <dd>Get the time stamp. If the create request did not specify timeStamp all
+      elements of the timeStamp will have the value 0.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBooleanArray</span></dt>
+    <dd>Get the <span
+      style="font-family: Courier New,Courier,monospace">boolean[]</span>
+      value. If value is not a boolean array and exception is thrown,</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getByteArray</span></dt>
+    <dd>Get the value as a <span
+      style="font-family: Courier New,Courier,monospace">byte[]</span>. If
+      value is not a numeric scalar array an exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getShortArray</span></dt>
+    <dd>Get the value as a <span
+      style="font-family: Courier New,Courier,monospace">short[]</span>. If
+      value is not a numeric scalar array an exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getIntArray</span></dt>
+    <dd>Get the value as an <span
+      style="font-family: Courier New,Courier,monospace">int[]</span>. If value
+      is not a numeric scalar array an exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getLongArray</span></dt>
+    <dd>Get the value as a <span
+      style="font-family: Courier New,Courier,monospace">long[]</span>. If
+      value is not a numeric scalar array an exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getFloatArray</span></dt>
+    <dd>Get the value as a <span
+      style="font-family: Courier New,Courier,monospace">float[]</span>. If
+      value is not a numeric scalar array an exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getDoubleArray</span></dt>
+    <dd>Get the value as a <span
+      style="font-family: Courier New,Courier,monospace">double[]</span>. If
+      value is not a numeric scalar array an exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStringArray</span></dt>
+    <dd>Get the value as a <span
+      style="font-family: Courier New,Courier,monospace">String[]</span>. If
+      value is not a scalar array an exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getPVStructure</span></dt>
+    <dd>Get top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span> for
+      the data.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBitSet</span></dt>
+    <dd>Get the bitSet for the top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span>.
+    </dd>
+</dl>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L545">EZPut</h2>
+
+<p>An <span style="font-family: Courier New,Courier,monospace">EZPut</span> is
+created via a call to <span
+style="font-family: Courier New,Courier,monospace">ezchannel.createPut</span>.
+The first call to an <span
+style="font-family: Courier New,Courier,monospace">EZPut</span> method will
+block until create is complete. If a channel can not be created then the first
+time a <span style="font-family: Courier New,Courier,monospace">EZPut</span>
+method is called an exception is thrown. The only exception is <span
+style="font-family: Courier New,Courier,monospace">getStatus</span>. If there
+was a problem creating, status will provide the reason.</p>
+
+<p>The EZPut API is:</p>
+<pre>    interface EZPut {
+        destroy();
+        void get();
+        void put();
+        Status getStatus();
+        Alarm getAlarm();
+        TimeStamp getTimeStamp();
+        boolean getBoolean();
+        byte getByte();
+        short getShort();
+        int getInt();
+        long getLong();
+        float getFloat();
+        double getDouble();
+        String getString();
+        void putBoolean(boolean value);
+        void putByte(byte value);
+        void putShort(short value);
+        void putInt(int value);
+        void putLong(int value);
+        void putFloat(float value);
+        void putDouble(double value);
+        void putString(String value);
+        PVStructure getPVStructure();
+        BitSet getBitSet();
+    }</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Destroy this <span
+      style="font-family: Courier New,Courier,monospace">EZPut</span></dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">get</span></dt>
+    <dd>Do another get. This is only necessary for a client that accesses data
+      via the top level structure rather than calling one of the getXXX
+      methods. When <span
+      style="font-family: Courier New,Courier,monospace">EZPut</span> is
+      successfully created it automatically does the first get. If a get fails
+      than the next call to another method will throw an exception. The only
+      exception is <span
+      style="font-family: Courier New,Courier,monospace">getStatus</span>. If
+      there was a problem, status will provide the reason.</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">put</span></dt>
+    <dd>Do a put. This is only necessary of the client has directly put values
+      into the top level structure instead of calling one of the putXXX
+      methods. Each putXXX method automatically calls put.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStatus</span></dt>
+    <dd>Put the current status.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarm</span></dt>
+    <dd>Put the alarm. If the create request did not specify alarm the status
+      and severity will both be <span
+      style="font-family: Courier New,Courier,monospace">NONE</span> and the
+      message will be "<span
+      style="font-family: Courier New,Courier,monospace">alarm not
+      implemented</span>".</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamp</span></dt>
+    <dd>Put the time stamp. If the create request did not specify timeStamp all
+      elements of the timeStamp will have the value 0.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBoolean</span></dt>
+    <dd>Put the boolean value. If value is not a boolean and exception is
+      thrown,</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getByte</span></dt>
+    <dd>Put the value as a byte. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getShort</span></dt>
+    <dd>Put the value as a short. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getInt</span></dt>
+    <dd>Put the value as an int. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getLong</span></dt>
+    <dd>Put the value as a long. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getFloat</span></dt>
+    <dd>Put the value as a float. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getDouble</span></dt>
+    <dd>Put the value as a double. If value is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getString</span></dt>
+    <dd>Put the value as a string. If value is not a scalar an exception is
+      thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putBoolean</span></dt>
+    <dd>Put the boolean value. If value is not a boolean and exception is
+      thrown,</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putByte</span></dt>
+    <dd>Put the value as a byte. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putShort</span></dt>
+    <dd>Put the value as a short. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putInt</span></dt>
+    <dd>Put the value as an int. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putLong</span></dt>
+    <dd>Put the value as a long. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putFloat</span></dt>
+    <dd>Put the value as a float. If value is not a numeric scalar an exception
+      is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putDouble</span></dt>
+    <dd>Put the value as a double. If value is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putString</span></dt>
+    <dd>Put the value as a string. If value is not a scalar an exception is
+      thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getPVStructure</span></dt>
+    <dd>Get the top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span> for
+      the data. The client can use normal pvData introspection to access the
+      data.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBitSet</span></dt>
+    <dd>Get the bitSet for the top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span>.
+    </dd>
+</dl>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L735">EZArrayPut</h2>
+
+<p>An <span
+style="font-family: Courier New,Courier,monospace">EZArrayPut</span> is created
+via a call to <span
+style="font-family: Courier New,Courier,monospace">ezchannel.createArrayPut</span>.
+The first call to a <span
+style="font-family: Courier New,Courier,monospace">EZArrayPut</span> method
+will block until creation is complete. If a channel can not be created then the
+first time a <span
+style="font-family: Courier New,Courier,monospace">EZArrayPut</span> method is
+called an exception is thrown. The only exception is <span
+style="font-family: Courier New,Courier,monospace">getStatus</span>. If there
+was a problem creating, status will provide the reason.</p>
+
+<p>The EZArrayPut API is:</p>
+<pre>    interface EZArrayPut {
+        destroy();
+        void get();
+        void put();
+        Status getStatus();
+        Alarm getAlarm();
+        TimeStamp getTimeStamp();
+        boolean[] getBooleanArray();
+        byte[] getByteArray();
+        short[] getShortArray();
+        int[] getIntArray();
+        long[] getLongArray();
+        float[] getFloatArray();
+        double[] getDoubleArray();
+        String[] getStringArray();
+        void putBooleanArray(boolean[] value);
+        void putByteArray(byte[] value);
+        void putShortArray(short[] value);
+        void putIntArray(int[] value);
+        void putLongArray(int[] value);
+        void putFloatArray(float[] value);
+        void putDoubleArray(double[] value);
+        void putStringArray(String[] value);
+        PVStructure getPVStructure();
+        BitSet getBitSet();
+    }</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Destroy this <span
+      style="font-family: Courier New,Courier,monospace">EZPut</span></dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">get</span></dt>
+    <dd>Do another get. This is only necessary for a client that accesses data
+      via the top level structure rather than calling one of the getXXX
+      methods. When <span
+      style="font-family: Courier New,Courier,monospace">EZArrayPut</span> is
+      successfully created it automatically does the first get. If a get fails
+      than the next call to another method will throw an exception. The only
+      exception is <span
+      style="font-family: Courier New,Courier,monospace">getStatus</span>. If
+      there was a problem, status will provide the reason.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStatus</span></dt>
+    <dd>Put the current status.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarm</span></dt>
+    <dd>Get the alarm. If the create request did not specify alarm the status
+      and severity will both be <span
+      style="font-family: Courier New,Courier,monospace">NONE</span> and the
+      message will be "<span
+      style="font-family: Courier New,Courier,monospace">alarm not
+      implemented</span>".</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamp</span></dt>
+    <dd>Get the time stamp. If the create request did not specify timeStamp all
+      elements of the timeStamp will have the value 0.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBooleanArray</span></dt>
+    <dd>Get the boolean[] value. If value is not a boolean array and exception
+      is thrown,</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getByteArray</span></dt>
+    <dd>Get the value as a byte[]. If value is not a numeric scalar array an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getShortArray</span></dt>
+    <dd>Get the value as a short[]. If value is not a numeric scalar array an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getIntArray</span></dt>
+    <dd>Get the value as an int[]. If value is not a numeric scalar array an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getLongArray</span></dt>
+    <dd>Get the value as a long[]. If value is not a numeric scalar array an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getFloatArray</span></dt>
+    <dd>Get the value as a float[]. If value is not a numeric scalar array an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getDoubleArray</span></dt>
+    <dd>Get the value as a double[]. If value is not a numeric scalar array an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStringArray</span></dt>
+    <dd>Get the value as a String[]. If value is not a scalar array an
+      exception is thrown.</dd>
+  style="font-family: Courier New,Courier,monospace"&gt;putBooleanArray 
+  <dl>
+      <dd>Put the boolean[] value. If value is not a boolean array and
+        exception is thrown,</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">putByteArray</span></dt>
+      <dd>Put the value as a byte[]. If value is not a numeric scalar array an
+        exception is thrown.</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">putShortArray</span></dt>
+      <dd>Put the value as a short[]. If value is not a numeric scalar array an
+        exception is thrown.</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">putIntArray</span></dt>
+      <dd>Put the value as an int[]. If value is not a numeric scalar array an
+        exception is thrown.</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">putLongArray</span></dt>
+      <dd>Put the value as a long[]. If value is not a numeric scalar array an
+        exception is thrown.</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">putFloatArray</span></dt>
+      <dd>Put the value as a float[]. If value is not a numeric scalar array an
+        exception is thrown.</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">putDoubleArray</span></dt>
+      <dd>Put the value as a double[]. If value is not a numeric scalar array
+        an exception is thrown.</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">putStringArray</span></dt>
+      <dd>Put the value as a String[]. If value is not a scalar array an
+        exception is thrown.</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">getPVStructure</span></dt>
+      <dd>Get top level <span
+        style="font-family: Courier New,Courier,monospace">PVStructure</span>
+        for the data.</dd>
+    <dt><span
+    style="font-family: Courier New,Courier,monospace">getBitSet</span></dt>
+      <dd>Get the bitSet for the top level <span
+        style="font-family: Courier New,Courier,monospace">PVStructure</span>.
+      </dd>
+  </dl>
+</dl>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L919">EZMultiChannel</h2>
+
+<p>An <span
+style="font-family: Courier New,Courier,monospace">EZMultiChannel</span> is
+created via a call to <span
+style="font-family: Courier New,Courier,monospace">ezpva.createMultiChannel.</span>
+The first call to an <span
+style="font-family: Courier New,Courier,monospace">EZMultiChannel</span> method
+blocks until creation is complete.If a channel can not be created then the
+first time a <span
+style="font-family: Courier New,Courier,monospace">EZMultiChannel</span> method
+is called an exception is thrown. The only exception is <span
+style="font-family: Courier New,Courier,monospace">getStatus</span>. If there
+was a problem creating the multiChannel, status will provide the reason.</p>
+
+<p>The EZMultiChannel API is:</p>
+<pre>    interface EZMultiChannel {
+        destroy();
+        Status getStatus();
+        // EAField TBD
+        // EZMultiProcess TBD
+        EZMultiGet createGet();
+        EZMultiGet createGet(String request);
+        EZMultiGet createGet(PVstructure pvRequest);
+        EZMultiPut createPut();
+        EZMultiPut createPut(String request);
+        EZMultiPut createPut(PVstructure pvRequest);
+    } </pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Destroy this channel and all resources that have been created via this
+      channel.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStatus</span></dt>
+    <dd>Get the current status.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">createGet</span></dt>
+    <dd>Creates an <span
+      style="font-family: Courier New,Courier,monospace">EZMultiGet</span>. If
+      no request is specified then "<span
+      style="font-family: Courier New,Courier,monospace">value,alarm,timeStamp</span>"
+      is assumed. The other two methods use the syntax defined by <span
+      style="font-family: Arial,Helvetica,sans-serif">ChannelRequest</span> as
+      described in package <span
+      style="font-family: Courier New,Courier,monospace">org.epics.ca.client</span>.
+      The request refers to the request for each individual channel. The get
+      itself will also have an alarm and a timeStamp.</dd>
+</dl>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L975">EZMultiGet</h2>
+
+<p>An <span
+style="font-family: Courier New,Courier,monospace">EZMultiGet</span> is created
+via a call to <span
+style="font-family: Courier New,Courier,monospace">ezchannel.createMultiGet</span>.
+If a channel can not be created then the first time a <span
+style="font-family: Courier New,Courier,monospace">EZMultiGet</span> method is
+called an exception is thrown. The only exception is <span
+style="font-family: Courier New,Courier,monospace">getStatus</span>. If there
+was a problem creating, status will provide the reason.</p>
+
+<p>The EZMultiGet API is:</p>
+<pre>    interface EZMultiGet {
+        destroy();
+        void get();
+        Status getStatus();
+        Alarm getAlarm();
+        TimeStamp getTimeStamp();
+        boolean[] isConnectedArray();
+        boolean[] getBooleanArray();
+        byte[] getByteArray();
+        short[] getShortArray();
+        int[] getIntArray();
+        long[] getLongArray();
+        float[] getFloatArray();
+        double[] getDoubleArray();
+        String[] getStringArray();
+        alarm_t[] getAlarms();
+        timeStamp_t getTimeStamps()
+        PVStructure getPVStructure();
+        BitSet getBitSet();
+    }</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Destroy this EZMultiGet</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">get</span></dt>
+    <dd>Do another get. When <span
+      style="font-family: Courier New,Courier,monospace">EZMultiGet</span> is
+      successfully created it automatically does the first get. If a get fails
+      than the next call to another method will throw an exception. The only
+      exception is <span
+      style="font-family: Courier New,Courier,monospace">getStatus</span>. If
+      there was a problem, status will provide the reason. If an channel is not
+      connected the severity will be INVALID.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStatus</span></dt>
+    <dd>Get the current status.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarm</span></dt>
+    <dd>Get the alarm. This is the overall alarm for the get. The severity is
+      always at least as great as the greatest severity of the channel alarms.
+      It is also used to report other problems.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamp</span></dt>
+    <dd>Get the time stamp. This is the time when that last get completed.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">isConnectedArray</span></dt>
+    <dd>The connection state for each channel.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBooleanArray</span></dt>
+    <dd>Get the boolean[] value. If each channel is not a boolean an exception
+      is thrown,</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getByteArray</span></dt>
+    <dd>Get the value as a byte[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getShortArray</span></dt>
+    <dd>Get the value as a short[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getIntArray</span></dt>
+    <dd>Get the value as an int[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getLongArray</span></dt>
+    <dd>Get the value as a long[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getFloatArray</span></dt>
+    <dd>Get the value as a float[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getDoubleArray</span></dt>
+    <dd>Get the value as a double[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStringArray</span></dt>
+    <dd>Get the value as a string[]. If each channel is not a scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarms</span></dt>
+    <dd>Get an array of the alarms for each channel. <span
+      style="font-family: Courier New,Courier,monospace">alarm_t</span> is an
+      alarm structure. If the request did not specify an alarm the array will
+      be empty. Thus <span
+      style="font-family: Courier New,Courier,monospace">alarm_t[]</span> is a
+      structure array with each element being an alarm structure. If an
+      individual channel does not have an alarm the status and severity will
+      both be <span
+      style="font-family: Courier New,Courier,monospace">NONE</span> and the
+      message will be "<span
+      style="font-family: Courier New,Courier,monospace">alarm not
+      implemented</span>".</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamps</span></dt>
+    <dd>Get an array of the timeStamps for each channel. If the request did not
+      include timeStamp then the array will be empty. <span
+      style="font-family: Courier New,Courier,monospace">timeStamp_t</span> is
+      an alarm structure. Thus <span
+      style="font-family: Courier New,Courier,monospace">timeStamp_t[]</span>
+      is a structure array with each element being a timeStamp structure. If an
+      individual channel does not have a timeStamp then all elements of the
+      timeStamp will have the value 0.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getPVStructure</span></dt>
+    <dd>Get top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span> for
+      the data returned by get.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBitSet</span></dt>
+    <dd>Get the bitSet for the top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span>.
+    </dd>
+</dl>
+
+<h2 style="text-align:center;margin-left:auto;margin-right:auto;"
+id="L1136">EZMultiPut</h2>
+
+<p>An <span
+style="font-family: Courier New,Courier,monospace">EZMultiPut</span> is created
+via a call to <span
+style="font-family: Courier New,Courier,monospace">ezchannel.createMultiPut</span>.
+If a channel can not be created then the first time a <span
+style="font-family: Courier New,Courier,monospace">EZMultiPut</span> method is
+called an exception is thrown. The only exception is <span
+style="font-family: Courier New,Courier,monospace">getStatus</span>. If there
+was a problem creating, status will provide the reason.</p>
+
+<p>The EZMultiPut API is:</p>
+<pre>    interface EZMultiPut {
+        destroy();
+        void get();
+        void put();
+        Status getStatus();
+        Alarm getAlarm();
+        TimeStamp getTimeStamp();
+        boolean[] isConnectedArray();
+        boolean[] getBooleanArray();
+        byte[] getByteArray();
+        short[] getShortArray();
+        int[] getIntArray();
+        long[] getLongArray();
+        float[] getFloatArray();
+        double[] getDoubleArray();
+        String[] getStringArray();
+        void putBooleanArray(boolean[] value);
+        void putByteArray(byte[] value);
+        void putShortArray(short[] value);
+        void putIntArray(int[] value);
+        void putLongArray(long[] value);
+        void putFloatArray(float[] value);
+        void putDoubleArray(double[] value);
+        void putStringArray(String[] value);
+        PVStructure getPVStructure();
+        BitSet getBitSet();
+    }</pre>
+
+<p>where</p>
+<dl>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">destroy</span></dt>
+    <dd>Destroy this EZMultiPut</dd>
+  <dt><span style="font-family: Courier New,Courier,monospace">get</span></dt>
+    <dd>Do another get. When <span
+      style="font-family: Courier New,Courier,monospace">EZMultiPut</span> is
+      successfully created it automatically does the first get. If a get fails
+      than the next call to another method will throw an exception. The only
+      exception is <span
+      style="font-family: Courier New,Courier,monospace">getStatus</span>. If
+      there was a problem, status will provide the reason. If an channel is not
+      connected the severity will be INVALID.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStatus</span></dt>
+    <dd>Put the current status.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getAlarm</span></dt>
+    <dd>Put the alarm. This is the overall alarm for the get. The severity is
+      always at least as great as the greatest severity of the channel alarms.
+      It is also used to report other problems.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getTimeStamp</span></dt>
+    <dd>Put the time stamp. This is the time when that last get completed.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">isConnectedArray</span></dt>
+    <dd>The connection state for each channel.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBooleanArray</span></dt>
+    <dd>Put the boolean[] value. If each channel is not a boolean an exception
+      is thrown,</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getByteArray</span></dt>
+    <dd>Put the value as a byte[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getShortArray</span></dt>
+    <dd>Put the value as a short[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getIntArray</span></dt>
+    <dd>Put the value as an int[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getLongArray</span></dt>
+    <dd>Put the value as a long[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getFloatArray</span></dt>
+    <dd>Put the value as a float[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getDoubleArray</span></dt>
+    <dd>Put the value as a double[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getStringArray</span></dt>
+    <dd>Put the value as a string[]. If each channel is not a scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putBooleanArray</span></dt>
+    <dd>Put the boolean[] value. If each channel is not a boolean an exception
+      is thrown,</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putByteArray</span></dt>
+    <dd>Put the value as a byte[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putShortArray</span></dt>
+    <dd>Put the value as a short[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putIntArray</span></dt>
+    <dd>Put the value as an int[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putLongArray</span></dt>
+    <dd>Put the value as a long[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putFloatArray</span></dt>
+    <dd>Put the value as a float[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putDoubleArray</span></dt>
+    <dd>Put the value as a double[]. If each channel is not a numeric scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">putStringArray</span></dt>
+    <dd>Put the value as a string[]. If each channel is not a scalar an
+      exception is thrown.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getPVStructure</span></dt>
+    <dd>Put top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span> for
+      the data returned by get.</dd>
+  <dt><span
+  style="font-family: Courier New,Courier,monospace">getBitSet</span></dt>
+    <dd>Get the bitSet for the top level <span
+      style="font-family: Courier New,Courier,monospace">PVStructure</span>.
+    </dd>
+</dl>
+</body>
+</html>
