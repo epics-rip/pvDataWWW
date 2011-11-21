@@ -24,8 +24,7 @@
 <div class="head">
 <h1>EPICS V4 Normative Types</h1>
 
-<h2 class="nocount" id="L49">EPICS V4 Normative Types, Editors Draft,
-17-Nov-2011</h2>
+<h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 21-Nov-2011</h2>
 <dl>
   <dt>Editors:</dt>
     <dd>Bob Dalesio, Brookhaven National Lab</dd>
@@ -34,13 +33,13 @@
 </dl>
 <hr />
 
-<h2 class="nocount" id="L65">Abstract</h2>
+<h2 class="nocount">Abstract</h2>
 
 <p>For more information about EPICS, please refer to the home page of the <a
 href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
 Control System.</a></p>
 
-<h2 class="nocount" id="L71">Status of this Document</h2>
+<h2 class="nocount">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
 <p>This is the working copy of this document. Comments are welcome.</p>
@@ -51,73 +50,17 @@ Control System.</a></p>
 </div>
 <hr />
 
-<h2 class="nocount" id="L91">Contents</h2>
-
-<div class="toc">
-<ul>
-  <li><a href="#L49">EPICS V4 Normative Types, Editors Draft,
-  16-Nov-2011</a></li>
-  <li><a href="#L65">Abstract</a></li>
-  <li><a href="#L71">Status of this Document</a></li>
-  <li><a href="#L91">Contents</a></li>
-  <li><a href="#L95">Introduction</a></li>
-  <li><a href="#L128">Normative Type Fields</a> 
-    <ul>
-      <li><a href="#L170">scalar_t</a></li>
-      <li><a href="#L187">Structure normative fields</a> 
-        <ul>
-          <li><a href="#L191">enum_t</a></li>
-          <li><a href="#L213">timeStamp_t</a></li>
-          <li><a href="#L242">alarm_t</a></li>
-          <li><a href="#L266">nameValuePair_t</a></li>
-          <li><a href="#L288">display_t</a></li>
-          <li><a href="#L320">control_t</a></li>
-        </ul>
-      </li>
-      <li><a href="#L337">Structure Array Normative Fields</a> 
-        <ul>
-          <li><a href="#L341">enum_t[]</a></li>
-          <li><a href="#L353">timeStamp_t[]</a></li>
-          <li><a href="#L365">alarm_t[]</a></li>
-          <li><a href="#L377">nameValuePair_t[]</a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li><a href="#L391">Normative Type Classes</a></li>
-  <li><a href="#L441">Argument Normative Types</a> 
-    <ul>
-      <li><a href="#L447">NTArgNameValue</a></li>
-      <li><a href="#L453">NTArgTable</a></li>
-    </ul>
-  </li>
-  <li><a href="#L476">NTScalar</a></li>
-  <li><a href="#L519">NTEnum</a></li>
-  <li><a href="#L552">NTArray</a></li>
-  <li><a href="#L585">Specific Normative Types</a></li>
-  <li><a href="#L602">NTMultichannelArray</a></li>
-  <li><a href="#L614">NTTimeDomainArray</a></li>
-  <li><a href="#L624">NTFrequencyDomainArray</a></li>
-  <li><a href="#L632">NTHistogram</a></li>
-  <li><a href="#L640">NTNDArray</a></li>
-  <li><a href="#L648">NTStatistic</a></li>
-  <li><a href="#L658">NTImage</a></li>
-  <li><a href="#L666">NTTable</a></li>
-  <li><a href="#L678">NTChannelFinderDirectory</a></li>
-  <li><a href="#L692">NTXAlarm</a></li>
-  <li><a href="#L700">Non-Normative Types</a></li>
-</ul>
-</div>
+<h2 class="nocount">Contents</h2>
 <hr />
 
-<h2 id="L95">Introduction</h2>
+<h2>Introduction</h2>
 <hr />
 
 <p>EPICS version 4 supplies types for memory resident structured data. EPICS V4
-Normative Types defines a set types that build on the pvData.</p>
+Normative Types defines types that build on the pvData types.</p>
 
-<p>The normative types are a standard set of structure definitions so that
-tools can be implemented which support these normative types.</p>
+<p>The normative types provide a standard set of structure definitions so that
+tools can be implemented which support the normative types.</p>
 
 <p>The syntax for describing the normative types is an extension of the meta
 data syntax defined by pvData.</p>
@@ -125,33 +68,45 @@ data syntax defined by pvData.</p>
 <p><span style="font-weight:bold;">Definition</span>: Normative Type</p>
 <ol>
   <li>Is a top level structure</li>
-  <li>The fieldName of the Structure introspection interface is the name of the
-    normative type.</li>
-  <li>The Structure for a normative type contains an ordered set of fields. The
-    order is specified by the type,</li>
-  <li>Each field must have a type that is one of the types described in the
-    next section.</li>
+  <li>The fieldName of the Structure is the name of the normative type.</li>
+  <li>The Structure for a normative type contains a set of fields each with a
+    type described in the next section.</li>
 </ol>
 
-<p>An example of a valid normative type is:</p>
+<p>The syntax for a normative type definition follows the pattern:</p>
+<pre>structure NTXXX
+   ntfield_t fieldName
+   // or
+   ntfield_t[] fieldName
+   ...</pre>
+where 
+<dl>
+  <dt><span style="font-weight:bold;">NTXX</span></dt>
+    <dd>The name of the normative type. The fieldName of the top level
+      structure identifies the normative type.</dd>
+  <dt>ntfield_t</dt>
+    <dd>MUST be a valid Normative Field as defined in the next section.</dd>
+  <dt>fieldName</dt>
+    <dd>Must follow the pvData field naming conventions.</dd>
+</dl>
+
+<p>An example is of a normative type is:</p>
 <pre>structure NTScalar
     timeStamp_t timeStamp
-    alarm_t alarm
-    double value</pre>
+    alarm_t     alarm
+    double      value</pre>
 <hr />
 
-<h2 id="L128">Normative Type Fields</h2>
+<h2>Normative Type Fields</h2>
 <hr />
 
-<p>A field of a normative type, which is called ndfield_T, can be any of the
-following or an array of any of the following:</p>
+<p>A field of a normative type ( <span
+style="font-weight:bold;">ndfield_t</span> ) is any of the following:</p>
 <dl>
   <dt>scalar_t</dt>
     <dd>The pvData type is scalar</dd>
-  <dt>scalarArray_t</dt>
-    <dd>The pvData type is scalarArray</dd>
   <dt>enum_t</dt>
-    <dd>The pvData type is structure and the structure is a enumerated
+    <dd>The pvData type is structure and the structure is an enumerated
       structure.</dd>
   <dt>timeStamp_t</dt>
     <dd>The field is a timeStamp structure.</dd>
@@ -161,9 +116,26 @@ following or an array of any of the following:</p>
     <dd>The field is a display structure.</dd>
   <dt>control_t</dt>
     <dd>The field is a control structure.</dd>
+  <dt>nameValuePair_t</dt>
+    <dd>The field is a nameValuePair structure.</dd>
 </dl>
 
-<h3 id="L170">scalar_t</h3>
+<p>An array of any of the above ( ndfield_t[] ) can also be a field of a
+normative type: </p>
+<dl>
+  <dt>scalar_t[]</dt>
+  <dt>enum_t[]</dt>
+  <dt>timeStamp_t[]</dt>
+  <dt>alarm_t[]</dt>
+  <dt>display_t[]</dt>
+  <dt>control_t[]</dt>
+  <dt>nameValuePair_t[]</dt>
+</dl>
+
+<p>NOTE: A normative type can also define additional normative fields. An
+example is NTChannelFinderDirectory.</p>
+
+<h3>scalar_t</h3>
 
 <p>A scalar field can be any of the folowing:</p>
 <pre>boolean  // true or false
@@ -180,6 +152,8 @@ See definition in <a
 href="https://sourceforge.net/tracker/?func=detail&amp;aid=3426964&amp;group_id=249167&amp;atid=2483530">RESOLUTION
 of 4-Oct</a>.</p>
 
+<h3>scalar_t[]</h3>
+
 <p>A scalar array field can be any of the following:</p>
 <pre>boolean[]  // array of true or false
 byte[]     // array of 8 bit signed integer
@@ -190,11 +164,11 @@ float[]    // array of single precision IEEE 754
 double[]   // array of double precision IEEE 754
 string[]   // array of UTF-8 *</pre>
 
-<h3 id="L187">Structure normative fields</h3>
+<h3>Structured Normative Fields</h3>
 
-<p>The structure normative fields are all have pvData type structure.</p>
+<p>The structured normative fields are all have Type structure.</p>
 
-<h4 id="L191">enum_t</h4>
+<h4>enum_t</h4>
 <pre>structure anyName
     int index
     string[] choices</pre>
@@ -209,7 +183,7 @@ string[]   // array of UTF-8 *</pre>
     <dd>An array of strings specifying the valid choices.</dd>
 </dl>
 
-<h4 id="L213">timeStamp_t</h4>
+<h4>timeStamp_t</h4>
 <pre>structure timeStamp
    long secsPastEpoch
    int  nanoseconds
@@ -230,7 +204,7 @@ string[]   // array of UTF-8 *</pre>
 <p>pvData provides two helper classes for a timeStamp structure: timeStamp, and
 PVTimeStamp.</p>
 
-<h4 id="L242">alarm_t</h4>
+<h4>alarm_t</h4>
 <pre>structure alarm
    int severity
    int status
@@ -253,7 +227,7 @@ PVTimeStamp.</p>
 <p>pvData provides two helper classes for an alarm structure: alarm, and
 PVAlarm.</p>
 
-<h4 id="L266">nameValuePair_t</h4>
+<h4>nameValuePair_t</h4>
 <pre>structure anyName
    string name
    string value </pre>
@@ -268,7 +242,7 @@ PVAlarm.</p>
     <dd>The value</dd>
 </dl>
 
-<h4 id="L288">display_t</h4>
+<h4>display_t</h4>
 <pre>structure display
     structure limit
         double low
@@ -294,7 +268,7 @@ PVAlarm.</p>
     <dd>The units for the value field.</dd>
 </dl>
 
-<h4 id="L320">control_t</h4>
+<h4>control_t</h4>
 <pre>structure control
     structure limit
         double low
@@ -310,12 +284,12 @@ PVAlarm.</p>
     <dd>The control limits for the value field.</dd>
 </dl>
 
-<h3 id="L337">Structure Array Normative Fields</h3>
+<h3>Structure Array Normative Fields</h3>
 
 <p>The following shows normative fields that have pvData type structureArray.
 Note that arrays of control_t and display_t are NOT valid normative fields.</p>
 
-<h4 id="L341">enum_t[]</h4>
+<h4>enum_t[]</h4>
 <pre>    enum_t[] anyName</pre>
 
 <p>where</p>
@@ -324,7 +298,7 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
 
-<h4 id="L353">timeStamp_t[]</h4>
+<h4>timeStamp_t[]</h4>
 <pre>    timeStamp_t[] anyName</pre>
 
 <p>where</p>
@@ -333,7 +307,7 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
 
-<h4 id="L365">alarm_t[]</h4>
+<h4>alarm_t[]</h4>
 <pre>    alarm_t[] anyName</pre>
 
 <p>where</p>
@@ -342,7 +316,7 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
 
-<h4 id="L377">nameValuePair_t[]</h4>
+<h4>nameValuePair_t[]</h4>
 <pre>    nameValuePair_t[] anyName</pre>
 
 <p>where</p>
@@ -352,80 +326,36 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
 </dl>
 <hr />
 
-<h2 id="L391">Normative Type Classes</h2>
+<h2>Normative Type Standard Optional Fields</h2>
 <hr />
 
-<p>There are two classes of Structures of General-Normative Types:</p>
-<dl>
-  <dt>Argument</dt>
-    <dd>These are for sending an argument from a client to a service. There are
-      NO required fields.</dd>
-  <dt>Result</dt>
-    <dd>These are for the result returned from a service to a client. A result
-      type must always have the fields timeStamp_t and alarm_t.</dd>
-</dl>
+<p>A primary reason for normative types is to pass data between a client and a
+service.</p>
 
-<p>The syntax for a normative type definition follows the pattern:</p>
-<pre>structure NTXXX
-   ntfield_t fieldName
-   // or
-   ntfield_t[] fieldName
-   ...</pre>
-where 
-<dl>
-  <dt><span style="font-weight:bold;">NTXX</span></dt>
-    <dd>The name of the normative type.</dd>
-  <dt>ntfield_t</dt>
-    <dd>MUST be a valid Normative Field as defined in the previous section.</dd>
-  <dt>fieldName</dt>
-    <dd>Must follow the pvData field naming conventions.</dd>
-</dl>
+<p>When it makes sense, the normative types for data sent from a client to a
+server has an optional field named function and of type string:</p>
+<pre>structure NTxxx
+    string function</pre>
 
-<p>An example of an argument normative type is:</p>
-<pre>structure NTArgNameValue
-   string function
-   nameValuePair_t[] args</pre>
-
-<p>An example is of a result normative type is:</p>
-<pre>structure NTScalar
+<p>When it makes sense, the normative types for data sent from a server to a
+client has two optional fields alarm and timeStamp:</p>
+<pre>structure NTxxx
     timeStamp_t timeStamp
-    alarm_t     alarm
-    double      value</pre>
+    alarm_t     alarm</pre>
+
+<p>A normative type can be used both for sending data from client to service
+and from service to client.</p>
 <hr />
 
-<h2 id="L441">Argument Normative Types</h2>
-<hr />
-
-<p>These are types that a client passes to a service.</p>
-
-<h3 id="L447">NTArgNameValue</h3>
-
-<p>This is a type appropriate for many RPC (Remote Procedure Call) requests:</p>
-<pre>structure NTArgNameValue
-   string function
-   nameValuePair_t[] args</pre>
-
-<h3 id="L453">NTArgTable</h3>
-
-<p>This is a type appropriate for more complex RPC calls.</p>
-<pre>structure NTArgTable
-   string function
-   string[] labels
-   ntfield_t[] xxx
-   ...</pre>
-
-<p>labels is a array with length either zero or equal to the number of fields
-which follow. An arbitrary number of fields can follow field label.</p>
-<hr />
-
-<h2 id="L476">NTScalar</h2>
+<h2>NTScalar</h2>
 <hr />
 
 <p>A NTScalar is a top level structure that has the following form:</p>
-<pre>structurer NTScalar
-    timeStamp_t timeStamp
-    alarm_t     alarm
+<pre>structure  NTScalar
     scalar_t    value
+    string      function    // optional field
+    timeStamp_t timeStamp   // optional field
+    alarm_t     alarm       // optional field
     display_t   display     // optional field
     control_t   control     // optional field</pre>
 
@@ -433,66 +363,77 @@ which follow. An arbitrary number of fields can follow field label.</p>
 <dl>
   <dt>NTScalar</dt>
     <dd>fieldName of the top level structure must have this value.</dd>
-  <dt>timeStamp</dt>
-    <dd>timeStamp must be the first field in the structure.</dd>
-  <dt>alarm</dt>
-    <dd>alarm must be the second field in the structure.</dd>
   <dt>value</dt>
     <dd>The field must be named "value" and can be any scalar type.</dd>
+  <dt>function</dt>
+    <dd>Standard optional field</dd>
+  <dt>timeStamp</dt>
+    <dd>Standard optional field</dd>
+  <dt>alarm</dt>
+    <dd>Standard optional field</dd>
   <dt>display</dt>
-    <dd>This field is optional.</dd>
+    <dd>This field is an additional optional field.</dd>
   <dt>control</dt>
-    <dd>This field is optional.</dd>
+    <dd>This field is an additional optional field.</dd>
 </dl>
 <hr />
 
-<h2 id="L519">NTEnum</h2>
+<h2>NTEnum</h2>
 <hr />
 
 <p>A NTEnum is a top level structure that has the following form:</p>
 <pre>structurer NTEnum
-    timeStamp_t timeStamp
-    alarm_t     alarm
-    enum_t      value</pre>
+    enum_t      value
+    string      function    // optional field
+    timeStamp_t timeStamp   // optional field
+    alarm_t     alarm       // optional field</pre>
 
 <p>where</p>
 <dl>
   <dt>NTEnum</dt>
     <dd>fieldName of the top level structure must have this value.</dd>
-  <dt>timeStamp</dt>
-    <dd>timeStamp must be the first field in the structure.</dd>
-  <dt>alarm</dt>
-    <dd>alarm must be the second field in the structure.</dd>
   <dt>value</dt>
     <dd>The field must be named "value" and must be an enumerated
     structure.</dd>
+  <dt>function</dt>
+    <dd>Standard optional field</dd>
+  <dt>timeStamp</dt>
+    <dd>Standard optional field</dd>
+  <dt>alarm</dt>
+    <dd>Standard optional field</dd>
 </dl>
 <hr />
 
-<h2 id="L552">NTArray</h2>
+<h2>NTArray</h2>
 <hr />
 
 <p>A NTArray is a top level structure that has the following form:</p>
 <pre>structure NTArray
-    timeStamp_t timeStamp
-    alarm_t     alarm
-    scalar_t[]  value</pre>
+    scalar_t[]  value
+    string      function    // optional field
+    timeStamp_t timeStamp   // optional field
+    alarm_t     alarm       // optional field
+    display_t   display     // optional field</pre>
 
 <p>where</p>
 <dl>
   <dt>NTArray</dt>
     <dd>fieldName of the top level structure must have this value.</dd>
-  <dt>timeStamp</dt>
-    <dd>timeStamp must be the first field in the structure.</dd>
-  <dt>alarm</dt>
-    <dd>alarm must be the second field in the structure.</dd>
   <dt>value</dt>
-    <dd>The field must be named "value" and can be any of the scalarArray
-    types.</dd>
+    <dd>The field must be named "value" and can be any of the scalar array
+      types.</dd>
+  <dt>function</dt>
+    <dd>Standard optional field</dd>
+  <dt>timeStamp</dt>
+    <dd>Standard optional field</dd>
+  <dt>alarm</dt>
+    <dd>Standard optional field</dd>
+  <dt>display</dt>
+    <dd>This field is an additional optional field.</dd>
 </dl>
 <hr />
 
-<h2 id="L585">Specific Normative Types</h2>
+<h2>Specific Normative Types</h2>
 <hr />
 
 <p>Specific normative types are types defined by the EPICS V4 working group,
@@ -506,131 +447,251 @@ described in a section below.</p>
 </ul>
 <hr />
 
-<h2 id="L602">NTMultichannelArray</h2>
+<h2>NTNameValue</h2>
+<hr />
+
+<p>This is a type appropriate for many RPC (Remote Procedure Call) service
+requests.</p>
+<pre>structure NTNameValue
+   nameValuePair_t[] value
+   string            function   // optional field
+   timeStamp_t       timeStamp  // optional field
+   alarm_t           alarm      // optional field</pre>
+
+<p>where</p>
+<dl>
+  <dt>NTNameValue</dt>
+    <dd>fieldName of the top level structure must have this value.</dd>
+  <dt>value</dt>
+    <dd>The field must be named "value" and must be an array of nameValuePair
+      structures.</dd>
+  <dt>function</dt>
+    <dd>Standard optional field.</dd>
+  <dt>timeStamp</dt>
+    <dd>Standard optional field.</dd>
+  <dt>alarm</dt>
+    <dd>Standard optional field.</dd>
+</dl>
+<hr />
+
+<h2>NTMultichannelArray</h2>
 <hr />
 
 <p>MultichannelArray aggregates an array of scalar values into a single array
 variable. </p>
 <pre>structure NTMultichannelArray
-  alarm_t alarm
-  timeStamp_t timeStamp
-  double[] values         // The array of scalar values.
-  int[]    severities     // the alarm severity for each scalar.
-  double[] positions      // The real absolute or relative position of each scalar. If not relevant, should be valued 0.0. 
-  double[] deltaTimes     // The time relative to the timeStamp in seconds. If not relevant, should be valued 0.0</pre>
+  string      function      // optional field
+  alarm_t     alarm         // optional field
+  timeStamp_t timeStamp     // optional field
+  double[]    value         // The array of scalar values.
+  int[]       severity      // severity associated with each value
+  double[]    position      // The absolute or relative position of each scalar.
+  double[]    deltaTime     // The time relative to the timeStamp in seconds.</pre>
 
-<p>Each array must have the same number of elements or have a length of 0. A
-length on 0 signifies that the service does not provide that field.</p>
+<p>where</p>
+<dl>
+  <dt>NTMultichannelArray</dt>
+    <dd>fieldName of the top level structure must have this value.</dd>
+  <dt>function</dt>
+    <dd>Standard optional field.</dd>
+  <dt>timeStamp</dt>
+    <dd>Standard optional field.</dd>
+  <dt>alarm</dt>
+    <dd>Standard optional field.</dd>
+  <dt>value</dt>
+    <dd>An array of values for each scalar. All of the remaining fields are
+      optional. If an optional field is present, it's length must be the same
+      as the length of value field or have a length of 0.</dd>
+  <dt>severity</dt>
+    <dd>The alarm severity associated with each value. If this field is present
+      and the alarm field is also present then maximize severity will be used
+      to help determine the alarm serverity of the alarm field.</dd>
+  <dt>position</dt>
+    <dd>The relative or absolute position of device from which the scalar value
+      was obtained.</dd>
+  <dt>deltaTime</dt>
+    <dd>The difference in seconds between the time that value was read and the
+      timeStamp.</dd>
+</dl>
 <hr />
 
-<h2 id="L614">NTTimeDomainArray</h2>
+<h2>NTTimeDomainArray</h2>
 <hr />
 
 <p>NTTimeDomainArray expresses an array of values that have a constant time
 between each value. </p>
 <pre>structure NTTimeDomainArray
-  alarm_t alarm
-  timeStamp_t timeStamp      // Time of the first sample
-  scalar_t[] values          // array of and numeric type
-  double deltaTime           // Time in seconds between each sample.</pre>
+  string      function      // optional field
+  alarm_t     alarm         // optional field
+  timeStamp_t timeStamp     // optional field
+  double      deltaTime     // Time in seconds between each sample.
+  scalar_t[]  value         // array of numeric type</pre>
+
+<p>where</p>
+<dl>
+  <dt>NTTimeDomainArray</dt>
+    <dd>fieldName of the top level structure must have this value.</dd>
+  <dt>function</dt>
+    <dd>Standard optional field</dd>
+  <dt>timeStamp</dt>
+    <dd>Standard optional field</dd>
+  <dt>alarm</dt>
+    <dd>Standard optional field</dd>
+  <dt>deltaTime</dt>
+    <dd>The time in seconds between each sample.</dd>
+  <dt>value</dt>
+    <dd>An array of numeric scalars.</dd>
+</dl>
 <hr />
 
-<h2 id="L624">NTFrequencyDomainArray</h2>
+<h2>NTFrequencyDomainArray</h2>
 <hr />
 <pre>structure NTFrequencyDomainArray
-  alarm_t alarm
-  timeStamp_t timeStamp           // Time of the first sample
-  scalar_t[] values               // array of any numeric type     
-  double deltaFrequency           // Frequency in Hz.
-  double firstFrequency           // frequency of the value[0].</pre>
+  string      function      // optional field
+  alarm_t     alarm         // optional field
+  timeStamp_t timeStamp     // optional field
+  double deltaFrequency     // Frequency in HZ
+  double firstFrequency     // frequency of the value[0]
+  scalar_t[] value          // array of any numeric type     </pre>
+
+<p>where</p>
+<dl>
+  <dt>NTFrequencyDomainArray</dt>
+    <dd>fieldName of the top level structure must have this value.</dd>
+  <dt>function</dt>
+    <dd>Standard optional field</dd>
+  <dt>timeStamp</dt>
+    <dd>Standard optional field</dd>
+  <dt>alarm</dt>
+    <dd>Standard optional field</dd>
+  <dt>deltaFrequency</dt>
+    <dd>The change in frequency between samples.</dd>
+  <dt>firstFrequency</dt>
+    <dd>The frequency of value[0]</dd>
+  <dt>value</dt>
+    <dd>An array of numeric scalars.</dd>
+</dl>
 <hr />
 
-<h2 id="L632">NTHistogram</h2>
+<h2>NTHistogram</h2>
 <hr />
+
+<p><b>NEEDS WORK</b></p>
 <pre>structure NTHistogram
-  alarm_t alarm
-  timeStamp_t timeStamp    
-  double firstValue
-  double lastValue  
-  enum_t mode                 // LINEAR and LOGARITHMIC 
-  long   Nbuckets             // array size
-  long[] values</pre>
+  string      function      // optional field
+  alarm_t     alarm         // optional field
+  timeStamp_t timeStamp     // optional field
+  double      firstValue
+  double      lastValue  
+  enum_t      mode                 // LINEAR and LOGARITHMIC 
+  long        Nbuckets             // array size
+  long[]      values</pre>
 <hr />
 
-<h2 id="L640">NTNDArray</h2>
-<hr />
-TBD 
+<h2>NTNDArray</h2>
 <hr />
 
-<h2 id="L648">NTStatistic</h2>
+<p><b>TBD</b></p>
 <hr />
+
+<h2>NTStatistic</h2>
+<hr />
+
+<p><b>NEEDS WORK</b></p>
 
 <p>NTStatistic compresses time domain data. It may be used for archive data, or
 compressing time domain data, or time domain rebasing. For instance, you have
 an FPGA sending data at 10KHz, and you want to archive its output, but you
 can't archive at the native rate. </p>
 <pre>structure NTStatistic
-  alarm_t alarm              // May be worst alarm from the N samples, or alarm of the aggregation. Which is not defined.
-  timeStamp_t timeStamp      // Nominally, the time of aggregation.
-  double firstValue
+  string      function      // optional field
+  alarm_t     alarm         // optional field
+  timeStamp_t timeStamp     // optional field
+  double      firstValue
   timeStamp_t firstValueTimeStamp
-  double lastValue
+  double      lastValue
   timeStamp_t lastValueTimeStamp
-  double highValue
-  double lowValue
-  double meanValue  
-  double stdDev
-  long N</pre>
+  double      highValue
+  double      lowValue
+  double      aveValue  
+  double      stdDev
+  int         N</pre>
+
+<p>where</p>
+<dl>
+  <dt>NTStatistic</dt>
+    <dd>fieldName of the top level structure must have this value.</dd>
+  <dt>function</dt>
+    <dd>Standard optional field</dd>
+  <dt>timeStamp</dt>
+    <dd>Standard optional field</dd>
+  <dt>alarm</dt>
+    <dd>Standard optional field</dd>
+  <dt>firstValue</dt>
+  <dt>firstValueTimeStamp</dt>
+  <dt>lastValue</dt>
+  <dt>lastValueTimeStamp</dt>
+  <dt>highValue</dt>
+  <dt>lowValue</dt>
+  <dt>aveValue</dt>
+  <dt>stdDev</dt>
+  <dt>N</dt>
+</dl>
 <hr />
 
-<h2 id="L658">NTImage</h2>
+<h2>NTImage</h2>
 <hr />
 TBD 
 <hr />
 
-<h2 id="L666">NTTable</h2>
+<h2>NTTable</h2>
 <hr />
 
 <p>NTTable is intended to be used when exchanging data which looks like a
 table. For instance table of BPM values of a whole accelerator section, or
 contents of a JDBC ResultSet. </p>
 <pre>structure NTTable
-  alarm_t alarm
-  timeStamp_t timeStamp
-  string[] labels
+  string      function      // optional field
+  alarm_t     alarm         // optional field
+  timeStamp_t timeStamp     // optional field
+  string[]    label
   ntfield_t[] xxx        // an array of any valid normative field type
   ...                    // an arbitrary number of ntfield_t[] fields can appear including none</pre>
 
-<p>labels is a array with length either zero or equal to the number of fields
-which follow.</p>
+<p>This represents a table. The number of columns is equal to the number of
+fields which follows label. Each xxx field has the data for it's column. All
+xxx fields and label MUST have the same length, which is the number of rows in
+the table. The value of each label can be used as a label for the associated
+column.</p>
 <hr />
 
-<h2 id="L678">NTChannelFinderDirectory</h2>
+<h2>NTChannelFinderDirectory</h2>
 <hr />
+
+<p><b>NEEDS WORK</b></p>
 
 <p>NTChannelFinderDirectory can be used for exchanges of ChannelFinder query
 results. </p>
 <pre>structure channelFinderInfo_t
-  string[] tags
-  nameValuePair_t[] properties;
+  string[] tag
+  nameValuePair_t[] property
 
 structure NTChannelFinderDirectory
   alarm_t alarm
   timeStamp_t timeStamp
-  string[] channelNames
-  channelFinderInfo_t[] channelInfos</pre>
+  string[] channelName
+  channelFinderInfo_t[] channelInfo</pre>
 
-<p>The length of channelInfos must either be zero or the same as the length of
-channelNames</p>
-<pre>  </pre>
+<p>The length of channelInfo must either be zero or the same as the length of
+channelName</p>
 <hr />
 
-<h2 id="L692">NTXAlarm</h2>
+<h2>NTXAlarm</h2>
 <hr />
 TBD 
 <hr />
 
-<h2 id="L700">Non-Normative Types</h2>
+<h2>Non-Normative Types</h2>
 <hr />
 
 <p>Users and developers using EPICS V4 are free to defined their own special
