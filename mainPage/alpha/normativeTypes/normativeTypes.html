@@ -26,6 +26,12 @@
 
 <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 21-Nov-2011</h2>
 <dl>
+  <dt>This version:</dt>
+  <dd><a href="normativeTypes_20111121_1.html">normativeTypes_20111121_1.html</a></dd>
+  <dt>Latest version:</dt>
+  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
+  <dt>Previous version:</dt>
+  <dd><a href="normativeTypes_20111121.html">normativeTypes_20111121.html</a></dd>
   <dt>Editors:</dt>
     <dd>Bob Dalesio, Brookhaven National Lab</dd>
     <dd>Greg White, SLAC, PSI</dd>
@@ -95,10 +101,10 @@ where
     timeStamp_t timeStamp
     alarm_t     alarm
     double      value</pre>
-<hr />
+
 
 <h2>Normative Type Fields</h2>
-<hr />
+
 
 <p>A field of a normative type ( <span
 style="font-weight:bold;">ndfield_t</span> ) is any of the following:</p>
@@ -135,7 +141,12 @@ normative type: </p>
 <p>NOTE: A normative type can also define additional normative fields. An
 example is NTChannelFinderDirectory.</p>
 
-<h3>scalar_t</h3>
+<h3>Simple Normative Type Fields - scalar_t</h3>
+<p>Note that of all the Normative Type fields only scalar_t is of simple type, that
+is, having a single or array value. All the others are represented by a structure
+(see <a href="#structuredNormativeFields">Structure Normative Fields</a> below). </p>
+
+<h4>scalar_t</h4>
 
 <p>A scalar field can be any of the folowing:</p>
 <pre>boolean  // true or false
@@ -152,7 +163,7 @@ See definition in <a
 href="https://sourceforge.net/tracker/?func=detail&amp;aid=3426964&amp;group_id=249167&amp;atid=2483530">RESOLUTION
 of 4-Oct</a>.</p>
 
-<h3>scalar_t[]</h3>
+<h4>scalar_t[]</h4>
 
 <p>A scalar array field can be any of the following:</p>
 <pre>boolean[]  // array of true or false
@@ -164,7 +175,7 @@ float[]    // array of single precision IEEE 754
 double[]   // array of double precision IEEE 754
 string[]   // array of UTF-8 *</pre>
 
-<h3>Structured Normative Fields</h3>
+<h3 id="structuredNormativeFields">Structured Normative Fields</h3>
 
 <p>The structured normative fields are all have Type structure.</p>
 
@@ -324,10 +335,10 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
   <dt>anyName</dt>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
-<hr />
+
 
 <h2>Normative Type Standard Optional Fields</h2>
-<hr />
+
 
 <p>A primary reason for normative types is to pass data between a client and a
 service.</p>
@@ -345,10 +356,14 @@ client has two optional fields alarm and timeStamp:</p>
 
 <p>A normative type can be used both for sending data from client to service
 and from service to client.</p>
-<hr />
 
-<h2>NTScalar</h2>
-<hr />
+<h2 id="generalnormativetypes">General Normative Types</h2>
+<p>The General Normative Types are for encapsulating data of any kind of application
+or use case. Compare to <a href="#specificnormativetypes ">Specific Normative
+Types</a> defined later in this document, and which are oriented to
+particular use cases.</p>
+
+<h3>NTScalar</h3>
 
 <p>A NTScalar is a top level structure that has the following form:</p>
 <pre>structure  NTScalar
@@ -376,10 +391,10 @@ and from service to client.</p>
   <dt>control</dt>
     <dd>This field is an additional optional field.</dd>
 </dl>
-<hr />
 
-<h2>NTEnum</h2>
-<hr />
+
+<h3>NTEnum</h3>
+
 
 <p>A NTEnum is a top level structure that has the following form:</p>
 <pre>structurer NTEnum
@@ -402,10 +417,10 @@ and from service to client.</p>
   <dt>alarm</dt>
     <dd>Standard optional field</dd>
 </dl>
-<hr />
 
-<h2>NTArray</h2>
-<hr />
+
+<h3>NTArray</h3>
+
 
 <p>A NTArray is a top level structure that has the following form:</p>
 <pre>structure NTArray
@@ -431,13 +446,14 @@ and from service to client.</p>
   <dt>display</dt>
     <dd>This field is an additional optional field.</dd>
 </dl>
-<hr />
 
-<h2>Specific Normative Types</h2>
-<hr />
 
-<p>Specific normative types are types defined by the EPICS V4 working group,
-that are oriented towards specific uses. The currently defined types are each
+<h2 id="specificnormativetypes">Specific Normative Types</h2>
+
+<p>Specific normative types are types defined by the EPICS V4 working group and
+are oriented towards specific uses and applications. Compare to <a
+href="#specificnormativetypes">
+General Normative Types</a> defined above. The currently defined types are each
 described in a section below.</p>
 
 <p>Some generic attributes are:</p>
@@ -445,10 +461,10 @@ described in a section below.</p>
   <li>Times are always in seconds.</li>
   <li>Frequencies are always in Hz.</li>
 </ul>
-<hr />
 
-<h2>NTNameValue</h2>
-<hr />
+
+<h3>NTNameValue</h3>
+
 
 <p>This is a type appropriate for many RPC (Remote Procedure Call) service
 requests.</p>
@@ -472,10 +488,10 @@ requests.</p>
   <dt>alarm</dt>
     <dd>Standard optional field.</dd>
 </dl>
-<hr />
 
-<h2>NTMultichannelArray</h2>
-<hr />
+
+<h3>NTMultichannelArray</h3>
+
 
 <p>MultichannelArray aggregates an array of scalar values into a single array
 variable. </p>
@@ -513,10 +529,9 @@ variable. </p>
     <dd>The difference in seconds between the time that value was read and the
       timeStamp.</dd>
 </dl>
-<hr />
 
-<h2>NTTimeDomainArray</h2>
-<hr />
+
+<h3>NTTimeDomainArray</h3>
 
 <p>NTTimeDomainArray expresses an array of values that have a constant time
 between each value. </p>
@@ -542,10 +557,10 @@ between each value. </p>
   <dt>value</dt>
     <dd>An array of numeric scalars.</dd>
 </dl>
-<hr />
 
-<h2>NTFrequencyDomainArray</h2>
-<hr />
+
+<h3>NTFrequencyDomainArray</h3>
+
 <pre>structure NTFrequencyDomainArray
   string      function      // optional field
   alarm_t     alarm         // optional field
@@ -571,10 +586,10 @@ between each value. </p>
   <dt>value</dt>
     <dd>An array of numeric scalars.</dd>
 </dl>
-<hr />
 
-<h2>NTHistogram</h2>
-<hr />
+
+<h3>NTHistogram</h3>
+
 
 <p><b>NEEDS WORK</b></p>
 <pre>structure NTHistogram
@@ -586,16 +601,16 @@ between each value. </p>
   enum_t      mode                 // LINEAR and LOGARITHMIC 
   long        Nbuckets             // array size
   long[]      values</pre>
-<hr />
 
-<h2>NTNDArray</h2>
-<hr />
+
+<h3>NTNDArray</h3>
+
 
 <p><b>TBD</b></p>
-<hr />
 
-<h2>NTStatistic</h2>
-<hr />
+
+<h3>NTStatistic</h3>
+
 
 <p><b>NEEDS WORK</b></p>
 
@@ -637,15 +652,15 @@ can't archive at the native rate. </p>
   <dt>stdDev</dt>
   <dt>N</dt>
 </dl>
-<hr />
 
-<h2>NTImage</h2>
-<hr />
+
+<h3>NTImage</h3>
+
 TBD 
-<hr />
 
-<h2>NTTable</h2>
-<hr />
+
+<h3>NTTable</h3>
+
 
 <p>NTTable is intended to be used when exchanging data which looks like a
 table. For instance table of BPM values of a whole accelerator section, or
@@ -663,10 +678,10 @@ fields which follows label. Each xxx field has the data for it's column. All
 xxx fields and label MUST have the same length, which is the number of rows in
 the table. The value of each label can be used as a label for the associated
 column.</p>
-<hr />
 
-<h2>NTChannelFinderDirectory</h2>
-<hr />
+
+<h3>NTChannelFinderDirectory</h3>
+
 
 <p><b>NEEDS WORK</b></p>
 
@@ -684,15 +699,15 @@ structure NTChannelFinderDirectory
 
 <p>The length of channelInfo must either be zero or the same as the length of
 channelName</p>
-<hr />
 
-<h2>NTXAlarm</h2>
-<hr />
+
+<h3>NTXAlarm</h3>
+
 TBD 
-<hr />
+
 
 <h2>Non-Normative Types</h2>
-<hr />
+
 
 <p>Users and developers using EPICS V4 are free to defined their own special
 purpose types on top of PVStructure (or the other PV Types) but should note
