@@ -64,68 +64,69 @@ Control System.</a></p>
 <div class="toc">
 <ul>
   <li><a href="#L49">EPICS V4 Normative Types, Editors Draft,
-  21-Nov-2011</a></li>
+  22-Nov-2011</a></li>
   <li><a href="#L83">Abstract</a></li>
   <li><a href="#L89">Status of this Document</a></li>
   <li><a href="#L109">Contents</a></li>
   <li><a href="#L113">Introduction</a></li>
   <li><a href="#L164">Normative Type Fields</a>
     <ul>
-      <li><a href="#L226">Simple Normative Type Fields - scalar types</a>
+      <li><a href="#L233">Simple Normative Type Fields - scalar types</a>
         <ul>
-          <li><a href="#L233">scalar_t</a></li>
+          <li><a href="#L240">scalar_t</a></li>
         </ul>
       </li>
-      <li><a href="#L246">Simple Normative Type Fields - array of scalar
+      <li><a href="#L253">Simple Normative Type Fields - array of scalar
         types</a>
         <ul>
-          <li><a href="#L248">scalar_t[]</a></li>
+          <li><a href="#L255">scalar_t[]</a></li>
         </ul>
       </li>
-      <li><a href="#structuredNormativeFields">Structured Normative Fields</a>
+      <li><a href="#L261">Structured Normative Fields</a>
         <ul>
-          <li><a href="#L258">enum_t</a></li>
-          <li><a href="#L280">timeStamp_t</a></li>
-          <li><a href="#L309">alarm_t</a></li>
-          <li><a href="#L333">nameValuePair_t</a></li>
-          <li><a href="#L355">display_t</a></li>
-          <li><a href="#L387">control_t</a></li>
+          <li><a href="#L265">enum_t</a></li>
+          <li><a href="#L287">timeStamp_t</a></li>
+          <li><a href="#L316">alarm_t</a></li>
+          <li><a href="#L340">nameValuePair_t</a></li>
+          <li><a href="#L362">display_t</a></li>
+          <li><a href="#L394">alarmLimit_t</a></li>
+          <li><a href="#L426">control_t</a></li>
         </ul>
       </li>
-      <li><a href="#L404">Structure Array Normative Fields</a>
+      <li><a href="#L443">Structure Array Normative Fields</a>
         <ul>
-          <li><a href="#L408">enum_t[]</a></li>
-          <li><a href="#L420">timeStamp_t[]</a></li>
-          <li><a href="#L432">alarm_t[]</a></li>
-          <li><a href="#L444">nameValuePair_t[]</a></li>
+          <li><a href="#L447">enum_t[]</a></li>
+          <li><a href="#L459">timeStamp_t[]</a></li>
+          <li><a href="#L471">alarm_t[]</a></li>
+          <li><a href="#L483">nameValuePair_t[]</a></li>
         </ul>
       </li>
     </ul>
   </li>
-  <li><a href="#L456">Normative Type Standard Optional Fields</a></li>
-  <li><a href="#generalnormativetypes">General Normative Types</a>
+  <li><a href="#L495">Normative Type Standard Optional Fields</a></li>
+  <li><a href="#L509">General Normative Types</a>
     <ul>
-      <li><a href="#L477">NTScalar</a></li>
-      <li><a href="#L521">NTEnum</a></li>
-      <li><a href="#L555">NTArray</a></li>
+      <li><a href="#L516">NTScalar</a></li>
+      <li><a href="#L560">NTEnum</a></li>
+      <li><a href="#L594">NTArray</a></li>
     </ul>
   </li>
-  <li><a href="#specificnormativetypes">Specific Normative Types</a>
+  <li><a href="#L633">Specific Normative Types</a>
     <ul>
-      <li><a href="#L610">NTNameValue</a></li>
-      <li><a href="#L644">NTMultichannelArray</a></li>
-      <li><a href="#L693">NTTimeDomainArray</a></li>
-      <li><a href="#L732">NTFrequencyDomainArray</a></li>
-      <li><a href="#L774">NTHistogram</a></li>
-      <li><a href="#L781">NTNDArray</a></li>
-      <li><a href="#L786">NTStatistic</a></li>
-      <li><a href="#L836">NTImage</a></li>
-      <li><a href="#L840">NTTable</a></li>
-      <li><a href="#L848">NTChannelFinderDirectory</a></li>
-      <li><a href="#L859">NTXAlarm</a></li>
+      <li><a href="#L649">NTNameValue</a></li>
+      <li><a href="#L683">NTMultichannelArray</a></li>
+      <li><a href="#L732">NTTimeDomainArray</a></li>
+      <li><a href="#L771">NTFrequencyDomainArray</a></li>
+      <li><a href="#L813">NTHistogram</a></li>
+      <li><a href="#L820">NTNDArray</a></li>
+      <li><a href="#L825">NTStatistic</a></li>
+      <li><a href="#L875">NTImage</a></li>
+      <li><a href="#L879">NTTable</a></li>
+      <li><a href="#L887">NTChannelFinderDirectory</a></li>
+      <li><a href="#L898">NTXAlarm</a></li>
     </ul>
   </li>
-  <li><a href="#L863">Non-Normative Types</a></li>
+  <li><a href="#L902">Non-Normative Types</a></li>
 </ul>
 </div>
 <hr />
@@ -189,6 +190,8 @@ style="font-weight:bold;">ndfield_t</span> ) is any of the following:</p>
     <dd>The field is an alarm structure.</dd>
   <dt>display_t</dt>
     <dd>The field is a display structure.</dd>
+  <dt>alarmLimit_t</dt>
+    <dd>The field is an alarm limit structure.</dd>
   <dt>control_t</dt>
     <dd>The field is a control structure.</dd>
   <dt>nameValuePair_t</dt>
@@ -203,6 +206,7 @@ normative type: </p>
   <dt>timeStamp_t[]</dt>
   <dt>alarm_t[]</dt>
   <dt>display_t[]</dt>
+  <dt>alarmLimit_t[]</dt>
   <dt>control_t[]</dt>
   <dt>nameValuePair_t[]</dt>
 </dl>
@@ -210,14 +214,14 @@ normative type: </p>
 <p>NOTE: A normative type can also define additional normative fields. An
 example is NTChannelFinderDirectory.</p>
 
-<h3 id="L226">Simple Normative Type Fields - scalar types</h3>
+<h3 id="L233">Simple Normative Type Fields - scalar types</h3>
 
 <p>Note that of all the Normative Type fields only scalar_t is of simple type,
 that is, having a single or array value. All the others are represented by a
 structure (see <a href="#structuredNormativeFields">Structure Normative
 Fields</a> below). </p>
 
-<h4 id="L233">scalar_t</h4>
+<h4 id="L240">scalar_t</h4>
 
 <p>A scalar field can be any of the folowing:</p>
 <pre>boolean  // true or false
@@ -234,9 +238,9 @@ See definition in <a
 href="https://sourceforge.net/tracker/?func=detail&amp;aid=3426964&amp;group_id=249167&amp;atid=2483530">RESOLUTION
 of 4-Oct</a>.</p>
 
-<h3 id="L246">Simple Normative Type Fields - array of scalar types</h3>
+<h3 id="L253">Simple Normative Type Fields - array of scalar types</h3>
 
-<h4 id="L248">scalar_t[]</h4>
+<h4 id="L255">scalar_t[]</h4>
 
 <p>A scalar array field can be any of the following:</p>
 <pre>boolean[]  // array of true or false
@@ -248,11 +252,11 @@ float[]    // array of single precision IEEE 754
 double[]   // array of double precision IEEE 754
 string[]   // array of UTF-8 *</pre>
 
-<h3 id="structuredNormativeFields">Structured Normative Fields</h3>
+<h3 id="L261">Structured Normative Fields</h3>
 
 <p>The structured normative fields are all have Type structure.</p>
 
-<h4 id="L258">enum_t</h4>
+<h4 id="L265">enum_t</h4>
 <pre>structure anyName
     int index
     string[] choices</pre>
@@ -267,7 +271,7 @@ string[]   // array of UTF-8 *</pre>
     <dd>An array of strings specifying the valid choices.</dd>
 </dl>
 
-<h4 id="L280">timeStamp_t</h4>
+<h4 id="L287">timeStamp_t</h4>
 <pre>structure timeStamp
    long secsPastEpoch
    int  nanoseconds
@@ -288,7 +292,7 @@ string[]   // array of UTF-8 *</pre>
 <p>pvData provides two helper classes for a timeStamp structure: timeStamp, and
 PVTimeStamp.</p>
 
-<h4 id="L309">alarm_t</h4>
+<h4 id="L316">alarm_t</h4>
 <pre>structure alarm
    int severity
    int status
@@ -311,7 +315,7 @@ PVTimeStamp.</p>
 <p>pvData provides two helper classes for an alarm structure: alarm, and
 PVAlarm.</p>
 
-<h4 id="L333">nameValuePair_t</h4>
+<h4 id="L340">nameValuePair_t</h4>
 <pre>structure anyName
    string name
    string value </pre>
@@ -326,7 +330,7 @@ PVAlarm.</p>
     <dd>The value</dd>
 </dl>
 
-<h4 id="L355">display_t</h4>
+<h4 id="L362">display_t</h4>
 <pre>structure display
     structure limit
         double low
@@ -352,7 +356,30 @@ PVAlarm.</p>
     <dd>The units for the value field.</dd>
 </dl>
 
-<h4 id="L387">control_t</h4>
+<h4 id="L394">alarmLimit_t</h4>
+<pre>structure alarmLimit
+    double highAlarm
+    double highWarning
+    double lowWarning
+    double lowAlarm
+ </pre>
+
+<p>where</p>
+<dl>
+  <dt>alarmLimit</dt>
+    <dd>The structure must have this name. The structure must be in a structure
+      that also has a field named value which is a numeric field.</dd>
+  <dt>highAlarm</dt>
+    <dd>The value field is &gt;= this value.</dd>
+  <dt>highWarning</dt>
+    <dd>The value field is &gt;= this value.</dd>
+  <dt>lowWarning</dt>
+    <dd>The value field is &lt;= this value.</dd>
+  <dt>lowAlarm</dt>
+    <dd>The value field is &lt;= this value.</dd>
+</dl>
+
+<h4 id="L426">control_t</h4>
 <pre>structure control
     structure limit
         double low
@@ -368,12 +395,12 @@ PVAlarm.</p>
     <dd>The control limits for the value field.</dd>
 </dl>
 
-<h3 id="L404">Structure Array Normative Fields</h3>
+<h3 id="L443">Structure Array Normative Fields</h3>
 
 <p>The following shows normative fields that have pvData type structureArray.
 Note that arrays of control_t and display_t are NOT valid normative fields.</p>
 
-<h4 id="L408">enum_t[]</h4>
+<h4 id="L447">enum_t[]</h4>
 <pre>    enum_t[] anyName</pre>
 
 <p>where</p>
@@ -382,7 +409,7 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
 
-<h4 id="L420">timeStamp_t[]</h4>
+<h4 id="L459">timeStamp_t[]</h4>
 <pre>    timeStamp_t[] anyName</pre>
 
 <p>where</p>
@@ -391,7 +418,7 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
 
-<h4 id="L432">alarm_t[]</h4>
+<h4 id="L471">alarm_t[]</h4>
 <pre>    alarm_t[] anyName</pre>
 
 <p>where</p>
@@ -400,7 +427,7 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
 
-<h4 id="L444">nameValuePair_t[]</h4>
+<h4 id="L483">nameValuePair_t[]</h4>
 <pre>    nameValuePair_t[] anyName</pre>
 
 <p>where</p>
@@ -409,7 +436,7 @@ Note that arrays of control_t and display_t are NOT valid normative fields.</p>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
 
-<h2 id="L456">Normative Type Standard Optional Fields</h2>
+<h2 id="L495">Normative Type Standard Optional Fields</h2>
 
 <p>A primary reason for normative types is to pass data between a client and a
 service.</p>
@@ -428,14 +455,14 @@ client has two optional fields alarm and timeStamp:</p>
 <p>A normative type can be used both for sending data from client to service
 and from service to client.</p>
 
-<h2 id="generalnormativetypes">General Normative Types</h2>
+<h2 id="L509">General Normative Types</h2>
 
 <p>The General Normative Types are for encapsulating data of any kind of
 application or use case. Compare to <a href="#specificnormativetypes ">Specific
 Normative Types</a> defined later in this document, and which are oriented to
 particular use cases.</p>
 
-<h3 id="L477">NTScalar</h3>
+<h3 id="L516">NTScalar</h3>
 
 <p>A NTScalar is a top level structure that has the following form:</p>
 <pre>structure  NTScalar
@@ -464,7 +491,7 @@ particular use cases.</p>
     <dd>This field is an additional optional field.</dd>
 </dl>
 
-<h3 id="L521">NTEnum</h3>
+<h3 id="L560">NTEnum</h3>
 
 <p>A NTEnum is a top level structure that has the following form:</p>
 <pre>structurer NTEnum
@@ -488,7 +515,7 @@ particular use cases.</p>
     <dd>Standard optional field</dd>
 </dl>
 
-<h3 id="L555">NTArray</h3>
+<h3 id="L594">NTArray</h3>
 
 <p>A NTArray is a top level structure that has the following form:</p>
 <pre>structure NTArray
@@ -515,7 +542,7 @@ particular use cases.</p>
     <dd>This field is an additional optional field.</dd>
 </dl>
 
-<h2 id="specificnormativetypes">Specific Normative Types</h2>
+<h2 id="L633">Specific Normative Types</h2>
 
 <p>Specific normative types are types defined by the EPICS V4 working group and
 are oriented towards specific uses and applications. Compare to <a
@@ -528,7 +555,7 @@ currently defined types are each described in a section below.</p>
   <li>Frequencies are always in Hz.</li>
 </ul>
 
-<h3 id="L610">NTNameValue</h3>
+<h3 id="L649">NTNameValue</h3>
 
 <p>This is a type appropriate for many RPC (Remote Procedure Call) service
 requests.</p>
@@ -553,7 +580,7 @@ requests.</p>
     <dd>Standard optional field.</dd>
 </dl>
 
-<h3 id="L644">NTMultichannelArray</h3>
+<h3 id="L683">NTMultichannelArray</h3>
 
 <p>MultichannelArray aggregates an array of scalar values into a single array
 variable. </p>
@@ -592,7 +619,7 @@ variable. </p>
       timeStamp.</dd>
 </dl>
 
-<h3 id="L693">NTTimeDomainArray</h3>
+<h3 id="L732">NTTimeDomainArray</h3>
 
 <p>NTTimeDomainArray expresses an array of values that have a constant time
 between each value. </p>
@@ -619,7 +646,7 @@ between each value. </p>
     <dd>An array of numeric scalars.</dd>
 </dl>
 
-<h3 id="L732">NTFrequencyDomainArray</h3>
+<h3 id="L771">NTFrequencyDomainArray</h3>
 <pre>structure NTFrequencyDomainArray
   string      function      // optional field
   alarm_t     alarm         // optional field
@@ -646,7 +673,7 @@ between each value. </p>
     <dd>An array of numeric scalars.</dd>
 </dl>
 
-<h3 id="L774">NTHistogram</h3>
+<h3 id="L813">NTHistogram</h3>
 
 <p><b>NEEDS WORK</b></p>
 <pre>structure NTHistogram
@@ -659,11 +686,11 @@ between each value. </p>
   long        Nbuckets             // array size
   long[]      values</pre>
 
-<h3 id="L781">NTNDArray</h3>
+<h3 id="L820">NTNDArray</h3>
 
 <p><b>TBD</b></p>
 
-<h3 id="L786">NTStatistic</h3>
+<h3 id="L825">NTStatistic</h3>
 
 <p><b>NEEDS WORK</b></p>
 
@@ -706,10 +733,10 @@ can't archive at the native rate. </p>
   <dt>N</dt>
 </dl>
 
-<h3 id="L836">NTImage</h3>
+<h3 id="L875">NTImage</h3>
 TBD 
 
-<h3 id="L840">NTTable</h3>
+<h3 id="L879">NTTable</h3>
 
 <p>NTTable is intended to be used when exchanging data which looks like a
 table. For instance table of BPM values of a whole accelerator section, or
@@ -728,7 +755,7 @@ xxx fields and label MUST have the same length, which is the number of rows in
 the table. The value of each label can be used as a label for the associated
 column.</p>
 
-<h3 id="L848">NTChannelFinderDirectory</h3>
+<h3 id="L887">NTChannelFinderDirectory</h3>
 
 <p><b>NEEDS WORK</b></p>
 
@@ -747,10 +774,10 @@ structure NTChannelFinderDirectory
 <p>The length of channelInfo must either be zero or the same as the length of
 channelName</p>
 
-<h3 id="L859">NTXAlarm</h3>
+<h3 id="L898">NTXAlarm</h3>
 TBD 
 
-<h2 id="L863">Non-Normative Types</h2>
+<h2 id="L902">Non-Normative Types</h2>
 
 <p>Users and developers using EPICS V4 are free to defined their own special
 purpose types on top of PVStructure (or the other PV Types) but should note
