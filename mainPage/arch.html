@@ -57,11 +57,6 @@ Network protocol above TCP
 <p>
 The pvIOC is a pvAccess server with a configuration file format to allow the user to instantiate a number of Records (Channel endpoints),
 attach a variety of processing, and connect them together in a dataflow system.
-
-<li>pvService
-<p>
-This project contains the implementation of the Gather service and the ItemFinder service as well as some client-side helper functions.
-It requires pvIOC. The Gather and ItemFinder service are Java only.
 </ul>
 
 <h2>ARCHITECTURES</h2>
@@ -83,17 +78,17 @@ Other high-level services such as Backup and Restore may depend on the informati
 The itemFinder may store information in a relational database but the goal is to have a simple interface that models the
 connections between items in a typical control system in a standard way.
 
+<h3>ChannelFinder</h3>
+ChannelFinder is a Directory Service suitable for EPICSv3 or EPICSv4 installations. It is a REST web services with a relational database back end. ItemFinder uses a REST web service instead of ChannelRPC because it was developed before the EPICSv4 project and to make it useful for non-EPICSv4 installations. ChannelFinder maintains lists of tagged channels.
+
 <h3>Gather Service (Channel Aggregator)</h3>
-Many facilites need to concatenate and summarize information from many sensors into a single location, for example the electron beam position in a synchrotron is presented to the user as a vector but is read from many devices throughout the facility. The Gather service is a standard implementation of this pattern.
+Many facilites need to concatenate and summarize information from many sensors into a single location, for example the electron beam position in a synchrotron is presented to the user as a vector but is read from many devices throughout the facility (see Diamond BPM Concentrator). The Gather service is a standard implementation of this pattern.
 
 <h3>Name Resolution Server</h3>
-EPICSv3 includes a little-used name server that can respond to UDP name requests with the target IP address and TCP port of the server, replacing the UDP broadcast name resolution. It would be possible to have a Name Server of this type in EPICSv4 but current development focuses on the itemFinder.
+EPICSv3 includes a little-used name server that can respond to UDP name requests with the target IP address and TCP port of the server, replacing the UDP broadcast name resolution. It would be possible to have a Name Server of this type in EPICSv4.
 
 <h3>pvManager</h3>
 pvManager is an optional client utility library for EPICSv3 and EPICSv4 that makes writing robust clients easier.
-
-<h3>ChannelFinder</h3>
-What is this?
 
 <h2>PROTOCOL</h2>
 See also <a href="pvAccess_Protocol_Specification_20110923.html">pvAccess Protocol Specification (Technical Document)</a>
@@ -137,6 +132,9 @@ unavoidable latency. PutGet is more efficient for services that do not need to v
 
 <h3>Monitor</h3>
 Client subscribes to a channel, the server pushes values to the client. The type is determined at connection time.
+
+<h2>NORMATIVE TYPES</h2>
+pvData is a type system with serialization. To allow generic clients and prevent the unbounded spread of application-specific types the EPICSv4 Working Group specifies a set of (about 10) Normative Types for common use cases. Examples are timestamped control data, relational database tables and multi-dimensional images. Generic tools will operate on Normative Types and it is expected that facilities will use Normative Types for the majority of applications.
 
 </body>
 
