@@ -1,0 +1,123 @@
+======= Meeting of 22.Nov.2011 =============
+ Greg White: Present: BD, TK, MS, MK, GS, GW, JR
+Scribe: James Rowland
+
+ : GW: capture ideas not just conclustions in minutes to avoid retreading old material
+ : GW: "short motivational speech"
+ Nikolay Malitsky: Hi, Do we have a meeting today?
+***********
+ Greg White: NEW TOPIC: Normative Types
+*********** 
+ : GW: Normative Types much discussed outside meeting recently. Difficult questions are identifying normative types and optional fields
+ Nikolay Malitsky: 
+ Nikolay Malitsky: 
+ : GW: Normative type helper class location? pvIOC or pvUtil. Do utilities go in their in pvData / pvAccess / pvIOC depding on the type of util or in a single repo.
+ : MK: Normative types depend on pvData.
+ Timo Korhonen: Nikolay was just calling me again...may Bob needs to invite him or something?
+ : GW: Where does a utility to reformat NTTables go?
+ : GW: NameValue formatting class is generally useful but where does it go?
+ : MK: pvDataJava has misc directory
+ : GW: Do we extend misc or add this elsewhere
+ : MK: Normative types are an extension of what is in pvData.property. This is data not data transport. Property contains a set of helper classes for alarm etc.
+ : GW: So put utilities in a pvData package (Java) or namespace (C++)?
+ : MK: Suggest moving alpha normative types to pvData
+ : MK: Keep developement in alpha to maintain some stability in main repos
+ Greg White: Present: +Ninio
+***********
+ : RESOLUTION: Utilities which are related to data or networking should be sourced in the pvData or pvAccess repositories to which they are closest in functionality and not in a new repo
+***********
+ : GW: should helper classed be part of the normative spec or part of future work?
+ : MK: Helpers must be done in an abstract way as Java and C++ differ. Suggest using Java syntax.
+ : GW: Normative types spec needs example code for every normative type.
+ bob.dalesio added Nikolay Malitsky to this conversation
+ : MK: working on MASR until the end of the month then focus on NT and easypva
+ bob.dalesio: Marty - do you provide a way to do this?
+ : GW: Optionality of fields. PSI meeting decided NT have all non-optional fields with possible null values. Class that defines the type itself is extensible.
+ : JR: how to distinguish null and zero
+ bob.dalesio: or is that a question to Matej? a way to look at the bit set information
+ : GW: alarm and timestamp zero isn't valid
+ : MK: About normative types re. JR and GS. I am using the field name for the top level structure. I have a wrapper class that does the introspection and provides methods such as getFunction. If you call getFunction and that field is missing you get a null.
+ : JR: this is my preference. Optionality by sending a FieldDesc without the optional fields.
+ guobao shen: I agree. We should not have optionalfield in FD
+ Matej Sekoranja: @bob.dalesio: this needs to be solved already in pvData layer (it's not just a matter what goes over the wire)
+ : GW: Difference to PSI is that PSI decided that all fields must be present and null valued if optional. MK doesn't include field if it is null.
+ : GW: This is how AIDA works but BD and TK had concerns. Suggest we try this in alpha.
+ : MK: Without optional fields wil be creating too many normative types.
+ bob.dalesio: I would argue that the table takes care of the rest of it
+ : GW: Normative types should be well defined and have a certain number of fields that must be present. A certain number of fields that are optionally present. You can extend normative types within your own orgainization.
+ : MK: May want to have an NTScalar with extra metadata but BOY should understand this as a NTScalar
+ : JR: This relates to type identification
+ : GW: can identify base normative type by 'bitfield' (integer code)
+ : GW: may add part of bitfield for extensions
+ : GW: names are harder due to unique names
+ : BD: need to benchmark type discovery from pattern matching
+ : BD: don't need to look inside types if there's an integer field id
+ : *HELLO*
+ guobao shen: hello
+ bob.dalesio: 
+ Martin Kraimer: hello
+ Martin Kraimer: is anyone there?
+ : NM: need both names and integers for typing as they are complementary
+ Martin Kraimer: MRK is anyone there
+ : GW: string compare is expensive
+ : JR: malloc is more expensive
+ bob.dalesio: You have that all of this needs benchmarking to validate the scalability
+ bob.dalesio: right?
+ : yes
+ Timo Korhonen: I cant hear anybody...is it just me?
+***********
+ : RESOLUTION: Normative types should be well defined and have a certain number of fields that must be present. A certain number of fields that are optionally present (in the pvData sense, they are optional in the type information). Facilities may extend normative types within their own organization as subclasses.
+***********
+ : MK: problem with integration tests due to split into repositories
+ : MK: merged into one location temporarily.
+ : JR: related to how to add tasks to Jenkins?
+ : GW: Maven integrated with Jenkins somehow
+ : GW: Common testing should be in own repo but up to developers
+ Matej Sekoranja: Jenkins also allows non-Maven project (see pvAccessCPP), you just write list of commands to be executed (e.g. make clean all)
+ : GW: Do it in C however and put it in mercurial
+ : MK: pvDataWWW how does that sync?
+ : JR: Jenkins at NSLS2 logs into sourceforge on a cron job and does the copy
+ : GW: JR to build docs automatically and pass to Matej for Jenkins integration
+***********
+ Greg White: NEW TOPIC: Milestones
+*********** 
+: MK: What constitutes a release?
+ : MK: pvAccess, pvData, IOC, Java and C++
+ : GW: finished a reasonable place for a programmer not involved in EPICS4 to pick up the source and use it
+ : NM: ship useful application not just example
+ : GW: I have one example, TK has one useful C++ example. GW example is relational database service. TK example is C++ connecting to EPICSv3 orbit simulation IOC with pvAccess server on top.
+ : MK: release for each pvAcces, pvData, pvIOC? Release number for each?
+ : GW: not critical, more important presentation of EPICSv4 to tech-talk
+ Timo Korhonen: My application is basically a BPM simulation on a EPICS V3 ioc, with a pvAccess server linked to it. The BPMs deliver an orbit (X,Y,intensity) and can simulate noise, beam on/off etc. It is started like any EPICS V3 IOC.
+ Timo Korhonen: James, do you need more details?
+ : GW: Should be shipped as single java jar snapshot, no version number. hg locations for C++
+ : JR/MK: use single tgz for C++
+ : MK: collect release into mercurial repository?
+ : JR: no repo, build into staging area.
+ : GW: to release, get tar file in email to upload to sourceforge file transfer system.
+ : GS: everything in big tar file?
+ : GW: C++ in tar file, java in one or more jars
+ : GS: what about dependencies between pvXXX?
+ : GW: Just release one consistent set in a single jar for the beta
+ : GW: Matej to look again at draft of pvAccess protocol.
+ : MS: Need more people to look at pvAccess protocol spec
+ : MS: Just missing abstract and introduction
+ : GW: release to tech-talk pvAccess protocol spec before general release?
+ : GW: Will add MD comments, then release second public draft of pva protocol spec next week.
+ : GW: ChannelRPC and pvService, moving Model and ItemFinder to their own repos.
+ bob.dalesio: There is a mute at the bottom of the screen - please use it
+ : MK: Put in normative type for ChannelFinder
+ : BD: ChannelFinder should be EPICSv4 but was done first
+ : BD: Will be simple to fix this after MASR
+ : GS: ChannelFinder done before C++ / Python ready
+ : BD: Want a EPICSV4 interface to directory service
+ : BD:
+ : GS: Port ChannelFinder to V4
+***********
+ : RESOLUTION: Two directory service candidates presently, ChannelFinder will be ported to an EPICSv4 service after MASR is complete as the official directory service.
+***********
+ : GW: December 20th, beta1, not including ezpva and gather.
+ : GW: March 2012, beta2, including ezpva and gather.
+ : MK: December is ok, March is optimistically doable.
+ : GW: normative types ok, type identification for further discussion
+ : BD: not here next week
