@@ -1,0 +1,65 @@
+<html>
+<title>EPICSv4 Doxygen Primer</title>
+<body>
+<h1>EPICSv4 Doxygen Primer</h1>
+
+<a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a> is an API documentation tool for C/C++. Configuration files have been added to pvData and pvAccess.<p>
+
+To generate documentation simply type <span style="font-family: Monospace; font-weight:bold">doxygen</span>.<p>
+
+To configure Doxygen:
+
+<pre>
+# create an example config file
+doxygen -g Doxyfile
+# 1) edit the config file as show below
+# 2) generate the docs
+doxgen
+# output appears in documentation/html/index.html
+</pre>
+
+The documentation tags are compatible with Javadoc. See <a href="http://www.stack.nl/~dimitri/doxygen/docblocks.html">Doxygen Blocks</a><p>
+
+Configuration for the pvAcccess project:
+
+<pre>
+
+[jr76@pc0053 pvAccessCPP]$ diff Doxyfile.orig Doxyfile
+20c20
+< PROJECT_NAME           = 
+---
+> PROJECT_NAME           = pvAccess
+205c205
+< BUILTIN_STL_SUPPORT    = NO
+---
+> BUILTIN_STL_SUPPORT    = YES
+231c231
+< EXTRACT_ALL            = NO
+---
+> EXTRACT_ALL            = YES
+462c462
+< INPUT                  = 
+---
+> INPUT                  = pvAccessApp
+477c477
+< RECURSIVE              = NO
+---
+> RECURSIVE              = YES
+559c559
+< SOURCE_BROWSER         = NO
+---
+> SOURCE_BROWSER         = YES
+641c641
+< HTML_OUTPUT            = html
+---
+> HTML_OUTPUT            = documentation/html
+747c747
+< GENERATE_LATEX         = YES
+---
+> GENERATE_LATEX         = NO
+
+</pre>
+
+
+</body>
+</html>
