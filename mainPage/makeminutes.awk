@@ -25,7 +25,7 @@ $0~/^Scribe:/ { print; next }
 
 #! Process RESOLUTIONS, AIs and ISSUES
 /RES(OLUTION)?[ ]*:/ { print "***********"; print; print "***********"; next }
-/AI[ ]*:/||/AI on/ {print "************"; print; print "***********"; next }
+/AI[ ]*:/||/ACTION[ ]*:/ {print "************"; print; print "***********"; next }
 /ISSUE[ ]*:/ {print "*************"; print; print "************"; next }
 
 #! Print results of formatting.

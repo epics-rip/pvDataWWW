@@ -211,8 +211,13 @@ numPy or sciPy based Python code.
   9-Nov-2011:
   <a
   href="https://sourceforge.net/mailarchive/message.php?msg_id=28371445">Agenda</a>,
-  <a href="minutes_20111109.txt" >Minutes</a>
-  </dd>
+  <a href="minutes_20111109.txt" >Minutes</a>,
+  23-Nov-2011:
+  <a
+  href="http://sourceforge.net/mailarchive/message.php?msg_id=28436546">Agenda</a>,
+  <a href="minutes_20111123.txt">Minutes</a>.
+
+</dd>
 </dl>
 <!----------------------------------------------------------- -->
 <h3 id="usefulinfo">Meeting Information</h3>
@@ -246,24 +251,31 @@ by a chair.</p>
 <h3 id="minutesstandards">Meeting Minutes Standard</h3>
 <p>We record the minutes of the weekly telecon as a reference for people
 assigned action items, so they know the context of the required work, and for people
-outside the Working Group to see the bogus logic we used to reach conclusions. </p>
+outside the Working Group to see the bogus logic we used to reach conclusions.</p>
+<p>
+A <a href="makeminutes.awk">script is used to format the minutes</a> after the meeting, which assumes the formats below. AIs, RESOLUTIONS and ISSUES will be transcribed to sourceForge trackers by a chair
+following the meeting. </p>
+</p>
 <ul>
-  <li>Top of the minutes MUST include list of attendees, prefixed "PRESENT:", and the
-  minute taker's id, prefixed "SCRIBE:", so that an automatic minute processor can
+ <li>Minutes should <strong>include every (relevant) thought</strong> expressed in the
+  meeting. The scribe should be maddly trying to keep up during the whole meeting. It
+  is resonable to ask for a pause for catchup. The objective is to indicate why we
+  reached a conclusion, as well as what it was</li>
+  <li>Scribe is absolutely justified in asking for clarification at any time</li>
+  <li>Top of the minutes MUST include list of attendees, prefixed "<strong>PRESENT:</strong>", and the
+  minute taker's id, prefixed "<strong>SCRIBE:</strong>", so that an automatic minute processor can
   remove the prefix of the minute taker from the published minutes. The chair will
   do a roll-call and do the PRESENT and SCRIBE entries</li>
-  <li>Minutes should try to include every (relevant) thought in the meeting</li>
-  <li>Action Items MUST be prefixed "AI" or "ACTION", and should include a person
+  <li>When the subject of the meeting changes, mark with the words "<strong>NEW TOPIC:"</strong></li>
+  <li>Action Items MUST be prefixed "<strong>AI</strong>...:" or "<strong>ACTION</strong>:", and should include a person
   on which the action is assigned, and a due date. The form should be like "AI on Greg
   by 1/12: ..."</li>
-  <li>Specific decisions of the meeting MUST be prefixed "RESOLUTION:". The resolution must be
+  <li>Specific decisions of the meeting MUST be prefixed "<strong>RESOLUTION:</strong>". The resolution must be
   fully described in the minutes, during the meeting. If the scribe isn't clear on the
   resolution, ask for clarification</li>
-  <li>Problematic areas of EPICS V4 should be prefixed "ISSUE:", and be described as
+  <li>Problematic areas of EPICS V4 should be prefixed "<strong>ISSUE:</strong>", and be described as
   completely as possible in the minutes, during the meeting.</li>
 </ul>
-<p>AIs, RESOLUTIONS and ISSUES will be transcribed to sourceForge trackers by a chair
-following the meeting. </p>
 <!-- --------------------------------------------------------- -->
 <h2 id="membership">Membership</h2>
 
