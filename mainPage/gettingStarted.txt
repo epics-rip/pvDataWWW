@@ -1,0 +1,224 @@
+          
+
+GETTING STARTED WITH EPICS V4
+
+This version: 28-Nov-2011.
+Editor: Greg White, PSI, SLAC
+ 
+Status
+-----
+:This is the 28-Nov-2011 version of the Getting Started with EPICS V4. This version includes only the material on using Mercurial and Maven to do development of and with EPICS V4's Java implementation.  
+
+With respect to Java development, further versions will include a instructions for people who just want to download a runtime of EPICS V4 (see the EPICS V4 download site https://sourceforge.net/projects/epics-pvdata/files/), and a section on integrating Eclipse development.
+
+C++ development will also be added. Additionally, some language independent sections will be added, in particular for Troubleshooting and a Mercurial cheatsheet for epics-pvdata.
+
+
+USING MERCURIAL AND MAVEN
+====================
+
+Use case 
+-------
+You are a Java developer and wish to use download EPICS V4 from the
+Java source, using Mercurial, and build it on the command line using Maven. 
+
+All 3 the normative EPICS V4 projects are each in distinct mercurial repositories in the SourceForge project epics-pvdata. There are separate Mercurial repos for each of the C++ and Java implementations of each normative project. They can all be checked out via the unix shell command hg, or using a Mercurial client suitable for your platform.
+
+Objective
+-------
+The minimum EPICS V4 runtime is composed of the following jar files:
+
+caj-1.1.8.jar
+jca-2.3.5.jar
+pvAccess-1.0-SNAPSHOT.jar *
+pvData-1.0-SNAPSHOT.jar *
+pvIOC-1.0-SNAPSHOT.jar *
+
+(*) At present we are simply building and releasing snapshots. In future, these will be version numbered.
+
+The procedure defined below will help you download the source for the pv* modules above, plus the caj/jca jars, and build pv* jars.
+ 
+Prerequisites
+----------
+You must have a mercurial client and it must be able to download from the "epics-pvdata" sourceForge
+project. That means you either are going to use the HTTP URI syntax or the SSH URI. HTTP may not work from your lab (see below) and if you're going to use the SSH mechanism, you will have to register with sourceForge. You must have a
+maven installed too to do the build.
+
+Download from the Mercurial repositories can be done anonymously (HTTP), or using a sourceForge account (SSH).
+
+The anonymous checkout is using the http URI below. Note that we have seen that some people get a "cannot connect" timeout using this method, while the identical command works for other people. It's probably related to the common practice of blocking port 8000 on the client side, which is done by many institutions for security reasons. Below is an example of how to check out the pvDataCPP Mercurial repository, using the hg unix command via anonymous access:
+
+> hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataCPP
+
+Alternatively use the ssh URI below. Permissions are presently set such that only epics-pvdata members can check out or push commits, so contact any one of the participants to get added first:
+
+> hg clone ssh://<your-sourceforge-userid>@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
+
+See Appendix A if you'd like to set up your sourceforge account so that SSH operations can proceed without a 
+password. Of course, for command line development as is described here, passwordless ssh authentication to 
+sourceForge Mercurial is not necessary it's just nice. But for Eclipse development it is important because of problems
+in Eclipse's Mercurial tools when they come to needing a password from the user.
+ 
+Create your local Mercurial "repo" for your EPICS V4 work
+--------------------------------------------------------- 
+Having installed mercurial (hg command), create a Mercurial
+"repository" for your EPICS V4 work. This is equivalent to a CVS 
+development checkout area.
+
+Ref: http://mercurial.selenic.com/wiki/TutorialInit
+
+Eg:
+% pwd
+/Users/greg
+% cd Development/epicsV4/
+% mkdir ev4hg
+% cd ev4hg
+% hg init   <- this creates a .hg file in ev4hg
+
+
+Download SOURCE EPICSv4 from epics-pvdata into your local repo
+-------------------------------------------------------
+Ref: http://mercurial.selenic.com/wiki/TutorialClone
+
+To download the source using Mercurial, use an "hg clone".
+
+Eg. Download the 4 core EPICS v4 modules' Java implementations:
+hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
+hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessJava
+hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCJava
+hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/common
+
+After each of these, you should see 9 or 10 lines, ending in a line like the following:
+"842 files updated, 0 files merged, 0 files removed, 0 files unresolved"
+
+In addition to the EPICS V4 core, you may want examples, or "alpha" level software.
+Eg, to download the web pages subtree (the directory system headed by pvDataWWW):
+
+hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/exampleJava
+hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/alpha
+
+BUILD
+====
+The build dependencies of the EPICS v4 core modules are:
+
+	pvIOCJava depends on pvAaccessJava, pvDataJava, CAJ.jar, JCA.jar
+        pvAccessJava depends on pvDataJava
+        pvDataJava   has no dependencies
+
+CAJ and JCA's jars are downloaded by maven and not built locally.
+
+To build EPICS v4 core with Maven.
+----------------------------
+When building you will see warnings, but should not see any errors if the build is successful. Warnings come from both source compiles and many from javadoc compiles. At the end of each "mvn compile install" process, you should see 
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+
+The build process involves cd ing to each of the 3 core modules repositories (as they're called in mercurial speak)
+and issuing "mvn compile install " in each one
+
+[gregsmac:~/Development/epicsV4/ev4hg] greg% pwd
+/Users/greg/Development/epicsV4/ev4hg
+
+cd pvDataJava
+mvn compile install       [If this is really the first maven build you've done, this line will result in 2 things; Firstly, it
+                                       wil create your local "m2 repo" - a directory usually called many downloads from
+                                       sourceForge, plus from maven and prerequisites of maven. But if you chose this path to EPICS v4,
+                                       you knew that. Personally, I think it's nuts]
+
+cd ..
+cd pvAccessJava
+mvn compile install -Dmaven.test.skip=true
+
+cd ..
+cd pvIOCJava 
+mvn compile install  -DJAVAIOC=$PWD -Dmaven.test.skip=true
+
+
+The above 3 complete the build of the EPICS v4 core. To compile and install EPICS v4 examples as well, if you cloned examplesjava above, then build it with the following:
+
+cd exampleJava
+mvn compile install
+
+The outcome of these builds is that you should see all of the build products in your local Maven repository. The 
+default location of this is ~/.m2. So, you can check the outcome with the find command below. 
+
+The minimum EPICS V4 runtime is composed of the following jar files:
+
+% find ~/.m2 -name "pv*SNAPSHOT.jar" -o -name "*caj*.jar" -o -name "*jca*.jar"
+/Users/greg/.m2/repository/epics/caj/1.1.8/caj-1.1.8.jar
+/Users/greg/.m2/repository/epics/jca/2.3.2/jca-2.3.2.jar
+/Users/greg/.m2/repository/epics/jca/2.3.5/jca-2.3.5.jar
+/Users/greg/.m2/repository/epics/pvAccess/1.0-SNAPSHOT/pvAccess-1.0-SNAPSHOT.jar
+/Users/greg/.m2/repository/epics/pvData/1.0-SNAPSHOT/pvData-1.0-SNAPSHOT.jar
+/Users/greg/.m2/repository/epics/pvIOC/1.0-SNAPSHOT/pvIOC-1.0-SNAPSHOT.jar
+
+Note that the results gave you not only jar files, but the sources and javadoc jars too (in the Maven standard naming).
+Of course, being maven, you'll also see hundreds more. The following find command illustrates that 
+you also get all the source (in jars ready for Eclipse) and javadoc:
+
+[gregsmac:~/.m2] greg% find ~/.m2 -name "*SNAPSHOT*"
+./repository/epics/pvAccess/1.0-SNAPSHOT
+./repository/epics/pvAccess/1.0-SNAPSHOT/pvAccess-1.0-SNAPSHOT-javadoc.jar
+./repository/epics/pvAccess/1.0-SNAPSHOT/pvAccess-1.0-SNAPSHOT-sources.jar
+./repository/epics/pvAccess/1.0-SNAPSHOT/pvAccess-1.0-SNAPSHOT.jar
+./repository/epics/pvAccess/1.0-SNAPSHOT/pvAccess-1.0-SNAPSHOT.pom
+./repository/epics/pvData/1.0-SNAPSHOT
+./repository/epics/pvData/1.0-SNAPSHOT/pvData-1.0-SNAPSHOT-javadoc.jar
+./repository/epics/pvData/1.0-SNAPSHOT/pvData-1.0-SNAPSHOT-sources.jar
+./repository/epics/pvData/1.0-SNAPSHOT/pvData-1.0-SNAPSHOT.jar
+./repository/epics/pvData/1.0-SNAPSHOT/pvData-1.0-SNAPSHOT.pom
+./repository/epics/pvIOC/1.0-SNAPSHOT
+./repository/epics/pvIOC/1.0-SNAPSHOT/pvIOC-1.0-SNAPSHOT-javadoc.jar
+./repository/epics/pvIOC/1.0-SNAPSHOT/pvIOC-1.0-SNAPSHOT-sources.jar
+./repository/epics/pvIOC/1.0-SNAPSHOT/pvIOC-1.0-SNAPSHOT.jar
+./repository/epics/pvIOC/1.0-SNAPSHOT/pvIOC-1.0-SNAPSHOT.jar.lastUpdated
+./repository/epics/pvIOC/1.0-SNAPSHOT/pvIOC-1.0-SNAPSHOT.pom
+./repository/epics/pvIOC/1.0-SNAPSHOT/pvIOC-1.0-SNAPSHOT.pom.lastUpdated
+[gregsmac:~/.m2] greg% 
+
+Of the above completes the build of EPICS V4 locally. To use it, you would write code that compiles and 
+executes against the jar files above.
+
+ 
+
+APPENDIX A: SETUP FOR PASSWORDLESS SSH ACCESS TO SOURCEFORGE
+============================================
+These instructions were written for programmers of the epics-pvdata sourceForge project,
+but are probably general to any sourceForge project. 
+
+They're based on reference instructions at sourceForge [5]. Also, they're written for 
+Mac OS X command line, but any unix is probably the same, so for "mac" read, your local machine.
+
+1. On your mac in your user account, execute ssh-keygen and follow the prompts. You want a the file ~/.ssh/id_dsa.pub when you've finished (see [5].)
+   % ssh-keygen  -t dsa -C "greg@shell.sf.net"
+
+2. Install your key into your sourceforge account:
+i) If you can, use ssh itself (see below if this doesn't work for you):
+[gregsmac:~] greg% ssh -i /Users/greg/.ssh/id_dsa.pub greg@epics-pvdata.hg.sourceforge.net 
+greg@epics-pvdata.hg.sourceforge.net's password: 
+Welcome to *.hg.sourceforge.net
+This is a restricted Shell Account
+You cannot execute anything here.
+Connection to epics-pvdata.hg.sourceforge.net closed.
+
+ii) -> Or, if i) doesn't work, use the manually mechanism given on your Sourceforge Account Services
+page. 
+
+copy and paste the contents of your ~/.ssh/id_dsa.pub file
+created in i) above into the window provided in your account services page [6], as described in "SSH Key Posting" of [5].
+
+3. Update your ssh config file to specify that for the epics-pvdata sourceforge site at least,
+use passwordless authentication. That is, add the following lines to your own ~/.ssh/config file:
+
+Host epics-pvdata.hg.sourceforge.net
+  PreferredAuthentications publickey
+  IdentityFile /Users/<your computed username>/.ssh/id_dsa     <== edit
+  User <your sourceforge username>                             <== edit
+
+4. test it
+hg pull should work without a password
+
+[5] https://sourceforge.net/apps/trac/sourceforge/wiki/SSH%20keys
+[6] https://sourceforge.net/account/services
