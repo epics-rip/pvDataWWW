@@ -1,46 +1,35 @@
-README
+EPICS V4 README
 
-This directory (pvDataWWW/mainPage/) contains the html files for 
-the sourceforge epics-pvdata project. 
+This README file describes the download files available for EPICS V4.
 
-Installing files on the sourceforge web site
---------------------------------------------
-In order to put it into the sourceforge area do the following:
+This version of the README: 28-Nov-2011. Pertains to SNAPSHOTs of EPICS V4 from this date.
+Author: Greg White, 28-Nov-2011 (gregory.white @ psi.ch) for EPICS V4 team [1]
 
-    scp <file> <userid>,epics-pvdata@web.sourceforge.net:htdocs/<parent-directory>
+EPICS V4 [1] is a software toolkit for developing advanced control systems on 
+top of EPICS [2], and fast service oriented architectures.
 
+epics-pvdata is a sourceForge project for managing the development of EPICS 
+version 4.
+---------------------------
 
-In order to put the javadoc in place the old javadoc must be removed and the
-new installed. The following uses pvData as an example:
+The following files constitute the minimum runtime of the Java implementation
+of EPICS V4, and its prerequisites (caj and jca):
 
-[This seems suspicious - is this really how to remove javadoc?]
---??--
-To remove the old doc:
-   ssh -t USER,PROJECT@shell.sourceforge.net create
+caj-1.1.8.jar                  The native java Channel Access [5] library [3] 
+jca-2.3.5.jar                  The API for the Java code interaction with EPICS Channel Access [4]
+pvAccess-1.0-SNAPSHOT.jar *    The EPICS V4 "wire protocol" [6] [7]
+pvData-1.0-SNAPSHOT.jar *      The EPICS V4 API for high performance data interchange [8]
+pvIOC-1.0-SNAPSHOT.jar *       The EPICS V4 Input/Output Processor (IOC). I.e. the server side [9] 
 
-then
-   sf-help
-??
+(*) At present we are simply building and releasing snapshots. In future, these will be version numbered.
 
-Example:
-
-    cd /home/project-web/epics-pvdata
-    cd htdocs
-
-  Then go to project and delete doc. For example
-
-    rm -fr javaIOC
-
-  Then
-
-    shutdown
-
-To put the new files in place:
-1) use eclipse to generate javaDoc
-2) export only doc
-3) unzip the exported file
-4) cd to the export top level and execute the command:
- scp -r javaIOC  <user>,epics-pvdata@web.sourceforge.net:htdocs
-
-[Above scp line is inconsistent with the scp line at the top? ]
+[1] The EPICS V4 homepage, http://epics-pvdata.sourceforge.net
+[2] EPICS homepage, http://www.aps.anl.gov/epics
+[3] CAJ homepage, such as it is, http://epics-jca.sourceforge.net/caj/
+[4] JCA homepage, http://epics-jca.sourceforge.net/jca/
+[5] Channel Access Reference, http://www.aps.anl.gov/epics/base/R3-14/8-docs/CAref.html
+[6] pvAccess Specification, http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html
+[7] pvAccess Java javadoc, http://epics-pvdata.sourceforge.net/doc/pvAccessJava/index.html
+[8] pvData Java javadoc, http://epics-pvdata.sourceforge.net/doc/pvDataJava/index.html
+[9] pvIOC Java javadoc, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/index.html
 
