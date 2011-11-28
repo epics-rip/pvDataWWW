@@ -2,7 +2,10 @@ EPICS V4 README
 
 This README file describes the download files available for EPICS V4.
 
-This version of the README: 28-Nov-2011. Pertains to SNAPSHOTs of EPICS V4 from this date.
+Staus: This version of the README: 28-Nov-2011. Pertains to SNAPSHOTs of
+the Java binding of EPICS V4 from this date. The C++ binding is available from
+source code, which you download from epics-pvdata's Mercurial repos directly.
+ 
 Author: Greg White, 28-Nov-2011 (gregory.white @ psi.ch) for EPICS V4 team [1]
 
 EPICS V4 [1] is a software toolkit for developing advanced control systems on 
@@ -10,19 +13,55 @@ top of EPICS [2], and fast service oriented architectures.
 
 epics-pvdata is a sourceForge project for managing the development of EPICS 
 version 4.
----------------------------
 
+For examples of uses of the files referenced below, see the epics-pvdata exampleJava
+Mercurial repo [14]. So far only includes examples of the "ChannelRPC"
+functionality of EPICS V4, are included, but more will be added.
+
+
+MINIMUM FILES FOR EPICS V4 RUNTIME
+----------------------------------
 The following files constitute the minimum runtime of the Java implementation
-of EPICS V4, and its prerequisites (caj and jca):
+of EPICS V4, and its prerequisites (caj and jca). These are available from the 
+epics-pvdata sourceforge download site:
 
-caj-1.1.8.jar                  The native java Channel Access [5] library [3] 
-jca-2.3.5.jar                  The API for the Java code interaction with EPICS Channel Access [4]
 pvAccess-1.0-SNAPSHOT.jar *    The EPICS V4 "wire protocol" [6] [7]
 pvData-1.0-SNAPSHOT.jar *      The EPICS V4 API for high performance data interchange [8]
 pvIOC-1.0-SNAPSHOT.jar *       The EPICS V4 Input/Output Processor (IOC). I.e. the server side [9] 
 
 (*) At present we are simply building and releasing snapshots. In future, these will be version numbered.
 
+
+FOR CONNECTING EPICS V4 to EPICS V3
+-----------------------------------
+To you will additionally need caj and jca. The pvAccess server (part of
+pvAccess, above) allows an existing Channel Access client to access a javaIOC
+database. The client allows the javaIOC to communicate with a Version
+3 server, e.g. a javaIOC database can have links to records in a V3
+IOC database. This package provides support for Channel Access Version 3. 
+
+These are available from the epics-pvdata sourceforge download site:
+
+caj-1.1.8.jar                  The native java Channel Access [5] library [3] 
+jca-2.3.5.jar                  The API for the Java code interaction with EPICS Channel Access [4]
+
+
+USEFUL EXTERNAL SOFTWARE
+------------------------
+These are NOT available from the epics-pvdata sourceforge download site.
+
+1. oncrpc is an implementation of sun rpc which is required for VXI11 support. Find a JAR for it at
+https://sourceforge.net/apps/trac/remotetea/wiki/WikiStart [10]. Our pvIOC SNAPSHOT uses version 1.0.7.
+
+2. For testing EPICS V4 it is very useful use the "SWTshell" GUI application [11] that helps you 
+interactively configure the EPICS V4 interface. For this you need to the swt.jar. To get it, 
+you can eiher install Eclipse and find swt*.jar in your eclipse install around 
+.../eclipse/plugins/org.eclipse.swt**.jar, or download it from http://www.eclipse.org/swt/ [12]. 
+See the EPICS V4 helloWorld example service's runner script [13] for an example of including swt for
+Mac OS Cocoa at runtime. 
+
+References
+----------
 [1] The EPICS V4 homepage, http://epics-pvdata.sourceforge.net
 [2] EPICS homepage, http://www.aps.anl.gov/epics
 [3] CAJ homepage, such as it is, http://epics-jca.sourceforge.net/caj/
@@ -32,4 +71,9 @@ pvIOC-1.0-SNAPSHOT.jar *       The EPICS V4 Input/Output Processor (IOC). I.e. t
 [7] pvAccess Java javadoc, http://epics-pvdata.sourceforge.net/doc/pvAccessJava/index.html
 [8] pvData Java javadoc, http://epics-pvdata.sourceforge.net/doc/pvDataJava/index.html
 [9] pvIOC Java javadoc, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/index.html
-
+[10] RemoteTeo implementation of ONC/RPC, https://sourceforge.net/apps/trac/remotetea/wiki/WikiStart
+[11] SWTShell for pvIOC, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/swtshell.html
+[12] SWT: Standard Widget Toolkit, http://www.eclipse.org/swt/
+[13] helloWorld runtime setup script, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src/helloWorld/helloWorld_setup.bash
+[14] exampleJava, examples of use of EPICS V4 java binding, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src
+ 
