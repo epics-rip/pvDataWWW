@@ -2,10 +2,10 @@ EPICS V4 README
 
 This README file describes the download files available for EPICS V4.
 
-Staus: This version of the README: 28-Nov-2011. Pertains to SNAPSHOTs
+Status: This version of the README, 28-Nov-2011, pertains to SNAPSHOTs
 of the Java binding of EPICS V4 from this date. The C++ binding is
 available from source code, which you download from epics-pvdata's
-Mercurial repos directly.
+Mercurial repos directly. 
  
 Author: Greg White, 28-Nov-2011 (gregory.white @ psi.ch) for EPICS V4
 team [1]
@@ -17,9 +17,9 @@ epics-pvdata is a sourceForge project for managing the development of
 EPICS version 4.
 
 For examples of uses of the files referenced below, see the
-epics-pvdata exampleJava Mercurial repo [14]. So far only includes
-examples of the "ChannelRPC" functionality of EPICS V4, are included,
-but more will be added.
+epics-pvdata exampleJava Mercurial repo [14]. So far only 
+examples of the "ChannelRPC" functionality of EPICS V4 are 
+included [15], but more will be added.
 
 
 MINIMUM FILES FOR EPICS V4 RUNTIME 
@@ -98,4 +98,5 @@ http://epics-pvdata.sourceforge.net/doc/pvIOCJava/swtshell.html
 http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src/helloWorld/helloWorld_setup.bash
 [14] exampleJava, examples of use of EPICS V4 java binding, 
 http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src
+[15] ChannelRPC facility javadoc in pvIOC, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/rpcSupport.html
  
