@@ -1,0 +1,94 @@
+========= Meeting 30th Nov 2011 ============
+ Greg White: Present: TK, GS, JR, MK, MS, NM, RL, GW
+ : How about moving to an etherpad for scribing?
+ James Rowland: James Rowland set new picture
+[30/11/2011 16:11:26] Greg White: Scribe: Ralph Lange
+**********************
+ : NEW TOPIC  Definition of NTImage
+**********************
+ : NM: Results of study about client performance.
+ : NM Most other formats are proprietary. Suggestion: start with a popular one
+ : RgbaImage
+ guobao shen: I can not hear any
+ Greg White: Sound is fine for me
+ : NM agree with JR that NDarray is needed
+ : NM: asks for opinions on his proposal.
+ : NM: This applies to RGB color and greyscale mode.
+ : GW: how does NDarray fir in?
+ : NM: Always image description and raw data.
+
+ : NM: r NDarray in the context off AreaDetector consists of image and metadata.
+ : JR AD's NDarray != NTarray !!
+
+ Greg White: To RL, yea, know what you mean
+ : GW: The normative type NDarray is specific to AD, should be renamed to reflect that.
+ : GW: NM is proposing another normative type RgbaImage. Usage of the two is unclear.
+ : JR: NDarray was a generic multi-dim array type. That will be useful.
+ : JR: On top of that, we need an image tyoe.
+ : JR: Take the AD type with all massaging needed to get it into PVdata and call it NTimage.
+ : JR: NM proposes a subset called RgbaImage. My suggestion Avoid the extra type.
+ : - confusion -
+ : JR: rather have a single type and have clients or servers decide which encodings and features they support
+ : GW Well that sounds simple!
+ : JR: NTimage should be a superset of AD's capabilities.
+ : JR: So that we are at least capable of transporting AD stuff.
+***********
+ : Resolution: Create NDarray as a generic multi-d array, maybe change the name to avoid confusion with AD stuff.
+***********
+ : Create an NTimage type that is a superset of what AD is able to provide.
+ : What about MDarray?
+ : NM leaves.
+ : JR Matrix?
+ : JR: The AD C++ class for V3 is called NDarray.
+ : GW: We need the name for the generic multi-dim array
+ : RL: MDarray?
+ : GW: NTMatrix?
+***********
+ : Resolution: the new generic multi-dim array type is called NTMatrix.
+***********
+ : For rectangular array of numerical data.
+ : Wikipedia: a matrix (plural matrices, or less commonly matrixes) is a rectangular array of numbers, symbols, or expressions.
+ : JR: should be a multi-dimensional array
+ : GW: is worried about efficiency for N>2
+************
+ : AI on GW,JR ->Dec12   Define multi-dim array normative type..
+************
+ : JR the image type will be a superset of NTmatrix.
+***********
+ : Resolution: NTImage will be derived from the existing structure intended for AD data.
+***********
+************
+ : AI on JR,NM  ->Dec12   Define image normative type.
+************
+ : JR Encoding the metadata will be the hard part.
+ : GW Does extending the NT for name-value pair to arrays help?
+ : - I hate triple negations -
+ : MK: JR should put down a strawman with some concrete example implementations.
+ : JR: Will do.
+**********************
+ : NEW TOPIC Motivations motivated by MASAR
+**********************
+ : RL What does MASAR stand for???
+ James Rowland: http://epics-pvdata.sourceforge.net/doc/pvIOCCPP.html
+ guobao shen: MAchine Snapshot Archiving and Retrieve
+ : OH, thanks.
+ : MK: explains the example ServiceChannelRPC server.
+ : GW: When a client is making a request to the server, the request looks like a table, is a table, but can't contain a table.
+ : JR: This is not enforced!
+ : MK: Every NT is a top level PV structure
+
+ : JR,GW: the new example code looks great and simple to use.
+ : GW: We need a bug tracker.
+ : GW: Use a sourceforge one.
+ : GW: Lets use another of the standard generic SF trackers.
+ : RL: Whatever you say.
+ : MK: Other suggestions, Ralph?
+ : RL: No.
+ : There will be a new tracker, called BUGS, open for logged in SF users.
+ Timo Korhonen: I can see the tracker
+ : GW will add a test bug to test the email notification stuff.
+ guobao shen: bye
+ Timo Korhonen: bye
+
+ Greg White: 
+ : titanpad.com
