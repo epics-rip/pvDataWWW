@@ -5,50 +5,64 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <title>EPICS pvIOCCPP</title>
+  <link rel="stylesheet" type="text/css" href="css/base.css" />
+  <link rel="stylesheet" type="text/css" href="css/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
 </head>
 
 <body>
 <h1 style="text-align: center">EPICS pvIOCCPP<br />
-2011.04.15</h1>
+2011.11.29</h1>
 
 <p>Contents</p>
 
 <div class="toc">
 <ul>
-  <li><a href="#L33">Preface</a></li>
-  <li><a href="#L68">pvService</a>
+  <li><a href="#L53">Preface</a></li>
+  <li><a href="#L101">exampleServiceRPC</a></li>
+  <li><a href="#L167">service</a> 
     <ul>
-      <li><a href="#L78">pvServiceBaseProvider</a></li>
-      <li><a href="#L120">pvServiceBase</a></li>
+      <li><a href="#L193">pvServiceBaseProvider</a></li>
+      <li><a href="#L235">pvServiceBase</a></li>
+      <li><a href="#L316">pvServiceProvider</a></li>
     </ul>
   </li>
-  <li><a href="#L203">V3Channel</a>
+  <li><a href="#L342">V3Channel</a> 
     <ul>
-      <li><a href="#L207">Introduction</a></li>
-      <li><a href="#L217">Remaining tasks</a></li>
-      <li><a href="#L242">Getting started</a></li>
-      <li><a href="#L275">Implementation</a>
+      <li><a href="#L346">Introduction</a></li>
+      <li><a href="#L356">Remaining tasks</a></li>
+      <li><a href="#L381">Getting started</a></li>
+      <li><a href="#L414">Implementation</a> 
         <ul>
-          <li><a href="#L307">Main Concepts</a></li>
-          <li><a href="#L322">V3Channel</a></li>
-          <li><a href="#L471">V3Util</a></li>
-          <li><a href="#L583">V3Array</a></li>
-          <li><a href="#L624">V3CAMonitor</a></li>
-          <li><a href="#L771">V3CAContext</a></li>
+          <li><a href="#L446">Main Concepts</a></li>
+          <li><a href="#L461">V3Channel</a></li>
+          <li><a href="#L610">V3Util</a></li>
+          <li><a href="#L722">V3Array</a></li>
+          <li><a href="#L763">V3CAMonitor</a></li>
+          <li><a href="#L910">V3CAContext</a></li>
         </ul>
       </li>
     </ul>
   </li>
-  <li><a href="#L825">License Agreement</a></li>
+  <li><a href="#L964">License Agreement</a></li>
 </ul>
 </div>
 <hr />
 
-<h2 style="text-align: center" id="L33">Preface</h2>
+<h2 style="text-align: center" id="L53">Preface</h2>
 <hr />
 
 <p>This product is available via the <a href="#LicenseAgreement">open source
 license</a> described at the end of this document.</p>
+
+<p><span style="font-weight:bold;">NOTE</span>: service developers only need to
+understand the next section. The remaining sections describe implementation.</p>
 
 <p>pvIOC is one of a set of related projects:</p>
 <dl>
@@ -63,34 +77,291 @@ license</a> described at the end of this document.</p>
 
 <p>For pvData and pvAccess both Java and C++ implementations are available.</p>
 
-<p>At the present time the only part of pvIOCCP that is implemented is pvAccess
-to V3 records. It is all that is described in this document. </p>
+<p>At the present time the only parts of pvIOCCP that are implemented are:</p>
+<dl>
+  <dt>service</dt>
+    <dd>Support for implementing services.</dd>
+  <dt>v3Channel</dt>
+    <dd>This provides pvAccess for V3 records.</dd>
+</dl>
 
-<p>A complete Java implemantation is available but it can not be used inside a
-V3 IOC.</p>
+<p>These are described in this document. Everything else that appears in this
+project is work in progress.</p>
+
+<p>A complete Java implementation of pvIOC is available but it can not be used
+inside a V3 IOC. It is currently named javaIOC.</p>
 <hr />
 
-<h2 style="text-align: center" id="L68">pvService</h2>
+<h2 style="text-align: center" id="L101">exampleServiceRPC</h2>
 <hr />
 
-<p>A pvService is a network based service that supports pvData and pvAccess. A
-service implements the Channel and ChannelProvider interfaces and calls
-registerChannelProvider. It calls registerChannelProvider. Remote channel
-access calls the ChannelProvider and Channel methods.</p>
+<p><b>KNOWN BUG: </b>When the main program terminates the destructor for
+PVServiceBaseProvider gets called twice.</p>
 
-<p>Base interfaces for both ChannelProvider and Channel are provided that make
-it easier to develop a service.</p>
+<p>Currently the only C++ support for services is support for channelRPC, i. e.
+support for services where the client and server communicate via
+pvAccess::channelRPC. In the near future support is planned for for
+channelPutGet.</p>
 
-<p>The interfaces are described in pvServiceBase.h The following provides a
-brief description. Look at the header file for complete details.</p>
+<p>There is an example service in testApp/exampleServiceRPC. This example can
+be run either as a main program or as part of V3 IOC using the v3Channel
+support described in the next section. To run it as a main program just execute
+the command:</p>
+<pre>    bin/&lt;arch&gt;/exampleServiceRPC</pre>
 
-<h3 id="L78">pvServiceBaseProvider</h3>
+<p>To execute it as part of a V3 IOC do the following:</p>
+<pre>cd iocBoot/testV3Channel
+ ../../bin/&lt;arch&gt;/testV3Channel st.cmd</pre>
+
+<p>The service support is described in service.h</p>
+<pre>class ServiceRPC
+{
+public:
+    POINTER_DEFINITIONS(ServiceRPC);
+    virtual void destroy() = 0;
+    virtual void request(
+        ChannelRPCRequester::shared_pointer const &amp; channelRPCRequester,
+        PVStructure::shared_pointer const &amp; pvArgument) = 0;
+};
+
+class ServiceChannelRPC :
+    public std::tr1::enable_shared_from_this&lt;ServiceChannelRPC&gt;
+{
+public:
+    POINTER_DEFINITIONS(ServiceChannelRPC);
+    ServiceChannelRPC(String channelName,ServiceRPC::shared_pointer const &amp; serviceRPC);
+    virtual ~ServiceChannelRPC();
+    virtual void destroy();
+private:
+   ...
+};</pre>
+
+<p>ServiceRPC is the class the the service must implement. It has the
+methods:</p>
+<dl>
+  <dt>destroy</dt>
+    <dd>Called when service is being destroyed.</dd>
+  <dt>request</dt>
+    <dd>This is called when a client issues a channelRPC request.</dd>
+</dl>
+
+<p>ServiceChannelRPC is a class that implements the server side of channelRPC.
+It will call ServiceRPC when a client issues a channelRPC request. It takes
+care of all other pvAccess requirements. It has the methods:</p>
+<dl>
+  <dt>ServiceChannelRPC(String channelName,ServiceRPC::shared_pointer const
+  &amp; serviceRPC)</dt>
+    <dd>The service must call this constructor. channelName is the name of the
+      service. Note that the ServiceRPC implemention must be passed to this
+      constructor.</dd>
+  <dt>destroy</dt>
+    <dd>Can be called to destroy the service.</dd>
+</dl>
+
+<p>The example is in testApp/exampleServiceRPC. </p>
+
+<p>exampleServiceRPC.h contains:</p>
+<pre>class ExampleServiceRPC :
+  public virtual ServiceRPC,
+  public std::tr1::enable_shared_from_this&lt;ExampleServiceRPC&gt;
+{
+public:
+    POINTER_DEFINITIONS(ExampleServiceRPC);
+    ExampleServiceRPC();
+    virtual ~ExampleServiceRPC();
+    virtual void destroy();
+    virtual void request(
+        epics::pvAccess::ChannelRPCRequester::shared_pointer const &amp; channelRPCRequester,
+        epics::pvData::PVStructure::shared_pointer const &amp; pvArgument);
+private:
+    ExampleServiceRPC::shared_pointer getPtrSelf()
+    {
+        return shared_from_this();
+    }
+};</pre>
+
+<p>This just shows how the example extends ServiceRPC. All services should have
+a similar definition except for the name, i. e. replace ExampleService with
+some other name.</p>
+
+<p>The implementation is in exampleServiceRPC.cpp:</p>
+<pre>ExampleServiceRPC::ExampleServiceRPC()
+{}
+
+ExampleServiceRPC::~ExampleServiceRPC()
+{
+}
+
+void ExampleServiceRPC::destroy()
+{
+}
+
+void ExampleServiceRPC::request(
+    ChannelRPCRequester::shared_pointer const &amp; channelRPCRequester,
+    epics::pvData::PVStructure::shared_pointer const &amp; pvArgument)
+{
+    String builder;
+    builder += "pvArgument ";
+    bool is = NTNameValuePair::isNTNameValuePair(pvArgument.get());
+    if(is) {
+        builder += "is a NTNameValuePair\n";
+    } else {
+        builder += "is not a NTNameValuePair\n ";
+    }
+    pvArgument-&gt;toString(&amp;builder);
+    printf("%s\n",builder.c_str());
+    FieldCreate * fieldCreate = getFieldCreate();
+    NTField *ntField = NTField::get();
+    PVNTField *pvntField = PVNTField::get();
+    int n = 2;
+    FieldConstPtr fields[2];
+    fields[0] = fieldCreate-&gt;createScalarArray("position",pvDouble);
+    fields[1] = ntField-&gt;createAlarmArray("alarms");
+    PVStructure::shared_pointer pvStructure = NTTable::create(
+        true,true,true,n,fields);
+    NTTable ntTable(pvStructure);
+    PVDoubleArray *pvPositions
+        = static_cast&lt;PVDoubleArray *&gt;(ntTable.getPVField(0));
+    double positions[2];
+    positions[0] = 1.0;
+    positions[1] = 2.0;
+    pvPositions-&gt;put(0,n,positions,0);
+    PVStructureArray *pvAlarms
+        = static_cast&lt;PVStructureArray *&gt;(ntTable.getPVField(1));
+    PVAlarm pvAlarm;
+    Alarm alarm;
+    PVStructurePtr palarms[n];
+    for(int i=0; i&lt;n; i++) {
+        palarms[i] = pvntField-&gt;createAlarm(0);
+        pvAlarm.attach(palarms[i]);
+        alarm.setMessage("test");
+        alarm.setSeverity(majorAlarm);
+        alarm.setStatus(clientStatus);
+        pvAlarm.set(alarm);
+    }
+    pvAlarms-&gt;put(0,n,palarms,0);
+    String labels[n];
+    labels[0] = pvPositions-&gt;getField()-&gt;getFieldName();
+    labels[1] = pvAlarms-&gt;getField()-&gt;getFieldName();
+    PVStringArray *label = ntTable.getLabel();
+    label-&gt;put(0,n,labels,0);
+    channelRPCRequester-&gt;requestDone(Status::OK,pvStructure);
+}</pre>
+
+<p>The only interesting method is request. The example shows how to see if the
+argument is a NTNameValuePair. It creates an NTTable to return to the client.
+Note that channelRPCRequester-&gt;requestDone(Status::OK,pvStructure) must be
+called.</p>
+
+<p>The Make file shows how to build as both a standalone application as as part
+of a V3 IOC.\</p>
+
+<p>exampleServiceRPCMain.cpp is the main program for a standalone
+application.</p>
+<pre>int main(int argc,char *argv[])
+{
+    PVServiceChannelCTX::shared_pointer myCTX
+        = PVServiceChannelCTX::shared_pointer(new PVServiceChannelCTX());
+    ExampleServiceRPC::shared_pointer example
+        = ExampleServiceRPC::shared_pointer(new ExampleServiceRPC());
+    ServiceChannelRPC::shared_pointer serviceChannelRPC
+        = ServiceChannelRPC::shared_pointer(
+            new ServiceChannelRPC("serviceRPC",example));
+    cout &lt;&lt; "serviceRPC\n";
+    string str;
+    while(true) {
+        cout &lt;&lt; "Type exit to stop: \n";
+        getline(cin,str);
+        if(str.compare("exit")==0) break;
+
+    }
+    return(0);
+}</pre>
+
+<p>The first statement MUST be present. It starts the pvAccess server. The
+second statement creates the service. The next statement is what installs the
+service. The remaining statements just wait for the request to terminate the
+main program. Except for "ExampleService" any service should have similar
+code.</p>
+
+<p>exampleServiceRegister.dbd and exampleServiceRegister.cpp are required to
+run the service as part os a V3 IOC. The dbd file is:</p>
+<pre>registrar("startExampleServiceRegister")</pre>
+
+<p>This is the dbd statement that will have the V3 IOC register the code
+desctribed in the next file:</p>
+
+<p>The cpp file is:</p>
+<pre>/* define arguments for the following command:
+ * startExampleService channelName
+ */
+static const iocshArg startExampleServiceArg0 = {"channelName", iocshArgString};
+static const iocshArg *const startExampleServiceArgs[] = {
+    &amp;startExampleServiceArg0};
+static const iocshFuncDef startExampleServiceFuncDef = {
+    "startExampleService", 1, startExampleServiceArgs};
+static void startExampleService(const iocshArgBuf *args)
+{
+    // the channel name is the single argument which is a string
+    const char * channelName = args[0].sval;
+    if(channelName==0 || channelName[0]==0) {
+        printf("illegal channelName\n");
+        return;
+    }
+    ExampleServiceRPC::shared_pointer example
+        = ExampleServiceRPC::shared_pointer(new ExampleServiceRPC());
+    ServiceChannelRPC *serviceChannelRPC
+        = new ServiceChannelRPC("serviceRPC",example);
+}
+
+static void startExampleServiceRegister(void)
+{
+    static int firstTime = 1;
+    if (firstTime) {
+        firstTime = 0;
+        iocshRegister(&amp;startExampleServiceFuncDef, startExampleService);
+    }
+}
+
+epicsExportRegistrar(startExampleServiceRegister);</pre>
+
+<p>Again any service can provide similar code. Just change ExampleService to
+something else.</p>
+<hr />
+
+<h2 style="text-align: center" id="L167">service</h2>
+<hr />
+
+<p>Service provides four classes that can be used by service support:</p>
+<dl>
+  <dt>PVServiceBaseProvider</dt>
+    <dd>A class that implements most of ChannelProvider.</dd>
+  <dt>PVServiceBase</dt>
+    <dd>A class that implements Channel. It implements all create methods by
+      issuing an error to the client. A service can extend it and implement
+      only the methods required by the service.</dd>
+  <dt>PVServiceProvider</dt>
+    <dd>A class that is a complete implementation of ChannelProvider. It
+      extends PVServiceBaseProvider. It can be used by services that create
+      their own channelNames with an associated top level structure. </dd>
+  <dt>The code that implements the pvAccess support for V3 records uses the
+  first two classes but since it is providing access to database the third
+  class is not used. Instead it implements ChannelProvider . </dt>
+</dl>
+
+<p>The interfaces for PVServiceBase and PVServiceBaseProvider are described in
+pvServiceBase.h. PVServiceProvider is described in pvServiceProvider.h. The
+following provides a brief description. Look at the header files for complete
+details.</p>
+
+<h3 id="L193">pvServiceBaseProvider</h3>
 
 <p>pvServiceBaseProvider takes care of "lifetime" issues. It registers the
 provider, keeps a list of all channels the service provider creates and
 destroys all channels when the provider is destroyed.</p>
 <pre>class PVServiceBaseProvider : public ChannelProvider {
 public:
+    POINTER_DEFINITIONS(PVServiceBaseProvider);
     PVServiceBaseProvider(
         String providerName
     );
@@ -130,7 +401,7 @@ public:
   <dt>channelFind</dt>
     <dd>The service must keep a list or directory the channel names it
       supports. channelFind looks at the list or directory to see if the
-      requested channelName is one that it supports. It call channelFound to
+      requested channelName is one that it supports. It calls channelFound to
       report the result. </dd>
   <dt>createChannel</dt>
     <dd>This creates a new Channel if the requested channelName is a name that
@@ -154,7 +425,7 @@ public:
       pvServiceBaseProvider is destroyed.</dd>
 </dl>
 
-<h3 id="L120">pvServiceBase</h3>
+<h3 id="L235">pvServiceBase</h3>
 
 <p>This implements all the Channel methods. This a service only needs the
 implement the methods it supports. For example a service may only implement
@@ -272,12 +543,40 @@ interfaces. The service may also want to implement the printInfo methods.</p>
   <dt>removeChannelArray</dt>
     <dd>This is called when a channelArray is destroyed.</dd>
 </dl>
+
+<h3 id="L316">pvServiceProvider</h3>
+
+<p>This is a complete implementation of ChannelProvider. The code that uses it
+must implement interface ServicePVTop. The code must also create a top level
+PVStructure, which is what the pvAccess client will access. ServiceTop is
+defined as:</p>
+<pre>class ServicePVTop
+{
+public:
+    POINTER_DEFINITIONS(ServicePVTop);
+    virtual ~ServicePVTop(){}
+    virtual epics::pvData::String getName() = 0;
+    virtual PVServiceBase::shared_pointer createChannel(
+        epics::pvAccess::ChannelRequester::shared_pointer const &amp;requester,
+        std::tr1::shared_ptr&lt;PVServiceProvider&gt; const &amp;provider) = 0;
+    virtual void destroy() = 0;
+};</pre>
+
+<p>where</p>
+<dl>
+  <dt>getName</dt>
+    <dd>Get the channel name.</dd>
+  <dt>createChannel</dt>
+    <dd>Create a channel.</dd>
+  <dt>destroy</dt>
+    <dd>This is called when the serviceTop itself is being destroyed.</dd>
+</dl>
 <hr />
 
-<h2 style="text-align: center" id="L203">V3Channel</h2>
+<h2 style="text-align: center" id="L342">V3Channel</h2>
 <hr />
 
-<h3 id="L207">Introduction</h3>
+<h3 id="L346">Introduction</h3>
 
 <p>V3Channel provides access to V3 records. It can be used accesss V3 records
 by other code in the same IOC or by pvAccess network clients via remote
@@ -311,7 +610,7 @@ like:</p>
 <p>The channelName can be either just a record name or a "recordName.XXX" where
 XXX is the V3 field name, e. g. "SCAN".</p>
 
-<h3 id="L217">Remaining tasks</h3>
+<h3 id="L356">Remaining tasks</h3>
 The main remaining tasks are: 
 <dl>
   <dt>Access Security</dt>
@@ -333,7 +632,7 @@ The main remaining tasks are:
       control should be included.</dd>
 </dl>
 
-<h3 id="L242">Getting started</h3>
+<h3 id="L381">Getting started</h3>
 
 <p>NOTE: pvIOCCP has a zip file example/example.zip that provides an example
 IOC application that provides V3Channel support. To use it copy and unzip and
@@ -368,7 +667,7 @@ include "pvIOC.dbd"
     </dd>
 </dl>
 
-<h3 id="L275">Implementation</h3>
+<h3 id="L414">Implementation</h3>
 
 <p>The implementation consists of the following header files:</p>
 <dl>
@@ -398,7 +697,7 @@ remainder of this section gives a brief description of each of these software
 components with an emphasis on how data is converted between pvData and data in
 V3 records.</p>
 
-<h4 id="L307">Main Concepts</h4>
+<h4 id="L446">Main Concepts</h4>
 
 <p>In epics V3 there are two interfaces for accessing data:</p>
 <dl>
@@ -414,7 +713,7 @@ V3 records.</p>
       effects". For example writing to the SCAN field has side effects.</dd>
 </dl>
 
-<h4 id="L322">V3Channel</h4>
+<h4 id="L461">V3Channel</h4>
 
 <p>This defines two interfaces:</p>
 <dl>
@@ -575,7 +874,7 @@ private:
     <dd>This just prints a short message.</dd>
 </dl>
 
-<h4 id="L471">V3Util</h4>
+<h4 id="L610">V3Util</h4>
 
 <p>This does most of the work related to transfering data between a PVStructure
 and a V3 record. All methods are static and are called by V3ChannelGet,
@@ -662,7 +961,7 @@ public:
     accessed.</dd>
 </dl>
 
-<h4 id="L583">V3Array</h4>
+<h4 id="L722">V3Array</h4>
 
 <p>This creates special implementations of PVByteArray, ... , PVStringArray
 that access the corresponding array types in the V3 record. Except for
@@ -706,7 +1005,7 @@ extern V3ValueArrayCreate *getV3ValueArrayCreate();</pre>
       supports.</dd>
 </dl>
 
-<h4 id="L624">V3CAMonitor</h4>
+<h4 id="L763">V3CAMonitor</h4>
 
 <p>In V3 dbEvent is what implements db_post_event, which is what is called when
 a field value changes in a V3 record. But dbEvent just passes this to V3CA.
@@ -849,7 +1148,7 @@ private:
       should always return true.</dd>
 </dl>
 
-<h4 id="L771">V3CAContext</h4>
+<h4 id="L910">V3CAContext</h4>
 
 <p>CAV3Monitor calls CAV3 in order to monitor changes to the V3 records. In
 order to do this it must call ca_context_create(ca_enable_preemptive_callback).
@@ -914,7 +1213,7 @@ private:
 </dl>
 <hr />
 
-<h2 style="text-align: center" id="L825">License Agreement</h2>
+<h2 style="text-align: center" id="L964">License Agreement</h2>
 <hr />
 <pre>Copyright (c) 2008 Martin R. Kraimer
 Copyright (c) 2007 Control System Laboratory,
