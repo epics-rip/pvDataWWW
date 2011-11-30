@@ -6,14 +6,14 @@
 #!
 #! ----------------------------------------------------------------------
 #! Auth: Greg White, 23-Nov-2011
-#! Mod: 
+#! Mod:  Greg White, 30-Nov-2011, Upgraded patterns for AIs etc, to fit Ralphs style. 
 #! ======================================================================
-# IGNORECASE=1
-/AI:/||/AI on/ {print $0}
+BEGIN { IGNORECASE=1; }
+#! /AI:/||/AI on/ {print $0}
 
 #! Remove the scribe from each line except the Scribe line. 
 #! That is delete text matching input -v scribe=<scribename>
-$0~/^Scribe:/ { print; next }
+$0~/Scribe:/ { print; next }
 {   #! Remove scribe 
     sub(scribe,""); 
     #! Remove time
@@ -21,12 +21,12 @@ $0~/^Scribe:/ { print; next }
 }
 
 #! Highlight new topic
-/NEW TOPIC/ { print "***********"; print; print "***********"; next }
+/NEW TOPIC/{ print "**********************"; print; print "**********************"; next }
 
 #! Process RESOLUTIONS, AIs and ISSUES
-/RES(OLUTION)?[ ]*:/ { print "***********"; print; print "***********"; next }
-/AI[ ]*:/||/ACTION[ ]*:/ {print "************"; print; print "***********"; next }
-/ISSUE[ ]*:/ {print "*************"; print; print "************"; next }
+/RES(OLUTION)?[ ]*[:-]/||/[Rr]es(olution)?[ ]*[:-]/ { print "***********"; print; print "***********"; next }
+/AI[ :].+[:-]/||/ACTION[ :].+[:-]/||/[Aa]ction[ :].+[:-]/ {print "************"; print; print "************"; next }
+/ISSUE[ ]*[:-]/||/[Ii]ssue[ ]*[:-]/ {print "*************"; print; print "************"; next }
 
 #! Print results of formatting.
 { print }
