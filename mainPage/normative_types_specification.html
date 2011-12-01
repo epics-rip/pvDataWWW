@@ -280,9 +280,118 @@ structure NTHistogram
   long[] values
 </pre>
 
-<h3>NTNDArray</h3>
+<h3>NTNumericArray</h3>
 
-TBD
+This is a multi-dimensional homogenous array of numeric data.
+
+<pre>
+structure NTNumericArray
+  int datatype
+  long [] dims
+  byte [] data // at least product(dims) * element_size(datatype)
+</pre>
+
+Models and their names:
+
+<ol>
+
+<li>Matlab (NumericArray)
+<pre>
+int datatype;
+ssize_t [] dims;
+char * data[product(dims) * element_size(datatype)]
+</pre>
+</li><p>
+
+<li>areaDetector (considering the array part of the areaDetector image only)
+<pre>
+int datatype;
+size_t [] dims;
+char * data[at least product(dims) * element_size(datatype)]
+</pre>
+Plus information about position relative to origin
+</li><p>
+
+<li>HDF5 (dataset/dataspace)
+<pre>
+int datatype;
+size_t [] dims;
+char * data[product(dims) * element_size(datatype)]
+</pre>
+Plus support for chunked arrays
+(non-contiguous storage with a mapping from co-ordinates to storage)
+And initial/maximum dimensions
+<p>
+
+<li>Numpy Array (ndarray)
+<pre>
+int datatype;
+int element_size;
+int alignment;
+size_t [] dims; // max 32 dimensions
+size_t [] strides;
+char * data[at least product(dims) * element_size]
+</pre>
+Plus the ability to have arrays of Python objects
+</li><p>
+
+</ol>
+
+In all cases at the C level the client is responsible for casting 
+and element indexing, although helper functions may be provided.
+The Python and Matlab interfaces cast and provide operators for
+indexing (square brackets).
+<p>
+
+
+It is not necessary to store element size as it can be
+calculated by from the datatype (double is 8 etc.)
+Alignment can also be calculated.
+
+Is it useful to store strides?
+
+Rejected alternatives:
+
+<ol>
+
+<li>
+Explicit union, cast in pvdata:
+<pre>
+structure NTNumericArray
+  int datatype
+  long [] dims
+  byte [] data
+  float [] data
+  double [] data
+  int [] data
+  long [] data
+</pre>
+</li><p>
+
+<li>
+Dynamic type, use introspection to determine
+<pre>
+structure NTNumericArray
+  long [] dims
+OR
+  byte [] data
+OR
+  float [] data
+OR
+  double [] data
+OR
+  int [] data
+OR
+  long [] data
+</pre>
+</li><p>
+
+</ol>
+
+Both rejected because there is no primitive type 
+to represent a multi-dimensional numeric array in pvData, so
+there must always be some casting and array indexing above the
+pvData type level.
 
 <h3>NTFrequencyDomainArray</h3>
 <pre>
