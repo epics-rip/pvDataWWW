@@ -280,9 +280,122 @@ structure NTHistogram
   long[] values
 </pre>
 
-<h3>NTNDArray</h3>
+<!-- test -->
+<h3>NTNumericArray</h3>
 
-TBD
+This is a multi-dimensional homogenous array of numeric data.
+
+<pre>
+structure NTNumericArray
+  typeIdentifier_t typeIdentifier
+  int dataType
+  long [] dims
+  byte [] data // at least product(dims) * element_size(datatype)
+  alarm_t alarm
+  timestamp_t timeStamp
+</pre>
+
+Models and their names:
+
+<ol>
+
+<li>Matlab (NumericArray)
+<pre>
+int datatype;
+ssize_t [] dims;
+char * data[product(dims) * element_size(datatype)]
+</pre>
+</li><p>
+
+<li>areaDetector (considering the array part of the areaDetector image only)
+<pre>
+int datatype;
+size_t [] dims;
+char * data[at least product(dims) * element_size(datatype)]
+</pre>
+Plus information about position relative to origin
+</li><p>
+
+<li>HDF5 (dataset/dataspace)
+<pre>
+int datatype;
+size_t [] dims;
+char * data[product(dims) * element_size(datatype)]
+</pre>
+Plus support for chunked arrays
+(non-contiguous storage with a mapping from co-ordinates to storage)
+And initial/maximum dimensions
+<p>
+
+<li>Numpy Array (ndarray)
+<pre>
+int datatype;
+int element_size;
+int alignment;
+size_t [] dims; // max 32 dimensions
+size_t [] strides;
+char * data[at least product(dims) * element_size]
+</pre>
+Plus the ability to have arrays of Python objects
+</li><p>
+
+</ol>
+
+In all cases at the C level the client is responsible for casting 
+and element indexing, although helper functions may be provided.
+The Python and Matlab interfaces cast and provide operators for
+indexing (square brackets).
+<p>
+
+
+It is not necessary to store element size as it can be
+calculated by from the datatype (double is 8 etc.)
+Alignment can also be calculated.
+
+Is it useful to store strides?
+
+Rejected alternatives:
+
+<ol>
+
+<li>
+Explicit union, cast in pvdata:
+<pre>
+structure NTNumericArray
+  int datatype
+  long [] dims
+  byte [] data
+  float [] data
+  double [] data
+  int [] data
+  long [] data
+</pre>
+</li><p>
+
+<li>
+Dynamic type, use introspection to determine
+<pre>
+structure NTNumericArray
+  long [] dims
+OR
+  byte [] data
+OR
+  float [] data
+OR
+  double [] data
+OR
+  int [] data
+OR
+  long [] data
+</pre>
+</li><p>
+
+</ol>
+
+Both rejected because there is no primitive type 
+to represent a multi-dimensional numeric array in pvData, so
+there must always be some casting and array indexing above the
+pvData type level.
 
 <h3>NTFrequencyDomainArray</h3>
 <pre>
@@ -321,7 +434,75 @@ structure NTStatistic
 
 <h3>NTImage</h3>
 
-TBD
+The EPICSv3 image type is provided by 
+<a href="http://cars9.uchicago.edu/software/epics/areaDetector.html">areaDetector</a>. 
+The EPICSv4 image type (NTImage) will be a superset of this functionality.
+The variant type used for encoding metadata is also suitable for encoding table columns.
+byte [] data may contain a compressed image so the size may not be at least
+prod(dims) * element_size(datatype)
+
+<pre>
+
+structure variant_t
+
+    // tagged union (variant) type, 8 bytes overhead for
+    // the values that are not present
+
+    // suitable as a column type for the alternative table format
+    // variant_t [] table
+    
+    string name
+    int dataType
+    byte [] bValue
+    short [] hValue
+    int [] iValue
+    long [] lValue
+    float [] fValue
+    double [] dValue
+    string [] sValue
+    timestamp_t [] tValue
+    alarm_t [] aValue
+
+structure NTImage
+
+    typeIdentifier_t typeIdentifier
+
+    // NTNumericArray part
+
+    int dataType
+    long [] dims
+    byte [] data
+    alarm_t alarm
+    timestamp_t timeStamp
+
+    // Image part
+
+    // in areaDetector these two are stored as special attributes 
+    // in the metadata table but we promote them to top-level items 
+    // due to their importance
+
+    // bytesPerPixel, samplesPerPixel and pixelStride can be 
+    // calculated from these options, byteOrder isn't required because 
+    // pvData deals with the byte order for the metadata
+    int colorMode // mono, rgb, yuv etc.
+    int bayerPattern // rgb, gbr etc.
+    char [4] fourcc // to identify codec in case of compressed data
+
+    int [] offsets // same length as dims, start of readout
+    int [] binning
+    int [] reverse
+    int [] fullDims // size of full dataset this may be a chunk of
+    
+    // Experimental MetaData part
+    int uniqueId
+
+    string [] attributeDescriptions
+    int [] attributeSourceTypes
+    string [] attributeSources
+    
+    variant_t [] attributes
+    
+</pre>
 
 <h3>NTTable</h3>
 
