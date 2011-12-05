@@ -1,0 +1,207 @@
+MERCURIAL ON MAC DEVELOPMENT CHEATSHEET
+===============================
+
+This is a EPICS v4 development note on using command line Mercurial (hg) command 
+line commands for EPICS V4 development.
+
+Auth: Greg White, 29-Sep-2011.
+Status: Presently only includes notes on how to use Mercurial
+for interfacing to the epics-pvdata software repository.
+
+Mercurial.
+=========
+Tutorials on Mercurial:
+
+http://hginit.com/
+http://mercurial.selenic.com/wiki/Tutorial
+http://hgbook.red-bean.com/read/a-tour-of-mercurial-the-basics.html
+
+Installation
+------------
+Installing Msercurial
+See http://mercurial.selenic.com/wiki/TutorialInstall
+
+Download Mercurial for Mac from http://mercurial.selenic.com/downloads/
+Run the installer.
+
+The mercurial command line should now be in the path (of a new 
+terminal process - i.e. after install, you'll need the start a new terminal).
+
+[pcp044184:~] greg% hg
+Mercurial Distributed SCM
+
+basic commands:
+
+ add        add the specified files on the next commit
+ annotate   show changeset information by line for each file
+ clone      make a copy of an existing repository
+ commit     commit the specified files or all outstanding changes
+ diff       diff repository (or selected files)
+ export     dump the header and diffs for one or more changesets
+ forget     forget the specified files on the next commit
+ init       create a new repository in the given directory
+ log        show revision history of entire repository or files
+ merge      merge working directory with another revision
+ pull       pull changes from the specified source
+ push       push changes to the specified destination
+ remove     remove the specified files on the next commit
+ serve      start stand-alone webserver
+ status     show changed files in the working directory
+ summary    summarize working directory state
+ update     update working directory (or switch revisions)
+
+use "hg help" for the full list of commands or "hg -v" for details
+[pcp044184:~] greg% 
+
+You might like the GUI macHg available at http://jasonfharris.com/machg/
+
+Man pages: After installation on a Mac, the man pages are available.
+e.g.: 
+$ man hg
+
+
+Create your local Mercurial "repo" for your EPICS V4 work
+--------------------------------------------------------- 
+Having installed mercurial (hg command), create a Mercurial
+"respository" for your EPICS V4 work. This is equivalent to a CVS 
+development checkout area.
+
+Ref: http://mercurial.selenic.com/wiki/TutorialInit
+
+Eg:
+% pwd
+/Users/greg
+% cd Development/epicsV4/
+% mkdir repo
+% cd repo
+% hg init   <- this creates a .hg file
+
+
+Download SOURCE EPICSv4 from epics-pvdata into your local repo
+-------------------------------------------------------
+Ref: http://mercurial.selenic.com/wiki/TutorialClone
+
+To download the source using Mercurial, use an "hg clone".
+
+Eg. Download the 4 core EPICS v4 modules' Java implementations:
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessJava
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCJava
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/common
+
+Additionally, you may need the web pages, scripts, examples, or "alpha" level software.
+Eg, to download the web pages subtree (the directory system headed by pvDataWWW):
+
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceJava
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/exampleJava
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/alpha
+
+
+When completed, you should have:
+[gregsmac:~/Development/epicsV4/repo] greg% ls -l
+total 16
+ 0 drwxr-xr-x   9 greg  staff   306  7 Nov 14:41 ./
+ 0 drwxr-xr-x  13 greg  staff   442  4 Nov 17:11 ../
+ 0 drwxr-xr-x  19 greg  staff   646  7 Nov 14:39 pvAccessJava/
+ 0 drwxr-xr-x  12 greg  staff   408  7 Nov 14:37 pvDataJava/
+ 0 drwxr-xr-x   6 greg  staff   204  3 Nov 17:20 pvDataWWW/
+ 0 drwxr-xr-x  24 greg  staff   816  7 Nov 14:40 pvIOCJava/
+ 0 drwxr-xr-x  16 greg  staff   544  7 Nov 14:41 pvServiceJava/
+
+
+NOTE: The hg http URIs don't work for many users, since the non-standard 8000 port is blocked
+for HTTP by many institutions. Use the ssh one above.
+
+
+Add Files to your local repository 
+----------------------------------
+Analogous to cvs add.
+
+Use hg add <filename>
+E.g.:
+% hg add charter_14092011.html
+[pcp044184:repo/pvDataWWW/mainPage] greg% hg add charter_15092011.html
+
+Get status of your local repository
+-----------------------------------
+Analgous to cvs status
+
+Use hg st
+E.g.:
+% hg st
+M mainPage/charter.html
+A mainPage/charter_14092011.html
+A mainPage/charter_15092011.html
+
+
+Add files and directories
+=========================
+hg add
+To add a directory with files in it, just add the directror, directories and files beneath will be added:
+[pcp044184:repo/pvDataWWW/mainPage] greg% hg add talks
+adding talks/.DS_Store
+adding talks/2010/gabriele_PVManager.pptx
+adding talks/2011/bob_V4EPICS201109.pptx
+adding talks/2011/marty_pvDataEtc.ppt
+
+Put your changes back into epics-pvdata in sourceforge
+------------------------------------------------------
+This is different in idea to the way CVS does it; in particular the
+commit command of hg is different to the commit command of 
+CVS. In hg, commit makes the *local* repository "database" updated with changes
+you made to files. Only after you have committed to your own repository,
+can you update the remote repository. You do the remote update
+with the hg "push" command. 
+
+So, assuming you've changed some files and/or added some,
+putting them in epics-pvdata at sourceforge is now a 2 stage process:
+
+1. hg commit -u gregorywhite@slac.stanford.edu
+** You'll be dropped into an editor - vi by default, so if you don't know the vi voodoo, beware **
+Hint - hit "i" to enter insert mode, to actually type something
+     - hit "ESC : w q" to write and quit.
+   To make this easier:
+   i) Create a ~/.hgrc file with a username entry, like:
+       [gregsmac:repo/pvDataWWW/mainPage] greg% cat ~/.hgrc
+       # This is a Mercurial configuration file.
+       [ui]
+       username = Gregory White <greg@slac.stanford.edu>
+   ii) use -m to put the commit message on the command line. Eg
+       hg commit -m "add talks"
+
+2. hg push
+pushing to ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
+searching for changes
+remote: adding changesets
+remote: adding manifests
+remote: adding file changes
+remote: added 1 changesets with 5 changes to 5 files
+remote: Running changegroup hook
+
+2 things are wrong here and I don't know why:
+i) for some reason hg didn't look in my local ~/.hgrc file for 
+my username. So I had to supply it on the hg commit line.
+ii) for some reason the hg push ssh didn't accept my password 
+as valid (even though it definately was) and then it proceeded
+to do the remote push successfully anyway!
+
+Add files and directories
+=========================
+hg add
+To add a directory with files in it, just add the directror, directories and files beneath will be added:
+[pcp044184:repo/pvDataWWW/mainPage] greg% hg add talks
+adding talks/.DS_Store
+adding talks/2010/gabriele_PVManager.pptx
+adding talks/2011/.DS_Store
+adding talks/2011/bob_V4EPICS201109.pptx
+adding talks/2011/marty_pvDataEtc.ppt
+
+Update your repo with changes made in source-forge:
+===================================================
+1. Pull changes made in SF down to your repo:
+%  hg pull ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
+
+2. Then, to give yourself access to these changes, run hg update 
+% hg update
+
