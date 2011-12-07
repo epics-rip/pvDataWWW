@@ -1,7 +1,0 @@
-org.epics.pvData
-org.epics.pvData.accessSecurity
-org.epics.pvData.factory
-org.epics.pvData.misc
-org.epics.pvData.monitor
-org.epics.pvData.property
-org.epics.pvData.pv
