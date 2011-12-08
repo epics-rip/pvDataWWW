@@ -148,7 +148,29 @@ On the wire, pvAccess transmits all strings as Unicode strings in UTF-8 encoding
 <p>Arrays are encoded as a size representing the number of elements in the array, followed by the elements encoded as specified for their type.
 </p>
 <h3 id="dataEncoding:bitSets">BitSets</h3>
-<p>BitSet is a pvData internal data type that represents bits. It is serialized as a byte array.</p><h3 id="dataEncoding:introspectionData">Introspection Data</h3>
+<p>BitSet is a pvData internal data type that represents bits. It is serialized as a byte array.</p><h3 id="dataEncoding:status">Status</h3>
+<p>
+pvAccess defines a structure to inform about completion status. It is defined as:</p>
+<pre>struct Status {
+    byte type;      // enum { OK = 0, WARNING = 1, ERROR = 2, FATAL = 3 }
+    string message;
+    string stackDump;   // optional (provides more context data about the error), can be empty};
+</pre>
+<p>
+In practice majority of Status instances will be OK with no message and stackDump. This is worth optimizing.
+A special type code <code>-1</code> is used and string fields are ommited:
+</p>
+<pre>struct StatusOK {
+    byte type = -1;
+};
+</pre>
+<p>
+NOTE: a decision was made not to use hardcoded set of error codes (enum) to allow: any status message,
+avoid book-keeping problems and avoid forcing programmers to pick a not-so-informative error code that
+almost explains an error to be reported.
+</p>
+
+<h3 id="dataEncoding:introspectionData">Introspection Data</h3>
 <p>Each pvData data instance (i.e. PVField) has introspection description (i.e. Field). PVField is encoded as raw values (no other overhead), Field encodes information of what data-type(s) PVField is. Since many different PVField instances share same introspection description it can be cached to avoid sending it over-and-over over the wire. Thus, Field encoding starts with a byte describing the following encoding: it can be NULL, ID only and ID with actual Field serialization. <br/>ID, encoded as short, is a key used to cache Field descriptions. This cache is called introspection registry. IDs are valid within one connection. Moreover, they can be defined only be the sender; receiver only keeps track of IDs to be able to do deserialization. This implies two introspection registries per connection (since communication is full-duplex).
 </p>
 
@@ -246,6 +268,7 @@ NOTE: If bits 4 and 5 are both set this indicates message between first and last
 <p>
 This section describes all the application messages (0-th bit of <i>pvAccessHeader.flags</i> is not set) for different  <i>pvAccessHeader.messageType</i> values.
 </p>
+<p>In order to understand specific application messages it is strongly recommended to get familiar with <a href="http://epics-pvdata.sourceforge.net/doc/pvAccessJava/client.html">pvAccess client interface</a>.</p>
 
 <h3 id="protocolMessages:applicationMessages:beacon">Beacon (0x00)</h3><p>
 Send over UDP to clients. Beacons are only used to detect new servers and server restarts. </p>
@@ -280,7 +303,7 @@ The purpose of the validate connection message is two-fold:
 </ul>
 The validate connection message guarantees that a server is not in the middle of shutting down when the server's TCP/IP stack accepts an incoming connection and so avoids the race condition. </p>
 
-<pre>struct connectionValidationRequestToClient {    int serverReceiveBufferSize;    int serverReceiveSocketBufferSize;};struct connectionValidationResponseFromClient {    int clientReceiveBufferSize;    int clientReceiveSocketBufferSize;    //TODO short priority;};
+<pre>struct connectionValidationRequestToClient {    int serverReceiveBufferSize;    int serverReceiveSocketBufferSize;};struct connectionValidationResponseFromClient {    int clientReceiveBufferSize;    int clientReceiveSocketBufferSize;    short priority; // for now in range of [0-100]};
 </pre><h3 id="protocolMessages:applicationMessages:echo">Echo (0x02)</h3><p>Echo diagnostic message. Usually sent when there is a suspicion that server is no longer functional (no TCP/IP traffic). Can also be sent over UDP/IP (to get list of all servers).</p>
 
 <pre>struct echoRequest {    byte[] somePayload;};struct echoResponse {    byte[] samePayloadAsInRequest;};
@@ -289,7 +312,7 @@ The validate connection message guarantees that a server is not in the middle of
 <pre>        struct searchRequest {    int searchSequenceID;    byte replyRequired; // 0x01 if “response required” (even for not found channels), otherwise 0x00    struct {      // not serialized as pvData        int searchInstanceID;        string channelName;    } channels[];};
 </pre>
 
-<p>Response is sent as messageType 0x04 (to avoid self-searching).</p>
+<p>Response is sent as messageType 0x04.</p>
 
 <h3 id="protocolMessages:applicationMessages:searchResponse">Search response (0x04)</h3><p>Response to Search request (0x03) message.</p>
 
@@ -341,7 +364,7 @@ struct channelSetLengthRequest {    int serverChannelID;    int requestID;   
 struct channelProcessRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelProcessResponseInit {    int requestID;    byte subcommand;        // same as in request    Status status;};</pre><pre>
 struct channelProcessRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 mask for PROCESS; 0x10 mask for DESTROY;};struct channelProcessResponse {    int requestID;    byte subcommand;         // same as in request    Status status;};</pre>
 
-<h3 id="protocolMessages:applicationMessages:channelGetField">Channel get field (0x11)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:channelGetField">Get channel introspection data (0x11)</h3><pre>
 struct channelGetFieldRequest {    int serverChannelID;    int requestID;    string subFieldName;  // entire record if empty};struct channelGetFieldResponse {    int requestID;    Status status;    [if status is success] FieldDesc subFieldIF;};</pre>
 
 <h3 id="protocolMessages:applicationMessages:message">Message (0x12)</h3><pre>
@@ -383,19 +406,19 @@ Flow control is needed only for optimize subscription messages back to the clien
 <p>
 The intention of flow control is to avoid having the following behavior (pure TCP flow control):
 <ul>
-<li>let's assume clients Rx buffers are full</li>
-<li>server is sending monitors until TCP detects Rx buffer is full</li>
-<li>after some time client's Rx buffers are emptied (since we do bulk reads - not message by message, remember OS calls are expensive)</li>
-<li>and server starts sending monitors until all (not clients) the buffers are full</li>
+<li>let's assume client's Rx buffers are full</li>
+<li>server is sending monitors until TCP detects clinet's Rx buffer is full</li>
+<li>after some time client's Rx buffer is immediately emptied (since we do bulk reads from the socket - not message by message, remember OS calls are expensive)</li>
+<li>and server starts sending monitors until all the buffers are full (sever will fill all the buffers before client actually processed received monitors!)</li>
 </ul>
 </p>
 
 <p>
 This results in monitors (their sequential numbers):
-<pre>0 1 2 3 4 (buffer full) 7 8 9 10 11 12 (buffer full) 22 23 24  25 26 27 28 (buffer full)</pre>
+<pre>0 1 2 3 4 (buffers full) 7 8 9 10 11 12 (buffers full) 22 23 24  25 26 27 28 (buffers full)</pre>
 
 Flow control can make this better:
-<pre>0 1 2 3 4 (buffer full) 7 8 (buffer full, but for a less time since we send only as much client can handle) 10 11 (...) 14 15 (...) 18 19</pre>
+<pre>0 1 2 3 4 (buffers full) 7 8 (buffers full, but for a less time since server sends only as much as client can handle) 10 11 (...) 14 15 (...) 18 19</pre>
 </p>
 
 
@@ -432,8 +455,10 @@ Payload size field holds the acknowledge value of total bytes received (must mat
 <li>"one-phase" get/put/get-put/process</li>
 <li>immutable fields support, cache implemented for values (useful for enums)</li>
 <li>optimized packed Monitor responses</li>
-<li>protocol compression (negotiation)</li>
+<li>protocol compression (negotiation), SSL</li>
 <li>bulk message transfer/trottle public API</li>
+<li>QoS (priorities, latency)</li>
+<li>access rights</li>
 <li>etc.</li>
 </ul>
 </p>
