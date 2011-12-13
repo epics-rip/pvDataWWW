@@ -445,10 +445,11 @@ detailed above</a>, which require that they are built in the order pvDataCPP, pv
 </p>
 
 <ol>
-  <li><p>Build pvData. <code>cd pvDataCPP</code>, and edit the <code>configure/RELEASE</code> file. In it
-  change the
+  <li><p>Build pvData. <code>cd pvDataCPP</code>, and create a <code>configure/RELEASE.local</code> file. In it
+  set the
   EPICS_BASE to point to your EPICS release. Be sure that you have at least the
 release 3.14.12. Trying to build with an earlier one is basically a waste of time.
+(This file is included from configure/RELEASE with the line <code>-include $(TOP)/configure/RELEASE.local</code>.)
 </p>
   <pre>
 make
@@ -457,19 +458,19 @@ make
   ignored</p>
  </li>
  
- <li>Build pvAccess. <code>cd pvAccessCPP</code>, and edit the
-<code>pvAccess/configure/RELEASE</code> file.
-Change the locations of EPICS_BASE and PVDATA approprately.
+ <li>Build pvAccess. <code>cd pvAccessCPP</code>, and create the
+<code>pvAccess/configure/RELEASE.local</code> file.
+Add the locations of EPICS_BASE and PVDATA approprately.
 <pre>
 make
 </pre>
 <p> It should build without errors. Again with the warnings! [yea, this must be fixed]</p>
  </li>
 
- <li>Build pvIOCCPP. <code>cd pvIOCCPP</code>, and edit the
+ <li>Build pvIOCCPP. <code>cd pvIOCCPP</code>, and add the
 <code>
-edit configure/RELEASE</code> file. 
-Change the locations of EPICS_BASE, PVACCESS and PVDATA appropriately.
+configure/RELEASE.local</code> file. 
+Add the locations of EPICS_BASE, PVACCESS and PVDATA appropriately.
  <pre>
 make
 </pre>

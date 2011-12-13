@@ -205,3 +205,25 @@ Update your repo with changes made in source-forge:
 2. Then, to give yourself access to these changes, run hg update 
 % hg update
 
+Mercurial Configuration (.hgrc in your home directory)
+======================================================
+
+Add a new diff tool:
+
+[extensions]
+extdiff=
+
+[extdiff]
+# add new command called kdiff, runs kdiff3 
+cmd.kdiff = kdiff3
+
+When you do a "hg pull" it will show all the files that will be changed when you do an "hg update":
+
+[hooks]
+changegroup=hg diff --stat -r $HG_NODE -r tip
+
+Add a new alias to commit everything except configure/RELEASE and configure/CONFIG_SITE 
+(not recommended, use RELEASE.local instead):
+
+[alias]
+cmt = commit -X configure/RELEASE -X configure/CONFIG_SITE
