@@ -1,0 +1,13 @@
+--- pvIOCCPP/Makefile.orig	2011-12-14 16:39:32.000000000 +0000
++++ pvIOCCPP/Makefile	2011-12-14 16:39:36.000000000 +0000
+@@ -6,8 +6,8 @@
+ DIRS += pvIocApp
+ pvIocApp_DEPEND_DIRS = configure
+ 
+-DIRS += testApp
+-testApp_DEPEND_DIRS = pvIocApp
++# DIRS += testApp
++# testApp_DEPEND_DIRS = pvIocApp
+ 
+ DIRS += iocBoot
+ 
