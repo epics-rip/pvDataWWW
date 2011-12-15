@@ -1,8 +1,8 @@
 #!/bin/bash
 USER=jrowlandls
-PVDATATAG=tip
-PVACCESSTAG=tip
-PVIOCTAG=tip
+PVDATATAG=test1
+PVACCESSTAG=test1
+PVIOCTAG=test1
 hg clone -r $PVDATATAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
 hg clone -r $PVACCESSTAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessCPP
 hg clone -r $PVIOCTAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCCPP
