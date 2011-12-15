@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+ <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="PRAGMA" content="NO-CACHE">
+  <meta http-equiv="EXPIRES" content="0">
+ <title>EPICS Version 4 Development Resources</title>
+ <link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css"
+ type="text/css" media="screen" />
+ <link rel="stylesheet" type="text/css"
+ href="http://www.w3.org/Guide/pubrules-style.css" />
+ <link rel="stylesheet" type="text/css" href="epicsv4.css" />
+ <style type="text/css">
+   @media print {
+     body { margin-right: 10%;
+     font-size: smaller }
+   }
+   @media screen {
+     body { margin-right: 10% }
+   }
+ </style>
+</head>
+<body>
+
+<h1>EPICS Version 4 Release Guide</h1>
+
+<p>Release steps:
+
+<ol>
+<li>Tag Mercurial repositories (currently pvData, pvAccess, pvIOC)</li>
+<li>Clone tagged repositories to a build server (your local machine or Jenkins)</li>
+<li>Generate release documentation and upload to sourceforge web area</li>
+<li>Create release archives and upload to sourceforge file area</li>
+</ol>
+
+Release scripts are in mercurial under <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
+<p>
+During the release process documentation (both written and generated) is copied from the <code>documentation</code> directory in each repository to <code>epics-pvdata.sourceforge.net/docbuild/$REPO/$TAGNAME/documentation</code>.
+
+<h2>C++</h2>
+<p>
+<p>
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a> tags the current head of the repositories.<p>
+Edit the script to set the tag and the user name.
+<p>
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a> clones the tagged repositoties, generates the doxygen, and synchronizes to the web area.
+<p>
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a> clones the tagged repositoties, generates the tar file, and synchronizes to the file area.
+
+<h2>Java</h2>
+
+<p>
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a> clones the tagged repositoties, generates the JavaDoc, and synchronizes to the web area.
+
+<pre>
+
+To tag and build for Java/Maven:
+
+In pom.xml you have
+
+<version>1.0-SNAPSHOT</version>
+
+when releasing you should change it to:
+
+<version>1.0</version>
+
+then
+
+hg commit pom.xml
+
+Then tag:
+
+hg tag 1.0
+
+and push:
+
+hg push
+
+This results in remote repository that is versioned in tagged.
+Now Jenkins will build 1.0 version and deploy JARs in EPICS remote repository.
+
+Before making any changes to the project (the best thing is to do it
+immediately) you need to increase version to:
+
+<version>1.1-SNAPSHOT</version>
+
+and
+
+hg commit pom.xml
+hg push
+
+This way new changes will not override deployed 1.0.
+
+Please check if Jenkins has already deployed version 1.0 before pushing 1.1-SNAPSHOT/pom.xml change.
+This last step is necessary and makes a process semi-automatic. OK for now, but needs to be solved in the future.
+
+</pre>
+</body>
+</html>
