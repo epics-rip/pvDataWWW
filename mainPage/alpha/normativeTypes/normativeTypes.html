@@ -505,7 +505,8 @@ particular use cases.</p>
     string      function    // optional field
     timeStamp_t timeStamp   // optional field
     alarm_t     alarm       // optional field
-    display_t   display     // optional field</pre>
+    display_t   display     // optional field
+    long[]      dims        // optional field</pre>
 
 <p>where</p>
 <dl>
@@ -522,6 +523,8 @@ particular use cases.</p>
     <dd>Standard optional field</dd>
   <dt>display</dt>
     <dd>This field is an additional optional field.</dd>
+  <dt>doms</dt>
+    <dd>This field is an additional optional field to support multi-dimensional arrays.</dd>
 </dl>
 
 <h2 id="L602">Specific Normative Types</h2>
@@ -672,8 +675,11 @@ between each value. </p>
   long[]      values</pre>
 
 <h3 id="L794">NTNumericArray</h3>
-This is a multi-dimensional homogenous array of numeric data. 
-<pre>structure NTNumericArray
+<div style="color:red">To be deleted, as merged with NTArray</div><p>
+This is a multi-dimensional homogenous array of numeric data.<p>
+Old definition (can't use this in Java with a copy because no fast cast from byte array to other arrays):
+
+<pre style="color: red">structure NTNumericArray
   typeIdentifier_t typeIdentifier
   int dataType
   long [] dims
@@ -712,37 +718,7 @@ indexing, although helper functions may be provided. The Python and Matlab
 interfaces cast and provide operators for indexing (square brackets). 
 
 <p>It is not necessary to store element size as it can be calculated by from
-the datatype (double is 8 etc.) Alignment can also be calculated. Is it useful
-to store strides? Rejected alternatives: </p>
-<ol>
-  <li>Explicit union, cast in pvdata: 
-    <pre>structure NTNumericArray
-  int datatype
-  long [] dims
-  byte [] data
-  float [] data
-  double [] data
-  int [] data
-  long [] data</pre>
-  </li>
-  <li>Dynamic type, use introspection to determine 
-    <pre>structure NTNumericArray
-  long [] dims
-OR
-  byte [] data
-OR
-  float [] data
-OR
-  double [] data
-OR
-  int [] data
-OR
-  long [] data</pre>
-  </li>
-</ol>
-Both rejected because there is no primitive type to represent a
-multi-dimensional numeric array in pvData, so there must always be some casting
-and array indexing above the pvData type level. 
+the datatype (double is 8 etc.) Alignment can also be calculated.
 
 <h3 id="L846">NTMultichannelArray</h3>
 
@@ -832,7 +808,7 @@ structure NTImage
 
     typeIdentifier_t typeIdentifier
 
-    // NTNumericArray part
+    // NTArray part
 
     int dataType
     long [] dims
