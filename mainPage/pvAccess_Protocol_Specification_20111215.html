@@ -1,0 +1,1324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="keywords" content=
+"EPICS, EPICSv4, pvAccess, specification, protocol, network, CAv4" />
+
+<link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" href="http://www.w3.org/2006/02/charter-style.css" />
+<link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" />
+<link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+
+<title>pvAccess Protocol Specification</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     .editor {color: red}
+     .tbs {color: pink}
+     body { margin-right: 10% }
+/*]]>*/
+</style>
+</head>
+<body>
+
+
+<div class="head">
+<h1>pvAccess Protocol Specification</h1>
+
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+<h2 class="nocount">EPICS v4 Working Group, Second Public Working Draft, 15-Dec-2011</h2>
+
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20111215.html">pvAccess_Protocol_Specification_20111215.html</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
+<dt>Previous version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20111129.html">pvAccess_Protocol_Specification_20111129.html</a></dd>
+<dt>Editors:</dt>
+<dd>Matej Sekoranja, Cosylab</dd>
+<dd>Greg White, SLAC, PSI</dd>
+</dl>
+<hr />
+</div>
+<h2 class="nocount" id="abstract">Abstract</h2>
+
+<p>This document defines the EPICS V4 communication protocol called "pvAccess."
+pvAccess is a high-performance network communication protocol for signal
+monitoring and scientific data services interconnect. It is designed to support the
+structured data types of the EPICS V4 "shared memory" data exchange system called
+pvData, for optimized interoperability of control system endpoints. It is a successor
+of EPICS Channel Access.</p>
+
+<p>The connection setup requirements and individual message constructs of
+pvAccess are described. It is intended that sufficient detail is given for a reader
+to create an interoperable pvAccess
+implementation. A reference implementation is being created by the EPICS V4 Working Group.</p>
+
+<p>For more information about the EPICS, please refer to the home page
+of the <a href="http://www.aps.anl.gov/epics/">Experimental Physics
+and Industrial Control System.</a></p>
+
+<h2 class="nocount" id="status">Status of this Document</h2>
+
+<!-- Statement about why this version exists --> <p>This is the 15th December 2011
+version of the pvAccess Protocol Specification. This version was approved by the <a
+ href="http://epics-pvdata.sourceforge.net/home.html">EPICS V4 Working group</a> to
+be published as the Second Public Working Draft of the specification. This public
+working draft is intended for the EPICS community to review and comment. Resulting
+comments will drive subsequent revisions of the specification and the EPICS V4
+Working Group's reference implementation. </p>
+
+<p> The present implementation of pvAccess largely reflects the specification as
+written here.  Another document will soon be written to track the status of the
+reference implementation with respect to the specification, showing what has yet to
+be implemented.  </p>
+
+<!-- Please always include this statement of terms, unless it's really silly -->
+<p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY
+when highlighted (through style sheets, and in uppercase in the
+source) are used in accordance
+with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>
+[<a href="refs.html#ref-RFC2119">RFC2119</a>]. The term NOT REQUIRED
+(not defined in RFC 2119) indicates exemption.
+</p>
+
+<!--NewPage-->
+<!-- this is for html2ps -->
+<div class="toc"/>
+<h2 id="toc">Table of Contents</h2>
+<ol>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#dataEncoding">Data Encoding</a></li>
+  <li><a href="#protocolMessages">Protocol Messages</a></li>
+  <li><a href="#connectionEstablishment">Connection Establishment</a></li>
+  <li><a href="#flowControl">Flow Control</a></li>
+  <li><a href="#channelDiscovery">Channel Discovery</a></li>
+  <li><a href="#controlMessages">Control Messages</a></li>
+  <li><a href="#futureProtocolChanges">Future Protocol Changes/Updates</a></li>
+</ol>
+
+<h2 id="overview">Overview</h2>
+
+<p>pvAccess is a high-performance network communication protocol. It is primarily
+designed for efficient signal monitoring and the data requirements of a service
+oriented architecture. It is a successor of of EPICS Channel Access.</p>
+
+<p>TCP/IP is used for data transmission. UDP/IP is normally used for discovery,
+although discovery over TCP/IP is also allowed. The protocol itself supports IPv6,
+i.e. all addresses are IPv6 encoded.</p>
+
+<p>pvAccess depends heavily on <a
+     href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a
+     href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>] <span
+    class="editor">[Please convert this to a reference to Bibliography at bottom of
+    the document]</span>. All data are sent as pvData objects. The protocol is
+    optimized to send the minimum amount of data <span class="editor">[subject to
+    what?  should say "send the minimum amount of data while maintaining some
+    condition", otherwise minimum is just 0]</span>. pvAccess supports segmented
+    messages and thus allows the sending of large amounts of data using small
+    buffers. The maximum message size is not limited with respect to the send or
+    receive buffer sizes.</p>
+
+<p>The pvAccess protocol definition consists of three major parts:</p>
+<ul>
+<li>A set of data encoding rules that determine how the various data types are encoded and
+  deserialized</li>
+  <li>A number of message types, that define the interchange between clients and servers, together
+  with rules which specify what message is to be sent under what circumstances</li>
+  <li>A set of rules that determine how client and server agree on a particular encoding.</li>
+</ul>
+
+<h2 id="dataEncoding">Data Encoding</h2>
+
+<p>The goals of the pvData data encoding are simplicity and efficiency. In keeping with these
+goals, the encoding does not align primitive types on word boundaries and therefore eliminates
+the wasted space, and additional complexity, that alignment requires. The pvAccess data encoding
+simply produces a stream of contiguous bytes; data contains no padding bytes and need not be aligned
+on word boundaries. However, array encoding is an exception. All arrays are aligned to 64-bit
+boundaries (the first element of each array is padded). The message header is then also 64-bit
+aligned.
+</p>
+
+<p> For connection-oriented communication (TCP/IP), byte-order is negotiated between client and
+server - server wins <span class="editor">[How can there be a negotiation if the server always wins?]</span>.
+In order to allow all the intermediates to forward data without requiring
+it to be unmarshaled (so that the intermediates can forward requests by simply copying blocks of binary
+data), and in order not to require a specific byte-order for connection-less protocols (UDP), each message
+indicates its own endianness.  </p>
+
+
+<h3 id="dataEncoding:sizes">Sizes</h3>
+
+<p> Many of the types involved in the data encoding, as well as several protocol
+message components, have an associated size (or "count"). Size values are always a
+non-negative number and encoded in one of two ways:</p>
+
+<ol>
+  <li>If the number of elements is less than 254, the size is encoded as a
+single byte indicating the number of elements</li>
+<li>If the number of elements is greater than or
+equal to 254, then the size is encoded as a byte with value 254, followed by a 32-bit integer indicating
+the number of elements</li>
+<li>null arrays and null strings are encoded as a byte with value 255.</li>
+</ol>
+
+<p>Using this encoding to indicate size is significantly cheaper than always using a 32-bit
+integer to store the size. This is especially true when marshalling sequences of short strings: counts of up to
+253 require only a single byte instead of four. This comes at the expense of counts greater than
+253, which require five bytes instead of four. However, for sequences or strings of length greater
+than 253, the extra byte is insignificant.</p>
+
+<h3 id="dataEncoding:basicTypes">Basic Types</h3>
+
+<p>The basic types are encoded as shown in <a href="#table1">Table 1</a>. Integer types (byte,
+short, int, long) are represented as two’s complement numbers. Floating point types (float,
+double) use the IEEE-754 standard formats [<a
+ href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a> <span
+class="editor">[Please move ref to a Bibliography]</span>].</p>
+
+<table style="caption-side:bottom" id="table1">
+<caption style="font-weight:bold">Table 1: Encoding for basic types.</caption>
+<tr><th>Type</th><th>Encoding</th></tr>
+<tr><td style="text-align:right;font-weight:bold">boolean</td><td>A single byte with value non-zero value for true, 0 for false.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">byte</td><td>Signed 8-bit integer.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">short</td><td>Signed 16-bit integer.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">int</td><td>Signed 32-bit integer.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">long</td><td>Signed 64-bit integer.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">float</td><td>32-bit float (IEEE-754 single-precision float).</td></tr>
+<tr><td style="text-align:right;font-weight:bold">double</td><td>64-bit float (IEEE-754 double-precision float).</td></tr>
+</table>
+
+
+<h3 id="dataEncoding:strings">Strings</h3>
+
+<p>Strings are encoded as a size, followed by the string contents in a UTF-8 format
+array of bytes. Strings are not null terminated. An empty but non-null string is encoded with a
+size of zero.</p>
+
+<p> On the wire, pvAccess transmits all strings as Unicode strings in UTF-8. Non-C++ 
+bindings of the pv normative implementations (pvAccess and pvData <span class="editor">[Add biblio references]</span>
+in particular) will use strings in their language-native Unicode representation and
+convert automatically to and from UTF-8 for transmission, so applications can
+transparently use characters from non-English alphabets. However, for C++, how strings
+are represented inside a process depends on the platform as well as the mapping that
+is chosen for a particular string. The default mapping is to std::string.  </p>
+
+<h3 id="dataEncoding:arrays">Arrays</h3>
+
+<p>Arrays are encoded as a size representing the number of elements in the array,
+followed by the elements encoded as specified for their type <span
+class="editor">[Add reference to types]</span>.</p>
+
+<h3 id="dataEncoding:bitSets">BitSets</h3>
+
+<p>BitSet is a pvData internal data type that represents a group of bits. It is serialised as a
+byte array.</p>
+
+<h3 id="dataEncoding:status">Status</h3>
+<p>
+pvAccess defines a structure to inform endpoints about completion status. It is
+nominally defined as:
+</p>
+<pre>
+struct Status {
+    byte type;          // enum { OK = 0, WARNING = 1, ERROR = 2, FATAL = 3 }
+    string message;
+    string stackDump;   // optional (provides more context data about the error), can be empty
+};
+</pre>
+
+<p>
+In practice, since the majority of Status instances would be OK with no message and no
+stackDump, a special definition of Status is made in the common case that all three
+of these conditions are met. If Status would be OK and no message and no stackDump
+are to be sent, then the special type value <code>-1</code> is used and string fields are omitted:
+</p>
+<pre>
+struct StatusOK {
+    byte type = -1;
+};
+</pre>
+
+<p> NOTE: a decision was made not to use a potentially large set of hardcoded error
+codes (enum), covering predicted issues. Rather, Status uses a short summary error
+"type" code, and permits any status message. This allows Status to express problems
+precisely, and avoids book-keeping problems.  </p>
+
+<h3 id="dataEncoding:introspectionData">Introspection Data</h3>
+
+<p>Each pvData datum (i.e. an instance of PVField) has an introspection description
+(i.e. an instance of a Field). A PVField is encoded as raw values. The Field provides
+metadata, which describes the data type of its associated PVField <span
+class="editor">[Should include a statement about what happens when a PVField
+expresses a structure. Maybe "If a PVField expresses a structure, then its Field
+will describe each member of that structure"]</span>. Since many different PVField instances
+share the same introspection description, it can be cached to avoid repeatedly
+sending it over the wire. Thus, Field encoding starts with a byte whose value must be
+one of the following: NULL, ID only or ID with actual Field serialization. The ID is
+encoded as short, and is a key used to cache Field descriptions. This cache is
+called the "introspection registry." IDs are valid only within one connection. Moreover,
+they can be defined only by the sender. The receiver only keeps track of IDs to be
+able to do deserialization.  Since communication is full-duplex this implies two
+introspection registries per connection. </p>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Field Encoding</caption>
+<tr><th>Field Encoding</th><th>Type</th><th>Description</th></tr>
+<tr><td>0xFF</td><td style="font-weight:bold">NULL_TYPE_CODE</td><td>No introspection data.</td></tr>
+<tr><td>0xFE + ID</td><td style="font-weight:bold">ONLY_ID_TYPE_CODE</td><td>Serialization contains only an ID (that was assigned by one of the previous FULL_WITH_ID descriptions).</td></tr>
+<tr><td>0xFD + ID + FieldDesc</td><td style="font-weight:bold">FULL_WITH_ID_TYPE_CODE</td><td>Serialization contains an ID (that can be used later, if cached) and full interface description.</td></tr>
+</table>
+
+<p>An actual Field introspection description (FieldDesc) is encoded as a byte that
+consists of 2 nibbles (4-bits). The upper nibble (MSBs) defines Field type (i.e. Type),
+the low nibble (LSBs) defines the data type (i.e. ScalarType) for scalar and scalarArray
+types. That byte is then followed by the Field instance name encoded as
+a string. Structure and structureArray types require more description. A structure
+requires an array of Fields (size followed by one or more Field as described above).
+StructureArray is similar, in addition it requires the name of the structure.
+</p>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">FieldDesc encoding.</caption>
+<tr><th>FieldDesc Encoding</th><th>Type</th><th>Description</th></tr>
+<tr><td>0x00 | ScalarType (0b0000xxxx) + name</td><td style="font-weight:bold">scalar</td><td>Scalar.</td></tr>
+<tr><td>0x10 | ScalarType (0b0000xxxx) + name</td><td style="font-weight:bold">scalarArray</td><td>Array of scalars.</td></tr>
+<tr><td>0x20 (0b00100000) + name + Field[]</td><td style="font-weight:bold">structure</td><td>Structure.</td></tr>
+<tr><td>0x30 (0b00110000) + name + (structure name + Field[])</td><td style="font-weight:bold">structureArray</td><td>Array of structures.</td></tr>
+</table>
+
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">ScalarType nibble encoding.</caption>
+<tr><th>Encoding</th><th>ScalarType</th></tr>
+<tr><td>0 (0b0000)</td><td style="text-align:left;font-weight:bold">boolean</td></tr>
+<tr><td>1 (0b0001)</td><td style="text-align:left;font-weight:bold">byte</td></tr>
+<tr><td>2 (0b0010)</td><td style="text-align:left;font-weight:bold">short</td></tr>
+<tr><td>3 (0b0011)</td><td style="text-align:left;font-weight:bold">int</td></tr>
+<tr><td>4 (0b0100)</td><td style="text-align:left;font-weight:bold">long</td></tr>
+<tr><td>5 (0b0101)</td><td style="text-align:left;font-weight:bold">float</td></tr>
+<tr><td>6 (0b0110)</td><td style="text-align:left;font-weight:bold">double</td></tr>
+<tr><td>7 (0b0111)</td><td style="text-align:left;font-weight:bold">string</td></tr>
+</table>
+
+
+<h4 id="dataEncoding:example">Example</h4>
+<p>
+Given the following structure, as my be expressed by a pvData PVStructure:
+</p>
+
+<pre>
+structure test1
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoSeconds
+    structure[] value
+        structure org.epics.ioc.test.testStructure
+            double value
+            structure location
+                double x
+                double y
+    string factoryRPC
+    structure arguments
+        int size
+    structure element
+        double value
+        structure alarm
+            int severity
+            string message
+        structure timeStamp
+            long secondsPastEpoch
+            int nanoSeconds
+</pre>
+
+<p>
+The introspection description of the above structure would be encoded by pvAccess as the following:
+</p>
+
+<pre>
+FD 00 01 20  05 74 65 73  74 31 05 FD  00 02 20 09  .... .tes t1.. .... 
+74 69 6D 65  53 74 61 6D  70 02 04 10  73 65 63 6F  time Stam p... seco 
+6E 64 73 50  61 73 74 45  70 6F 63 68  03 0B 6E 61  ndsP astE poch ..na 
+6E 6F 53 65  63 6F 6E 64  73 FD 00 03  30 05 76 61  noSe cond s... 0.va 
+6C 75 65 20  6F 72 67 2E  65 70 69 63  73 2E 69 6F  lue  org. epic s.io 
+63 2E 74 65  73 74 2E 74  65 73 74 53  74 72 75 63  c.te st.t estS truc 
+74 75 72 65  02 06 05 76  61 6C 75 65  FD 00 04 20  ture ...v alue ...  
+08 6C 6F 63  61 74 69 6F  6E 02 06 01  78 06 01 79  .loc atio n... x..y 
+07 0A 66 61  63 74 6F 72  79 52 50 43  FD 00 05 20  ..fa ctor yRPC ...  
+09 61 72 67  75 6D 65 6E  74 73 01 03  04 73 69 7A  .arg umen ts.. .siz 
+65 FD 00 06  20 07 65 6C  65 6D 65 6E  74 03 06 05  e...  .el emen t... 
+76 61 6C 75  65 FD 00 07  20 05 61 6C  61 72 6D 02  valu e...  .al arm. 
+03 08 73 65  76 65 72 69  74 79 07 07  6D 65 73 73  ..se veri ty.. mess 
+61 67 65 FE  00 02                                  age. ..
+</pre>
+
+<h3 id="dataEncoding:data">Data</h3>
+<p> Data (i.e. PVField) basically encodes only its data <span class="editor">["Data
+encodes only its data!" - disambiguate and remove circularity]</span>. The only exception is
+structureArray. Before each structure of an array there is a boolean flag indicating
+whether the structure is null or not.
+</p>
+
+<p> Each structure can have a BitSet instance defining what subset of that
+structure's fields have been serialized. This allows partial serialization of
+structures. That is, sending only fields that have changed rather than the entire structure. Each
+node of a structure corresponds to one bit; if a bit is set then its corresponding field
+has been serialized, otherwise not. BitSet does not apply to array elements <span
+class="editor">[Clarify role of BitSet with respect to structureArray]</span>>.
+</p>
+
+<h4 id="data:example">Example</h4>
+<pre>
+bit#    field
+0    structure 
+1        structure timeStamp
+2            long secondsPastEpoch 1296564296
+3            int nanoSeconds 819000000
+4        structure[] value 
+            structure org.epics.ioc.test.testStructure
+                double value 100
+                structure location
+                    double x 0
+                    double y 0
+            structure org.epics.ioc.test.testStructure
+                double value 200
+                structure location
+                    double x 5
+                    double y 10
+5        string factoryRPC org.epics.ioc.support.rpc.ExampleChannelRPCFactory
+6        structure arguments
+7            int size 2
+8        structure element
+9            double value 0
+10            structure alarm
+11                int severity 0
+12                string message 
+13            structure timeStamp
+14                long secondsPastEpoch 0
+15                int nanoSeconds 0
+</pre>
+<p>
+The structure above requires 16 bits, i.e. 2 bytes.</p>
+<p>
+NOTE: for performance
+reasons BitSet implementation stores bits as longs, however serialization is
+optimized to send only least possible number of bytes (the LSB part that covers all the
+bits set). 
+</p>
+<p>
+If the bit corresponding to a
+structure node is set then all the fields of that node have to be
+de-/serialized. The example below shows the case where an entire structure is sent, i.e. bit 0 is set:</p>
+<pre>
+                   01 01  00 00 00 00  4D 48 00 48         .. .... MH.H 
+30 D0 F2 C0  02 01 40 59  00 00 00 00  00 00 00 00  0... ..@Y .... .... 
+00 00 00 00  00 00 00 00  00 00 00 00  00 00 01 40  .... .... .... ...@ 
+69 00 00 00  00 00 00 40  14 00 00 00  00 00 00 40  i... ...@ .... ...@ 
+24 00 00 00  00 00 00 32  6F 72 67 2E  65 70 69 63  $... ...2 org. epic 
+73 2E 69 6F  63 2E 73 75  70 70 6F 72  74 2E 72 70  s.io c.su ppor t.rp 
+63 2E 45 78  61 6D 70 6C  65 43 68 61  6E 6E 65 6C  c.Ex ampl eCha nnel 
+52 50 43 46  61 63 74 6F  72 79 00 00  00 02 00 00  RPCF acto ry.. .... 
+00 00 00 00  00 00 00 00  00 00 00 00  00 00 00 00  .... .... .... .... 
+00 00 00 00  00 00 00                               .... ...
+</pre>
+<p>NOTE: first six bytes are erased in the illustration above because they
+were not part of this example structure's serialization.
+</p>
+
+<h2 id="protocolMessages">Protocol Messages</h2>
+<p>
+The pvAccess protocol uses two protocol message types:
+<ul>
+<li>control messages (flow control, no payload) </li>
+<li>application messages (requests and their responses).</li>
+</ul>
+</p>
+
+<p>
+Each message consists of a message header and, optionally, a message payload that
+immediately follows the header. The message part is aligned to 64-bits.
+</p>
+
+<h3 id="protocolMessages:messageHeader">Message header</h3>
+<p>
+Each protocol message has a fixed 8-byte header that is encoded as if it were
+expressed by the following structure:
+</p>
+<pre>
+struct pvAccessHeader {
+    byte magic;
+    byte version;
+    byte flags;
+    byte messageType;
+    int payloadSize;
+};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">pvAccess header members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">magic</td><td>pvAccess protocol magic code, 0xCA.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">version</td><td>Protocol reversion.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">flags</td><td>Message flags.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">messageType</td><td>Message type (i.e. create, get, put, process, etc.).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">payloadSize</td><td>Message payload size (non-aligned, in bytes).</td></tr>
+</table>
+
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">pvAccess header flags description.</caption>
+<tr><th>bit</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">0</td><td>Application/Control [0/1] message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">1,2,3</td><td>Unused</td></tr>
+<tr><td style="text-align:right;font-family:monospace">4</td><td>First message (of set of segmented messages).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">5</td><td>Last message (of set of segmented messages).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">6</td><td>Unused.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">7</td><td>Little/Big [0/1] endian byte order.</td></tr>
+</table>
+    
+<p>
+NOTE: If bits 4 and 5 are both set this indicates this message is between the first and last
+message of a set of segmented messages. If neither is set then this message is not
+part of a segmented set <span class="editor">What about if either but not both is set?</span>.
+</p>
+
+<!---- END EDITS UP TO DEC 15 By GREG ---->
+
+<h2 id="protocolMessages:applicationMessages">Application Messages</h2>
+<p>
+This section describes all the application messages (0-th bit of <i>pvAccessHeader.flags</i> is not set) for different  <i>pvAccessHeader.messageType</i> values.
+</p>
+<p>In order to understand specific application messages it is strongly recommended to
+be familiar with the <a href="http://epics-pvdata.sourceforge.net/doc/pvAccessJava/client.html">pvAccess client interface</a>.</p>
+
+<h3 id="protocolMessages:applicationMessages:beacon">Beacon (0x00)</h3>
+<p>
+Beacons are sent over UDP to clients. Beacons are only used to announce new servers and server restarts. 
+</p>
+
+<pre>
+struct beaconMessage {
+    short beaconSequenceId;
+    long startupTimeSeconds;
+    int startupTimeNanos;
+    byte[16] serverAddressIPv6;
+    short serverPort;
+    FieldDesc serverStatusIF;
+    [if serverStatusIF != null] PVField serverStatus;
+};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Beacon message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">beaconSequenceId</td><td>Beacon sequence ID (counter w/ rollover). Can be used to detect UDP routing problems.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">startupTimeSeconds</td><td>Server startup time (seconds past 1.1.1970).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">startupTimeNanos</td><td>Server startup time (nanoseconds part).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverAddressIPv6</td><td>Server IPv6 address (or IPv6 encoded IPv4 address).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverPort</td><td>Server port (where server TCP/IP is listening).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverStatusIF</td><td>Optional server status Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverStatus</td><td>Optional server data.</td></tr>
+</table>
+
+<p>    
+A beacon received from an as yet unknown serverAdddressIPv6:serverPort means new
+server has come online. A beacon with the same serverAdddressIPv6:serverPort address
+as one already received but different startupTime{Seconds,Nanos} means that a server was restarted.
+</p>
+
+<p>
+NOTE: it was agreed by the EPICS V4 Working Group that servers would have time set on
+every restart (via NTP).
+</p>
+
+<p> NOTE: beacons are no longer used to report server-alive status (this is done by
+monitoring TCP/IP traffic – if there is traffic from a server, then that server is
+alive). This reduces UDP traffic. A server must at least send a couple of beacons to
+notify that it is alive (e.g. 1Hz). After this it can stop sending them, or send at a
+low rate (one per every couple of minutes) to report serverStatus.  <span
+class="editor">[Not clear whether the server must initially send beacons at some rate
+(as suggested by giving a rate of 1Hz example, or only once.]</span> </p>
+
+
+<h3 id="protocolMessages:applicationMessages:connectionValidation">Connection validation (0x01)</h3>
+
+<p> A "connection validation" message must be first application message sent from the
+server to a client when a TCP/IP connection is established. The message indicates
+that the server is ready to receive requests; the client must not send any messages
+on the connection until it has received a connection validation message from the
+server.
+</p>
+
+<p> The purpose of the connection validation message is two-fold:
+</p>
+
+<ul>
+<li>It informs the client of the connection and protocol details</li>
+<li>It prevents the client from writing a request message to its local transport
+buffers until after the server has acknowledged that it can actually process the
+request. This avoids a race condition caused by the server's TCP/IP stack accepting
+connections in its backlog while the server is in the process of shutting down. If
+the client were to send a request in this situation, the request would be lost but
+the client could not safely reissue the request because that might violate
+at-most-once semantics.</li>
+</ul>
+
+<p>The connection validation message guarantees that a server is not in the middle of
+shutting down when the server's TCP/IP stack accepts an incoming connection and so
+avoids the race condition.  </p>
+
+<pre>
+struct connectionValidationRequestToClient {
+    int serverReceiveBufferSize;
+    int serverReceiveSocketBufferSize;
+};
+
+struct connectionValidationResponseFromClient {
+    int clientReceiveBufferSize;
+    int clientReceiveSocketBufferSize;
+    short priority; // for now in range of [0-100]
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:echo">Echo (0x02)</h3>
+
+<p> An Echo diagnostic message is usually sent when there is a suspicion that the server
+is no longer functional (no TCP/IP traffic). It can also be sent over UDP/IP to get
+list of all servers.  </p>
+
+<pre>
+struct echoRequest {
+    byte[] somePayload;
+};
+
+struct echoResponse {
+    byte[] samePayloadAsInRequest;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:searchRequest">Search request (0x03)</h3>
+
+<p> A channel "search request" message can be sent over UDP/IP, however UDP congestion control
+is highly recommended to implemented in this case. <span class="editor">["can"
+indicates there is an alternative; clarify when UDP/IP and when not, if not then
+what's the alternative and in what circumstances]</span> </p>
+
+<pre>        
+struct searchRequest {
+    int searchSequenceID;
+    byte replyRequired; // 0x01 if “response required” (even for not found channels), otherwise 0x00
+    struct {      // not serialized as pvData
+        int searchInstanceID;
+        string channelName;
+    } channels[];
+};
+</pre>
+
+<p>
+The response to a search request MUST be sent as messageType 0x04, see below.
+</p>
+
+<h3 id="protocolMessages:applicationMessages:searchResponse">Search response (0x04)</h3>
+<p>
+A "search response" message MUST be sent as the response to a search request (0x03) message.
+</p>
+
+<pre>
+struct searchResponse {
+    int searchSequenceID;
+    boolean found;
+    byte[16] serverAddressIPv6;
+    short serverPort;
+    int[] searchInstanceIDs;
+};
+</pre>
+<p>NOTE: we enforce TCP here, what about making it more generic and returning URI
+instead. <span class="editor">[Seems two things are being said by this note. Split
+them up. If search response MUST be made in TCP say so explicitly. The question
+should be a separate note.]</span></p>
+
+<h3 id="protocolMessages:applicationMessages:createChannel">Create channel (0x07)</h3>
+
+<p>
+<span class="editor">[Insert the purpose and function of the create channel message]</span></p>
+
+<pre>
+struct createChannelRequest {
+    struct {     // not serialized as pvData
+        int clientChannelID;  // generated by a client
+        string channelName;
+    } channels[];
+};
+
+struct createChannelResponse {        // per channel
+    int clientChannelID;
+    int serverChannelID;     // generated by a server
+    Status status;
+    //TODO short accessRights;
+};
+</pre>
+<p>NOTE: A server MUST store the clientChannelID and respond back with its value in a
+    destroyChannelMessage, see below <span class="editor">[in what circumstances]</span>.
+A client uses the serverChannelID value for all subsequent requests on the
+    channel. Client side code MUST NOT make any
+assumptions about how given IDs are generated. IDs MUST be unique within a connection
+    but MAY be recycled <span class="editor">[recycled within what scope?</span>.</p>
+
+<h3 id="protocolMessages:applicationMessages:destroyChannel">Destroy channel (0x08)</h3>
+
+<p>
+<span class="editor">[Insert the purpose and function of the destroy channel message]</span></p>
+
+<pre>
+struct destroyChannelRequest {
+    struct {     // not serialized as pvData
+        int clientChannelID;
+        int serverChannelID;
+    } channels[];
+};
+</pre>
+<p>NOTE: A server MAY send this message to a client to notify the client about remote channel destruction.
+Subsequently, a client MUST <span class="editor">MUST, or MAY?</span> start sending search request messages for the channel.</p>
+
+<h3 id="protocolMessages:applicationMessages:channelGet">Channel get (0x0A)</h3>
+
+<p>
+<span class="editor">[Insert the purpose and function of the channel get message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelGetRequestInit {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x08;
+    FieldDesc pvRequestIF;
+    PVField pvRequest;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelGetResponseInit {
+    int requestID;
+    byte subcommand;        // same as in request
+    Status status;
+    FieldDesc pvStructureIF;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelGetRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x40 mask for GET; 0x10 mask for DESTROY;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelGetResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+    BitSet changedBitSet;
+    PVField pvStructureData;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:channelPut">Channel put (0x0B)</h3>
+
+<span class="editor">[Insert the purpose and function of the channel get message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelPutRequestInit {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x08;
+    FieldDesc pvRequestIF;
+    PVField pvRequest;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelPutResponseInit {
+    int requestID;
+    byte subcommand;        // same as in request
+    Status status;
+    FieldDesc pvPutStructureIF;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelPutRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x00 mask for PUT; 0x10 mask for DESTROY;
+    BitSet toPutBitSet;
+    PVField pvPutStructureData;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelPutResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelGetPutRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x40;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelGetPutResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+    PVField pvPutStructureData;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:channelPutGet">Channel put-get (0x0C)</h3>
+
+<span class="editor">[Insert the purpose and function of the channel put-get message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelPutGetRequestInit {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x08;
+    FieldDesc pvRequestIF;
+    PVField pvRequest;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelPutGetResponseInit {
+    int requestID;
+    byte subcommand;        // same as in request
+    Status status;
+    FieldDesc pvPutStructureIF;
+    FieldDesc pvGetStructureIF;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelPutGetRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x00 mask for PUT_GET; 0x10 mask for DESTROY;
+    BitSet toPutBitSet;
+    PVField pvPutStructureData;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelPutGetResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+    PVField pvGetStructureData;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+// get remote put structure data
+struct channelGetPutRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x80;
+};
+
+struct channelGetPutResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+    PVField pvPutStructureData;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+// get remote get structure data
+struct channelGetGetRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x40;
+};
+
+struct channelGetGetResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+    PVField pvGetStructureData;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:channelMonitor">Channel monitor (0x0D)</h3>
+
+<span class="editor">[Insert the purpose and function of the channel monitor message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelMonitorRequestInit {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x08;
+    FieldDesc pvRequestIF;
+    PVField pvRequest;
+};
+
+struct channelMonitorResponseInit {
+    int requestID;
+    byte subcommand;        // same as in request
+    Status status;
+    FieldDesc pvStructureIF;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelStartMonitorRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x44;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelStopMonitorRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x04;
+};
+
+struct channelDestroyMonitorRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x10;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelMonitorResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    BitSet changedBitSet;
+    PVField pvStructureData;
+    BitSet overrunBitSet;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:channelArray">Channel array (0x0E)</h3>
+
+<span class="editor">[Insert the purpose and function of the channel monitor message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelArrayRequestInit {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x08;
+    FieldDesc pvRequestIF;
+    PVField pvRequest;
+};
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+struct channelArrayResponseInit {
+    int requestID;
+    byte subcommand;        // same as in request
+    Status status;
+    FieldDesc pvArrayIF;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelGetArrayRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x40 mask for GET; 0x10 mask for DESTROY;
+    size offset;    // -1 == unspecified
+    size count;  // -1 == unspecified
+};
+
+struct channelGetArrayResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+    PVField pvArrayData;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelPutArrayRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x00 mask for PUT; 0x10 mask for DESTROY;
+    size offset;    // -1 == unspecified
+    PVField pvArrayData;
+};
+
+struct channelPutArrayResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelSetLengthRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x80 mask for SET_LENGTH; 0x10 mask for DESTROY;
+    size offset;    // -1 == unspecified
+    size count;  // -1 == unspecified
+};
+
+struct channelSetLengthResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:channelCancelRequest">Channel cancel request (0xF)</h3>
+
+<span class="editor">[Insert the purpose and function of the channel cancel request message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+// destroys any request with given requestID
+struct channelDestroyRequestInit {
+    int serverChannelID;
+    int requestID;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:channelProcess">Channel process (0x10)</h3>
+
+<span class="editor">[Insert the purpose and function of the channel process message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelProcessRequestInit {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x08;
+    FieldDesc pvRequestIF;
+    PVField pvRequest;
+};
+
+struct channelProcessResponseInit {
+    int requestID;
+    byte subcommand;        // same as in request
+    Status status;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelProcessRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x00 mask for PROCESS; 0x10 mask for DESTROY;
+};
+
+struct channelProcessResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:channelGetField">Get channel introspection data (0x11)</h3>
+
+<span class="editor">[Insert the purpose and function of the channel introspection message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelGetFieldRequest {
+    int serverChannelID;
+    int requestID;
+    string subFieldName;  // entire record if empty
+};
+
+struct channelGetFieldResponse {
+    int requestID;
+    Status status;
+    [if status is success] FieldDesc subFieldIF;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:message">Message (0x12)</h3>
+
+<span class="editor">[Insert the purpose and function of the message (!) message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct message {
+    int requestID;
+    byte messageType; // info = 0, warning = 1, error = 2, fatalError = 3
+    string message;
+};
+</pre>
+
+<h3 id="protocolMessages:applicationMessages:channelRPC">Channel RPC (0x14)</h3>
+
+<span class="editor">[Insert the purpose and function of the channel RPC message]</span></p>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelRPCRequestInit {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x08;
+    FieldDesc pvRequestIF;
+    PVField pvRequest;
+};
+
+struct channelRPCResponseInit {
+    int requestID;
+    byte subcommand;        // same as in request
+    Status status;
+};
+</pre>
+
+<span class="editor">[Insert explanatory text for EVERY SINGLE message struct, even
+if its function, definition and content values appear self evident.]</span></p>
+
+<pre>
+struct channelRPCRequest {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x00 mask for RPC; 0x10 mask for DESTROY;
+    FieldDesc pvStructureIF;
+    PVField pvStructureData;
+};
+
+struct channelRPCResponse {
+    int requestID;
+    byte subcommand;         // same as in request
+    Status status;
+    FieldDesc pvResponseIF;
+    PVField pvResponseData;
+};
+</pre>
+
+<h2 id="connectionEstablishment">Connection Establishment</h2>
+
+<p> Each TCP connection has an associated priority <span class="editor">[defined
+where?]</span>, which can be used by a server to prioritize requests. Regardless of
+how many channels are handled by either client or server, each client and server pair
+will be connected with exactly one TCP connection for each priority level. The
+priority is specified when TCP connection is being established.  </p>
+
+<p> When establishing a TCP connection, a simple handshake is performed. The client
+opens a TCP connection to the server and waits until the Connection Validation
+message is received. The server MUST initially send a Set byte-order control message
+to notify the client about byte-order the to be used for this TCP connection. After
+that the server MUST send the Connection Validation
+<code>connectionValidationRequestToClient</code> message. If client correctly decodes
+the Connection Validation message it responds with a <code>
+connectionValidationResponseFromClient</code> response message. After that, client
+may start sending requests <span class="editor">[which messages may it send
+specifically?]</span>. The client SHOULD keep the connection established until the last active
+channel gets destroyed. However, to optimize resource reallocation it might delay
+connection destruction <span class="editor">[delay until when?]</span>.</p>
+
+<p> Both parties monitor incoming connection traffic. As long there is incoming
+traffic, the TCP connection is considered as healthy; if there is no incoming traffic
+detected within a predetermined period of time <span class="editor">[on what
+timescale?]</span>, an echo message MAY BE sent to the other party to trigger incoming
+traffic to appear. If there no response in a predetermined period of time, the
+connection MAY BE marked as unresponsive. The connection MAY BE reported to be
+responsive when an incoming traffic is again detected. Alternatively, incoming
+traffic monitoring MAY BE be omitted and echo message periodically sent. <span
+class="editor">[Must it be that one or the other of these strategies must be used, or
+is it permitted to use neither? Can user level code indicate which strategy
+must be used? If so, how?</span>.</p>
+
+<h2 id="flowControl">Flow Control</h2>
+
+<p>Usually flow control algorithms wait for congestion to occur before they are
+triggered. They are causal. However, due to the isolated nature of TCP connection - there are
+always only two parties involved - it is possible to predict congestions using the
+following algorithm: </p>
+
+<ul>
+  <li>both parties exchange their receive socket and local buffer sizes</li>
+
+  <li>periodically, i.e. every N bytes, they send a control message marking total
+  bytes sent to the other party</li>
+
+  <li>when the other party receives the control message it responds back with 
+  complementary control message indicating the received marker value. This
+  acknowledges the reception of total bytes sent</li>
+
+  <li>the difference between total bytes sent and last acknowledged marker received
+  tells how much other party receive buffers are full. This number should never
+  exceed the total sum of receive buffers.</li>
+
+</ul>
+Flow control is needed only to optimize subscription messages back to the client
+(i.e. monitors), for other large messages TCP flow control is sufficient. </p>
+
+<p>A pvAccess implementation SHOULD implement flow control such that each endpoint
+should try to send as much monitoring data as it can subject to an upper limit
+calculated with respect to the amount of other party's free
+receive buffer size. Were this limit to be reached, monitors would start pilling up in
+the monitors' circular buffer queues <span class="editor">[how can monitors start
+pilling up in monitors anything - is "monitor" being used in two ways?]</span> </p>
+
+<h2 id="flowControlExample">Flow Control Example</h2>
+<p>
+The intention of flow control is to avoid having the following behavior (under pure TCP flow control):
+<ul>
+<li>Let's assume the client's Rx buffers are full</li>
+<li>The server is sending monitors until TCP detects client's Rx buffer is full</li>
+<li>After some time the client's Rx buffer is immediately emptied (since we do bulk
+reads from the socket - not message by message (because OS calls are expensive)</li>
+<li>Server starts sending monitors until all the buffers are full (sever will fill all the buffers before client actually processed received monitors!)</li>
+</ul>
+</p>
+
+<p>
+Such as situation as described above would result in monitors as below (identified by
+their sequential number):
+<pre>0 1 2 3 4 (buffers full) 7 8 9 10 11 12 (buffers full) 22 23 24  25 26 27 28 (buffers full)</pre>
+
+Flow control can make this better:
+<pre>0 1 2 3 4 (buffers full) 7 8 (buffers full, but for less time since the server
+would send only as much as the client can handle) 10 11 (...) 14 15 (...) 18 19</pre>
+</p>
+
+
+<h2 id="channelDiscovery">Channel Discovery</h2>
+
+<p> pvAccess uses broadcast/multicast channel discovery mechanism via UDP; search
+messages are usually sent to a broadcast addresses and servers hosting searched
+channels respond with a message containing their TCP address and port.  In addition
+pvAccess transparently supports multicast, if an address is a multicast address the
+implementation should transparently handle it.
+</p>
+
+<p> <span class="tbs">To be specified:</span> Proper UDP congestion control needs to
+be implemented to prevent flooding the network with UDP search messages.  Currently a
+simple and robust algorithm is used in the reference implementation. The algorithm
+needs to be specified (or some more clever algorithm invented).  </p>
+
+<h2 id="controlMessages">Control Messages</h2>
+
+<p> This section describes all the control messages (0-th bit of
+<i>pvAccessHeader.flags</i> is set) for different <i>pvAccessHeader.messageType</i>
+values.  </p>
+
+<h3 id="protocolMessages:controlMessages:mark">Mark Total Byte Sent (0x00)</h3>
+<p>
+Payload size field holds the value of total bytes sent.
+</p>
+
+<h3 id="protocolMessages:controlMessages:ackMark">Acknowledge Total Bytes Received (0x01)</h3>
+
+<p> Payload size field holds the acknowledge value of total bytes received (must
+match previously received marked value).  </p>
+
+
+<h3 id="protocolMessages:controlMessages:endianess">Set byte-order (0x02)</h3>
+<p>
+7-th bit of header flags field indicated selected byte-order. Payload equals 0.
+</p>
+
+<h2 id="futureProtocolChanges">Future Protocol Changes/Updates</h2>
+<p><span class="tbs">The following are known items that should be specified in future
+revisions:</span>
+<ul>
+<li>"one-phase" get/put/get-put/process</li>
+<li>immutable fields support, cache implemented for values (useful for enums)</li>
+<li>optimized packed Monitor responses</li>
+<li>protocol compression (negotiation), SSL</li>
+<li>bulk message transfer/trottle public API</li>
+<li>QoS (priorities, latency)</li>
+<li>access rights</li>
+</ul>
+</p>
+
+<h2 
+</body>
+</html>
