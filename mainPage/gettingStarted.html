@@ -3,7 +3,6 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
- <title>EPICS V4 Getting Started</title>
 <meta name="keywords" content="EPICS, EPICSv4" />
  <!--link rel="stylesheet" type="text/css"
       href="http://www.w3.org/2006/02/charter-style.css" / -->
@@ -24,6 +23,8 @@
      body { margin-right: 10% }
 /*]]>*/
 </style>
+</head>
+
 <div class="head">
 <h1>GETTING STARTED WITH EPICS V4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
@@ -217,12 +218,13 @@ the <a href="http://epics-pvdata.sourceforge.net/home.html#membership" >particip
 
 <pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
 
-<p>See <a href="#appendix:a" >Appendix A</a> if you'd like to set up your sourceforge
-account so that SSH operations can proceed without a password. Of course, for command
-line development as is described here, passwordless ssh authentication to sourceForge
-Mercurial is not necessary it's just nice. But for Eclipse development it is
-important because of problems in Eclipse's Mercurial tools when they come to needing
-a password from the user.</p>
+<p>See <a href="passwordlessAccessToSourceForge.html">the Cheatsheet for Passwordless
+SSH Access to SourceForge for EPICS V4 Development</a> if you'd like to set up your
+sourceforge account so that SSH operations can proceed without a password. Of course,
+for command line development as is described here, passwordless ssh authentication to
+sourceForge Mercurial is not necessary it's just nice. But for Eclipse development it
+is important because of problems in Eclipse's Mercurial tools when they come to
+needing a password from the user.</p>
 
 <h4 id="createlocalrepo">Create your local Mercurial "repo" for your EPICS V4 work</h4>
 
@@ -304,7 +306,7 @@ with pvDataJava since it has no dependencies, then pvAccessJava, then pvIOCJava.
 </p>
 <p>If this is really the first maven build you've done,
 the first mvn compile line below will result in 2 things; Firstly, it will create
-your local "m2 repo". Then it will initialte <strong>many</strong> downloads from
+your local "m2 repo". Then it will initiate <strong>many</strong> downloads from
 sourceForge, plus from Maven and prerequisites of Maven. But if you chose
 this path to EPICS v4, so you knew that. Personally, I think it's nuts.]
 </p>
@@ -361,7 +363,7 @@ write code that compiles and executes against the jar files above.</p>
 <p>For Java client and server examples, at the time of writing, see the source code
 
 in the examplesJava module. You can find this on the epics-pvdata web site  [<a
-href="#ev4examples">ev4examples</a>]. At the time of writting, examplesJava contains
+href="#ev4examples">ev4examples</a>]. At the time of writing, examplesJava contains
 2 examples, both of RPC style servers (that is, pass arguments to EPICS V4 server, get data back
 dependent on the arguments).</p>
 
@@ -384,7 +386,7 @@ back to an EPICS V4 client. rdbService illustrates:</P>
   <li>Putting complex data into an EPICS V4 pvStructure (the basic complex data
   object of pvData), ready for returning results back to the EPICS V4 client</li>
   <li>Client side calling the server, and getting the results</li>
-  <li>Uppacking complex data out of a pvStructure</li>
+  <li>Unpacking complex data out of a pvStructure</li>
   <li>Illustration of the idea of using the NTTable EPICS V4 "normative type" (though
   the definition of an NTTable is likely to change soon</li>
   <li>Helpers for trasformation of array pvData to Java Vectors</li>
@@ -427,7 +429,7 @@ You will <a href="#prerequisites">need the Mercurial client tools, as described 
 
 <p>
 Decide where you want to place your code. If you have not already done so <a href="#createlocalrepo" >create the
-Mercurial repo home directoy there</a>. Go to that directory and check out the
+Mercurial repo home directory there</a>. Go to that directory and check out the
 3 core EPICS V4 modules source code with a Mercurial clone [again this example shows using the SSH
 URL in this example, you may use an HTTP URL instead, see Java example above for more]:
 </p>
@@ -494,7 +496,7 @@ available through pvAccess to EPICS V4 pvAccess clients. </p>
 
  <ol>
    <li>   
-   <code>cd</code> to the exmaple directory <span class="editor">TODO: Add in which
+   <code>cd</code> to the example directory <span class="editor">TODO: Add in which
    repo, pvDataCPP?</span></li>
    <li>Unzip the example.zip file <span class="editor">TODO: Add command for unzip</span>
    </li>
@@ -545,7 +547,7 @@ include         - ?
 documentation   - ?
 pvDataApp  - source code
 testApp    - test code. [TODO How much of this is generally useful?]
-test       - [TODO: looks like test scripts. Could these be decribed somehow]
+test       - [TODO: looks like test scripts. Could these be described somehow]
 </pre>
 
 <pre>
@@ -740,69 +742,6 @@ float03
 epics>  
 </pre>
 
-<h2 id="appedix:a">APPENDIX A: Setup for Passwordless Access to SourceForge</h2>
-
-<p>These instructions were written for programmers of the epics-pvdata
-sourceForge project, but are probably general to any sourceForge project.</p>
-
-<p>They're based on reference instructions at sourceForge [<a href="#sfssh" >[sf ssh</a>]. Also, they're
-written for Mac OS X command line, but any unix is probably the same, so for "mac" read,
-your local machine.</p>
-
-<ol>
-
-  <li>
-  <p>On your mac in your user account, execute ssh-keygen and follow the prompts. You
-  want a the file <code>~/.ssh/id_dsa.pub</code> when you've finished (see [<a href="#sfssh" >[sf
-  ssh</a>]).</p>
-  
-  <pre>% ssh-keygen -t dsa -C "your_sourceforge_userid@shell.sf.net"</pre>
-  </li>
-
-  <li>
-  <p>Install your key into your sourceforge account:</p>
-
-  <ol>
-    <li>
-    <p> If you can, use ssh itself (see below if this doesn't work for you):</p>
-
-    <pre>
-% ssh -i /Users/greg/.ssh/id_dsa.pub your_sourceforge_userid@epics-pvdata.hg.sourceforge.net
-your_sourceforge_userid@epics-pvdata.hg.sourceforge.net's password: ******
-Welcome to *.hg.sourceforge.net
-This is a restricted Shell Account
-You cannot execute anything here.
-Connection to epics-pvdata.hg.sourceforge.net closed.
-</pre>
-
-    </li>
-    <li>
-
-    <p> Or, if that above doesn't work, use the manually mechanism given on your
-    Sourceforge Account Services page. Copy and paste the contents of your
-    <code>~/.ssh/id_dsa.pub</code> file, as created by ssh-keygen above, into the window provided in your account
-    services page as described in "SSH Key Posting" of [<a href="#sfssh" >[sf
-    ssh</a>].</p>
-
-    </li>
-
-    </li>
-  </ol>
-
-  <li>
-
-  <p>Update your ssh config file to specify that for the epics-pvdata
-sourceforge site at least, to use passwordless authentication. That is, add the following lines to your
-own <code>~/.ssh/config</code> file:</p>
-<pre>
-Host epics-pvdata.hg.sourceforge.net
-PreferredAuthentications publickey
-IdentityFile /Users/&lt;your computer username&gt;/.ssh/id_dsa     &lt;==edit
-User &lt;your sourceforge username&gt;      &lt;== edit
-</pre>
-</li>
-<li>Test it. <code>hg pull</code> should work without a password</li>
-</ol>
 
 <h2>References</h2>
 <dt id="downloadsite">[EPICS V4 download site]</dt>
@@ -820,5 +759,10 @@ User &lt;your sourceforge username&gt;      &lt;== edit
 <dt id="bib:pvIOCCPP">[bib:pvIOCCPP]</dt>
 <dd>Getting Started with the C++ implementation of pvIOC, 
   <a href="http://epics-pvdata.sourceforge.net/doc/pvIOCCPP.html">http://epics-pvdata.sourceforge.net/doc/pvIOCCPP.html</a></dd>  
+
+<hr />
+<address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
+<!-- hhmts start -->Last modified: Sun Dec 11 18:04:27 PST 2011 <!-- hhmts end -->
+
 </body>
 </html>
