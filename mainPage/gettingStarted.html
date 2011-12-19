@@ -28,12 +28,12 @@
 <div class="head">
 <h1>GETTING STARTED WITH EPICS V4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
-<h2 class="nocount">Getting Started with EPICS V4, Editors Draft, 29-Nov-2011</h2>
+<h2 class="nocount">Getting Started with EPICS V4, Editors Draft, 19-Dec-2011</h2>
 <dl>
 <dt>This version:</dt>
 <dd><a href=
-"http://epics-pvdata.sourceforge.net/gettingStartedWithEPICSV4_20111129.html">
-gettingStartedWithEPICSV4_20111129.html</a></dd>
+"http://epics-pvdata.sourceforge.net/gettingStarted_20111219.html">
+gettingStarted_20111219.html</a></dd>
 <dt>Latest version:</dt>
 <dd><a href=
 "http://epics-pvdata.sourceforge.net/gettingStartedWithEPICSV4.html">gettingStartedWithEPICSV4.html</a></dd>
@@ -56,7 +56,8 @@ EPICS V4 offers, for services and interfacing to EPICS V3 control data.</p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
 
-<p>This is the 29-Nov-2011 version of the Getting Started with EPICS V4. This
+<p>This is the 19-Dec-2011 version of the Getting Started with EPICS V4. This is a
+minor edit to the 30-Nov-2011 version to clarify the compile dependency of pvAccess. This
 version includes Java development, with Mercurial and Maven, and C++
 development with Mercurial and make.</p>
 
@@ -281,7 +282,8 @@ software.</p>
 <ul>
 <li>pvDataJava has no dependencies</li>
 <li>pvAccessJava depends on pvDataJava</li>
-<li>pvIOCJava depends on pvAaccessJava and pvDataJava and CAJ.jar and JCA.jar</li>
+<li>pvIOCJava depends on pvAaccessJava and pvDataJava for build. The pvIOCJava runtime
+additionally depends on CAJ.jar and JCA.jar</li>
 </ul>
 
 <p>CAJ and JCA's jars will be downloaded by maven by your build below, no need to get
@@ -762,7 +764,7 @@ epics>
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Sun Dec 11 18:04:27 PST 2011 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Dec 19 10:45:11 CET 2011 <!-- hhmts end -->
 
 </body>
 </html>
