@@ -2,13 +2,12 @@ EPICS V4 README
 
 This README file describes the download files available for EPICS V4.
 
-Status: This version of the README, 28-Nov-2011, pertains to SNAPSHOTs
-of the Java binding of EPICS V4 from this date. The C++ binding is
-available from source code, which you download from epics-pvdata's
-Mercurial repos directly. 
- 
-Author: Greg White, 28-Nov-2011 (gregory.white @ psi.ch) for EPICS V4
-team [1]
+Status: This is the 20-Dec-2011 version of the README, and pertains to the
+1.0-BETA release of EPICS V4. 
+Author: 28-Nov-2011 Greg White (gregory.white @ psi.ch) for EPICS 
+V4 team [1]
+Mod: 20-Dec-2011, Greg White, for 1.0-BETA, Java and C++.
+-----------------------------------------------------------------
 
 EPICS V4 [1] is a software toolkit for developing advanced control
 systems on top of EPICS [2], and fast service oriented architectures.
@@ -16,30 +15,40 @@ systems on top of EPICS [2], and fast service oriented architectures.
 epics-pvdata is a sourceForge project for managing the development of
 EPICS version 4.
 
-For examples of uses of the files referenced below, see the
+For Java examples of uses of the files referenced below, see the
 epics-pvdata exampleJava Mercurial repo [14]. So far only 
 examples of the "ChannelRPC" functionality of EPICS V4 are 
-included [15], but more will be added.
+included [15], but more will be added. 
 
 
-MINIMUM FILES FOR EPICS V4 RUNTIME 
+MINIMUM FILES FOR EPICS V4 JAVA IMPLEMENTATION 
 ----------------------------------
 The following files constitute the minimum runtime of the Java
-implementation of EPICS V4, and its prerequisites (caj and jca). These
-are available from the epics-pvdata sourceforge download site
+implementation of EPICS V4. These
+are available from the epics-pvdata sourceforge download site, presently
+under folder 1.0-BETA/.
 
-pvAccess-1.0-SNAPSHOT.jar *    The EPICS V4 "wire protocol" [6] [7]
-pvData-1.0-SNAPSHOT.jar *      The EPICS V4 support for high 
+pvAccess-1.0-BETA.jar *    The EPICS V4 "wire protocol" [6] [7]
+pvData-1.0-BETA.jar *      The EPICS V4 support for high 
                                performance data interchange [8]
-pvIOC-1.0-SNAPSHOT.jar *       The EPICS V4 Input/Output Processor 
+pvIOC-1.0-BETA.jar *       The EPICS V4 Input/Output Processor 
                                (IOC). I.e. the server side [9] 
 
-(*) At present we are simply building and releasing snapshots. In
-future, these will be version numbered.
+(*) The specific version number may change following modification of
+this README. It was last updated when the 1.0-BETA was released.
 
+You can also download and build the source from Mercurial. For that,
+see instructions in "Getting Started with EPICS V4" [16]. 
 
-FOR CONNECTING EPICS V4 to EPICS V3
------------------------------------
+FILES FOR EPICS V4 C++ IMPLEMENTATION 
+-------------------------------------
+The file EPICSv4-1.0-BETA.tar.gz includes all (and only) the C++
+implementation of EPICS V4, plus a make system based on EPICS V3's
+makefiles. This is available under folder 1.0-BETA/. Build instructions
+and example usage are given in [16].
+
+FOR CONNECTING EPICS V4 to EPICS V3 IN JAVA
+--------------------------------------------
 The pvAccess server (part of pvAccess, above) allows an existing
 Channel Access client to access a javaIOC database. The client allows
 the javaIOC to communicate with a Version 3 server, i.e. a javaIOC
@@ -99,4 +108,5 @@ http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e5
 [14] exampleJava, examples of use of EPICS V4 java binding, 
 http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src
 [15] ChannelRPC facility javadoc in pvIOC, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/rpcSupport.html
- 
+[16] Getting Started with EPICS V4, http://epics-pvdata.sourceforge.net/gettingStarted.html
+
