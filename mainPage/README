@@ -20,6 +20,20 @@ epics-pvdata exampleJava Mercurial repo [14]. So far only
 examples of the "ChannelRPC" functionality of EPICS V4 are 
 included [15], but more will be added. 
 
+SUMMARY
+-------
+The C++ implementation of EPICS V4 is in 1.0-BETA/EPICSv4-1.0-BETA.tar.gz
+The Java implementation of EPICS V4 is in 1.0-BETA/*.jar
+See Getting Started with EPICS V4, 
+http://epics-pvdata.sourceforge.net/gettingStarted.html
+
+FILES FOR EPICS V4 C++ IMPLEMENTATION 
+-------------------------------------
+The file EPICSv4-1.0-BETA.tar.gz includes all (and only) the C++
+implementation of EPICS V4, plus a make system based on EPICS V3's
+makefiles. This is available under folder 1.0-BETA/. Build instructions
+and example usage are given in [16].
+
 
 MINIMUM FILES FOR EPICS V4 JAVA IMPLEMENTATION 
 ----------------------------------
@@ -40,12 +54,6 @@ this README. It was last updated when the 1.0-BETA was released.
 You can also download and build the source from Mercurial. For that,
 see instructions in "Getting Started with EPICS V4" [16]. 
 
-FILES FOR EPICS V4 C++ IMPLEMENTATION 
--------------------------------------
-The file EPICSv4-1.0-BETA.tar.gz includes all (and only) the C++
-implementation of EPICS V4, plus a make system based on EPICS V3's
-makefiles. This is available under folder 1.0-BETA/. Build instructions
-and example usage are given in [16].
 
 FOR CONNECTING EPICS V4 to EPICS V3 IN JAVA
 --------------------------------------------
