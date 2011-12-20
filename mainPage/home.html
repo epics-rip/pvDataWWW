@@ -26,29 +26,30 @@
 </head>
 <body>
 <h1>EPICS Version 4 Working Group</h1>
-<table class="masthead" vspace="4px" width="100%">
+<table class="masthead" vspace="4px" width="100%" style="font-weight:bold">
   <tbody align="center">
     <tr>
       <td align="center"><a  target="_blank" href="index.html">HOME</a></td>
       <td align="center" ><a  target="_blank"
 	href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE PROJECT</a></td>      
 	<td align="center"><a href="development.html">DEVELOPMENT</a></td>
+      <td align="center"><a href="https://sourceforge.net/projects/epics-pvdata/files/">DOWNLOAD</a></td>
       <td align="center"><a href="faq.html">FAQ</a></td>
       <td align="center" style="background-color: rgb(0,128,255);"><span class="selectedtab" >WORKING GROUP
 </span></td>
-      <td align="center"><a
+      <td align="center" style="background-color:rgb(245,245,245)"><a
 	href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">MAIL
 	ARCHIVE</a></td>
-      <td align="center">
+      <td align="center" style="background-color:rgb(245,245,245)">
 	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2482257">ACTION ITEMS</a></td>
-      <td align="center">
+      <td align="center" style="background-color:rgb(245,245,245)">
 	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2483551">ISSUES</a></td>
-      <td align="center">
+      <td align="center" style="background-color:rgb(245,245,245)">
 	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2483530">RESOLUTIONS</a></td>
     </tr>
 </table>
 
-<p>This is the group home page of the EPICS v4 Working Group.</p>
+<p style="margin-top:30px">This is the group home page of the EPICS v4 Working Group.</p>
 
 <p><a href="index.html">EPICS v4</a> is a set of computer
 communications protocols, and a software framework, for high
@@ -68,103 +69,35 @@ the <a href="charter.html">EPICS v4 Charter</a>. </p>
 
 
 <h3 id="presentwork">Present Work</h3>
-<p>As of <strong>Status 7-November-2011</strong>, work is concentrating on
-simplifying EPICS V4 for the user programmer and regularizing APIs. Specifically,
+<p>As of <strong>Status 20-December-2011</strong>, work completed on BETA 1.0
+release! Work is now back concentrating on
+simplifying EPICS V4 for the user programmer, regularizing APIs, and interoperable
+types. Getting
+ready for<a href="charter.html#milestones" > March 2012 Milestone</a>. Specifically,
 present activities include:</p>
 <ol>
-  <li>Review of ezpva and "gather" continue </li>
+  <li>Review and commencement of ezpva and "gather" (Marty)</li>
   <li>ezpva rename. Question of whether to rename, and if so to do it. Depends on whether
   ezpva will include async acquisition</li>
   <li>Implementation of ezpva specification (Marty, Matej)</li>
-  <li>NT type definitions specifications (Bob)</li>
+  <li>NT type definitions specifications (Bob, Greg)</li>
   <li>NT type id definition (requires lead)</li>
-  <li>NT type implementations (requires lead)</li>
-  <li>Question of how to encode NTTable; in CORBA Any style, or as variant union</li>
+  <li>NT type implementations (Marty)</li>
+  <li>Formalize decisions about encode NTTable; in CORBA Any style, or as variant union</li>
   <li>Unsigned Int handling. Document, republish to observers, and implement</li>
   <li>Comments on pvAccess specification. Integration of remarks from Michael and
   others. Edits for lingo. (Matej, Marty, Greg).</li>
-  <li>pvAccess publication to techtalk</li>
-  <li>Reorganisation of pvData & pvIOC javadoc into "classical" javadoc plus
-  reference doc (Marty)</li>
   <li>Example and tests of use of pvAccess for async 'monitoring'. (Paul Gibbons,
   Marty, Bob). Outcome should be 1) example code in pvData, 2) Text for a getting
   started document</li>
   <li>Twiss model service design (Guobao, Greg)</li>
   <li>Model simulation service (aka "Online Calculator") design (Guobao, Greg)</li>
-  <li>EPICS V4 getting started developer's guide document preparation (Greg, Matej)</li>
-  <li>Publishing javadoc for EPICS V4 modules through Maven (Matej, Gabriele)</li>
   <li>Logging and setpoint save tool, design and implementation (Guobao, Marty)</li>
-  <li>Moving meeting hosting service from Adobe Connect to something else (Greg)</li>
-  <li>Development, code, and documentation standards (Matej, Greg)</li>
-  <li>use of Doxygen for documentation generation. What standards must be in place so
-  you get useful output, bit just pretty pages with nothing in them (needs lead)</li>
-  <li>Question: Sending pvStructure to a service. Is it supported? How do you do it? Need demo</li>
-  <li>Sending pvStructure that changes call to call through ezpva. Requires code changes (Matej, Marty)</li>
-  <li>Question: Build environment for EPICS V4 in a deployed lab setting (ie, Maven or just
-  Make?)</li>
+  <li>Formalize and publish, code, and documentation standards (Matej, Greg)</li>
   <li>Deploying rdbService at PSI (Greg)</li>
 </ol>
 <a href="activities_archive.html">Archive of previous activities.</a>
 
-<h3>Code bases</h3>
-
-<p><strong>Status 7-Nov-2011</strong></p> 
-
-<p>The implementation statuses of the core packages of Epics v4,
-pvData, pvAccess, pvIOC, and PvService, given by language support,
-are:<p>
-
-<h3 id="java:status">Java</h3>
-
-<p>pvData, pvAccess, pvIOC, and PvService packages exist and are being
-developed as Eclipse projects, made available through sourceforge
-project epics-pvdata. The Java version of the pvIOC is now named
-"javaIOC". We have moved to a Mercurial repository, and Maven is doing all interna
-build and test</p>
-
-<p>The following services have been started. Presently they can be found in
-PvService, though pvService is likely to be broken up into core support for
-services, and the services themselves removed: </p>
-
-<ul>
-<li>Relational Database - code is complete and tested, about to enter deployment at PSI</li>
-<li>itemFinder- Get a list of channel names and properties.  Both client 
-and server are implemented</li>
-<li>gather service framework- get/put/monitor a set of V3 channels, Both client and server 
-are implemented</li>
-<li>modelling - a framework for hosting beamline optics modelling codes as
-services. The framework is complete, but no modelling is implemented.</li>
-<li>Logging Service is being started</li>
-
-</ul>
-
-<h3 id="cpp:status">C++</h3> 
-
-<p>pvDataCPP and pvAccessCPP are completed and available via sourceforge 
-mercurial projects.</p>
-
-<p>pvIOCCPP is started. It is implemented as EPICS V3 IOC applications. It has a 
-pvAccess server that accesses EPICS V3 records. Much work remains.</p>
-
-<p>pvServiceCPP has client side support for gather. It requires that a Java 
-gather server be running.</p>
-
-
-<h3 id="py:status">Python</h3>
-
-<p>pvData and pvAccess - Guobao is working on wrapping pvDataCPP and 
-pvAccessCPP</p>
-
-<p>pvService - The client side of gather is implemented by using the C++ 
-gather client support. Note about Python gather client:</p>
-<p>
-A performance tests shows results equivalent to C++.
-This is because all the real work is done by C++ code not by Python.
-The V3 channel data is provided as a numPy 1-d double array that uses 
-the underlying double array from the C++ array.
-It is expected that the Python client will pass the numPy array to other 
-numPy or sciPy based Python code.
-</p>
 
 <!-- --------------------------------------------------------- -->
 <h2 id="meetings">Meetings</h2>
@@ -270,8 +203,8 @@ following the meeting. </p>
 </p>
 <ul>
  <li>Minutes should <strong>include every (relevant) thought</strong> expressed in the
-  meeting. The scribe should be maddly trying to keep up during the whole meeting. It
-  is resonable to ask for a pause for catchup. The objective is to indicate why we
+  meeting. The scribe should be madly trying to keep up during the whole meeting. It
+  is reasonable to ask for a pause for catchup. The objective is to indicate why we
   reached a conclusion, as well as what it was</li>
   <li>Scribe is absolutely justified in asking for clarification at any time</li>
   <li>Top of the minutes MUST include list of attendees, prefixed "<strong>PRESENT:</strong>", and the
@@ -430,7 +363,7 @@ following the meeting. </p>
     <td>Participant</td>
     <td>Services for physics.</td>
     <td><a href="charter.html#de:perf_doc">Performance Report</a></td>
-    <td></td>
+    <td>14-Dec-2011</td>
   </tr>
   <tr>
     <td>Kunal Shroff</td>

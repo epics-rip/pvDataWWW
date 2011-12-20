@@ -18,7 +18,46 @@
 <body>
 <h1>Activities of the EPICS V4 Working Group</h1>
 <p>Activities of the EPICS Version 4 WG by, archived by month.</p>
-<h2>Oct 2011</h2>
+
+<h2>7-Nov-2011 to 20-Dec-2011</h2>
+<p>Concentrating on
+simplifying EPICS V4 for the user programmer and regularizing APIs. Specifically,
+present activities include:</p>
+<ol>
+  <li>Review of ezpva and "gather" continue </li>
+  <li>ezpva rename. Question of whether to rename, and if so to do it. Depends on whether
+  ezpva will include async acquisition</li>
+  <li>Implementation of ezpva specification (Marty, Matej)</li>
+  <li>NT type definitions specifications (Bob)</li>
+  <li>NT type id definition (requires lead)</li>
+  <li>NT type implementations (requires lead)</li>
+  <li>Question of how to encode NTTable; in CORBA Any style, or as variant union</li>
+  <li>Unsigned Int handling. Document, republish to observers, and implement</li>
+  <li>Comments on pvAccess specification. Integration of remarks from Michael and
+  others. Edits for lingo. (Matej, Marty, Greg).</li>
+  <li>pvAccess publication to techtalk</li>
+  <li>Reorganisation of pvData & pvIOC javadoc into "classical" javadoc plus
+  reference doc (Marty)</li>
+  <li>Example and tests of use of pvAccess for async 'monitoring'. (Paul Gibbons,
+  Marty, Bob). Outcome should be 1) example code in pvData, 2) Text for a getting
+  started document</li>
+  <li>Twiss model service design (Guobao, Greg)</li>
+  <li>Model simulation service (aka "Online Calculator") design (Guobao, Greg)</li>
+  <li>EPICS V4 getting started developer's guide document preparation (Greg, Matej)</li>
+  <li>Publishing javadoc for EPICS V4 modules through Maven (Matej, Gabriele)</li>
+  <li>Logging and setpoint save tool, design and implementation (Guobao, Marty)</li>
+  <li>Moving meeting hosting service from Adobe Connect to something else (Greg)</li>
+  <li>Development, code, and documentation standards (Matej, Greg)</li>
+  <li>use of Doxygen for documentation generation. What standards must be in place so
+  you get useful output, bit just pretty pages with nothing in them (needs lead)</li>
+  <li>Question: Sending pvStructure to a service. Is it supported? How do you do it? Need demo</li>
+  <li>Sending pvStructure that changes call to call through ezpva. Requires code changes (Matej, Marty)</li>
+  <li>Question: Build environment for EPICS V4 in a deployed lab setting (ie, Maven or just
+  Make?)</li>
+  <li>Deploying rdbService at PSI (Greg)</li>
+</ol>
+
+<h2>Oct 2011 to 7-Nov-2011</h2>
 <ol>
 <li>Normative types. Definitions and binding implementations of the so called,
 normative types. These are the data types that it is expected all general purpose
