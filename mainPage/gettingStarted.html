@@ -207,17 +207,17 @@ that some people get a "cannot connect" timeout using this method, while the
 identical command works for other people. It's probably related to the common
 practice of blocking port 8000 on the client side, which is done by many
 institutions for security reasons. Below is an example of how to check out the
-pvDataCPP Mercurial repository, using the hg unix command via anonymous
+pvDataJava Mercurial repository, using the hg unix command via anonymous
 access:</p>
 
-<pre>% hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataCPP
+<pre>% hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataJava
 </pre>
 
 <p>Alternatively use the ssh URI below for "non-annonymous" access. Permissions are presently set such that
 only epics-pvdata members can check out or push commits, so contact any one of
 the <a href="http://epics-pvdata.sourceforge.net/home.html#membership" >participants</a> to get added first:</p>
 
-<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
+<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava</pre>
 
 <p>See <a href="passwordlessAccessToSourceForge.html">the Cheatsheet for Passwordless
 SSH Access to SourceForge for EPICS V4 Development</a> if you'd like to set up your
@@ -287,7 +287,7 @@ additionally depends on CAJ.jar and JCA.jar</li>
 </ul>
 
 <p>CAJ and JCA's jars will be downloaded by maven by your build below, no need to get
-them manually, as long as maven can see sourceforge's web site during the build.</p>
+them manually, as long as maven can see SourceForge's web site during the build.</p>
 
 <p>When building you will see warnings, but should not see any errors if the
 build is successful. Warnings come from both source compiles and many from
@@ -300,7 +300,7 @@ see:</p>
 [INFO] ------------------------------------------------------------------------
 </pre>
 
-<p>The build itself is handled by Maven. The actions for the build of each EPICS V4
+<p>The build itself is handled by Maven for Java builds. The actions for the build of each EPICS V4
 module is handled by its own pom.xml file, there is no global one. So, the build
 process involves "cd" ing to each of the 3 core modules repositories (as they're
 called in mercurial speak), and issuing "mvn compile install" in each one. Start
@@ -308,9 +308,9 @@ with pvDataJava since it has no dependencies, then pvAccessJava, then pvIOCJava.
 </p>
 <p>If this is really the first maven build you've done,
 the first mvn compile line below will result in 2 things; Firstly, it will create
-your local "m2 repo". Then it will initiate <strong>many</strong> downloads from
+your local "m2 repo" (in ~/.m2 by default). Then it will initiate <strong>many</strong> downloads from
 sourceForge, plus from Maven and prerequisites of Maven. But if you chose
-this path to EPICS v4, so you knew that. Personally, I think it's nuts.]
+this path to EPICS v4, so you knew that.]
 </p>
 
 <pre>
@@ -323,7 +323,7 @@ this path to EPICS v4, so you knew that. Personally, I think it's nuts.]
 % cd ../pvAccessJava
 % mvn compile install -Dmaven.test.skip=true
 
-% cd ../cd pvIOCJava
+% cd ../pvIOCJava
 % mvn compile install -DJAVAIOC=$PWD -Dmaven.test.skip=true
 </pre>
 
@@ -338,11 +338,11 @@ the following:</p>
 </pre>
 
 <p>The outcome of these builds is that you should see all of the build products
-in your local Maven repository (default location of this is ~/.m2).</p>
+in your local Maven repository (~/.m2 by default).</p>
 
 <p>The minimum EPICS V4 runtime is composed of only 3 Jars, for the core, plus
 2 if you want to access EPICS V3 IOCs, so you can
-check the outcome with the find command below, to verify that from the 100s now
+check the outcome of the builds with the find command below, to verify that from the 100s now
 in <code>~/.m2/</code>, you have the few you really need:</p>
 
 <pre>
@@ -359,6 +359,21 @@ javadoc jars too (in the Maven standard naming).</p>
 
 <p>The above completes the build of EPICS V4 locally. To use it, you would
 write code that compiles and executes against the jar files above.</p>
+
+<h4>Java Eclipse Development</h4>
+
+<p>To use or develop these, the steps might be: </p>
+<ul>
+  <li>Install eclipse</li>
+  <li>Use a shell command to clone the mercurial repository as described
+  above.</li>
+  <li>If you cloned the Java projects into directory hg/ change workspace to
+  hg/.</li>
+  <li>In eclipse import from local mercurial repository.</li>
+  <li>Make pvAccessJava depend on pvDataJava.</li>
+  <li>Make pvIOCJava depend on pvDataJava and pvAccessJava.</li>
+  <li>Make pvServiceJava depend on pvDataJava, pvAccessJava, and pvIOCJava.</li>
+</ul>
 
 <h4 id="javaexamples">Java Examples</h4>
 
@@ -764,7 +779,7 @@ epics>
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Mon Dec 19 10:45:11 CET 2011 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Dec 19 19:36:55 CET 2011 <!-- hhmts end -->
 
 </body>
 </html>

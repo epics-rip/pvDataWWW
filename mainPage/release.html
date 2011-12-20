@@ -40,62 +40,116 @@ Release scripts are in mercurial under <a href="http://epics-pvdata.hg.sourcefor
 During the release process documentation (both written and generated) is copied from the <code>documentation</code> directory in each repository to <code>epics-pvdata.sourceforge.net/docbuild/$REPO/$TAGNAME/documentation</code>.
 
 <h2>C++</h2>
+<p><strong>Code:</strong></p>
 <p>
-<p>
-<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a> tags the current head of the repositories.<p>
+<a
+href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a>
+tags the current head of the repositories.
 Edit the script to set the tag and the user name.
-<p>
-<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a> clones the tagged repositoties, generates the doxygen, and synchronizes to the web area.
+</p>
 <p>
 <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a> clones the tagged repositoties, generates the tar file, and synchronizes to the file area.
+</p>
+<p><strong>Documentation:</strong></p>
+<p>
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a> clones the tagged repositoties, generates the doxygen, and synchronizes to the web area.
+</p>
 
 <h2>Java</h2>
 
-<p>
-<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a> clones the tagged repositoties, generates the JavaDoc, and synchronizes to the web area.
+<p><strong>Code:</strong></p>
 
+<p>To make a versioned release of EPICS V4 core modules Java implementation:</p>
+<p>Recall the build dependencies of the EPICS v4 core modules are:</p>
+<ul>
+<li>pvDataJava has no dependencies</li>
+<li>pvAccessJava depends on pvDataJava</li>
+<li>pvIOCJava depends on pvAaccessJava and pvDataJava for build.</li>
+</ul>
+<p>Edit each of the 3 pom.xml files for the 3 core module Java implementations,
+pvIOCJava, pvAaccessJava and pvDataJava plus exampleJava, to change the version name.
+Our naming convention is n.m-BETA (note caps) to designate a
+BETA release, or later simply n.m. Intermediate snaphots are named
+n.m-SNAPSHOT. Therefore, the first Beta is named 1.0-BETA:</p>
 <pre>
-
 To tag and build for Java/Maven:
 
 In pom.xml you have
 
 <version>1.0-SNAPSHOT</version>
 
-when releasing you should change it to:
+change to eg:
 
-<version>1.0</version>
+<version>1.0-BETA</version>
+</pre>
 
-then
+<p>Build locally to test build and test suite.</p>
+<pre>
+% pwd
+/Users/greg/Development/epicsV4/ev4hg
 
+% cd pvDataJava
+% mvn compile install
+
+% cd ../pvAccessJava
+% mvn compile install -Dmaven.test.skip=true
+
+% cd ../pvIOCJava
+% mvn compile install -DJAVAIOC=$PWD -Dmaven.test.skip=true
+
+% cd ../exampleJava/
+% mvn compile install 
+</pre>
+<p>Verify you got what you expected:</p>
+<pre>
+% find ~/.m2 -name "pv*BETA.jar" -o -name "example*BETA.jar"
+/Users/greg/.m2/repository/epics/exampleJava/1.0-BETA/exampleJava-1.0-BETA.jar
+/Users/greg/.m2/repository/epics/pvAccess/1.0-BETA/pvAccess-1.0-BETA.jar
+/Users/greg/.m2/repository/epics/pvData/1.0-BETA/pvData-1.0-BETA.jar
+/Users/greg/.m2/repository/epics/pvIOC/1.0-BETA/pvIOC-1.0-BETA.jar
+</pre>
+
+<p>Upload release:</p>
+<pre>
 hg commit pom.xml
 
 Then tag:
 
-hg tag 1.0
+hg tag 1.0-BETA
 
 and push:
 
 hg push
-
+</pre>
 This results in remote repository that is versioned in tagged.
-Now Jenkins will build 1.0 version and deploy JARs in EPICS remote repository.
+Now Jenkins will build 1.0-BETA version and deploy JARs in EPICS remote repository.
 
 Before making any changes to the project (the best thing is to do it
 immediately) you need to increase version to:
-
+<pre>
 <version>1.1-SNAPSHOT</version>
 
 and
 
 hg commit pom.xml
 hg push
-
+</pre>
+<p>
 This way new changes will not override deployed 1.0.
 
 Please check if Jenkins has already deployed version 1.0 before pushing 1.1-SNAPSHOT/pom.xml change.
 This last step is necessary and makes a process semi-automatic. OK for now, but needs to be solved in the future.
+</p>
 
-</pre>
+<p><strong>Documentation:</strong></p>
+<p>
+<a
+href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
+clones the tagged repositoties, generates the JavaDoc, and synchronizes to the web
+area.</p>
+
+<hr>
+<address>EPICS V4 Working Group</address>
+<!-- hhmts start -->Last modified: Mon Dec 19 20:02:10 CET 2011 <!-- hhmts end -->
 </body>
 </html>

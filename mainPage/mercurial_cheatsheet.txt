@@ -7,18 +7,17 @@ line commands for EPICS V4 development.
 Auth: Greg White, 29-Sep-2011.
 Status: Presently only includes notes on how to use Mercurial
 for interfacing to the epics-pvdata software repository.
+Mod: 19-Dec-2011. Greg. Removed duplicate hg add help, and some typos.
 
-Mercurial.
-=========
-Tutorials on Mercurial:
-
+Tutorials on Mercurial
+-----------------
 http://hginit.com/
 http://mercurial.selenic.com/wiki/Tutorial
 http://hgbook.red-bean.com/read/a-tour-of-mercurial-the-basics.html
 
 Installation
 ------------
-Installing Msercurial
+Installing Mercurial
 See http://mercurial.selenic.com/wiki/TutorialInstall
 
 Download Mercurial for Mac from http://mercurial.selenic.com/downloads/
@@ -63,7 +62,7 @@ $ man hg
 Create your local Mercurial "repo" for your EPICS V4 work
 --------------------------------------------------------- 
 Having installed mercurial (hg command), create a Mercurial
-"respository" for your EPICS V4 work. This is equivalent to a CVS 
+"repository" for your EPICS V4 work. This is equivalent to a CVS 
 development checkout area.
 
 Ref: http://mercurial.selenic.com/wiki/TutorialInit
@@ -125,7 +124,7 @@ E.g.:
 
 Get status of your local repository
 -----------------------------------
-Analgous to cvs status
+Analogous to cvs status
 
 Use hg st
 E.g.:
@@ -134,16 +133,6 @@ M mainPage/charter.html
 A mainPage/charter_14092011.html
 A mainPage/charter_15092011.html
 
-
-Add files and directories
-=========================
-hg add
-To add a directory with files in it, just add the directror, directories and files beneath will be added:
-[pcp044184:repo/pvDataWWW/mainPage] greg% hg add talks
-adding talks/.DS_Store
-adding talks/2010/gabriele_PVManager.pptx
-adding talks/2011/bob_V4EPICS201109.pptx
-adding talks/2011/marty_pvDataEtc.ppt
 
 Put your changes back into epics-pvdata in sourceforge
 ------------------------------------------------------
@@ -179,18 +168,14 @@ remote: adding file changes
 remote: added 1 changesets with 5 changes to 5 files
 remote: Running changegroup hook
 
-2 things are wrong here and I don't know why:
-i) for some reason hg didn't look in my local ~/.hgrc file for 
-my username. So I had to supply it on the hg commit line.
-ii) for some reason the hg push ssh didn't accept my password 
-as valid (even though it definately was) and then it proceeded
-to do the remote push successfully anyway!
 
 Add files and directories
 =========================
-hg add
-To add a directory with files in it, just add the directror, directories and files beneath will be added:
-[pcp044184:repo/pvDataWWW/mainPage] greg% hg add talks
+Done with hg add
+
+To add a directory with files in it, just add the directory. Directories and files beneath will be added:
+E.g.:
+% hg add talks
 adding talks/.DS_Store
 adding talks/2010/gabriele_PVManager.pptx
 adding talks/2011/.DS_Store
@@ -199,7 +184,7 @@ adding talks/2011/marty_pvDataEtc.ppt
 
 Update your repo with changes made in source-forge:
 ===================================================
-1. Pull changes made in SF down to your repo:
+1. Pull changes made in SF down to your repo, done with hg pull.
 %  hg pull ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
 
 2. Then, to give yourself access to these changes, run hg update 

@@ -108,17 +108,20 @@ below</p>
 <h2 id="summarystatus">Summary Status</h2>
 <p>This section is a very short summary of the status of EPICS V4 overall, and gives
 help on how an interested engineer might want to use it now.</p>
-<p><strong>Last updated 02-Oct-2011:</strong></p>
+<p><strong>Last updated 20-Dec-2011:</strong></p>
 <p>
-<strong>Overall, the project is in alpha or pre-beta</strong>. The standards of EPICS V4, and their
-implementations, are each at different levels of development. Some are largely mature
-and ready for use. Others are at an early stage. Some parts are ready for early
-adopters. Other parts await definition.</p>
+<strong>As of 20-Dec-2011 EPICS V4 is in beta</strong>. The core standards
+of EPICS V4, and their implementations, are complete with respect to
+the January 2012 milestones. The specification of pvAccess is at Second Public
+Working Draft and ready for comments.</p>
 <p>In acute summary, support for managed distributed data acquisition is quite far
 along and can be used now. This includes acquisition from EPICS V3 PVs via EPICS V4
-tools or components. The basis for services and "RPC in EPICS" is at beta, and there
-are early prototype services, but there is not yet an easy to use framework for
-Service Oriented Architecture (SOA). The area in which EPICS V4 is not yet ready for
+tools or components. The basis for services and "RPC in EPICS" is complete, and there
+are example services in Java and C++. Largely documentation is up to date with
+respect to implemented code. </p>
+<p>So, the beta is useable for distributed high level data services. However,
+there is not yet an easy to use framework for
+Service Oriented Architecture (SOA). The primary area in which EPICS V4 is not yet ready for
 use is that part which is the core value of the EPICS V3 IOC, record processing for
 controls. This is because we are adding to EPICS first, then will re-implement the
 exiting excellent functionality in EPICS version 3. See below for a complete
@@ -133,47 +136,99 @@ will be open, collaboratively defined, and may be implemented and extended by an
 interested party. We provide reference implementations for adopters of EPICS V4, and
 to test the specifications' performance and effectiveness. Associated other documents
 are "non-normative" and no guarantees will be made about them. </p>
+
 <h3>Normative Specifications</h3>
-<dl class="normativeproddescr">
-<dt id="pvaccess">pvAccess</dt>
-<dd>The description of network support for pvData. A complete implementation is available for both Java and for C++, although documentation has not been written for the C++ implementation.</dd>
-<dd><strong>Specification:</strong> <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess Protocol Specification</a>. <em>Status is First Public Working Draft</em></dd>
-<dd>
-  <strong>Implementations:</strong>
-  <ul>
-    <li>Java reference implementation:
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/">pvAccessJava</a>.Status: Usable beta.<p>
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html">Latest Documentation from Mercurial</a><p>
-     <a href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvAccessJava%20-%20Build/javadoc">Latest JavaDoc from Jenkins</a><p>
-     <a href="docbuild/pvAccessJava/tip/documentation/pvAccessJava.html">Documentation and Doxygen for Dummy Release 'tip'</a>
-    </li>
-    <li>C++ reference implementation:
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessCPP/">pvAccessCPP</a>. Status: Usable beta.<p>
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessCPP/raw-file/tip/documentation/pvAccessCPP.html">Latest Documentation from Mercurial</a><p>
-     <a href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvAccessCPP%20-%20Build/doxygen/files.html">Latest Doxygen from Jenkins</a><p>
-     <a href="docbuild/pvAccessCPP/tip/documentation/pvAccessCPP.html">Documentation and Doxygen for Dummy Release 'tip'</a>
-    </li>
-  </ul>
-</dd>
-</dl>
 
 <dl class="normativeproddescr">
   <dt id="pvdata">pvData</dt>
   <dd>The description of how memory resident data types are described and defined. Complete implementations are available for both Java and for C++.</dd>
   <dd><strong>Specification:</strong> The pvData interface has not yet been specified independently of its implementations, though that is an expected deliverable of the EPICS V4 Working Group</dd>
   <dd><strong>Implementations:</strong>
-  <ul>
-    <li>Java reference implementation:
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/">pvDataJava</a>.Status: Usable beta.<p>
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html">Latest Documentation from Mercurial</a><p>
-     <a href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataJava%20-%20Build/javadoc">Latest JavaDoc from Jenkins</a><p>
-     <a href="docbuild/pvDataJava/tip/documentation/pvDataJava.html">Documentation and Doxygen for Dummy Release 'tip'</a>
+ <ul>
+    <li>Java reference implementation. Status: Usable beta
+    <p>
+    <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/">
+    pvDataJava source code in Mercurial</a>. 
+    </p>
+    <p>Overview
+    Documentation:
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html"> 
+    Latest, <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html">
+    1.0-BETA Release 
+    </a>
+    </a><p>JavaDoc: 
+     <a
+    href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataJava%20-%20Build/javadoc/">Latest</a>, <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a></p>
+ 
     </li>
-    <li>C++ reference implementation:
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/">pvDataCPP</a>. Status: Usable beta.<p>
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/raw-file/tip/documentation/pvDataCPP.html">Latest Documentation from Mercurial</a><p>
-     <a href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataCPP%20-%20Build/doxygen/files.html">Latest Doxygen from Jenkins</a><p>
-     <a href="docbuild/pvDataCPP/tip/documentation/pvDataCPP.html">Documentation and Doxygen for Dummy Release 'tip'</a>
+    <li>C++ reference implementation. Status: Usable beta
+    <p>
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/">pvDataCPP
+    source code in Mercurial</a></p>
+    <p>Overview
+    Documentation,
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/raw-file/tip/documentation/pvDataCPP.html">Latest</a>,
+    <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/1.0-BETA/documentation/pvDataCPP.html">1.0-BETA Release </a>
+    <p>
+    <p>Doxygen
+    <a
+    href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataCPP%20-%20Build/doxygen/files.html">Latest</a>, <a href=" http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a>
+    </p>
+    </li>
+  </ul>
+</dd>
+</dl>
+
+<dl class="normativeproddescr">
+<dt id="pvaccess">pvAccess</dt>
+<dd>The description of network support for pvData. A complete implementation is available for both Java and for C++, although documentation has not been written for the C++ implementation.</dd>
+<dd><strong>Specification:</strong> <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess Protocol Specification</a>. <em>Status is First Public Working Draft</em></dd>
+<dd>
+  <strong>Implementations:</strong>
+   <ul>
+    <li>Java reference implementation. Status: Usable beta
+    <p>
+    <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/">
+    pvAccessJava source code in Mercurial</a>. 
+    </p>
+    <p>Overview
+    Documentation:
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html"> 
+    Latest, <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessJava/1.0-BETA/documentation/pvAccessJava.html">
+    1.0-BETA Release 
+    </a>
+    </a><p>JavaDoc: 
+     <a
+    href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvAccessJava%20-%20Build/javadoc/">Latest</a>, <a href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessJava/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a></p>
+ 
+    </li>
+    <li>C++ reference implementation. Status: Usable beta
+    <p>
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessCPP/">pvAccessCPP
+    source code in Mercurial</a></p>
+    <p>Overview
+    Documentation,
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessCPP/raw-file/tip/documentation/pvAccessCPP.html">Latest
+    (Not yet written)</a>,
+    <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessCPP/1.0-BETA/documentation/pvAccessCPP.html">1.0-BETA Release 
+    (not yet written)</a>
+    <p>
+    <p>Doxygen
+    <a
+    href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvAccessCPP%20-%20Build/doxygen/files.html">Latest</a>, <a href=" http://epics-pvdata.sourceforge.net/docbuild/pvAccessCPP/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a>
+    </p>
     </li>
   </ul>
 </dd>
@@ -188,42 +243,47 @@ development.</dd>
 its implementations, though that is an expected deliverable of the EPICS V4 Working
 Group</dd>
   <dd><strong>Implementations:</strong>
-  <ul>
-    <li>Java reference implementation:
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/">pvIOCJava</a>.Status: Usable beta with respect to service support.<p>
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/raw-file/tip/documentation/pvIOCJava.html">Latest Documentation from Mercurial</a><p>
-     <a href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvIOCJava%20-%20Build/javadoc">Latest JavaDoc from Jenkins</a><p>
-     <a href="docbuild/pvIOCJava/tip/documentation/pvIOCJava.html">Documentation and Doxygen for Dummy Release 'tip'</a>
+ <ul>
+    <li>Java reference implementation. Status: Usable beta
+    <p>
+    <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/">
+    pvIOCJava source code in Mercurial</a>. 
+    </p>
+    <p>Overview
+    Documentation:
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/raw-file/tip/documentation/pvIOCJava.html"> 
+    Latest, <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/1.0-BETA/documentation/pvIOCJava.html">
+    1.0-BETA Release 
+    </a>
+    </a><p>JavaDoc: 
+     <a
+    href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvIOCJava%20-%20Build/javadoc/">Latest</a>, <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a></p>
+ 
     </li>
-    <li>C++ reference implementation:
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/">pvIOCCPP</a>. Status: Usable beta with respect to service support.<p>
-     <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html">Latest Documentation from Mercurial</a><p>
-     <a href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvIOCCPP%20-%20Build/doxygen/files.html">Latest Doxygen from Jenkins</a><p>
-     <a href="docbuild/pvIOCCPP/tip/documentation/pvIOCCPP.html">Documentation and Doxygen for Dummy Release 'tip'</a>
+    <li>C++ reference implementation. Status: Usable beta
+    <p>
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/">pvIOCCPP
+    source code in Mercurial</a></p>
+    <p>Overview
+    Documentation,
+     <a
+    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html">Latest</a>,
+    <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/pvIOCCPP.html">1.0-BETA Release </a>
+    <p>
+    <p>Doxygen
+    <a
+    href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvIOCCPP%20-%20Build/doxygen/files.html">Latest</a>, <a href=" http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a>
+    </p>
     </li>
   </ul>
 </dd>
 </dl>
 
-<dl class="normativeproddescr">
-<dt id="pvservice">pvService</dt>
-<dd>Support for services based on the above EPICS V4 normative standards.  Both the
-Java and C++ versions are in early stages of development, though services are now
-being prototyped.  It's expected that a framework for a Service Oriented Architecture
-will be specified above pvService, making its interface easier to write
-services. There is also a python version of part of the C++ services. </dd>
-<dd><strong>Specification:</strong> pvService has not yet been specified independently
-of its implementations, though that is an expected deliverable of the EPICS V4
-Working Group</dd>
-<dd><strong>Implementations:</strong>
-<ul>
-  <li>Java reference
-  implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/">pvServiceJava</a>. Status: RPC support itself is late beta. Specifically the Gather service framework is early beta. Services themeselves are alpha. pvServiceJava <a href="doc/pvServiceJava/index.html">Documentation</a></li>
-    <li>C++ reference
-    implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceCPP/">pvServiceCPP</a>. Status: RPC support itself is late beta, and includes the C++ support for the "gather framework". Services are alpha. pvServiceCPP <a href="doc/pvServiceCPP.html">Documentation</a>. <a href="pvServicePy.html">pvServicePy.html</a></li>
-</ul>
-</dd>
-</dl>
 
 <h3 id="nonnormative">Extensions, Tools, and Associated Activities</h3>
 
@@ -231,7 +291,9 @@ Working Group</dd>
 in scope of the EPICS Version 4 working group specifically, and others not. Those in
 scope are being managed as part of
 the <a href="charter.html#deliverables">deliverables of the group</a>, though they
-are not considered <a href="charter.html#normative">normative</a>.</p>
+are not considered <a href="charter.html#normative">normative</a>, and should not be
+considered all at the same level of release as the normative specifications (Beta at
+the time of writing).</p>
 
 <dl class="normativeproddescr">
   <dt id="pvmanager">pvManager</dt>
@@ -259,11 +321,30 @@ are not considered <a href="charter.html#normative">normative</a>.</p>
   <dd><strong>Contact:</strong>Gabriele Carcassi (BNL),  Ralph Lange (HZB), Kunal Shroff (BNL)</dd>
 </dl>
 
-
 <dl class="normativeproddescr">
   <dt id="pythoninterface">python interfaces</dt>
   <dd>Python wrappers for pvData, pvAccess and pvService are being worked on.  </dd>
+   <dd><strong>Status:</strong>Early beta</dd>
   <dd><strong>Contact:</strong>Guobao Shen (BNL)</dd>
+</dl>
+
+<dl class="normativeproddescr">
+<dt id="pvservice">pvService</dt>
+<dd>pvService presently includes early stage development for an online accerlator
+  model service, and a framework for managing data acquisitions from many devices
+  server side (the Gather service framework).</dd>
+<dd><strong>Implementations:</strong>
+<ul>
+  <li>Java reference
+  implementation: <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/">pvServiceJava</a>. Status: The Gather service framework is early beta. Services themeselves are alpha. pvServiceJava <a href="doc/pvServiceJava/index.html">Documentation</a></li>
+    <li>C++ reference
+    implementation: <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceCPP/">pvServiceCPP</a>. Status:
+  Includes the C++ support for the "gather framework" early beta. Model service is alpha. pvServiceCPP <a href="doc/pvServiceCPP.html">Documentation</a>. <a href="pvServicePy.html">pvServicePy.html</a></li>
+</ul>
+</dd>
+ <dd><strong>Status:</strong>Alpha</dd>
+ <dd><strong>Contact:</strong>Guobao Shen (BNL)</dd>
 </dl>
 
 <h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
@@ -279,7 +360,7 @@ level" software services. It provides a framework for fast distributed message
 passing. This is like remote procedure calls, but with a programming model optimized
 for efficient distributed synchronous or asynchronous processes.
 </p>
-<p>In a hybrid environment, EPICS V4 is at beta for use for managed distributed data
+<p>In a hybrid environment, EPICS V4 is at BETA for use for managed distributed data
 acquisitions. See <a href="http://pvmanager.sourceforge.net/">pvManager</a>, which is
 a client side tool for making acquisitions of a large number of PVs
 efficiently. pvManager is mature enough for use now, contact Gabriele Carassi at
@@ -298,69 +379,48 @@ expected in about 1 year. Contact Marty Kramer or Matej Sekornaja at COSYLAB for
 details and estimates.
 </p>
 <p>Support for essentially Remote Procedure Calls (RPC) through EPICS V4, is in
-pvService.  This is at early beta but looks good. So if you have a need for host
-level services, it is worth looking there now. You will find some early services
-there too, including a model service harness. A framework for a SOA on top of pvService is under way and expected very soon. Contact
-Greg White at PSI or SLAC.
-</p>  
+pvIOC. So if you have a need for host
+level services, it is worth looking there now. You will find complete example Services in
+exampleJava, including a complete production ready SQL database access service.
+</p>
+<h3>Present Deployments</h3>
 <p>EPICS V4 is also being used now developing beamline image data acquisition and
 storage, using the facilities of pvData for structured data. Contact James Roland at
-DIAMOND.</p>
+DIAMOND. It will shortly also be deployed at PSI for back end SQL database access. </p>
 
 <h2 id="softwaredevel">Software Development</h2>
+<p>See the <a href="development.html">EPICS V4 Development page</a> for complete
+references to code and documentation</p>
 
-<p>At the present time code is only available via its source-forge Mercurial
-repositories (there are no zip or jars yet, though they are planned). </p>
+<p>EPICS version 4 Beta 1 is available now from the <a href="http://sourceforge.net/projects/epics-pvdata/files/">SourceForge download site</a>, as
+ Java Jar files and a tar zip for C++. </p>
 
 <p>All of
 the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata">normative
 projects above are each in distinct mercurial repositories in the SourceForge project
 epics-pvdata</a>. There are separate Mercurial repos for each of the C++ and Java
-implementations of each normative project. They can all be checked out via the unix shell command hg, or using a
-Mercurial client suitable for your platform. </p>
+implementations of each normative project. They can all be checked out via the unix
+shell command hg, or using a Mercurial client suitable for your platform. </p>
 
 <p>Download from the Mercurial repositories can be done anonymously, or using a
-sourceForge account.</p>
-<p>The anonymous checkout is using the http URI below. Note that
-we have seen that some people get a "cannot connect" timeout using this method, while
-the identical command works for other people. It's probably related to blocked port 8000,
-but we don't know. Below is an example of how to check out the pvDataCPP Mercurial repository, using
-the hg unix command via anonymous access:</p>
-<pre>&gt; hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataCPP</pre>
-
-<p>To use the developers checkout mechanism, which uses the ssh URI,
-permissions are presently set such that only epics-pvdata members can check out or
-push commits, so contact <a
-href="http://epics-pvdata.sourceforge.net/home.html#membership" >any one of the
-participants</a> to get added first:</p>
-
-<pre>&gt; hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP</pre>
+sourceForge account, see <a href="gettingStarted.html" >Getting Started with EPICS V4</a>. </p>
 
 <h3>Java</h3>
 
-<p>Presently the easiest way to develop the Java implementations, is using Eclipse. We haven't 
-yet written makes or ants. The relevant Mercurial modules are: pvDataJava, pvAccessJava, pvIOCJava,
-pvServiceJava.
+<p>Java develpment help is given for Eclipse, or Maven. Help for both are given in <a
+href="gettingStarted.html" >Getting Started with EPICS V4</a>.  The relevant
+Mercurial modules are: pvDataJava, pvAccessJava, pvIOCJava, exampleJava.
 </p>
-<p>To use or develop these, the steps might be: </p>
-<ul>
-  <li>Install eclipse</li>
-  <li>Use a shell command to clone the mercurial repository as described
-  above.</li>
-  <li>If you cloned the Java projects into directory hg/ change workspace to
-  hg/.</li>
-  <li>In eclipse import from local mercurial repository.</li>
-  <li>Make pvAccessJava depend on pvDataJava.</li>
-  <li>Make pvIOCJava depend on pvDataJava and pvAccessJava.</li>
-  <li>Make pvServiceJava depend on pvDataJava, pvAccessJava, and pvIOCJava.</li>
-</ul>
 
 <h3>C++ and Python</h3>
 
 <p>The C++ and Python code also uses the mercurial repository. The EPICS V3 build
 system is used rather than Eclipse. V3 libCom is used for threading and
 other support. Thus it requires that you have a recent release of EPICS base.
-These are the relevant sourceforge mercurial modules: pvDataCPP, pvAccessCPP, pvIOCCPP, pvServiceCPP
+These are the relevant sourceforge mercurial modules: pvDataCPP, pvAccessCPP,
+pvIOCCPP, pvServiceCPP.
+See <a
+href="gettingStarted.html" >Getting Started with EPICS V4</a>
 </p>
 
 <h2 id="literature">Literature</h2>
