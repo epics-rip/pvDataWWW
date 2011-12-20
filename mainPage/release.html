@@ -140,7 +140,12 @@ This way new changes will not override deployed 1.0.
 Please check if Jenkins has already deployed version 1.0 before pushing 1.1-SNAPSHOT/pom.xml change.
 This last step is necessary and makes a process semi-automatic. OK for now, but needs to be solved in the future.
 </p>
-
+<p>
+Now copy the JARs created for the relase above in the SF maven2 repo, to the SF files
+download area, and update the README. The utility script <a href=""
+>makereleaseJars.sh</a> can be used to wget the jars, and then rsync them to the
+files download area.
+</p>
 <p><strong>Documentation:</strong></p>
 <p>
 <a
@@ -150,6 +155,6 @@ area.</p>
 
 <hr>
 <address>EPICS V4 Working Group</address>
-<!-- hhmts start -->Last modified: Mon Dec 19 20:02:10 CET 2011 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Dec 20 16:20:29 CET 2011 <!-- hhmts end -->
 </body>
 </html>
