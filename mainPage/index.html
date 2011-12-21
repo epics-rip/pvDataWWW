@@ -375,9 +375,11 @@ Guobao Shen at BNL.
 </p>
 <p>
 Although record processing is presently part of EPICS V4, it is not mature enough to
-supplant EPICS V3 record processing for controls.  Record processing for controls is
+supplant EPICS V3 record processing and device support for controls.  This is
 expected in about 1 year. Contact Marty Kramer or Matej Sekornaja at COSYLAB for more
-details and estimates.
+details and estimates. Hoever, note that EPICS V4 clients can interface to EPICS V3
+IOC record processing via pvAccess through use of the pvAccess Server (PAS). See
+worked example in <a href="gettingStarted.html">Getting Started with EPICS V4.</a> 
 </p>
 <p>Support for essentially Remote Procedure Calls (RPC) through EPICS V4, is in
 pvIOC. So if you have a need for host
@@ -391,21 +393,42 @@ DIAMOND. It will shortly also be deployed at PSI for back end SQL database acces
 
 <h2 id="softwaredevel">Software Development</h2>
 <p>See the <a href="development.html">EPICS V4 Development page</a> for complete
-references to code and documentation</p>
+references to code and documentation. in particular, see <a
+href="gettingStarted.html">Getting Started with EPICS V4</a> for how to acquire and
+use EPICS V4. It includes help on Java and C++ development, and references to
+examples, including interfacing to EPICS V3 data. </p> 
 
 <p>EPICS version 4 Beta 1 is available now from the <a href="http://sourceforge.net/projects/epics-pvdata/files/">SourceForge download site</a>, as
  Java Jar files and a tar zip for C++. </p>
 
 <p>All of
-the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata">normative
+the normative
 projects above are each in distinct mercurial repositories in the SourceForge project
-epics-pvdata</a>. There are separate Mercurial repos for each of the C++ and Java
+epics-pvdata. There are separate Mercurial repos for each of the C++ and Java
 implementations of each normative project. They can all be checked out via the unix
 shell command hg, or using a Mercurial client suitable for your platform. </p>
 
 <p>Download from the Mercurial repositories can be done anonymously, or using a
 sourceForge account, see <a href="gettingStarted.html" >Getting Started with EPICS V4</a>. </p>
 
+<p>Initial examples to check out:</p>
+<ol>
+  <li>HelloWorld. The Server side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HelloServiceFactory.java"
+  >HelloServiceFactory.java</a>, the client side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HelloClient.java"
+  >HelloClient.java</a>, and its <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HELLOWORLD_README.txt"
+  >HELLOWORLD_README.txt</a></li>
+
+  <li>RDB service demostrates returning structured data in EPICS V4. See the server
+  side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/RdbServiceFactory.java"
+  >RdbServiceFactory.java</a>, the client side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/RdbClient.java"
+  >RdbClient.java</a>, and its <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/RDBSERVICE_README.txt" >RDBSERVICE_README.txt</a></li>
+  </ol>
+  
 <h3>Java</h3>
 
 <p>Java develpment help is given for Eclipse, or Maven. Help for both are given in <a
