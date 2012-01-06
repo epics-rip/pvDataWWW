@@ -30,12 +30,18 @@ h4 { margin-left: 0 }
 table { margin-left: auto; margin-right: auto }
 .diagram { text-align: center; margin: 2.5em 0 }
 editor { font-color: red }
-body 
-{ 
-      margin-right: 10%;
-      margin-left: 10%;
-      # font-weight: 100; 
+
+body { 
+    margin-right: 10%;
+    margin-left: 10%;
 }
+
+@media print {
+     body { 
+	 font-size: smaller
+     }
+}
+
 # li { margin-bottom:0.8em }  /* This would make list items more separated */
 
 /* pre, for coding and command line illustration */
