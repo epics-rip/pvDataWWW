@@ -1,0 +1,130 @@
+======== Meeting 4-Jan-2012 =============
+ Greg White: Present: MK, GS, JR, DH, MS, GW, RL, BD
+ : OK.
+[04/01/2012 16:07:21] Greg White: Scribe: Ralph Lange
+ : RL scribes
+ : 1. Comments on pvAccess protocol spec
+==============================
+
+ : GW: Need better separation between spec itself and model implementation.
+ : MS: Most issues raised by AJ have been solved.
+ : GW: Which ones?
+
+ : GW: Can you change the spec so that it clarifies the algorithmic aspects?
+ : MS: yes.
+ : GW Must be done before rev2
+ : GW: What formal language for the spec structures? Proposal: For this draft leave as is.
+ : GW: But mention tha the next draft will have a changed formality (to ASN.1), which will also affect the normative type specs.
+ : MK: Fears learning curve.
+ : GW: yes, but...
+ : GW: With no expertise in ASN.1 introducing it into the EPICS world might be hard and not worthwhile.
+ : GW: Comparison to ASN.1 PER will create confusion (as CA is the current standard).
+ : GW: For a broader audience, ASN.1 might be a good idea, though.
+ : JR: Is ASN.1 really widespread?
+ : JR: If noone else uses it, why bother?
+ : GW: I am under the impression it is *the* standard in the communications industry.
+ : GW: ASN.1 PER seems to be a performance standard / measure in communications.
+ : GW: One thing it might buy us: If you write an encoder, you could test pvAccess against a benchmark.
+ : GW: Serialization size is considered more important than actual performance of an implementation, as the implementations would not differ much.
+ : GW: While ASN.1 is my preference, we might still not use it. Bob's and Matej's opinion?
+ : MS: Standard would be good, but ASN.1 does not show obvious benefts. Need more time to investigate.
+ : GW: There are converters, there are tools. But we would have to significantly change pvAccess.
+ : GS: The standard is from 2002
+ : GW: But the implementations are younger.
+ : GW: ASN.1 is a syntax for desribing data.
+ : MS: Why not Google protocol buffer syntax?
+ : MS: Need more time to investigate.
+ : GW: We should look at this issue (especially MS and MK)
+ : GW: Will have to decide some time.
+ : MS: IP port numbers. (IANA) Consider move to a different set, and will register the new ports with IANA.
+ : MS: An area around 5075 seems free.
+ : MK: CA 5064 and 5065 - all used?
+ : RL: 5065 TCP is not used by CA.
+************
+ :  AI on MS 7.1.2012  propose new ports and draft registration with IANA for Bob.
+************
+ : MS: support for "null" or not?
+ : GW: Does that impact the API?
+ : GW: Could that lead to ambiguosity? In the sense of one side (one language) has two different values, that the other side (other language) can not distinguish?
+ : MS: Some languages (C++) have issues, as they don't support "null".
+ : JR: Propose: No "null"s. Neither for strings nor for structures.
+ : GW: How would the encoder treat a char* = 0 inside a structure?
+ : JR, MS: Throw an exception.
+ : MK: First thought: do not allow "null".
+ : MS: Not allowing "null" could actually clean up code.
+***********
+ : RESOLUTION: we are not going to support "null", neither for strings nor structures, in any implementation API or on the wire.
+***********
+ : GW: Spec needs a hint to the reader how to work around this restriction.
+ : MS: Will include that.
+ : MS: Unsigned? Signed? Both? None?
+ : MS: Last idea was adding a bit on the wire that shows if the other side is unsigned or not.
+ : MK: The conversion library needs to look at that bit and do the conversion accordingly.
+ : JR: that is a half-ass support for unsigned. Why not fully support it in languages that support unsigned?
+ : MK: How to handle this in languages that do not support unsigned (like java)?
+ : RL: The introspection interface must present a wider type in those cases.
+ : GW: How?
+ : MS: It is only hardware that presents unsigned values.
+ : JR: Which is a big part of what we have to support!!
+ : JR: Should have at least suggestions for a decent handling of the usual "16bit unsigned" things.
+ : GW: We will be able to find appropriate type mappings.
+ : GW: Who is going to do this? MS and MK are most vested but least willing.
+ : GW: The "ez" level might have to have support for both.
+ : MK: CA uses double to transport 32bit unsigned.
+ : MS: Where does range checking take place in a Java implementation?
+ : GW: pvAccess does support unsigned (by the flag), it's the APIs in languages w/o unsigned types that are problematic.
+ : MS: Use cases?
+
+ : GW: Is there a simple way to get this right?
+ : GW: What about an API like JR proposes, but give the programmer the choice of using the signed type of the same width or the larger size in the API?
+ : GW: More methods could be able to handle this....??
+ : MS: Crowd sourcing: Ask tech-talk, what do you need unsigned types for?
+ : GW: On the server side, we know the cases: hardware that offers unsigned, databases, etc. People will just want to get these values across.
+ : GW: With as little extra effort as possible, using automated parsers etc.
+ : MS: Postpone a week please. Will have private discussions with MK and try to think about something.
+ : GW: JR, could you write something as a proposal for an API?
+ : JR: Yes.
+ : GW: Covering arrays, put/get/putget ....
+ : MS: Array indices. negative index means "from the end".
+ : All: Good idea.
+
+ : GW: What next, until we hit March (beta 2) Is that date realistic?
+ : GW: Started modeling.
+ : GW: Will be doing interoperable types. (Not in ASN.1)
+ : GS: Might not have enough time to finish the tests. Work on the snapshot server is more than expected (additional database design work).
+ : GW: After the MESA, will the performance report be next?
+ : GW: We must have it by summer. Will you have enough time until then, or should we retarget the item?
+ : GS: Should be able to get it done.
+ : MS: The performance tests should be "repeatable at home" to increase trust in our excellent numbers.
+ : GW: There is a Java framework for writing performance benchmarks - is that interesting?
+ Matej Sekoranja: http://sourceforge.net/projects/jperf/ ?
+ : MK; What will you be measuring?
+ : GS: There was a tool used for the OS performance tests. Was it this one?
+ : GW: It can measure loopback as well as a real communication.
+ : MK: Can someone take th stuff from GS and run it within this framework?
+ : GW: Should be possible.
+ : GS: Summer sounds like a reasonable time frame. March is too early.
+ : GS: Will produce the performance report until summer, probably not until March.
+ : MK: There is a Gather service. In Java there are implementations of both client and server, in C++ only the client.
+ : MK: Next thing will be a local Gather - that gets data from local V3 database channels.
+
+ : GW: What about "ezpva"?
+ : MK: That local gather service will be part of ezpva. The interoperable types will be integral part of that effort.
+ : MK: I have ezpvarpc as part of MESA that does the argument parsing .
+ : MK: Only using NTtable and NTnamevalue at this time.
+ : MK: Local gather is client plus server, stuck together and with the network part removed.
+So that the application can call using pvA to call into the V3 CA client library.
+ : GW: What about the nominal architectures document? Where the xxxServcie and its APIs are described and shown in pretty pictures?
+ : JR: Shal I write something about the Gather stuff in there?
+ : GW: Yes, please.
+ : JR: People should write their chapters in that document, JR is the *editor* of that document.
+************
+ : AI RL: Write a chapter about how to use a directory service.
+************
+************
+ :  AI MK: Write chapter about Gather (local and remote) as well as ezpvarpc
+************
+
+
+ : RL: Will prepare an etherpad for next week.
+ : Byebye...

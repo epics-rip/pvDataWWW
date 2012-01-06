@@ -7,42 +7,57 @@
   <meta http-equiv="PRAGMA" content="NO-CACHE">
   <meta http-equiv="EXPIRES" content="0">
  <title>EPICS Version 4 Development Resources</title>
- <link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css"
+ <!-- link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css"
  type="text/css" media="screen" />
  <link rel="stylesheet" type="text/css"
- href="http://www.w3.org/Guide/pubrules-style.css" />
- <link rel="stylesheet" type="text/css" href="epicsv4.css" />
+ href="http://www.w3.org/Guide/pubrules-style.css" / -->
+ <link rel="stylesheet" type="text/css" href="base.css" />
+ <link rel="stylesheet" type="text/css" href="epicsv4web.css" />
  <style type="text/css">
    @media print {
-     body { margin-right: 10%;
-     font-size: smaller }
+     body {  margin: 3em 4em 2em 4em;
+             font-size: smaller
+     }
    }
    @media screen {
-     body { margin-right: 10% }
-   li { margin-bottom:0.9em }
+     body { margin: 1em 5em 2em 5em }
    }
+   li { margin-bottom:0.9em }
  </style>
 </head>
 <body>
-<h1>EPICS Version 4 Development Resources</h1>
+	
+
+<!-- Very top date banner -->
+<table style="border-width:0px" width="100%">
+  <tbody style="color:#005A9C">
+    <tr>
+      <td width="50%" style="font-size:150%">EPICS V4</td>
+      <td width="50%" style="text-align:right;color:black;font-size:70%">
+	<span style="text-align:right;">
+<!-- hhmts start -->Last modified: Fri Jan  6 12:45:08 CET 2012 <!-- hhmts end -->
+	</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h1 style="letter-spacing:0.1em; text-align:center">Development Resources</h1>
+
 <table class="masthead" vspace="4px" width="100%" style="font-weight:bold">
   <tbody align="center">
     <tr>
       <td align="center"><a href="index.html">HOME</a></td>
-      <td align="center"><a href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE PROJECT</a></td>      
+ 
       <td align="center" style="background-color: rgb(0,128,255);"><span class="selectedtab" >DEVELOPMENT</span</td>
       <td align="center"><a href="https://sourceforge.net/projects/epics-pvdata/files/">DOWNLOAD</a></td>
+      <td align="center"><a
+      <td align="center"><a href="features.html">FEATURES</a></td>
+      <td align="center"><a href="home.html">WORKING GROUP</a></td>
+      <td align="center"><a
+	href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE
+	PROJECT</a>
+      </td>
       <td align="center"><a href="faq.html">FAQ</a></td>
-      <td align="center" style="background-color:rgb(245,245,245)"><a href="home.html">WORKING GROUP</a></td>
-      <td align="center" style="background-color:rgb(245,245,245)"><a 
-	href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">MAIL
-	ARCHIVE</a></td>
-      <td align="center" style="background-color:rgb(245,245,245)">
-	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2482257">ACTION ITEMS</a></td>
-      <td align="center" style="background-color:rgb(245,245,245)">
-	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2483551">ISSUES</a></td>
-      <td align="center" style="background-color:rgb(245,245,245)">
-	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2483530">RESOLUTIONS</a></td>
    </tr>
 </table>
 
@@ -50,8 +65,9 @@
 produce scientific software services and control systems. It also includes references
 to EPICS V4 Working Group internal documentation for help with release procedures,
 documentation generation etc.</p>
+<hr />
 
-<h3>Informative Guides</h3>
+<h2>Informative Guides</h2>
 <p>The following are development guides for developers who want to use EPICS V4:</p>
 <ul>
     <li><a href="http://sourceforge.net/projects/epics-pvdata/files/">EPICS V4
@@ -63,7 +79,7 @@ documentation generation etc.</p>
   </li>
 </ul>
 
-<h3>Normative Modules Software and Documentation</h3>
+<h2>Normative Modules Software and Documentation</h2>
 
 <p>Find the documentation of the core modules of EPICS V4 below. Suggested reading list for a
 programmer new to EPICS V4 is to read the overviews in the order pvData, pvAccess,
@@ -218,7 +234,7 @@ Group</dd>
 </dl>
 
 
-<h3>Internal References</h3>
+<h2>Internal References</h2>
 
 <p>The following are development guides and cheatsheets primarily intended for EPICS
 V4 developers, though these may be useful for user developers who wish to build EPICS
@@ -245,10 +261,7 @@ V4 from source:</p>
   Maven to deploy to SourceForge</a>.</li>
 </ul>
 
-<hr>
-<address>EPICS V4 Working Group</address>
-<!-- hhmts start -->Last modified: Tue Dec 20 17:20:27 CET 2011 <!-- hhmts end -->
-</body> </html>
-
+<hr />
+<address>Greg White, greg at slac.stanford.edu, for EPICS V4 Working Group</address>
 </body>
 </html>

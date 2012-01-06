@@ -4,24 +4,21 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="keywords" content="EPICS, EPICSv4" />
- <!--link rel="stylesheet" type="text/css"
-      href="http://www.w3.org/2006/02/charter-style.css" / -->
- <!-- link rel="stylesheet"
+<!-- link rel="stylesheet"
       href="http://www.w3.org/2005/10/w3cdoc.css"type="text/css" media="screen"/ -->
- <!-- link rel="stylesheet" type="text/css"
+<!-- link rel="stylesheet" type="text/css"
       href="http://www.w3.org/Guide/pubrules-style.css" / -->
- <link rel="stylesheet" type="text/css" href="base.css" />
-<link rel="stylesheet" type="text/css" href="epicsv4.css" />
+<!-- Include the epicsv4 base.css, and the css for epics v4 documents -->
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="epicsv4doc.css" />
+
+
 <title>Getting Started with EPICS V4</title>
 
 <style type="text/css">
 /*<![CDATA[*/
-     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
-     table { margin-left: auto; margin-right: auto }
-     .diagram { text-align: center; margin: 2.5em 0 }
-     editor { font-color: red }
-     body { margin-right: 10% }
-     li { margin-bottom:0.8em }
+
+
 /*]]>*/
 </style>
 </head>
@@ -52,8 +49,9 @@ No previous version
 <h2 class="nocount" id="abstract">Abstract</h2>
 <p>This document describes how to start to develop software using the EPICS V4
 toolkit. It's a step by step guide to downloading the appropriate EPICS V4 products
-and associated software, and using them to create simple programs using the services
-EPICS V4 offers, for services and interfacing to EPICS V3 control data.</p>
+and associated software, and using them to create programs using the services
+EPICS V4 offers, for services and interfacing to EPICS V3 control data. Illustrations
+for Java and C++ are included.</p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
 
@@ -165,7 +163,8 @@ site. </p>
 <p>There are presently 5 jars files available. The 3 named pvIOC*.jar, pvAccess*.jar
 and pvData*.jar make up the core of EPICS V4. You'll
 need at least those 3. You may additionall want caj*.jar and jca*.jar if you want to
-attach to EPICS V3.</p>
+attach to EPICS V3. NOTE: That the versions of these may have changed since
+publication of this document, that should not make a significant difference to these instructions.</p>
 
 <img src="image/sfdownloadfiles.png">
 
@@ -180,11 +179,12 @@ included [15], but more will be added.</p>
 
 <h3 id="sourcedownload">Getting EPICS V4 Java Implementation Source and Build using Mercurial and Maven</h3>
 
-<p>Use case of downloading the source using Mercurial (aka "hg"), and building with Maven, would be applicable if
-you are a Java developer and wish either to contribute to EPICS V4, or like to use
-a command line for your Java builds, or both. </p>
+<p>The use case of downloading the source using Mercurial (aka "hg"), and building
+with Maven, would be applicable if you are a Java developer and wish either to
+contribute to EPICS V4, or like to use a command line for your Java builds, or
+both. </p>
 
-<p>All 3 the normative EPICS V4 projects are each in distinct mercurial
+<p>All 3 of the normative EPICS V4 projects are each in distinct mercurial
 repositories in the SourceForge project epics-pvdata. There are separate
 Mercurial repos for each of the C++ and Java implementations of each normative
 project. They can all be checked out via the Mercurial unix shell command hg, or using a
@@ -303,17 +303,19 @@ see:</p>
 [INFO] ------------------------------------------------------------------------
 </pre>
 
-<p>The build itself is handled by Maven for Java builds. The actions for the build of each EPICS V4
-module is handled by its own pom.xml file, there is no global one. So, the build
-process involves "cd" ing to each of the 3 core modules repositories (as they're
-called in mercurial speak), and issuing "mvn compile install" in each one. Start
-with pvDataJava since it has no dependencies, then pvAccessJava, then pvIOCJava.
+<p>The build itself is handled by Maven for Java builds. The actions for the build of
+each EPICS V4 module is handled by its own pom.xml file, there is no global one. So,
+the build process involves "cd" ing to the cloned repository (as they're called in
+mercurial speak) of each one of the 3 core modules, and issuing "mvn compile install"
+in each one. Start with pvDataJava since it has no dependencies, then pvAccessJava,
+then pvIOCJava.
 </p>
-<p>If this is really the first maven build you've done,
-the first mvn compile line below will result in 2 things; Firstly, it will create
-your local "m2 repo" (in ~/.m2 by default). Then it will initiate <strong>many</strong> downloads from
-sourceForge, plus from Maven and prerequisites of Maven. But if you chose
-this path to EPICS v4, so you knew that.]
+
+<p>If this is really the first maven build you've done, the first mvn compile line
+below will result in 2 things; Firstly, it will create your local "m2 repo" (in ~/.m2
+by default). Then it will initiate <strong>many</strong> downloads from sourceForge,
+plus from Maven and prerequisites of Maven. But if you chose this path to EPICS v4,
+so you knew that.]
 </p>
 
 <pre>
@@ -480,7 +482,7 @@ release 3.14.12. Trying to build with an earlier one is basically a waste of tim
 (This file is included from configure/RELEASE with the line <code>-include $(TOP)/configure/RELEASE.local</code>.)
 </p>
   <pre>
-make
+% make
 </pre>
 <p>pvData should build without errors. You get a heap of warnings but they can be
   ignored</p>
@@ -490,7 +492,7 @@ make
 <code>pvAccess/configure/RELEASE.local</code> file.
 Add the locations of EPICS_BASE and PVDATA approprately.
 <pre>
-make
+% make
 </pre>
 <p> It should build without errors. Again with the warnings! [yea, this must be fixed]</p>
  </li>
@@ -500,7 +502,7 @@ make
 configure/RELEASE.local</code> file. 
 Add the locations of EPICS_BASE, PVACCESS and PVDATA appropriately.
  <pre>
-make
+% make
 </pre>
  <p> It should build without errors. Outstanding!</p>
  </li>
@@ -544,7 +546,7 @@ epicsEnvSet("PVACCESS","/<your pvXXX directory>/pvAccessCPP")
 </pre>
 <li>Then
 <pre>
-make
+% make
 </pre>
 Example should compile without errors.
 </li>
@@ -788,7 +790,7 @@ epics>
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Tue Dec 20 18:10:55 CET 2011 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Dec 27 16:23:15 CET 2011 <!-- hhmts end -->
 
 </body>
 </html>

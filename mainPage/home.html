@@ -7,45 +7,50 @@
   <meta http-equiv="PRAGMA" content="NO-CACHE">
   <meta http-equiv="EXPIRES" content="0">
  <title>EPICS v4 Working Group Home Page</title>
- <link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css"
- type="text/css" media="screen" />
- <link rel="stylesheet" type="text/css"
- href="http://www.w3.org/Guide/pubrules-style.css" />
- <link rel="stylesheet" type="text/css" href="epicsv4.css" />
+ <link rel="stylesheet" type="text/css" href="base.css" />
+ <link rel="stylesheet" type="text/css" href="epicsv4web.css" />
  <style type="text/css">
    @media print {
-     body { margin-right: 10%;
-     font-size: smaller }
+     body {  margin: 3em 4em 2em 4em;
+             font-size: smaller
+     }
    }
    @media screen {
-     body { margin-right: 10% }
+     body { margin: 1em 5em 2em 5em }
    }
    li { margin-bottom:0.9em }
  </style>
- </style>
 </head>
 <body>
-<h1>EPICS Version 4 Working Group</h1>
+
+<!-- Very top date banner -->
+<table style="border-width:0px" width="100%">
+  <tbody style="color:#005A9C">
+    <tr>
+      <td width="50%" style="font-size:150%">EPICS V4</td>
+      <td width="50%" style="text-align:right;color:black;font-size:70%">
+	<span style="text-align:right;">
+<!-- hhmts start -->Last modified: Fri Jan  6 12:45:26 CET 2012 <!-- hhmts end -->
+	</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 style="letter-spacing:0.1em;text-align:center">Working Group</h1>
+
 <table class="masthead" vspace="4px" width="100%" style="font-weight:bold">
   <tbody align="center">
     <tr>
       <td align="center"><a href="index.html">HOME</a></td>
       <td align="center" ><a 
-	href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE PROJECT</a></td>      
 	<td align="center"><a href="development.html">DEVELOPMENT</a></td>
       <td align="center"><a href="https://sourceforge.net/projects/epics-pvdata/files/">DOWNLOAD</a></td>
-      <td align="center"><a href="faq.html">FAQ</a></td>
+      <td align="center"><a href="features.html">FEATURES</a></td>
       <td align="center" style="background-color: rgb(0,128,255);"><span class="selectedtab" >WORKING GROUP
 </span></td>
-      <td align="center" style="background-color:rgb(245,245,245)"><a
-	href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">MAIL
-	ARCHIVE</a></td>
-      <td align="center" style="background-color:rgb(245,245,245)">
-	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2482257">ACTION ITEMS</a></td>
-      <td align="center" style="background-color:rgb(245,245,245)">
-	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2483551">ISSUES</a></td>
-      <td align="center" style="background-color:rgb(245,245,245)">
-	<a href="https://sourceforge.net/tracker/?group_id=249167&atid=2483530">RESOLUTIONS</a></td>
+      <td align="center"><a href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE PROJECT</a></td>      
+      <td align="center"><a href="faq.html">FAQ</a></td>
     </tr>
 </table>
 
@@ -65,8 +70,7 @@ the <a href="charter.html">EPICS v4 Charter</a>. </p>
 <hr />
 
 <!-- ----------------------------------------- -->
-<h2 id="status">Working Group Activity Status</h2>
-
+<h2 id="status">Working Group Activities</h2>
 
 <h3 id="presentwork">Present Work</h3>
 <p>As of <strong>Status 20-December-2011</strong>, work completed on BETA 1.0
@@ -161,7 +165,24 @@ present activities include:</p>
 <dd>7-Dec-2011:
   <a
   href="https://sourceforge.net/mailarchive/message.php?msg_id=28507334">Agenda</a>,
-  <a href="https://sourceforge.net/mailarchive/message.php?msg_id=28508106">Minutes</a>
+  <a
+  href="https://sourceforge.net/mailarchive/message.php?msg_id=28508106">Minutes</a>,
+  14-Dec-2012:
+   <a
+  href="http://sourceforge.net/mailarchive/message.php?msg_id=28536451">Agenda</a>,
+  <a
+  href="minutes_20111214.txt">Minutes</a>,
+  21-Dec-2012:
+   <a
+  href="http://sourceforge.net/mailarchive/message.php?msg_id=28570448">Agenda</a>,
+  <a
+  href="minutes_20111221.txt">Minutes</a>.
+  </dd>
+<dt id="Jan2012">Jan 2012</dt>
+  <dd>4-Jan-2011:
+    <a href="http://sourceforge.net/mailarchive/message.php?msg_id=28623627">Agenda</a>,
+  <a
+  href="minutes_20120104.txt">Minutes</a>.
   </dd>
 </dl>
 <!----------------------------------------------------------- -->
@@ -225,7 +246,7 @@ following the meeting. </p>
 <h2 id="membership">Membership</h2>
 
 <p>The EPICS v4 Working group presently has the following members:</p>
-<table>
+<table style="border: 1px solid lightgrey;">
   <tr>
     <th>
       Name
@@ -273,7 +294,7 @@ following the meeting. </p>
     <td>Participant, co-chair</td>
     <td>Core architecture for control, administration</td>
     <td>Money</td>
-    <td>14/Sep/2011, 22/Sep/2011</td>
+    <td>14/Sep/2011, 22/Sep/2011, 7/Dec/2011</td>
   </tr>
   <tr>
     <td>Michael Davidsaver</td>
@@ -296,7 +317,7 @@ following the meeting. </p>
     <td>Participant</td>
     <td>Services for physics.</td>
     <td></td>
-    <td>26/Oct/2011</td>
+    <td>26/Oct/2011, 09/Nov/2011</td>
   </tr>
   <tr>
     <td>Marty Kraimer</td>
@@ -322,7 +343,7 @@ following the meeting. </p>
     <td>Observer</td>
     <td></td>
     <td></td>
-    <td>30-Nov-2011</td>
+    <td>30/Nov/2011, 4/Jan/2012</td>
   </tr>
   <tr>
     <td>Nikolay Malitsky</td>
@@ -332,7 +353,7 @@ following the meeting. </p>
     <td><a href="charter.html#de:pvioc_impl">pvIOC
     Implementations</a>, <a href="charter.html#de:archive_service">Archive
     service</a></td>
-    <td></td>
+    <td>21/Dec/2011</td>
   </tr>
 
   <tr>
@@ -340,8 +361,8 @@ following the meeting. </p>
     <td><a href="http://www.diamond.ac.uk/">Diamond</a></td>
     <td>Participant</td>
     <td>CSS/BOY client side for EPICS v4.</td>
-    <td>Lead editor of Norminal Architectures.</td>
-    <td>19-Oct-2011</td>
+    <td>Lead editor of Nominal Architectures.</td>
+    <td>19/Oct/2011, 22/Nov/2011</td>
   </tr>
   <tr>
     <td>Matej Sekornaja</td>
@@ -363,7 +384,7 @@ following the meeting. </p>
     <td>Participant</td>
     <td>Services for physics.</td>
     <td><a href="charter.html#de:perf_doc">Performance Report</a></td>
-    <td>14-Dec-2011</td>
+    <td>14/Dec/2011</td>
   </tr>
   <tr>
     <td>Kunal Shroff</td>
@@ -405,5 +426,7 @@ perspective.</p>
   <li><a href="doxygen.html">Doxygen Primer</a></li>
 </ul>
 
+</hr />
+<address>Greg White, SLAC/PSI greg at slac.stanford.edu, for EPICS V4 Working Group</address>
 </body>
 </html>

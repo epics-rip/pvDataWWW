@@ -1,81 +1,81 @@
-a:link { text-decoration: none; color: blue }
-a:visited { text-decoration: none; color: blue }
-a:hover { text-decoration: underline; color: blue }
-a.priv { color:rgb(150,0,0) } /* private class is to indicate a link only accessible within SLAC */
+/*
+     EPICS V4 Stylesheet for documents, as opposed to web pages. Eg normative documents,
+     gettingStarted.html etc. 
+*/
 
-ul.quicklinks_outer {
-  list-style-type: none;
-  padding: 0;
-  margin-left: 3px;
+/* Support for header counters. Assume h1 is the title, so doesn't have a counter. Put counters
+   on h2 and h3, but not h4 or further. */
+body { counter-reset: h2; }
+h2.nocount:before { content: "" }
+h2:before {
+      content: counter(h2) ". ";
+      display: inline;
+    }
+h2.nocount {
+      counter-increment: none;
+      counter-reset: none
+    }
+h2 {
+      counter-increment: h2;
+      counter-reset: h3;
+    }
+h3:before {
+      content: counter(h2) "." counter(h3) " ";
+      display: inline;
+    }
+h3 { counter-increment: h3; }
+h4 { margin-left: 0 }
+
+.about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+table { margin-left: auto; margin-right: auto }
+.diagram { text-align: center; margin: 2.5em 0 }
+editor { font-color: red }
+body 
+{ 
+      margin-right: 10%;
+      margin-left: 10%;
+      # font-weight: 100; 
 }
-ul.quicklinks_inner {
-  list-style-type: none;
-  padding: 0;
-  margin-left: 9px;
+li { margin-bottom:0.8em }
+
+/* pre, for coding and command line illustration */
+pre
+{
+	padding: 0.5em;
+	border-color: #c8e3ea;
+	border-width: 1px 1px 1px 3px;
+	border-style: solid;
+	font-family: "Courier", fixed;
 }
 
-table.masthead_banner {
-background-color: rgb(150,0,0); border-style:none; border-collapse:collapse; border-width:0px
-}
-
-table {
-	border-width: 1px;
-	border-spacing: ;
-	border-style: inset;
-	border-color: lightgray;
+/* Tables, from http://www.w3.org/2005/09/table.css*/
+table
+{
 	border-collapse: collapse;
-	background-color: white;
-        font-size:85%
-}
- 
-table.masthead {
-	border-width: 1px;
-	border-spacing: ;
-	border-style: inset;
-	border-color: gray;
-	border-collapse: collapse;
-	background-color: white;
-        font-size:85%
-}
-table.masthead th {
-	border-width: 1px;
-	padding: 3px;
-	border-style: outset;
-	border-color: grey;
-	background-color: white;
-	-moz-border-radius: ;
-}
-table.masthead td {
-	border-width: 1px;
-	padding: px;
-	border-style: inset;
-	border-color: #D0D0D0;
-	background-color: white;
-	-moz-border-radius: ;
+	margin: 1em auto;
 }
 
-span.selectedtab {
-        color:white;
-}
-
-dl.normativeproddescr
+table caption
 {
-	margin: 0.5em 0;
-	padding: 0;
+	margin-left: auto;
+	margin-right: auto;
+        margin-bottom: 4px;
 }
 
-.normativeproddescr dt
+table, tr, th, td { border: 1px solid black; }
+th, td { padding: 5px 1em; }
+
+th
 {
-	position: relative;
-	left: 0;
-	top: 1.1em;
-	width: 5em;
-	font-weight: bold;
+	background: #005a9c;
+	color: #fff;
 }
 
-.normativeproddescr dd
-{
-	border-left: 1px solid #000;
-	margin: 0 0 0 6em;
-	padding: 0 0 .5em .5em;
+th a:link {
+  color: #fff;
 }
+
+th a:visited {
+  color: #aaa;
+}
+

@@ -1,23 +1,27 @@
 /*
-   Copyright 1997-2003 W3C (MIT, ERCIM, Keio). All Rights Reserved.
-   The following software licensing rules apply:
-   http://www.w3.org/Consortium/Legal/copyright-software */
-
-/* $Id: base.css,v 1.25 2006/04/18 08:42:53 bbos Exp $ */
+   Base stylesheet for EPICS v4, for inclusion in all* web pages (those
+   intended for display, like index.html, and those intended as documents
+   like gettingStarted.html). 
+ 
+   Based on the w3c base.css. 
+ */
 
 body {
-  padding: 2em 1em 2em 70px;
   margin: 0;
   font-family: sans-serif;
+  font-size: 85%;
+  font-weight: normal;
   color: black;
   background: white;
   background-position: top left;
   background-attachment: fixed;
   background-repeat: no-repeat;
 }
-:link { color: #00C; background: transparent }
-:visited { color: #609; background: transparent }
-a:active { color: #C00; background: transparent }
+
+a:link { text-decoration: none; color: blue }
+a:visited { text-decoration: none; color: blue }
+a:hover { text-decoration: underline; color: blue }
+a.priv { color:rgb(150,0,0) } /* private class is to indicate a link only accessible within SLAC */
 
 a:link img, a:visited img { border-style: none } /* no border on img links */
 
@@ -32,13 +36,23 @@ th, td { /* ns 4 */
 
 h1, h2, h3, h4, h5, h6 { text-align: left }
 /* background should be transparent, but WebTV has a bug */
-h1, h2, h3,h4 { color: #005A9C; background: white }
+h1, h2, h3,h4 { 
+    color: #005A9C; 
+    background: white 
+    margin-bottom: 0;
+    padding-bottom: 0.15em;
+    font-weight: normal;
+}
 h1 { font: 170% sans-serif }
 h2 { font: 140% sans-serif }
 h3 { font: 120% sans-serif }
 h4 { font: bold 100% sans-serif }
 h5 { font: italic 100% sans-serif }
 h6 { font: small-caps 100% sans-serif }
+h2 { margin-top: 1.5em;  
+     border-bottom: 1px solid #ccc; 
+}
+h2.first { margin-top: 1.0em }   /* First h2 not so big top space, so doesn't look weird */
 
 .hide { display: none }
 
@@ -54,12 +68,7 @@ a[href]:hover { background: #ffa }
 }
 
 pre { margin-left: 2em }
-/*
-p {
-  margin-top: 0.6em;
-  margin-bottom: 0.6em;
-}
-*/
+
 dt, dd { margin-top: 0; margin-bottom: 0 } /* opera 3.50 */
 dt { font-weight: bold }
 

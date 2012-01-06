@@ -1,0 +1,160 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html" />
+  <meta http-equiv="PRAGMA" content="NO-CACHE">
+  <meta http-equiv="EXPIRES" content="0">
+  <title>EPICS Version 4 Home Page</title>
+  <link rel="stylesheet" type="text/css" href="base.css" />
+  <link rel="stylesheet" type="text/css" href="epicsv4web.css" />
+  <style type="text/css">
+   @media print {
+     body { margin: 3em 4em 2em 4em;
+     font-size: smaller }
+   }
+   @media screen {
+     body {  margin: 1em 5em 2em 5em }
+   }
+
+   h4, h5, blockquote { margin-left: 1em }
+
+   </style>
+</head>
+
+<!-- dummy to check if Jenkins has woken up -->
+
+<body>
+<!-- Very top date banner -->
+<table style="border-width:0px" width="100%">
+  <tbody style="color:#005A9C">
+    <tr>
+      <td width="50%" style="font-size:150%">EPICS V4</td>
+      <td width="50%" style="text-align:right;color:black;font-size:70%">
+	<span style="text-align:right;">
+<!-- hhmts start -->Last modified: Fri Jan  6 12:46:29 CET 2012 <!-- hhmts end -->
+	</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 style="letter-spacing:0.1em; text-align:center">Features and Solutions</h1>
+
+<!-- Nav bar -->
+<table class="masthead" vspace="4px" width="100%" style="font-weight:bold">
+  <tbody align="center">
+    <tr>
+      <!-- #005a9c rgb(0,128,255); -->
+      <td align="center"><a href="index.html">HOME</a>
+      <td align="center"><a href="development.html">DEVELOPMENT</a></td>
+      <td align="center"><a
+  href="https://sourceforge.net/projects/epics-pvdata/files/">DOWNLOAD</a></td>
+      </td>
+      <td align="center" style="background-color:rgb(0,128,255);">
+	<span class="selectedtab" >FEATURES</span>
+      </td>
+      <td align="center"><a href="home.html">WORKING GROUP</a></td>
+      <td align="center" ><a href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE PROJECT</a></td>      
+      <td align="center"><a href="faq.html">FAQ</a></td>
+   </tr>
+</table>
+
+<p style="margin-top:30px">This page describes features of EPICS Version 4, and how
+EPICS V4 may be used to solve various architectural problems of modern control systems.<p>
+<hr />
+
+<h2 id="features">EPICS V4 Features</h2>
+
+<p>This section lists some of the features of EPICS V4, which make it suitable as 
+a platform for a unified controls and services environment for large experimental facilities:</p> 
+
+<dl>
+  <dt>Structured Data</dt>
+    <dd>pvData (Process Variable Data) defines and implements an efficient way
+      to store and remotely interact with structured data</dd>
+  <dt>Open, well defined, channel access protocol</dt>
+    <dd>pvAccess implements a version of channel access that provides network support
+      for transferring PVData, is documented and may be independently implemented and
+      developed</dd>
+  <dt>Well defined interface definitions</dt>
+    <dd>The Java package org.epics.pvData.pv has Java interface definitions
+      that define pvData. Package org.epics.ca.client has java interface
+      definitions that define channelAccess. pvDataCPP provides the C++
+      definitions</dd>
+  <dt>Implementation interop</dt>
+    <dd>Projects pvData and pvDataCPP each provide a complete implementation of
+      pvData. Projects pvAccess and pvAccessCPP provides network support for
+      pvData. The network protocol for the two languages is identical. Project
+      pvIOC implements a smart memory resident soft real time database. Each
+      field of each record can optionally have attached support code which is
+      called when a record is processed. The java version (javaIOC) has much
+      more functionality than pvIOCCP, which is in its early stages of
+      development </dd>
+  <dt>Efficient</dt>
+    <dd>Small memory footprint, low cpu overhead, and concise code base</dd>
+  <dt>Efficient Complex Data Interconnect </dt>
+    <dd>PVData defines separate introspection and data interfaces. The
+      introspection interfaces provide access to immutable objects, which
+      allows introspection instances to be freely shared. The introspection
+      interface for a process variable can be accessed without requiring access
+      to the data, and what data is transferred is done efficiently because 
+      the metadata of the data need not also be transferred</dd>
+  <dt>Functional Data Types</dt>
+    <dd>Client code can access PVData via the introspection and data
+      interfaces. For "well known" data, such as timeStamp, or table of orbit data, 
+      specialised interfaces can be provided without requiring any changes 
+      to the core software</dd>
+</dl>
+
+<h2 id="solutions">EPICS V4 Solutions</h2>
+
+<p>This section outlines some general "solutions" provided by EPICS Version 4 (in
+marketing-speak - basically, what might you use EPICS version 4, for):</p>
+
+<dl>
+  <dt>Scientific or "high level" Services</dt>
+    <dd>This is the current emphasis. An example is the gather service. It
+      allows a gather client to get/put/monitor the values of a set of V3
+      records. The data is given to the client as an array. Another example might be a 
+      accelerator modelling service, in which the optics of an entire accelerator may be
+      computed and returned as a single table to the client. Other examples are
+      synchronised beam orbit acquisition, synchronised magnet setting, relational database I/O.
+      Such services are characterised by two things: large payload I/O (eg whole tables),
+      and the need to ask for the value of a "PV" subject to arguments. These two characteristics 
+      are supported by pvData and pvAccess. 
+   </dd>
+  <dt>I/O Controller</dt>
+    <dd>The pvIOC can be used as a soft real-time Input/Output controller. It
+      implements portDriver, which is a facility for accessing hardware I/O
+      devices such as Analog, Digital, Serial, GPIB, etc. However, much work remains on
+      implementing low level drivers.</dd>
+  <dt>Distributed Control System</dt>
+    <dd>EPICS PvData provides a toolkit for building a DCS.</dd>
+  <dt>SCADA</dt>
+    <dd>EPICS PVData can be used to implement Supervisory Control And Data
+      Acquisition (SCADA) applications.</dd>
+  <dt>Data Server</dt>
+    <dd>An application can use the pvIOC or just channelAccess/pvData to serve
+      data to network clients.</dd>
+  <dt>Gateway</dt>
+    <dd>A pvIOC can be the basis for transferring data between different types
+      of control systems. </dd>
+  <dt>Separation of Time Domains</dt>
+  <dd>A pvIOC hosted service, or pvManager, can be used to make acquisitions at a
+rate suitable for one component, such as a client display, independently of the
+refresh or change rate of the events.</dd>
+  <dt>Aggregated Data Acquisition</dt>
+  <dd>A pvIOC hosted service may be used to collect data from a large number of PVs in
+a coordinated way, process it as a whole, such as fitting, or tabulating, and pass these
+data on to consumers</dd>
+  <dt>OLAP, OLTP, ETL</dt>
+  <dd>In general, EPICS V4 services allow the EPICS site to include host level architecture patterns. </dd>
+</dl>
+
+
+
+<hr>
+<address>Marty Kraimer for EPICS V4 Working Group</address>
+</body> </html>
