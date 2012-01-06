@@ -144,11 +144,18 @@ can you update the remote repository. You do the remote update
 with the hg "push" command. 
 
 So, assuming you've changed some files and/or added some,
-putting them in epics-pvdata at sourceforge is now a 2 stage process:
+putting them in epics-pvdata at sourceforge is now a 3 stage process:
 
+0. hg update
+
+    If you don't hg update first, and someone has changed remote repo files, then your
+    push will run into difficulties requiring a merge, even if no files are in common
+    between what you changed and what they changed. So, always a good idea.
+ 
 1. hg commit -u gregorywhite@slac.stanford.edu
-** You'll be dropped into an editor - vi by default, so if you don't know the vi voodoo, beware **
-Hint - hit "i" to enter insert mode, to actually type something
+
+    ** You'll be dropped into an editor - vi by default, so if you don't know the vi voodoo, beware **
+   Hint - hit "i" to enter insert mode, to actually type something
      - hit "ESC : w q" to write and quit.
    To make this easier:
    i) Create a ~/.hgrc file with a username entry, like:
@@ -160,13 +167,15 @@ Hint - hit "i" to enter insert mode, to actually type something
        hg commit -m "add talks"
 
 2. hg push
-pushing to ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
-searching for changes
-remote: adding changesets
-remote: adding manifests
-remote: adding file changes
-remote: added 1 changesets with 5 changes to 5 files
-remote: Running changegroup hook
+
+   Output should look something like:
+   pushing to ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
+   searching for changes
+   remote: adding changesets
+   remote: adding manifests
+   remote: adding file changes
+   remote: added 1 changesets with 5 changes to 5 files
+   remote: Running changegroup hook
 
 
 Add files and directories
