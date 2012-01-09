@@ -33,7 +33,7 @@
       <td width="50%" style="font-size:150%">EPICS V4</td>
       <td width="50%" style="text-align:right;color:black;font-size:70%">
 	<span style="text-align:right;">
-<!-- hhmts start -->Last modified: Fri Jan  6 15:56:09 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Jan  9 11:10:50 CET 2012 <!-- hhmts end -->
 	</span>
       </td>
     </tr>
@@ -55,7 +55,7 @@
       <td align="center"><a href="features.html">FEATURES</a></td>
       <td align="center"><a href="home.html">WORKING GROUP</a></td>
       <td align="center" ><a href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE PROJECT</a></td>      
-      <td align="center"><a href="faq.html">FAQ</a></td>
+      <td align="center"><a href="http://epics-pvdata.sourceforge.net/faq.html">FAQ</a></td>
    </tr>
 </table>
 
@@ -283,11 +283,22 @@ are "non-normative" and no guarantees will be made about them. </p>
 
 <dl class="normativeproddescr">
   <dt id="pvdata">pvData</dt>
-  <dd>The description of how memory resident data types are described and defined. Complete implementations are available for both Java and for C++.</dd>
+
+  <dd>pvData defines how the data of an EPICS V4 record database, are typed,
+  interfaced and exchanged. The types may be complex, and care is taken in memory
+  management and interfacing to make data I/O from memory as high performance as
+  possible. In EPICS V4, a pvIOC implements a memory resident database defined in
+  terms of pvData. pvData describes both an API for creating and updating pvData
+  objects in the IOC database, and also for accessing meta-data descriptions of the
+  structure of the data so stored, the so called "introspection interface." The
+  introspection interface is the key element that enables high speed communications
+  of the values of such structured data over pvAccess. Complete implementations are
+  available for both Java and for C++. </dd>
+  
   <dd><strong>Specification:</strong> The pvData interface has not yet been specified independently of its implementations, though that is an expected deliverable of the EPICS V4 Working Group</dd>
   <dd><strong>Implementations:</strong>
  <ul>
-    <li>Java reference implementation. Status: Usable beta
+    <li>Java reference implementation. Status: Complete beta
     <p>
     <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/">
@@ -306,7 +317,7 @@ are "non-normative" and no guarantees will be made about them. </p>
     href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataJava%20-%20Build/javadoc/">Latest</a>, <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a></p>
  
     </li>
-    <li>C++ reference implementation. Status: Usable beta
+    <li>C++ reference implementation. Status: Complete beta
     <p>
      <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/">pvDataCPP
@@ -334,7 +345,7 @@ are "non-normative" and no guarantees will be made about them. </p>
 <dd>
   <strong>Implementations:</strong>
    <ul>
-    <li>Java reference implementation. Status: Usable beta
+    <li>Java reference implementation. Status: Complete beta
     <p>
     <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/">
@@ -353,7 +364,7 @@ are "non-normative" and no guarantees will be made about them. </p>
     href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvAccessJava%20-%20Build/javadoc/">Latest</a>, <a href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessJava/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a></p>
  
     </li>
-    <li>C++ reference implementation. Status: Usable beta
+    <li>C++ reference implementation. Status: Complete beta
     <p>
      <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessCPP/">pvAccessCPP
@@ -386,7 +397,7 @@ its implementations, though that is an expected deliverable of the EPICS V4 Work
 Group</dd>
   <dd><strong>Implementations:</strong>
  <ul>
-    <li>Java reference implementation. Status: Usable beta
+    <li>Java reference implementation. Status: Complete beta
     <p>
     <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/">
