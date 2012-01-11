@@ -1,0 +1,66 @@
+ Greg White: ========= Meeting 11-Jan-2012 ===========
+
+ Greg White: Present: TK, GS, BD, JR, DH, MS, NM, MK
+[11/01/2012 16:14:08] Greg White: Scribe: Guobao Shen
+**********************
+NEW TOPIC: ARCHITECTURES 
+**********************
+ : JR: Arch, want example service
+ : GW: looking for a doc to see the design to solve normal problem, acc. telescope
+ : GW: combine arch with diagram
+ : GW: basic hello world
+ : JR: rework on that
+ : GW: for a particle service, provide contact info
+ : MK: Arch do not invole service too much
+ : BD: need a session on incoming meeting
+ : BD: no application, hard to say what we want to do
+ : BD: invite Sheng Peng to the meeting
+ : GW: value to use V4?
+ : GW: channelRPC is one, how about others? Imaging?
+ : NM: primary value, combination structure
+ : NM: data type and RPC to build middle layer,
+ : DAQ on both client and server side
+ : GW: interface in Java & Python
+ : GW: Java interface to kick in Matlab
+ : JR: unique python interface, build-in to avoid ...
+ : NM: API for client
+ : JR: SOA, RPC + channel finder
+ : JR: single protocol
+**********************
+NEW TOPIC: BNL WORKSHOP MEETING AGENDA
+**********************
+ : GW: 3 days for the meeting
+ : MK: leave on Fri
+ : TK: leave Fri
+ : GW: leave on Fri
+ : JR/David: leave on Thu
+ : GW: Thu for Masar coding
+ : GW: break down the agenda
+ : MK: want imaing NTTypes
+ : NM: try to give a presentation
+ : JR: NTImage refers to NTArray...
+ : GW: after words in time for NTImage
+ : JR: figure out where we are
+**********************
+ : ====== New topic: Performance ======
+**********************
+ : MS: using japex to do basic measurement, like it
+ : MS: suggest to use japex for at least Java binding
+ : GW: use japex to caj/jca also
+ : MS: come up with some test, latency, throughput, and so on
+ : BD: nice to see about the scale
+ : BD: once/time, 1000/time, ......
+ : GW: for large amount data
+ : GW: start to think to create a test bench with japex on May
+ : GW: also C++ biding
+ bob.dalesio: I would like to state that Phil Duvall will join our meeting that jan 23rd. He may bbe available to work on some of this on sabbatical. Please send me ideas and concerns.
+ : GW: japex should not add any overload to the performance
+ : GW: group to create a formal test bench based on japex for pvAccess performance, and compare performance pvAccess to channel access
+ : GW: revise version # for pvAccess to 2nd draft
+ : MS: need to work on visualbility example
+ : MS: can delivery by this week to Phil
+ : GW: skip next week's meeting
+ : BD: write Phil to review
+meeting ends
+
+ Greg White: Nice minutes Guobao, thanks very much!
