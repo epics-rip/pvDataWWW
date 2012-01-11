@@ -810,11 +810,12 @@ structure NTImage
 
     // NTArray part
 
-    int dataType
-    long [] dims
-    byte [] data
-    alarm_t alarm
-    timestamp_t timeStamp
+    scalar_t[]  value
+    string      function
+    timeStamp_t timeStamp
+    alarm_t     alarm
+    display_t   display
+    long[]      dims
 
     // Image part
 
