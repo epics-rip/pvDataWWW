@@ -1,0 +1,1236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content=
+"EPICS, EPICSv4, pvAccess, specification, protocol, network, CAv4" />
+ 
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="epicsv4.css" />
+<title>pvAccess Protocol Specification</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+/*]]>*/
+</style>
+</head>
+<body>
+
+
+<div class="head">
+<h1>pvAccess Protocol Specification</h1>
+
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+<h2 class="nocount">EPICS v4 Working Group, Second Public Working Draft, 9-Jan-2012</h2>
+
+<dl>
+<dt>This version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120109.html">pvAccess_Protocol_Specification_20120109.html</a></dd>
+<dt>Latest version:</dt>
+<dd><a href=
+"http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
+<dt>Editors:</dt>
+<dd>Matej Sekoranja, Cosylab</dd>
+</dl>
+<hr />
+</div>
+<h2 class="nocount" id="abstract">Abstract</h2>
+
+<p>This document defines EPICS v4 communication protocol called pvAccess.</p>
+
+<p>For more information about the EPICS, please refer to the home page
+of the <a href="http://www.aps.anl.gov/epics/">Experimental Physics
+and Industrial Control System.</a></p>
+
+<h2 class="nocount" id="status">Status of this Document</h2>
+
+<!-- Statement about why this version exists -->
+<p>This is the 9 January 2012 version of the pvAccess Protocol Specification. This
+version was approved by the <a href="http://epics-pvdata.sourceforge.net/home.html">EPICS V4 Working group</a> to be published as the Second Public Working Draft of the specification. This
+public working draft is intended for the EPICS community to review and
+comment. Resulting comments will drive subsequent drafts. </p>
+<p>
+The present implementation of pvAccess largely reflects the specification as written here,
+though an another document will soon be written to distinguish what is in the
+specification that is not yet implemented.
+</p>
+
+<!-- Please always include this statement of terms, unless it's really silly -->
+<p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY
+when highlighted (through style sheets, and in uppercase in the
+source) are used in accordance
+with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>
+[<a href="refs.html#ref-RFC2119">RFC2119</a>]. The term NOT REQUIRED
+(not defined in RFC 2119) indicates exemption.
+</p>
+
+<!--NewPage-->
+<!-- this is for html2ps -->
+<div class="toc"/>
+<h2 id="toc">Table of Contents</h2>
+<ol>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#dataEncoding">Data Encoding</a></li>
+  <li><a href="#protocolMessages">Protocol Messages</a></li>
+  <li><a href="#connectionManagement">Connection Management</a></li>
+  <li><a href="#flowControl">Flow Control</a></li>
+  <li><a href="#channelDiscovery">Channel Discovery</a></li>
+  <li><a href="#controlMessages">Control Messages</a></li>
+  <li><a href="#communicationExample">Communication Example</a></li>
+  <li><a href="#futureProtocolChanges">Future Protocol Changes/Updates</a></li>
+</ol>
+
+<h2 id="overview">Overview</h2>
+
+<p>pvAccess is a high-performance network communication protocol designed for signal monitoring and also for high-level applications. It has evolved from the EPICS Channel Access.</p>
+
+<p>TCP/IP is used for data transmission, UDP/IP for discovery (discovery over TCP/IP is also allowed), however discovery
+mechanism allows usage of other implementations (e.g. UDP/IP for data transmission).
+The protocol itself supports IPv6, i.e. all addresses are IPv6 encoded.</p>
+
+<p>
+Port numbers 5075 (tcp connection port) and 5076 (udp broadcast port) are used (to be accepted by IANA). The default connection port SHOULD be used if free, otherwise a dynamically allocated port SHOULD be used as a fallback.
+</p>
+
+<p>pvAccess heavily depends on <a href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>] – all the data is sent as pvData objects.  Protocol is optimized for performance and aims to send minimum amount of data. It supports segmented messages and allows sending huge amount of data using small buffers (there is no limitation on maximum message size limited by send/receive buffer).</p>
+
+<p>The pvAccess protocol definition consists of three major parts:
+<ul>
+<li>a set of data encoding rules that determine how the various data types are de-/serialized</li><li>a number of message types that are exchanged between client and server, together with rules as to what message is to be sent under what circumstances</li><li>a set of rules that determine how client and server agree on a particular encoding</li>
+</ul></p>
+
+
+<h2 id="dataEncoding">Data Encoding</h2>
+
+<p>The key goals of the pvData data encoding are simplicity and efficiency. In keeping with these principles, the encoding does not align primitive types on word boundaries and therefore eliminates the wasted space and additional complexity that alignment requires. The pvAccess data encoding simply produces a stream of contiguous bytes; data MUST NOT contain no padding bytes and MUST NOT be aligned on word boundaries.<br/>
+The exception are arrays. All the arrays MUST be aligned to 64-bit (first element of array is padded). This REQUIRES that message header is also 64-bit aligned.
+</p>
+
+<p>
+For connection-oriented communication (TCP/IP) byte order is "negotiated" between client and server - server wins.
+In order to allow all the intermediates to forward the data without requiring it to be unmarshaled (the intermediates can forward requests by simply copying blocks of binary data) and not to require specific byte order for connection-less protocols (UDP), each message contains an endiannes flag.
+</p>
+
+
+<h3 id="dataEncoding:sizes">Sizes</h3>
+<p>
+Many of the types involved in the data encoding, as well as several protocol message components, have an associated size or count. A size is a non-negative number. Sizes and counts are encoded as follows:
+<ol><li>If the number of elements is less than 255, the size is encoded as a single byte containing an unsigned 8-bit integer indicating the number of elements.</li><li>If the number of elements is greater than or equal to 255, the size is encoded as a byte with value 255, followed by a positive signed 32-bit integer indicating the number of elements. This implies maximum size of 2^31-1.</li></ol>Using this encoding to indicate sizes is significantly cheaper than always using an 32-bit integer to store the size, especially when marshaling sequences of short strings: counts of up to 254 require only a single byte instead of four. This comes at the expense of counts greater than 254, which require five bytes instead of four. However, for sequences or strings of length greater than 254, the extra byte is insignificant.
+</p>
+<h3 id="dataEncoding:basicTypes">Basic Types</h3>
+
+<p>The basic types are encoded as shown in the table below. Integer types (byte, short, int, long) are represented as two’s complement numbers, and floating point types (float, double) use the IEEE-754 standard formats [<a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a>].</p>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Encoding for basic types.</caption>
+<tr><th>Type</th><th>Encoding</th></tr>
+<tr><td style="text-align:right;font-weight:bold">boolean</td><td>A single byte with value non-zero value for true, 0 for false.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">byte</td><td>Signed 8-bit integer.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">short</td><td>Signed 16-bit integer.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">int</td><td>Signed 32-bit integer.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">long</td><td>Signed 64-bit integer.</td></tr>
+<tr><td style="text-align:right;font-weight:bold">float</td><td>32-bit float (IEEE-754 single-precision float).</td></tr>
+<tr><td style="text-align:right;font-weight:bold">double</td><td>64-bit float (IEEE-754 double-precision float).</td></tr>
+</table>
+
+<p>Unsigned integers are not supported.</p>
+
+
+<h3 id="dataEncoding:strings">Strings</h3>
+<p>Strings are encoded as a size, followed by the string contents in UTF-8 format array of bytes. Size gives the number of bytes that follow it and not the number of UTF-8 characters. An empty string is encoded with a size of zero. <br/>
+Strings MUST NOT be NULL-terminated and MUST NOT contain a zero byte.
+</p>
+<p>
+On the wire, pvAccess transmits all strings as Unicode strings in UTF-8 encoding. Non-C++ bindings of the pv normative implementations (pvAccess and pvData in particular) will use strings in their language-native Unicode representation and convert automatically to and from UTF-8 for transmission, so applications can transparently use characters from non-English alphabets.However, for C++, how strings are represented inside a process depends on the platform as well as the mapping that is chosen for a particular string: the default mapping to std::string.
+</p>
+
+<h3 id="dataEncoding:arrays">Arrays</h3>
+<p>Arrays are encoded as a size representing the number of elements in the array, followed by the elements encoded as specified for their type.
+</p>
+<h3 id="dataEncoding:bitSets">BitSets</h3>
+<p>BitSet is a pvData internal data type that represents bits.
+</p><p>For performance reasons BitSet implementation SHOULD store bits as long-s, however serialization is size optimized and REQUIRES to send only least possible number of bytes (LSB part that covers all the bits set).<br/>
+BitSet holding n bits is encoded as:
+</p><ul>
+<li>number of bytes needed to serialize BitSet: size type containing value of S = ceil(n/8)</li>
+<li>L long-s containing first 64-multiple of bits (LSB to MSB), integers are encoded in currently selected byte order, L = floor((n+7)/64)</li>
+<li>B byte-s containing remaining bits in LSB to MSB order: B = S - 8*L</li>
+</ul>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Example of how BitSet is encoded.</caption>
+<tr><th># bits</th><th>S</th><th>L</th><th>B</th></tr>
+<tr><td style="text-align:right;font-weight:bold">0</td> <td>0</td><td>0</td><td>0</td></tr>
+<tr><td style="text-align:right;font-weight:bold">1</td> <td>1</td><td>0</td><td>1</td></tr>
+<tr><td style="text-align:right;font-weight:bold">7</td> <td>1</td><td>0</td><td>1</td></tr>
+<tr><td style="text-align:right;font-weight:bold">8</td> <td>1</td><td>0</td><td>1</td></tr>
+<tr><td style="text-align:right;font-weight:bold">15</td><td>2</td><td>0</td><td>2</td></tr>
+<tr><td style="text-align:right;font-weight:bold">63</td><td>8</td><td>1</td><td>0</td></tr>
+<tr><td style="text-align:right;font-weight:bold">64</td><td>8</td><td>1</td><td>0</td></tr>
+<tr><td style="text-align:right;font-weight:bold">65</td><td>9</td><td>1</td><td>1</td></tr>
+</table>
+
+<p>
+Examples of BitSet serialization (big-endian byte order):
+</p>
+
+<pre>
+Hexdump [{}] size = 1
+00                                                 .
+
+Hexdump [{0}] size = 2
+01 01                                              ..
+
+Hexdump [{1}] size = 2
+01 02                                              ..
+
+Hexdump [{7}] size = 2
+01 80                                              ..
+
+Hexdump [{8}] size = 3
+02 00 01                                           ...
+
+Hexdump [{15}] size = 3
+02 00 80                                           ...
+
+Hexdump [{63}] size = 9
+08 80 00 00  00 00 00 00  00                       .... .... .
+
+Hexdump [{64}] size = 10
+09 00 00 00  00 00 00 00  00 01                    .... .... ..
+
+Hexdump [{65}] size = 10
+09 00 00 00  00 00 00 00  00 02                    .... .... ..
+
+Hexdump [{0, 1, 2, 4}] size = 2
+01 17                                              ..
+
+Hexdump [{0, 1, 2, 4, 8}] size = 3
+02 17 01                                           ...
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50}] size = 8
+07 00 01 02  03 04 05 06                            .... .... 
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58}] size = 9
+08 07 06 05  04 03 02 01  00                       .... .... .
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67}] size = 10
+09 07 06 05  04 03 02 01  00 08                    .... .... ..
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67, 72, 75}] size = 11
+0A 07 06 05  04 03 02 01  00 08 09                 .... .... ...
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67, 72, 75, 81, 83}] size = 12
+0B 07 06 05  04 03 02 01  00 08 09 0A               .... .... .... 
+</pre>
+
+<h3 id="dataEncoding:status">Status</h3>
+<p>
+pvAccess defines a structure to inform about completion status. It is defined as:</p>
+<pre>struct Status {
+    byte type;      // enum { OK = 0, WARNING = 1, ERROR = 2, FATAL = 3 }
+    string message;
+    string stackDump;   // optional (provides more context data about the error), can be empty};
+</pre>
+<p>
+OK and WARNING type mean success.
+</p>
+<p>
+In practice majority of Status instances will be OK with no message and stackDump. This SHOULD be optimized.
+A special type code <code>-1</code> is used and string fields are omitted to represent OK status:
+</p>
+<pre>struct StatusOK {
+    byte type = -1;
+};
+</pre>
+<p>
+NOTE: a decision was made not to use hardcoded set of error codes (enum) to allow: any status message,
+avoid book-keeping problems and avoid forcing programmers to pick a not-so-informative error code that
+almost explains an error to be reported.
+</p>
+
+<p>
+Examples of Status serialization:
+</p>
+
+<pre>
+Hexdump [Status OK] size = 1
+FF                                                 .
+
+Hexdump [WARNING, "Low memory", ""] size = 13
+01 0A 4C 6F  77 20 6D 65  6D 6F 72 79  FF          ..Lo w me mory .
+
+Hexdump [ERROR, "Failed to get, due to unexpected exception", (stack dump)] size = 264
+01 2A 46 61  69 6C 65 64  20 74 6F 20  67 65 74 2C  .*Fa iled  to  get, 
+20 64 75 65  20 74 6F 20  75 6E 65 78  70 65 63 74   due  to  unex pect 
+65 64 20 65  78 63 65 70  74 69 6F 6E  DB 6A 61 76  ed e xcep tion .jav 
+61 2E 6C 61  6E 67 2E 52  75 6E 74 69  6D 65 45 78  a.la ng.R unti meEx 
+63 65 70 74  69 6F 6E 0A  09 61 74 20  6F 72 67 2E  cept ion. .at  org. 
+65 70 69 63  73 2E 63 61  2E 63 6C 69  65 6E 74 2E  epic s.ca .cli ent. 
+65 78 61 6D  70 6C 65 2E  53 65 72 69  61 6C 69 7A  exam ple. Seri aliz 
+61 74 69 6F  6E 45 78 61  6D 70 6C 65  73 2E 73 74  atio nExa mple s.st 
+61 74 75 73  45 78 61 6D  70 6C 65 73  28 53 65 72  atus Exam ples (Ser 
+69 61 6C 69  7A 61 74 69  6F 6E 45 78  61 6D 70 6C  iali zati onEx ampl 
+65 73 2E 6A  61 76 61 3A  31 31 38 29  0A 09 61 74  es.j ava: 118) ..at 
+20 6F 72 67  2E 65 70 69  63 73 2E 63  61 2E 63 6C   org .epi cs.c a.cl 
+69 65 6E 74  2E 65 78 61  6D 70 6C 65  2E 53 65 72  ient .exa mple .Ser 
+69 61 6C 69  7A 61 74 69  6F 6E 45 78  61 6D 70 6C  iali zati onEx ampl 
+65 73 2E 6D  61 69 6E 28  53 65 72 69  61 6C 69 7A  es.m ain( Seri aliz 
+61 74 69 6F  6E 45 78 61  6D 70 6C 65  73 2E 6A 61  atio nExa mple s.ja 
+76 61 3A 31  32 36 29 0A                            va:1 26). 
+</pre>
+
+<h3 id="dataEncoding:introspectionData">Introspection Data</h3>
+<p>Each pvData data instance (i.e. PVField) has introspection description (i.e. Field). PVField is encoded as raw values (no other overhead), Field encodes information of what data-type(s) PVField is. Since many different PVField instances share same introspection description it can be cached to avoid sending it over-and-over over the wire. Thus, Field encoding starts with a byte describing the following encoding: it can be NULL, ID only and ID with actual Field serialization. <br/>ID, encoded as short, is a key used to cache Field descriptions. This cache is called introspection registry. IDs are valid within one connection. Moreover, they can be defined only be the sender; receiver only keeps track of IDs to be able to do deserialization. This implies two introspection registries per connection (since communication is full-duplex). Sender can override previously assigned ID by simply assiging the ID to a new Field. Introspection registry size is negotiated when connection is established.</p>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Field encoding.</caption>
+<tr><th>Field Encoding</th><th>Type</th><th>Description</th></tr>
+<tr><td>0xFF</td><td style="font-weight:bold">NULL_TYPE_CODE</td><td>No introspection data.</td></tr>
+<tr><td>0xFE + ID</td><td style="font-weight:bold">ONLY_ID_TYPE_CODE</td><td>Serialization contains only an ID (that was assigned by one of the previous FULL_WITH_ID descriptions).</td></tr>
+<tr><td>0xFD + ID + FieldDesc</td><td style="font-weight:bold">FULL_WITH_ID_TYPE_CODE</td><td>Serialization contains an ID (that can be used later, if cached) and full interface description.</td></tr>
+</table>
+
+<p>
+Actual Field introspection description (FieldDesc) is encoded as a byte that consists of 2 nibbles (4-bits). Upper nibble (MSBs) defines Field type (i.e. Type), low nibble (LSBs) defines data type (i.e. ScalarType) for scalar and scalarArray types. The byte is then followed by Field instance name (encoded as string). Moreover, structure and structureArray types require more data: structure requires array of Field-s (size followed by Field-s as described above), structureArray is similar just that it in addition requires name of the structure. </p>
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">FieldDesc encoding.</caption>
+<tr><th>FieldDesc Encoding</th><th>Type</th><th>Description</th></tr>
+<tr><td>0x00 | ScalarType (0b0000xxxx) + name</td><td style="font-weight:bold">scalar</td><td>Scalar.</td></tr>
+<tr><td>0x10 | ScalarType (0b0000xxxx) + name</td><td style="font-weight:bold">scalarArray</td><td>Array of scalars.</td></tr>
+<tr><td>0x20 (0b00100000) + name + Field[]</td><td style="font-weight:bold">structure</td><td>Structure.</td></tr>
+<tr><td>0x30 (0b00110000) + name + (structure name + Field[])</td><td style="font-weight:bold">structureArray</td><td>Array of structures.</td></tr>
+</table>
+
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">ScalarType nibble encoding.</caption>
+<tr><th>Encoding</th><th>ScalarType</th></tr>
+<tr><td>0 (0b0000)</td><td style="text-align:left;font-weight:bold">boolean</td></tr>
+<tr><td>1 (0b0001)</td><td style="text-align:left;font-weight:bold">byte</td></tr>
+<tr><td>2 (0b0010)</td><td style="text-align:left;font-weight:bold">short</td></tr>
+<tr><td>3 (0b0011)</td><td style="text-align:left;font-weight:bold">int</td></tr>
+<tr><td>4 (0b0100)</td><td style="text-align:left;font-weight:bold">long</td></tr>
+<tr><td>5 (0b0101)</td><td style="text-align:left;font-weight:bold">float</td></tr>
+<tr><td>6 (0b0110)</td><td style="text-align:left;font-weight:bold">double</td></tr>
+<tr><td>7 (0b0111)</td><td style="text-align:left;font-weight:bold">string</td></tr>
+</table>
+<h4 id="dataEncoding:example">Example</h4>
+<p>Introspection description of the following structure</p>
+
+<pre>structure test1    structure timeStamp        long secondsPastEpoch        int nanoSeconds    structure[] value        structure org.epics.ioc.test.testStructure            double value            structure location                double x                double y    string factoryRPC    structure arguments        int size    structure element        double value        structure alarm            int severity            string message        structure timeStamp            long secondsPastEpoch            int nanoSeconds</pre>
+
+<p>is encoded as</p>
+
+<pre>FD 00 01 20  05 74 65 73  74 31 05 FD  00 02 20 09  .... .tes t1.. .... 74 69 6D 65  53 74 61 6D  70 02 04 10  73 65 63 6F  time Stam p... seco 6E 64 73 50  61 73 74 45  70 6F 63 68  03 0B 6E 61  ndsP astE poch ..na 6E 6F 53 65  63 6F 6E 64  73 FD 00 03  30 05 76 61  noSe cond s... 0.va 6C 75 65 20  6F 72 67 2E  65 70 69 63  73 2E 69 6F  lue  org. epic s.io 63 2E 74 65  73 74 2E 74  65 73 74 53  74 72 75 63  c.te st.t estS truc 74 75 72 65  02 06 05 76  61 6C 75 65  FD 00 04 20  ture ...v alue ...  08 6C 6F 63  61 74 69 6F  6E 02 06 01  78 06 01 79  .loc atio n... x..y 07 0A 66 61  63 74 6F 72  79 52 50 43  FD 00 05 20  ..fa ctor yRPC ...  09 61 72 67  75 6D 65 6E  74 73 01 03  04 73 69 7A  .arg umen ts.. .siz 65 FD 00 06  20 07 65 6C  65 6D 65 6E  74 03 06 05  e...  .el emen t... 76 61 6C 75  65 FD 00 07  20 05 61 6C  61 72 6D 02  valu e...  .al arm. 03 08 73 65  76 65 72 69  74 79 07 07  6D 65 73 73  ..se veri ty.. mess 61 67 65 FE  00 02                                  age. ..</pre>
+<h3 id="dataEncoding:data">Data</h3>
+<p>
+Data (i.e. PVField) encodes only its data.
+</p>
+<p>Each structure can (depending on message definition) have a BitSet instance defining what subset of that structure's fields have been serialized. This allows partial serialization of structures, e.g. sending only fields that have changed and not entire structure. Each node of a structure corresponds to one bit; if a bit is set its corresponding field has been serialized, otherwise not. BitSet does not apply to array elements.</p>
+
+
+<h4 id="data:example1">Example #1</h4>
+
+<pre>structure 
+    byte[] value [1,2,3]
+    structure timeStamp
+        long secondsPastEpoch 0x1122334455667788
+        int nanoSeconds 0xAABBCCDD
+        int userTag 0xEEEEEEEE
+    structure alarm
+        int severity 0x11111111
+        int status 0x22222222
+        string message Allo, Allo!
+</pre>
+
+is serialzied as (big-endian byte order):
+
+<pre>
+Hexdump [Serialized structure] size = 40
+03 01 02 03  11 22 33 44  55 66 77 88  AA BB CC DD  .... ."3D Ufw. .... 
+EE EE EE EE  11 11 11 11  22 22 22 22  0B 41 6C 6C  .... .... """" .All 
+6F 2C 20 41  6C 6C 6F 21                            o, A llo! 
+</pre>
+
+<h4 id="data:example2">Example #2</h4>
+
+<p>
+This example shows how bits of a BitSet are assigned to the fields of a structure:
+</p>
+
+<pre>bit#    field0    structure 1        structure timeStamp2            long secondsPastEpoch 3            int nanoSeconds 4        structure[] value             structure org.epics.ioc.test.testStructure                double value                 structure location                    double x                    double y            structure org.epics.ioc.test.testStructure                double value                 structure location                    double x                    double y 5        string factoryRPC6        structure arguments7            int size8        structure element9            double value10            structure alarm11                int severity12                string message 13            structure timeStamp14                long secondsPastEpoch15                int nanoSeconds</pre>
+<p>The structure above requires 16 bits.<br/>
+If bit on a structure node is set then all of the structure fields MUST be de-/serialized.</p>
+
+<h2 id="protocolMessages">Protocol Messages</h2>
+<p>
+The pvAccess protocol uses two protocol message types:
+<ul><li>control messages (flow control, no payload) and</li><li>application messages (requests and their responses).</li>
+</ul>
+</p>
+
+<p>Each message consists of a message header and (optionally) a message payload that immediately follows the header. Message MUST BE aligned to 64-bits.</p>
+<h3 id="protocolMessages:messageHeader">Message header</h3>
+<p>
+Each protocol message has a fixed 8-byte header that is encoded as if it were the following structure:</p>
+<pre>struct pvAccessHeader {    byte magic;    byte version;    byte flags;    byte messageType;    int payloadSize;};</pre>
+
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">pvAccess header members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">magic</td><td>pvAccess protocol magic code, 0xCA.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">version</td><td>Protocol version.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">flags</td><td>Message flags.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">messageType</td><td>Message type (i.e. create, get, put, process, etc.).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">payloadSize</td><td>Message payload size (non-aligned, in bytes).</td></tr>
+</table>
+
+<p>
+Protocol MUST be backward compatible. Current version is 0.
+</p>
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">pvAccess header flags description.</caption>
+<tr><th>bit</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">0</td><td>Application/Control [0/1] message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">1,2,3</td><td>Unused</td></tr>
+<tr><td style="text-align:right;font-family:monospace">4</td><td>First message (of set of segmented messages).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">5</td><td>Last message (of set of segmented messages).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">6</td><td>Unused.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">7</td><td>Little/Big [0/1] endian byte order.</td></tr>
+</table>
+    <p>
+NOTE: If bits 4 and 5 are both set, this indicates message between first and last message of a set of segmented messages.
+This implies that bit 4 MUST be set for all but the last message, and bit 5 MUST be set for all but the first message. <br/>
+None of the bits MUST BE set then message is not segmented.</p>
+
+<h2 id="protocolMessages:applicationMessages">Application Messages</h2>
+<p>
+This section describes all the application messages (0-th bit of <i>pvAccessHeader.flags</i> is not set) for different  <i>pvAccessHeader.messageType</i> values.
+</p>
+<p>In order to understand specific application messages it is strongly recommended to get familiar with <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html">pvAccess client interface</a>.</p>
+
+<h3 id="protocolMessages:applicationMessages:beacon">Beacon (0x00)</h3><p>
+Send over UDP to clients. Beacons SHOULD be only used to detect new servers and server restarts. </p>
+
+<pre>struct beaconMessage {    short beaconSequenceId;    long startupTimeSeconds;    int startupTimeNanos;
+    byte[16] serverAddressIPv6;    short serverPort;
+    string protocol;    FieldDesc serverStatusIF;    [if serverStatusIF != NULL_TYPE_CODE] PVField serverStatus;};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Beacon message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">beaconSequenceId</td><td>Beacon sequence ID (counter w/ rollover). Can be used to detect UDP routing problems.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">startupTimeSeconds</td><td>Server startup time (POSIX time).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">startupTimeNanos</td><td>Server startup time (nanoseconds part).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverAddressIPv6</td><td>Server IPv6 address (or IPv6 encoded IPv4 address).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverPort</td><td>Server port (where server is listening).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">protocol</td><td>Protocol name, e.g. "tcp" for standard pvAccess TCP/IP communication.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverStatusIF</td><td>Optional server status Field description, NULL_TYPE_CODE is none.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverStatus</td><td>Optional server data.</td></tr>
+</table>
+
+<p>    A beacon from yet unknown serverAdddressIPv6:serverPort means new server. A beacon with the same serverAdddressIPv6:serverPort address and different startupTime{Seconds,Nanos} means that server was restarted. In both cases client SHOULD boost searching
+of not yet found channels. Client MAY disconnect old connection or wait until connection loss is detected (on failed Echo message send).</p>
+
+<p>
+Each server implementation SHOULD emit its own beacons, e.g. if a server is supporting data transmission over TCP/IP and UDP/IP there SHOULD both emit beacons. If the implementations are tightly coupled, i.e. they have the same lifecycle and share the same channels, then only one server MIGHT emit beacons.
+</p>
+
+<p>
+NOTE: Servers SHOULD synchronize their internal clocks using NTP or some other suitable time source before sending their first beacon.<br/>NOTE: Due to the fast that UDP does not guarantee delivery server MUST send several beacons to notify that it is alive (e.g. 15 beacons with 1Hz period). After longer period it MAY stop sending them, however it is recommended that is SHOULD do it with a low rate (one beacon per every couple of minutes) to report serverStatus.</br>
+NOTE: Beacons SHOULD not used to report connection-valid status.
+</p>
+
+
+<h3 id="protocolMessages:applicationMessages:connectionValidation">Connection validation (0x01)</h3><p>The first application message that MUST be sent from the server to a client when TCP/IP connection is established. The message indicates that the server is ready to receive requests; the client MUST NOT send any messages on the connection until it has received the validate connection message from the server.
+</p>
+<p>
+The purpose of the validate connection message is two-fold:
+<ul>
+<li>It informs the client of the connection and protocol details.</li><li>It prevents the client from writing a request message to its local transport buffers until after the server has acknowledged that it can actually process the request. This avoids a race condition caused by the server's TCP/IP stack accepting connections in its backlog while the server is in the process of shutting down: if the client were to send a request in this situation, the request would be lost but the client could not safely re-issue the request because that might violate at-most-once semantics.</li>
+</ul>
+The validate connection message guarantees that a server is not in the middle of shutting down when the server's TCP/IP stack accepts an incoming connection and so avoids the race condition. </p>
+
+<pre>struct connectionValidationRequest {    int serverReceiveBufferSize;    int serverReceiveSocketBufferSize;
+    short serverIntrospectionRegistryMaxSize;};struct connectionValidationResponse {    int clientReceiveBufferSize;    int clientReceiveSocketBufferSize;    short clientIntrospectionRegistryMaxSize;    short connectionQos;
+};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Connection validation request message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverReceiveBufferSize</td><td>Server receive buffer size in bytes.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverReceiveSocketBufferSize</td><td>Server socket buffer size in bytes.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverIntrospectionRegistryMaxSize</td><td>Maximum number of introspection registry entries server is able to handle.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Connection validation response message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">clientReceiveBufferSize</td><td>Client receive buffer size in bytes.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">clientReceiveSocketBufferSize</td><td>Client socket buffer size in bytes.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">clientIntrospectionRegistryMaxSize</td><td>Maximum number of introspection registry entries client is able to handle.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">connectionQoS</td><td>Connection QoS parameters.</td></tr>
+</table>
+
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Connection QoS parameters description.</caption>
+<tr><th>bit</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">0-6</td><td>Priority level [0-100].</td></tr>
+<tr><td style="text-align:right;font-family:monospace">7</td><td>Unused.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">8</td><td>Low-latency priority.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">9</td><td>Throughput priority.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">10</td><td>Enable compression.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">11-15</td><td>Unused.</td></tr>
+</table>
+
+<p>
+Each QoS parameter value REQUIRES a separate TCP/IP connection.
+Low-latency priority bit signals transport implementation to try to respond with low latency. 
+Throughput priority bit signals transport implementation to try to maximize throughput.
+How this is achieved depends on specific implementation.
+Compression bit enables compression for the connection (TBD: fast and streaming mode algorithm to be used, e.g. QuickLZ).
+</p>
+<h3 id="protocolMessages:applicationMessages:echo">Echo (0x02)</h3><p>Echo diagnostic message. To be sent to the server to check if TCP/IP connection is still valid.
+Can also be broadcasted over UDP/IP to get list of all servers in the subnet (note that UDP does not guarantee delivery).</p>
+
+<pre>struct echoRequest {    byte[] somePayload;};struct echoResponse {    byte[] samePayloadAsInRequest;};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Echo request message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">somePayload</td><td>Arbitrary payload content, can be empty.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Echo response message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">samePayloadAsInRequest</td><td>Same paylaod as in request message.</td></tr>
+</table>
+
+<h3 id="protocolMessages:applicationMessages:searchRequest">Search request (0x03)</h3><p>Channel search message. Sent over UDP/IP (TCP/IP MUST also support it); UDP congestion control SHOULD be implemented in this case.</p>
+
+<pre>        struct searchRequest {    int searchSequenceID;    byte replyRequired;    struct {
+        int searchInstanceID;        string channelName;    } channels[];};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Search request message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">searchSequenceID</td><td>Search sequence ID (counter w/ rollover), can be used by congestion control algorithms.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">replyRequired</td><td>0x01 to force server to respond even if it does not host channel(s), 0x00 otherwise.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">searchInstanceID</td><td>ID to be used to associate response with the following channel name.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">channelName</td><td>Non-empty channel name, maximum length of 500 characters.</td></tr>
+</table>
+
+
+<p>Response is sent as messageType 0x04.</p>
+
+<h3 id="protocolMessages:applicationMessages:searchResponse">Search response (0x04)</h3><p>Response to Search request (0x03) message.</p>
+
+<pre>struct searchResponse {    int searchSequenceID;    boolean found;    byte[16] serverAddressIPv6;    short serverPort;
+    string protocol;
+    int[] searchInstanceIDs;
+};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Search response message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">searchSequenceID</td><td>Search sequence ID, same as specified in search request.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">found</td><td>Flag indicating whether response contains IDs of found or not found channels.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverAddressIPv6</td><td>Server IPv6 address (or IPv6 encoded IPv4 address).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverPort</td><td>Server port (where server TCP/IP is listening).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">protocol</td><td>Protocol name, e.g. "tcp" for standard pvAccess TCP/IP communication.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">searchInstanceIDs</td><td>IDs, associated with names in the request, relevant to this response.</td></tr>
+</table>
+
+<h3 id="protocolMessages:applicationMessages:createChannel">Create channel (0x07)</h3>
+<pre>
+struct createChannelRequest {    struct {        int clientChannelID;        string channelName;    } channels[];};
+
+struct createChannelResponse {    int clientChannelID;    int serverChannelID;    Status status;    [if status.type == OK | WARNING] short accessRights;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Create channel request message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">clientChannelID</td><td>Client generated channel ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">channelName</td><td>Name of the channel to be created, non-empty and maximum length of 500 characters.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Create channel response (per channel) message members.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">clientChannelID</td><td>Client generated channel ID, same as in request</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">accessRights</td><td>Access rights (TBD).</td></tr>
+</table>
+
+<p>NOTE: server only stores clientChannelID and responds back with it in destroyChannelMessage.
+Client uses serverChannelID for all subsequent requests on the channel. Code MUST NOT make any
+assumptions/checks on how given IDs are generated. IDs MUST be unique within connection and can be recycled.</p>
+
+<h3 id="protocolMessages:applicationMessages:destroyChannel">Destroy channel (0x08)</h3><pre>
+struct destroyChannelRequest {    struct {        int clientChannelID;        int serverChannelID;    } channels[];};
+
+struct destroyChannelResponse {    struct {        int clientChannelID;        int serverChannelID;
+        Status status;    } channels[];};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Destroy channel request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">clientChannelID</td><td>Client generated channel ID, same as in create request.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create response.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Destroy channel response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">clientChannelID</td><td>Client generated channel ID, same as in create request.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+</table>
+
+<p>
+Server MAY break response message to several messages. If (clientChannelID, serverChannelID) does not match, server will
+respond with an error status.
+</p>
+<p>
+NOTE: Server MUST send this message to a client to notify about server-side initiated channel destruction.
+As a subsequence a client MUST mark channel as disconnected and start sending search request messages for the channel.<br/>
+</p>
+
+<h3 id="protocolMessages:applicationMessages:channelGet">Channel get (0x0A)</h3><pre>
+struct channelGetRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08 for INIT;
+    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelGetResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvStructureIF;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get init request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequestIF</td><td>pvRequest Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequest</td><td>pvRequest structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get init response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvStructureIF</td><td>pvStructure (data container) Field description.</td></tr>
+</table>
+
+<p>
+After get request is successfully initialized, client can issue actual get request(s).
+</p>
+
+<pre>struct channelGetRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40 for GET; additional 0x10 mask for DESTROY;};struct channelGetResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] BitSet changedBitSet;    [if status.type == OK | WARNING] PVField pvStructureData;};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x40 for GET, additional 0x10 mask for DESTROY.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">changedBitSet</td><td>Changed BitSet for pvStructureData.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvStructureData</td><td>Data structure.</td></tr>
+</table>
+
+<p>
+NOTE: if DESTROY mask is applied, server MUST destroy request after get response and client MUST do the same after it receives the response.
+</p>
+<h3 id="protocolMessages:applicationMessages:channelPut">Channel put (0x0B)</h3><pre>
+struct channelPutRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelPutResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvPutStructureIF;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel put init request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequestIF</td><td>pvRequest Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequest</td><td>pvRequest structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel put init response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvPutStructureIF</td><td>pvPutStructure (data container) Field description.</td></tr>
+</table>
+
+<p>
+After put request is successfully initialized, client can issue actual put request(s).
+</p>
+
+<pre>
+struct channelPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 for PUT; 0x10 mask for DESTROY;    BitSet toPutBitSet;    PVField pvPutStructureData;};struct channelPutResponse {    int requestID;    byte subcommand;    Status status;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel put request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x00 for PUT, additional 0x10 mask for DESTROY.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">toPutBitSet</td><td>To-put BitSet for pvPutStructureData.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvPutStructureData</td><td>Data to put structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel put response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+</table>
+
+<pre>
+struct channelGetPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40;};struct channelGetPutResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvPutStructureData;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get put request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x40.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get put response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvPutStructureData</td><td>Remote put data structure.</td></tr>
+</table>
+
+<h3 id="protocolMessages:applicationMessages:channelPutGet">Channel put-get (0x0C)</h3><pre>
+struct channelPutGetRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelPutGetResponseInit {    int requestID;    byte subcommand;     Status status;    [if status.type == OK | WARNING] FieldDesc pvPutStructureIF;    [if status.type == OK | WARNING] FieldDesc pvGetStructureIF;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel put-get init request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequestIF</td><td>pvRequest Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequest</td><td>pvRequest structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel put-get init response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvPutStructureIF</td><td>pvPutStructure (data container) Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvGetStructureIF</td><td>pvGetStructure (data container) Field description.</td></tr>
+</table>
+
+<p>
+After put-get request is successfully initialized, client can issue actual put-get request(s).
+</p>
+
+<pre>struct channelPutGetRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 for PUT_GET; 0x10 mask for DESTROY;    BitSet toPutBitSet;    PVField pvPutStructureData;};struct channelPutGetResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvGetStructureData;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel put-get request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x00 for PUT_GET, additional 0x01 mask for DESTROY.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">toPutBitSet</td><td>To-put BitSet for pvPutStructureData.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvPutStructureData</td><td>Data to put structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel put-get response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvGetStructureData</td><td>Get data structure.</td></tr>
+</table>
+<pre>// get remote put structure datastruct channelGetPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x80;};struct channelGetPutResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvPutStructureData;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get put request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x80.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get put response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvPutStructureData</td><td>Remote put data structure.</td></tr>
+</table>
+<pre>// get remote get structure datastruct channelGetGetRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40;};struct channelGetGetResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvGetStructureData;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get get request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x40.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel get get response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvGetStructureData</td><td>Remote get data structure.</td></tr>
+</table>
+
+<h3 id="protocolMessages:applicationMessages:channelMonitor">Channel monitor (0x0D)</h3><pre>
+struct channelMonitorRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelMonitorResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvStructureIF;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel monitor init request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequestIF</td><td>pvRequest Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequest</td><td>pvRequest structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel monitor init response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvStructureIF</td><td>pvStructure (data container) Field description.</td></tr>
+</table>
+
+<p>
+After monitor request is successfully initialized, client can issue actual monitor request(s).
+</p>
+
+<pre>
+struct channelStartMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x44;};struct channelStopMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x04;};struct channelDestroyMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x10;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel monitor requests.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x44 for START, 0x04 for STOP, 0x10 for DESTROY.</td></tr>
+</table>
+
+<p>
+There is response for requests above.
+</p>
+<pre>struct channelMonitorResponse {    int requestID;    byte subcommand = 0x00;    BitSet changedBitSet;    PVField pvStructureData;    BitSet overrunBitSet;};
+</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel monitor response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in monitor init request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x00.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">changedBitSet</td><td>Changed BitSet for pvStructureData.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvStructureData</td><td>Data structure.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">overrunBitSet</td><td>BitSet indicating overrun fields.</td></tr>
+</table>
+<h3 id="protocolMessages:applicationMessages:channelArray">Channel array (0x0E)</h3><pre>
+struct channelArrayRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelArrayResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvArrayIF;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel array init request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequestIF</td><td>pvRequest Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequest</td><td>pvRequest structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel array init response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvArrayIF</td><td>pvArray (data container) Field description.</td></tr>
+</table>
+
+<p>
+After array request is successfully initialized, client can issue actual array request(s).
+</p>
+<pre>struct channelGetArrayRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40 mask for GET; 0x10 mask for DESTROY;    int offset;    int count;};struct channelGetArrayResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvArrayData;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel array get request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x40 for GET, additional 0x10 mask for DESTROY.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">offset</td><td>Offset from the beginning of the array (if positive) or end of the array (if negative).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">count</td><td>Number of elements requested, -1 means form offset to the end of the array.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel array get response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvArrayData</td><td>Data array.</td></tr>
+</table>
+
+<pre>
+struct channelPutArrayRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 mask for PUT; 0x10 mask for DESTROY;    int offset;    PVField pvArrayData;};struct channelPutArrayResponse {    int requestID;    byte subcommand;    Status status;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel array put request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x00 for PUT, additional 0x10 mask for DESTROY.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">offset</td><td>Offset from the beginning of the array (if positive) or end of the array (if negative) where to put given subarray.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvArrayData</td><td>Subarray to be put.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel array put response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+</table>
+<pre>
+struct channelSetLengthRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x80 mask for SET_LENGTH; 0x10 mask for DESTROY;    int length;    int capacity;};struct channelSetLengthResponse {    int requestID;    byte subcommand;    Status status;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel array set length request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x40 for GET, additional 0x10 mask for DESTROY.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">length</td><td>New length, -1 to keep old value.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">capacity</td><td>New capacity, -1 to keep old value.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel array set length response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+</table>
+
+
+<h3 id="protocolMessages:applicationMessages:destroyRequest">Destroy request (0xF)</h3><pre>
+// destroys any request with given requestIDstruct destroyRequest {    int serverChannelID;    int requestID;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Destroy request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request init message.</td></tr>
+</table>
+
+<p>
+Destroys any request instance with given requestID.
+</p>
+
+<h3 id="protocolMessages:applicationMessages:channelProcess">Channel process (0x10)</h3><pre>
+struct channelProcessRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    [if serverStatusIF != NULL_TYPE_CODE] PVField pvRequest;};struct channelProcessResponseInit {    int requestID;    byte subcommand;    Status status;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel process init request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequestIF</td><td>Optional pvRequest Field description, NULL_TYPE_CODE is none.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequest</td><td>Optional pvRequest structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel process init response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+</table>
+
+<p>
+After process request is successfully initialized, client can issue actual process request(s).
+</p>
+<pre>
+struct channelProcessRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 mask for PROCESS; 0x10 mask for DESTROY;};struct channelProcessResponse {    int requestID;    byte subcommand;    Status status;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel proces request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x00 for PROCESS, additional 0x10 mask for DESTROY.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel process response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+</table>
+
+
+<h3 id="protocolMessages:applicationMessages:channelGetField">Get channel introspection data (0x11)</h3><pre>
+struct channelGetFieldRequest {    int serverChannelID;    int requestID;    string subFieldName;  // entire record if empty};struct channelGetFieldResponse {    int requestID;    Status status;    [if status.type == OK | WARNING] FieldDesc subFieldIF;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Get channel introspection data request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subFieldName</td><td>Name of the subfield to get or entire record if empty.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Get channel introspection data response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subFieldIF</td><td>Requested field introspection data.</td></tr>
+</table>
+
+<h3 id="protocolMessages:applicationMessages:message">Message (0x12)</h3><pre>
+struct message {    int requestID;    byte messageType; // info = 0, warning = 1, error = 2, fatalError = 3    string message;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Message response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">messageType</td><td>Message type enum.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">message</td><td>Message.</td></tr>
+</table>
+
+<p>
+This message is sent from the server to provide human readable messages regarding requests.
+</p>
+
+
+<h3 id="protocolMessages:applicationMessages:channelRPC">Channel RPC (0x14)</h3><pre>
+struct channelRPCRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelRPCResponseInit {    int requestID;    byte subcommand;    Status status;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel RPC init request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Client generated request ID.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequestIF</td><td>pvRequest Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvRequest</td><td>pvRequest structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel RPC init response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x08, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+</table>
+
+<p>
+After RPC request is successfully initialized, client can issue actual RPC request(s).
+</p>
+
+
+<pre>struct channelRPCRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 mask for RPC; 0x10 mask for DESTROY;    FieldDesc pvStructureIF;    PVField pvStructureData;};struct channelRPCResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvResponseIF;    [if status.type == OK | WARNING] PVField pvResponseData;};</pre>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel RPC request.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x00 for RPC, additional 0x10 mask for DESTROY.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvStructureIF</td><td>pvStructureData Field description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvStructureData</td><td>Argument data structure.</td></tr>
+</table>
+
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Channel RPC response.</caption>
+<tr><th>Member</th><th>Description</th></tr>
+<tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">subcommand</td><td>Same as in request message.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvResponseIF</td><td>pvResponseDataField description.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">pvResponseData</td><td>Response data structure.</td></tr>
+</table>
+
+<h2 id="connectionManagement">Connection Management</h2>
+<p>
+Each TCP connection has associated QoS parameters. Regardless of how many channels are handled by either client or server, each client-server pair MUST be connected with exactly one TCP connection for each QoS parameter value.
+</p>
+<p>
+When establishing a TCP connection, a simple handshake MUST be performed. Client opens a TCP connection to the server and waits until Connection Validation message is received. Server initially sends a Set byte order control message to notify client about byte order to be used for this TCP connection. In addition it also sends Connection Validation message. If client correctly decodes messages it responds with Connection Validation response message. After that, client may start sending requests.
+Client keeps the connection established until the last active channel gets destroyed. However, to optimize resource reallocation it MAY delay connection destruction.
+</p>
+<p>
+Both parties MUST constantly monitor connection is valid and not simply relay on TCP mechanisms. The only way to ensure this is by sending data. If there is no send operation called within a predetermined period of time, an echo message MUST be sent. In case of connection failure, TCP will report connection loss on send. If there is no response in a predetermined period of time, the connection SHOULD be marked as unresponsive. Echo message MUST be periodically sent until response is received or connection is reported to be lost. If echo response is received and transport is marked as unresponsive, transport SHOUD be reported to be responsive.
+</p>
+<p>
+When connection is closed all related resources MUST be freed. On server side all channels including their requests MUST be destroyed. On client side all channels and their requests MUST be put to disconnected state and searching for channels initiated.
+When disconnected client channels are found on the network and connection is re-established, channels are put to back to connected state and all their requests re-initialized; in addition, monitors are re-started. 
+</p>
+
+<h2 id="flowControl">Flow Control</h2>
+<p>
+Usually flow control algorithms wait for congestion to occur before they are triggered. They are causal. Due to isolated nature of TCP connection, i.e. there are always only two parties involved, it is possible to predict congestions using the following algorithm:
+<ul>
+<li>both parties exchange their receive socket and local buffer sizes</li>
+<li>periodically, i.e. every N bytes, they send a control message marking total bytes sent to the other party</li>
+<li>when other party receives the control message it responds back with complementary control message indicating the received marker value; this acknowledges the reception of total bytes sent</li>
+<li>the difference between total byte sent and last acknowledged marker received tells how much other party receive buffers are full; this number should never exceed total sum of receive buffers</li>
+</ul>
+Flow control is needed only to optimize subscription messages back to the client (i.e. monitors), for other large messages TCP flow control is sufficient. <br/>
+pvAccess always tries to send as much monitoring data it can, however the upper limit is limited by the calculated amount of other party free receive buffer size. When this is reached, monitors are starting pilling up in monitors' circular buffer queues.
+</p>
+
+<h2 id="flowControlExample">Flow Control Example</h2>
+<p>
+The intention of flow control is to avoid having the following behavior (pure TCP flow control):
+<ul>
+<li>let's assume client's Rx buffers are full</li>
+<li>server is sending monitors until TCP detects client's Rx buffer is full</li>
+<li>after some time client's Rx buffer is immediately emptied (since we do bulk reads from the socket - not message by message, remember OS calls are expensive)</li>
+<li>and server starts sending monitors until all the buffers are full (sever will fill all the buffers before client actually processed received monitors!)</li>
+</ul>
+</p>
+
+<p>
+This results in monitors (their sequential numbers):
+<pre>0 1 2 3 4 (buffers full) 7 8 9 10 11 12 (buffers full) 22 23 24  25 26 27 28 (buffers full)</pre>
+
+Flow control can make this better:
+<pre>0 1 2 3 4 (buffers full) 7 8 (buffers full, but for a less time since server sends only as much as client can handle) 10 11 (...) 14 15 (...) 18 19</pre>
+</p>
+
+<p>
+The result is more fluid and up-to-date arrival of monitors (to overcome problem of having combination of slow processing and large buffers).
+</p>
+
+<p>
+Requiring a flow control (in addition to already existing monitor queues) adds complexity to the protocol implementation. It needs to be decided and evaluated if flow control SHOULD be implemented.
+</p>
+
+<h2 id="channelDiscovery">Channel Discovery</h2>
+<p>
+pvAccess uses broadcast/multicast channel discovery mechanism via UDP; search messages are usually sent to a broadcast addresses and servers hosting searched channels respond with a message containing their server address and port.<br/>
+In addition pvAccess transparently supports multicast, if an address is a multicast address the implementation SHOULD transparently handle it.
+</p>
+<p>
+Proper UDP congestion control SHOULD be implemented to prevent flooding the network with UDP search messages.
+Currently a simple and robust algorithm is implemented. The algorithm needs to be specified (or some more clever algorithm invented).
+</p>
+
+<h2 id="controlMessages">Control Messages</h2>
+<p>
+This section describes all the control messages (0-th bit of <i>pvAccessHeader.flags</i> is set) for different  <i>pvAccessHeader.messageType</i> values.
+</p>
+
+<p>
+Control messages are messages without payload and are used internally by the procotol, e.g. to handle
+byte order, flow control. Payload size field contains control message specific value.
+</p>
+
+<h3 id="protocolMessages:controlMessages:mark">Mark Total Byte Sent (0x00)</h3><p>
+Payload size field holds the value of total bytes sent. Client should respond with acknowledgment control message (0x01)
+as soon as possible.</p>
+
+<h3 id="protocolMessages:controlMessages:ackMark">Acknowledge Total Bytes Received (0x01)</h3>
+<p>
+Payload size field holds the acknowledge value of total bytes received (must match previously received marked value).</p>
+
+
+<h3 id="protocolMessages:controlMessages:endianess">Announce byte order (0x02)</h3>
+<p>
+7-th bit of header flags field indicated selected byte order. Payload equals 0. <br/>
+This must be the first message sent by a server when connection is established. <br/>
+NOTE: message is byte order independed.</p>
+
+
+<h3 id="protocolMessages:controlMessages:echoRequest">Echo request (0x03)</h3>
+<p>
+Diagnostic/test echo message. Receiver should respond with Echo response (0x04) message with the same payload size field value.
+</p>
+
+<h3 id="protocolMessages:controlMessages:echoResponse">Echo response (0x04)</h3>
+<p>
+Response to a echo request. Payload size field contains the same value as in request message.</p>
+
+<h2 id="communicationExample">Communication Example</h2>
+<table style="caption-side:bottom">
+<caption style="font-weight:bold">Communication Example.</caption>
+<tr><th>Server</th><th/><th>Client</th></tr>
+<tr><td></td><td>&lt;----</td><td>searchRequest (UDP broadcast/multicast)</td></tr>
+<tr><td>searchResponse (UDP unicast)</td><td>----&gt;</td><td></td></tr>
+<tr><td align="middle" colspan="3">TCP/IP connection established</td></tr>
+<tr><td>announceByteOrderControlMessage</td><td>----&gt;</td><td></td></tr>
+<tr><td>connectionValidationRequest</td><td>----&gt;</td><td></td></tr>
+<tr><td></td><td>&lt;----</td><td>connectionValidationResponse</td></tr>
+<tr><td></td><td>&lt;----</td><td>createChannelRequest</td></tr>
+<tr><td>createChannelResponse</td><td>----&gt;</td><td></td></tr>
+<tr><td></td><td>&lt;----</td><td>channelGetRequestInit</td></tr>
+<tr><td>channelGetResponseInit</td><td>----&gt;</td><td></td></tr>
+<tr><td></td><td>&lt;----</td><td>channelGetRequest</td></tr>
+<tr><td>channelGetResponse</td><td>----&gt;</td><td></td></tr>
+<tr><td></td><td>&lt;----</td><td>. . .</td></tr>
+<tr><td>. . .</td><td>----&gt;</td><td></td></tr>
+<tr><td></td><td>&lt;----</td><td>destroyRequest</td></tr>
+<tr><td></td><td>&lt;----</td><td>channelDestroyRequest</td></tr>
+<tr><td>channelDestroyResponse</td><td>----&gt;</td><td></td></tr>
+</table>
+
+<h2 id="futureProtocolChanges">Future Protocol Changes/Updates</h2>
+<p>
+<ul>
+<li>"one-phase" get/put/get-put/process</li>
+<li>immutable fields support, cache implemented for values (useful for enums)</li>
+<li>optimized packed Monitor responses</li>
+<li>bulk message transfer/trottle public API</li>
+<li>access rights</li>
+<li>etc.</li>
+</ul>
+</p>
+</body>
+</html>
