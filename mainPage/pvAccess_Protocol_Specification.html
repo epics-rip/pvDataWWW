@@ -56,7 +56,7 @@ public working draft is intended for the EPICS community to review and
 comment. Resulting comments will drive subsequent drafts. </p>
 <p>
 The present implementation of pvAccess largely reflects the specification as written here,
-though a another document will soon be written to distinguish what is in the
+though an another document will soon be written to distinguish what is in the
 specification that is not yet implemented.
 </p>
 
@@ -91,10 +91,10 @@ with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>
 
 <p>TCP/IP is used for data transmission, UDP/IP for discovery (discovery over TCP/IP is also allowed), however discovery
 mechanism allows usage of other implementations (e.g. UDP/IP for data transmission).
-The procotol itself supports IPv6, i.e. all addresses are IPv6 encoded.</p>
+The protocol itself supports IPv6, i.e. all addresses are IPv6 encoded.</p>
 
 <p>
-Port numbers 5075 and 5076 are used (to be accepted by IANA).
+Port numbers 5075 (tcp connection port) and 5076 (udp broadcast port) are used (to be accepted by IANA). The default connection port SHOULD be used if free, otherwise a dynamically allocated port SHOULD be used as a fallback.
 </p>
 
 <p>pvAccess heavily depends on <a href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>] – all the data is sent as pvData objects.  Protocol is optimized for performance and aims to send minimum amount of data. It supports segmented messages and allows sending huge amount of data using small buffers (there is no limitation on maximum message size limited by send/receive buffer).</p>
@@ -112,8 +112,8 @@ The exception are arrays. All the arrays MUST be aligned to 64-bit (first elemen
 </p>
 
 <p>
-For connection-oriented communication (TCP/IP) byte-order is "negotiated" between client and server - server wins.
-In order to allow all the intermediates to forward the data without requiring it to be unmarshaled (the intermediates can forward requests by simply copying blocks of binary data) and not to require specific byte-order for connection-less protocols (UDP), each message contains an endiannes flag.
+For connection-oriented communication (TCP/IP) byte order is "negotiated" between client and server - server wins.
+In order to allow all the intermediates to forward the data without requiring it to be unmarshaled (the intermediates can forward requests by simply copying blocks of binary data) and not to require specific byte order for connection-less protocols (UDP), each message contains an endiannes flag.
 </p>
 
 
@@ -158,7 +158,7 @@ On the wire, pvAccess transmits all strings as Unicode strings in UTF-8 encoding
 BitSet holding n bits is encoded as:
 </p><ul>
 <li>number of bytes needed to serialize BitSet: size type containing value of S = ceil(n/8)</li>
-<li>L long-s containing first 64-multiple of bits (LSB to MSB), integers are encoded in currently selected byte-order, L = floor((n+7)/64)</li>
+<li>L long-s containing first 64-multiple of bits (LSB to MSB), integers are encoded in currently selected byte order, L = floor((n+7)/64)</li>
 <li>B byte-s containing remaining bits in LSB to MSB order: B = S - 8*L</li>
 </ul>
 
@@ -174,6 +174,61 @@ BitSet holding n bits is encoded as:
 <tr><td style="text-align:right;font-weight:bold">64</td><td>8</td><td>1</td><td>0</td></tr>
 <tr><td style="text-align:right;font-weight:bold">65</td><td>9</td><td>1</td><td>1</td></tr>
 </table>
+
+<p>
+Examples of BitSet serialization (big-endian byte order):
+</p>
+
+<pre>
+Hexdump [{}] size = 1
+00                                                 .
+
+Hexdump [{0}] size = 2
+01 01                                              ..
+
+Hexdump [{1}] size = 2
+01 02                                              ..
+
+Hexdump [{7}] size = 2
+01 80                                              ..
+
+Hexdump [{8}] size = 3
+02 00 01                                           ...
+
+Hexdump [{15}] size = 3
+02 00 80                                           ...
+
+Hexdump [{63}] size = 9
+08 80 00 00  00 00 00 00  00                       .... .... .
+
+Hexdump [{64}] size = 10
+09 00 00 00  00 00 00 00  00 01                    .... .... ..
+
+Hexdump [{65}] size = 10
+09 00 00 00  00 00 00 00  00 02                    .... .... ..
+
+Hexdump [{0, 1, 2, 4}] size = 2
+01 17                                              ..
+
+Hexdump [{0, 1, 2, 4, 8}] size = 3
+02 17 01                                           ...
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50}] size = 8
+07 00 01 02  03 04 05 06                            .... .... 
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58}] size = 9
+08 07 06 05  04 03 02 01  00                       .... .... .
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67}] size = 10
+09 07 06 05  04 03 02 01  00 08                    .... .... ..
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67, 72, 75}] size = 11
+0A 07 06 05  04 03 02 01  00 08 09                 .... .... ...
+
+Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67, 72, 75, 81, 83}] size = 12
+0B 07 06 05  04 03 02 01  00 08 09 0A               .... .... .... 
+</pre>
+
 <h3 id="dataEncoding:status">Status</h3>
 <p>
 pvAccess defines a structure to inform about completion status. It is defined as:</p>
@@ -187,7 +242,7 @@ OK and WARNING type mean success.
 </p>
 <p>
 In practice majority of Status instances will be OK with no message and stackDump. This SHOULD be optimized.
-A special type code <code>-1</code> is used and string fields are ommited to represent OK status:
+A special type code <code>-1</code> is used and string fields are omitted to represent OK status:
 </p>
 <pre>struct StatusOK {
     byte type = -1;
@@ -198,6 +253,37 @@ NOTE: a decision was made not to use hardcoded set of error codes (enum) to allo
 avoid book-keeping problems and avoid forcing programmers to pick a not-so-informative error code that
 almost explains an error to be reported.
 </p>
+
+<p>
+Examples of Status serialization:
+</p>
+
+<pre>
+Hexdump [Status OK] size = 1
+FF                                                 .
+
+Hexdump [WARNING, "Low memory", ""] size = 13
+01 0A 4C 6F  77 20 6D 65  6D 6F 72 79  FF          ..Lo w me mory .
+
+Hexdump [ERROR, "Failed to get, due to unexpected exception", (stack dump)] size = 264
+01 2A 46 61  69 6C 65 64  20 74 6F 20  67 65 74 2C  .*Fa iled  to  get, 
+20 64 75 65  20 74 6F 20  75 6E 65 78  70 65 63 74   due  to  unex pect 
+65 64 20 65  78 63 65 70  74 69 6F 6E  DB 6A 61 76  ed e xcep tion .jav 
+61 2E 6C 61  6E 67 2E 52  75 6E 74 69  6D 65 45 78  a.la ng.R unti meEx 
+63 65 70 74  69 6F 6E 0A  09 61 74 20  6F 72 67 2E  cept ion. .at  org. 
+65 70 69 63  73 2E 63 61  2E 63 6C 69  65 6E 74 2E  epic s.ca .cli ent. 
+65 78 61 6D  70 6C 65 2E  53 65 72 69  61 6C 69 7A  exam ple. Seri aliz 
+61 74 69 6F  6E 45 78 61  6D 70 6C 65  73 2E 73 74  atio nExa mple s.st 
+61 74 75 73  45 78 61 6D  70 6C 65 73  28 53 65 72  atus Exam ples (Ser 
+69 61 6C 69  7A 61 74 69  6F 6E 45 78  61 6D 70 6C  iali zati onEx ampl 
+65 73 2E 6A  61 76 61 3A  31 31 38 29  0A 09 61 74  es.j ava: 118) ..at 
+20 6F 72 67  2E 65 70 69  63 73 2E 63  61 2E 63 6C   org .epi cs.c a.cl 
+69 65 6E 74  2E 65 78 61  6D 70 6C 65  2E 53 65 72  ient .exa mple .Ser 
+69 61 6C 69  7A 61 74 69  6F 6E 45 78  61 6D 70 6C  iali zati onEx ampl 
+65 73 2E 6D  61 69 6E 28  53 65 72 69  61 6C 69 7A  es.m ain( Seri aliz 
+61 74 69 6F  6E 45 78 61  6D 70 6C 65  73 2E 6A 61  atio nExa mple s.ja 
+76 61 3A 31  32 36 29 0A                            va:1 26). 
+</pre>
 
 <h3 id="dataEncoding:introspectionData">Introspection Data</h3>
 <p>Each pvData data instance (i.e. PVField) has introspection description (i.e. Field). PVField is encoded as raw values (no other overhead), Field encodes information of what data-type(s) PVField is. Since many different PVField instances share same introspection description it can be cached to avoid sending it over-and-over over the wire. Thus, Field encoding starts with a byte describing the following encoding: it can be NULL, ID only and ID with actual Field serialization. <br/>ID, encoded as short, is a key used to cache Field descriptions. This cache is called introspection registry. IDs are valid within one connection. Moreover, they can be defined only be the sender; receiver only keeps track of IDs to be able to do deserialization. This implies two introspection registries per connection (since communication is full-duplex). Sender can override previously assigned ID by simply assiging the ID to a new Field. Introspection registry size is negotiated when connection is established.</p>
@@ -246,16 +332,41 @@ Actual Field introspection description (FieldDesc) is encoded as a byte that con
 <p>
 Data (i.e. PVField) encodes only its data.
 </p>
-<p>Each structure can (depedning on message definition) have a BitSet instance defining what subset of that structure's fields have been serialized. This allows partial serialization of structures, e.g. sending only fields that have changed and not entire structure. Each node of a structure corresponds to one bit; if a bit is set its corresponding field has been serialized, otherwise not. BitSet does not apply to array elements.</p>
-<h4 id="data:example">Example</h4>
-<pre>bit#    field0    structure 1        structure timeStamp2            long secondsPastEpoch 12965642963            int nanoSeconds 8190000004        structure[] value             structure org.epics.ioc.test.testStructure                double value 100                structure location                    double x 0                    double y 0            structure org.epics.ioc.test.testStructure                double value 200                structure location                    double x 5                    double y 105        string factoryRPC org.epics.ioc.support.rpc.ExampleChannelRPCFactory6        structure arguments7            int size 28        structure element9            double value 010            structure alarm11                int severity 012                string message 13            structure timeStamp14                long secondsPastEpoch 015                int nanoSeconds 0</pre>
-<p>The structure above requires 16 bits, i.e. 2 bytes.<br/>
-If bit on a structure node is set then all its fields have to be de-/serialized.</p>
-<p>The example below is a simple example where entire structure is sent, i.e. bit 0 is set.<br/>
-NOTE: first six bytes are erased since they are not part of structure serialization.</p>
-<pre>
-TODO
+<p>Each structure can (depending on message definition) have a BitSet instance defining what subset of that structure's fields have been serialized. This allows partial serialization of structures, e.g. sending only fields that have changed and not entire structure. Each node of a structure corresponds to one bit; if a bit is set its corresponding field has been serialized, otherwise not. BitSet does not apply to array elements.</p>
+
+
+<h4 id="data:example1">Example #1</h4>
+
+<pre>structure 
+    byte[] value [1,2,3]
+    structure timeStamp
+        long secondsPastEpoch 0x1122334455667788
+        int nanoSeconds 0xAABBCCDD
+        int userTag 0xEEEEEEEE
+    structure alarm
+        int severity 0x11111111
+        int status 0x22222222
+        string message Allo, Allo!
 </pre>
+
+is serialzied as (big-endian byte order):
+
+<pre>
+Hexdump [Serialized structure] size = 40
+03 01 02 03  11 22 33 44  55 66 77 88  AA BB CC DD  .... ."3D Ufw. .... 
+EE EE EE EE  11 11 11 11  22 22 22 22  0B 41 6C 6C  .... .... """" .All 
+6F 2C 20 41  6C 6C 6F 21                            o, A llo! 
+</pre>
+
+<h4 id="data:example2">Example #2</h4>
+
+<p>
+This example shows how bits of a BitSet are assigned to the fields of a structure:
+</p>
+
+<pre>bit#    field0    structure 1        structure timeStamp2            long secondsPastEpoch 3            int nanoSeconds 4        structure[] value             structure org.epics.ioc.test.testStructure                double value                 structure location                    double x                    double y            structure org.epics.ioc.test.testStructure                double value                 structure location                    double x                    double y 5        string factoryRPC6        structure arguments7            int size8        structure element9            double value10            structure alarm11                int severity12                string message 13            structure timeStamp14                long secondsPastEpoch15                int nanoSeconds</pre>
+<p>The structure above requires 16 bits.<br/>
+If bit on a structure node is set then all of the structure fields MUST be de-/serialized.</p>
 
 <h2 id="protocolMessages">Protocol Messages</h2>
 <p>
@@ -330,11 +441,11 @@ Send over UDP to clients. Beacons SHOULD be only used to detect new servers and 
 of not yet found channels. Client MAY disconnect old connection or wait until connection loss is detected (on failed Echo message send).</p>
 
 <p>
-Each server implementation SHOULD emmit its own beacons, e.g. if a server is supporting data transmission over TCP/IP and UDP/IP there SHOULD both emmit beacons. If the implementations are tightliy coupled, i.e. they have the same life-cycle and share the same same channels, then only one server MIGHT emmit beacons.
+Each server implementation SHOULD emit its own beacons, e.g. if a server is supporting data transmission over TCP/IP and UDP/IP there SHOULD both emit beacons. If the implementations are tightly coupled, i.e. they have the same lifecycle and share the same channels, then only one server MIGHT emit beacons.
 </p>
 
 <p>
-NOTE: Servers SHOULD synchronize their internal clocks using NTP or some other suitable time source before sending their first beacon.<br/>NOTE: Due to the fast that UDP does not quareantee delivery server MUST send several beacons to notify that it is alive (e.g. 15 beacons with 1Hz period). After longer period it MAY stop sending them, however it is recommended that is SHOULD do it with a low rate (one beacaon per every couple of minutes) to report serverStatus.</br>
+NOTE: Servers SHOULD synchronize their internal clocks using NTP or some other suitable time source before sending their first beacon.<br/>NOTE: Due to the fast that UDP does not guarantee delivery server MUST send several beacons to notify that it is alive (e.g. 15 beacons with 1Hz period). After longer period it MAY stop sending them, however it is recommended that is SHOULD do it with a low rate (one beacon per every couple of minutes) to report serverStatus.</br>
 NOTE: Beacons SHOULD not used to report connection-valid status.
 </p>
 
@@ -377,7 +488,7 @@ The validate connection message guarantees that a server is not in the middle of
 <tr><td style="text-align:right;font-family:monospace">0-6</td><td>Priority level [0-100].</td></tr>
 <tr><td style="text-align:right;font-family:monospace">7</td><td>Unused.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">8</td><td>Low-latency priority.</td></tr>
-<tr><td style="text-align:right;font-family:monospace">9</td><td>Throughtput priority.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">9</td><td>Throughput priority.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">10</td><td>Enable compression.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">11-15</td><td>Unused.</td></tr>
 </table>
@@ -385,7 +496,7 @@ The validate connection message guarantees that a server is not in the middle of
 <p>
 Each QoS parameter value REQUIRES a separate TCP/IP connection.
 Low-latency priority bit signals transport implementation to try to respond with low latency. 
-Throughtput priority bit signals transport implementation to try to maximize throughtput.
+Throughput priority bit signals transport implementation to try to maximize throughput.
 How this is achieved depends on specific implementation.
 Compression bit enables compression for the connection (TBD: fast and streaming mode algorithm to be used, e.g. QuickLZ).
 </p>
@@ -498,7 +609,7 @@ respond with an error status.
 </p>
 <p>
 NOTE: Server MUST send this message to a client to notify about server-side initiated channel destruction.
-As a subsequence a client MUST mark channel as disconnecetd and start sending search request messages for the channel.<br/>
+As a subsequence a client MUST mark channel as disconnected and start sending search request messages for the channel.<br/>
 </p>
 
 <h3 id="protocolMessages:applicationMessages:channelGet">Channel get (0x0A)</h3><pre>
@@ -550,10 +661,10 @@ After get request is successfully initialized, client can issue actual get reque
 </table>
 
 <p>
-NOTE: if DESTROY mask is applied, server MUST destroy request after get response and client MUST do same after it receives the response.
+NOTE: if DESTROY mask is applied, server MUST destroy request after get response and client MUST do the same after it receives the response.
 </p>
 <h3 id="protocolMessages:applicationMessages:channelPut">Channel put (0x0B)</h3><pre>
-struct channelPutRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelPutResponseInit {    int requestID;    byte subcommand;        // same as in request    Status status;    [if status.type == OK | WARNING] FieldDesc pvPutStructureIF;};</pre>
+struct channelPutRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelPutResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvPutStructureIF;};</pre>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Channel put init request.</caption>
@@ -579,7 +690,7 @@ After put request is successfully initialized, client can issue actual put reque
 </p>
 
 <pre>
-struct channelPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 for PUT; 0x10 mask for DESTROY;    BitSet toPutBitSet;    PVField pvPutStructureData;};struct channelPutResponse {    int requestID;    byte subcommand;         // same as in request    Status status;};</pre>
+struct channelPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 for PUT; 0x10 mask for DESTROY;    BitSet toPutBitSet;    PVField pvPutStructureData;};struct channelPutResponse {    int requestID;    byte subcommand;    Status status;};</pre>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Channel put request.</caption>
@@ -666,7 +777,7 @@ After put-get request is successfully initialized, client can issue actual put-g
 <tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">pvGetStructureData</td><td>Get data structure.</td></tr>
 </table>
-<pre>// get remote put structure datastruct channelGetPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x80;};struct channelGetPutResponse {    int requestID;    byte subcommand;         // same as in request    Status status;    [if status.type == OK | WARNING] PVField pvPutStructureData;};</pre>
+<pre>// get remote put structure datastruct channelGetPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x80;};struct channelGetPutResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvPutStructureData;};</pre>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Channel get put request.</caption>
@@ -684,7 +795,7 @@ After put-get request is successfully initialized, client can issue actual put-g
 <tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">pvPutStructureData</td><td>Remote put data structure.</td></tr>
 </table>
-<pre>// get remote get structure datastruct channelGetGetRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40;};struct channelGetGetResponse {    int requestID;    byte subcommand;         // same as in request    Status status;    [if status.type == OK | WARNING] PVField pvGetStructureData;};</pre>
+<pre>// get remote get structure datastruct channelGetGetRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40;};struct channelGetGetResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvGetStructureData;};</pre>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Channel get get request.</caption>
@@ -790,7 +901,7 @@ After array request is successfully initialized, client can issue actual array r
 <tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x40 for GET, additional 0x10 mask for DESTROY.</td></tr>
-<tr><td style="text-align:right;font-family:monospace">offset</td><td>Offset from the beggining of the array (if positive) or end of the array (if negative).</td></tr>
+<tr><td style="text-align:right;font-family:monospace">offset</td><td>Offset from the beginning of the array (if positive) or end of the array (if negative).</td></tr>
 <tr><td style="text-align:right;font-family:monospace">count</td><td>Number of elements requested, -1 means form offset to the end of the array.</td></tr>
 </table>
 
@@ -812,7 +923,7 @@ struct channelPutArrayRequest {    int serverChannelID;    int requestID;    
 <tr><td style="text-align:right;font-family:monospace">serverChannelID</td><td>Server generated channel ID, same as in create channel response.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in init message.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">subcommand</td><td>0x00 for PUT, additional 0x10 mask for DESTROY.</td></tr>
-<tr><td style="text-align:right;font-family:monospace">offset</td><td>Offset from the beggining of the array (if positive) or end of the array (if negative) where to put given subarray.</td></tr>
+<tr><td style="text-align:right;font-family:monospace">offset</td><td>Offset from the beginning of the array (if positive) or end of the array (if negative) where to put given subarray.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">pvArrayData</td><td>Subarray to be put.</td></tr>
 </table>
 
@@ -964,7 +1075,7 @@ After RPC request is successfully initialized, client can issue actual RPC reque
 </p>
 
 
-<pre>struct channelRPCRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 mask for RPC; 0x10 mask for DESTROY;    FieldDesc pvStructureIF;    PVField pvStructureData;};struct channelRPCResponse {    int requestID;    byte subcommand;         // same as in request    Status status;    [if status.type == OK | WARNING] FieldDesc pvResponseIF;    [if status.type == OK | WARNING] PVField pvResponseData;};</pre>
+<pre>struct channelRPCRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x00 mask for RPC; 0x10 mask for DESTROY;    FieldDesc pvStructureIF;    PVField pvStructureData;};struct channelRPCResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvResponseIF;    [if status.type == OK | WARNING] PVField pvResponseData;};</pre>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Channel RPC request.</caption>
@@ -988,14 +1099,18 @@ After RPC request is successfully initialized, client can issue actual RPC reque
 
 <h2 id="connectionManagement">Connection Management</h2>
 <p>
-Each TCP connection has an associated QoS parameters. Regardless of how many channels are handled by either client or server, each client-server pair MUST be connected with exactly one TCP connection for each QoS parameter value.
+Each TCP connection has associated QoS parameters. Regardless of how many channels are handled by either client or server, each client-server pair MUST be connected with exactly one TCP connection for each QoS parameter value.
 </p>
 <p>
-When establishing a TCP connection, a simple handshake MUST be performed. Client opens a TCP connection to the server and waits until Connection Validation message is received. Server initially sends a Set byte-order control message to notify client about byte-order to be used for this TCP connection. In addition it also sends Connection Validation message. If client correctly decodes messages it responds with Connection Validation response message. After that, client may start sending requests.
-Client keeps the connection established util the last active channel gets destroyed. However, to optimize resource reallocation it MAY delay connection destruction.
+When establishing a TCP connection, a simple handshake MUST be performed. Client opens a TCP connection to the server and waits until Connection Validation message is received. Server initially sends a Set byte order control message to notify client about byte order to be used for this TCP connection. In addition it also sends Connection Validation message. If client correctly decodes messages it responds with Connection Validation response message. After that, client may start sending requests.
+Client keeps the connection established until the last active channel gets destroyed. However, to optimize resource reallocation it MAY delay connection destruction.
 </p>
 <p>
-Both parties MUST constantly monitor connection is valid and not simply realy on TCP mechanisms. The only way to ensure this is by sending data. If there is no send operation called within a predetermined period of time, an echo message MUST be sent. In case of connection failure, TCP will report connection loss on send. If there is no response in a predetermined period of time, the connection SHOULD be marked as unresponsive. Echo message MUST be be periodically sent until response is received or connection is reported to be lost. If echo response is received and transport is marked as unresponsive, transport SHOUD be reported to be responsive.
+Both parties MUST constantly monitor connection is valid and not simply relay on TCP mechanisms. The only way to ensure this is by sending data. If there is no send operation called within a predetermined period of time, an echo message MUST be sent. In case of connection failure, TCP will report connection loss on send. If there is no response in a predetermined period of time, the connection SHOULD be marked as unresponsive. Echo message MUST be periodically sent until response is received or connection is reported to be lost. If echo response is received and transport is marked as unresponsive, transport SHOUD be reported to be responsive.
+</p>
+<p>
+When connection is closed all related resources MUST be freed. On server side all channels including their requests MUST be destroyed. On client side all channels and their requests MUST be put to disconnected state and searching for channels initiated.
+When disconnected client channels are found on the network and connection is re-established, channels are put to back to connected state and all their requests re-initialized; in addition, monitors are re-started. 
 </p>
 
 <h2 id="flowControl">Flow Control</h2>
@@ -1016,7 +1131,7 @@ pvAccess always tries to send as much monitoring data it can, however the upper 
 The intention of flow control is to avoid having the following behavior (pure TCP flow control):
 <ul>
 <li>let's assume client's Rx buffers are full</li>
-<li>server is sending monitors until TCP detects clinet's Rx buffer is full</li>
+<li>server is sending monitors until TCP detects client's Rx buffer is full</li>
 <li>after some time client's Rx buffer is immediately emptied (since we do bulk reads from the socket - not message by message, remember OS calls are expensive)</li>
 <li>and server starts sending monitors until all the buffers are full (sever will fill all the buffers before client actually processed received monitors!)</li>
 </ul>
@@ -1035,7 +1150,7 @@ The result is more fluid and up-to-date arrival of monitors (to overcome problem
 </p>
 
 <p>
-Requiring a flow control (in addition to already existing monitor queues) adds compexity to the protocol implementation. It needs to be decided and evaluated if flow control SHOULD be implemented.
+Requiring a flow control (in addition to already existing monitor queues) adds complexity to the protocol implementation. It needs to be decided and evaluated if flow control SHOULD be implemented.
 </p>
 
 <h2 id="channelDiscovery">Channel Discovery</h2>
@@ -1055,7 +1170,7 @@ This section describes all the control messages (0-th bit of <i>pvAccessHeader.f
 
 <p>
 Control messages are messages without payload and are used internally by the procotol, e.g. to handle
-byte-order, flow control. Payload size field contains control message specific value.
+byte order, flow control. Payload size field contains control message specific value.
 </p>
 
 <h3 id="protocolMessages:controlMessages:mark">Mark Total Byte Sent (0x00)</h3><p>
@@ -1067,16 +1182,16 @@ as soon as possible.</p>
 Payload size field holds the acknowledge value of total bytes received (must match previously received marked value).</p>
 
 
-<h3 id="protocolMessages:controlMessages:endianess">Announce byte-order (0x02)</h3>
+<h3 id="protocolMessages:controlMessages:endianess">Announce byte order (0x02)</h3>
 <p>
-7-th bit of header flags field indicated selected byte-order. Payload equals 0. <br/>
+7-th bit of header flags field indicated selected byte order. Payload equals 0. <br/>
 This must be the first message sent by a server when connection is established. <br/>
-NOTE: message is byte-order independed.</p>
+NOTE: message is byte order independed.</p>
 
 
 <h3 id="protocolMessages:controlMessages:echoRequest">Echo request (0x03)</h3>
 <p>
-Diagnostic/test echo message. Receiver should respond with Echo response (0x04) message with the same paylaod size field value.
+Diagnostic/test echo message. Receiver should respond with Echo response (0x04) message with the same payload size field value.
 </p>
 
 <h3 id="protocolMessages:controlMessages:echoResponse">Echo response (0x04)</h3>
