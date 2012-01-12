@@ -64,21 +64,28 @@ Edit the script to set the tag and the user name.
 <ul>
 <li>pvDataJava has no dependencies</li>
 <li>pvAccessJava depends on pvDataJava</li>
-<li>pvIOCJava depends on pvAaccessJava and pvDataJava for build.</li>
+<li>pvIOCJava depends on pvAaccessJava and pvDataJava for build</li>
+<li>pvService depends on all 3 above</li>
+<li>exampleJava depends on all 4 above.</li>
 </ul>
-<p>Edit each of the 3 pom.xml files for the 3 core module Java implementations,
-pvIOCJava, pvAaccessJava and pvDataJava plus exampleJava, to change the version name.
+<p>Edit each of the 5 pom.xml files 
+pvIOCJava, pvAaccessJava and pvDataJava, pvServiceJava plus exampleJava, to change the version name.
 Our naming convention is n.m-BETA (note caps) to designate a
 BETA release, or later simply n.m. Intermediate snaphots are named
 n.m-SNAPSHOT. Therefore, the first Beta is named 1.0-BETA:</p>
 <pre>
+Clone the repo, eg:
+
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
+
 To tag and build for Java/Maven:
 
 In pom.xml you have
 
 <version>1.0-SNAPSHOT</version>
 
-change to eg:
+change to eg 1.0-BETA in top <version></version> and also in the dependencies, so you
+build like versions against each other, starting with pvDataJava (that has no dependencies).
 
 <version>1.0-BETA</version>
 </pre>
@@ -97,19 +104,24 @@ change to eg:
 % cd ../pvIOCJava
 % mvn compile install -DJAVAIOC=$PWD -Dmaven.test.skip=true
 
+% cd ../pvServiceJava
+% mvn compile install
+
 % cd ../exampleJava/
 % mvn compile install 
 </pre>
-<p>Verify you got what you expected:</p>
+<p>Verify you got what you expected, you want the 4 core modules plus exampleJavas' jars:</p>
 <pre>
 % find ~/.m2 -name "pv*BETA.jar" -o -name "example*BETA.jar"
 /Users/greg/.m2/repository/epics/exampleJava/1.0-BETA/exampleJava-1.0-BETA.jar
 /Users/greg/.m2/repository/epics/pvAccess/1.0-BETA/pvAccess-1.0-BETA.jar
 /Users/greg/.m2/repository/epics/pvData/1.0-BETA/pvData-1.0-BETA.jar
 /Users/greg/.m2/repository/epics/pvIOC/1.0-BETA/pvIOC-1.0-BETA.jar
+/Users/greg/.m2/repository/epics/pvService/1.0-BETA/pvService-1.0-BETA.jar
 </pre>
 
-<p>Upload release:</p>
+<p>Upload the release. In each of the 5 directories, commit the pom.xml, tag the
+repo, and push.</p>
 <pre>
 hg commit pom.xml
 
@@ -125,7 +137,12 @@ This results in remote repository that is versioned in tagged.
 Now Jenkins will build 1.0-BETA version and deploy JARs in EPICS remote repository.
 
 Before making any changes to the project (the best thing is to do it
-immediately) you need to increase version to:
+immediately) you need to increase version to 1.1-SNAPSHOT. This way new changes will
+not override the deployed 1.0-BETA. However, hold on a second Tex, it's a good idea
+to versify that Jenkins has built and deployed the 1.0-BETA release jar file, before
+pushing this new version, since this one will also result in a build and
+deployment. Check the Maven build products directory <a
+href="http://epics.sourceforge.net/maven2/epics/">http://epics.sourceforge.net/maven2/epics/</a>, then:
 <pre>
 <version>1.1-SNAPSHOT</version>
 
@@ -134,18 +151,19 @@ and
 hg commit pom.xml
 hg push
 </pre>
-<p>
-This way new changes will not override deployed 1.0.
+<h3>Create the user download tarball</h3>
+<p>The download tarball is what we put in the SourceForge download files area, and
+includes all the EPICS V4 jars just created, plus
+associated source, XMLs, scripts etc needed by someone to get going. 
+</p>
+<pre>
+% cd to dir that has repo root directory in it, eg ~/Development/epicsV4/, since that
+dir contains ev4hg/
+% mkdir tmp
+% cd tmp
+% ../pvDataWWW/scripts/makereleaseJars.sh
+</pre>
 
-Please check if Jenkins has already deployed version 1.0 before pushing 1.1-SNAPSHOT/pom.xml change.
-This last step is necessary and makes a process semi-automatic. OK for now, but needs to be solved in the future.
-</p>
-<p>
-Now copy the JARs created for the relase above in the SF maven2 repo, to the SF files
-download area, and update the README. The utility script <a href=""
->makereleaseJars.sh</a> can be used to wget the jars, and then rsync them to the
-files download area.
-</p>
 <p><strong>Documentation:</strong></p>
 <p>
 <a
@@ -155,6 +173,6 @@ area.</p>
 
 <hr>
 <address>EPICS V4 Working Group</address>
-<!-- hhmts start -->Last modified: Tue Dec 20 16:20:29 CET 2011 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Jan 11 18:42:07 CET 2012 <!-- hhmts end -->
 </body>
 </html>

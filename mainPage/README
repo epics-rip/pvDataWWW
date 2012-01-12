@@ -2,11 +2,13 @@ EPICS V4 README
 
 This README file describes the download files available for EPICS V4.
 
-Status: This is the 20-Dec-2011 version of the README, and pertains to the
-1.0-BETA release of EPICS V4. 
+Status: This is the 11-Jan-2011 version of the README, and pertains to the
+1.0-BETA release of EPICS V4. This differs from the 20-Dec-2011 version
+in that covers the Java release by tar.zip rather than just jar files.
 Author: 28-Nov-2011 Greg White (gregory.white @ psi.ch) for EPICS 
 V4 team [1]
 Mod: 20-Dec-2011, Greg White, for 1.0-BETA, Java and C++.
+     11-Jan-2012, Greg White, for EPICSv4-Java-1.0-BETA.tar.gz
 -----------------------------------------------------------------
 
 EPICS V4 [1] is a software toolkit for developing advanced control
@@ -15,16 +17,11 @@ systems on top of EPICS [2], and fast service oriented architectures.
 epics-pvdata is a sourceForge project for managing the development of
 EPICS version 4.
 
-For Java examples of uses of the files referenced below, see the
-epics-pvdata exampleJava Mercurial repo [14]. So far only 
-examples of the "ChannelRPC" functionality of EPICS V4 are 
-included [15], but more will be added. 
-
 SUMMARY
 -------
 The C++ implementation of EPICS V4 is in 1.0-BETA/EPICSv4-1.0-BETA.tar.gz
-The Java implementation of EPICS V4 is in 1.0-BETA/*.jar
-See Getting Started with EPICS V4, 
+The Java implementation of EPICS V4 is in 1.0-BETA/EPICSv4-Java-1.0-BETA.tar.gz
+See the document "Getting Started with EPICS V4," 
 http://epics-pvdata.sourceforge.net/gettingStarted.html
 
 FILES FOR EPICS V4 C++ IMPLEMENTATION 
@@ -37,10 +34,10 @@ and example usage are given in [16].
 
 MINIMUM FILES FOR EPICS V4 JAVA IMPLEMENTATION 
 ----------------------------------
-The following files constitute the minimum runtime of the Java
-implementation of EPICS V4. These
-are available from the epics-pvdata sourceforge download site, presently
-under folder 1.0-BETA/.
+The file EPICSv4-Java-1.0-BETA.tar.gz includes all (and only) the Java
+implementation of EPICS V4. Specifically the tar includes the following
+JAR files, plus the source for some examples (in examplesJava/) plus 
+necessary XML files and scripts.
 
 pvAccess-1.0-BETA.jar *    The EPICS V4 "wire protocol" [6] [7]
 pvData-1.0-BETA.jar *      The EPICS V4 support for high 
