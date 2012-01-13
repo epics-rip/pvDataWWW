@@ -1,0 +1,106 @@
+html, body 
+{ 
+  margin: 0px; padding: 0px 
+}
+
+@media screen
+{
+  div.slide
+  {
+    margin: 90px;
+    min-height: 900px;
+  }
+  html
+  {
+    background-color: gainsboro;
+  }
+}
+
+@media print
+{
+  div.slide
+  {
+    height: 25cm;
+  }
+}
+
+body 
+{ 
+  font-size: 250%; 
+}
+
+ul 
+{
+  margin-top: 30px;
+  margin-left: 10px;
+}
+li
+{
+  padding: 5px 0 5px 30px;
+  margin: 5px 5px 0 0;
+/*
+  list-style: none;
+  background-image: url('bullet1.png');
+*/
+  background-repeat: no-repeat;
+  background-position: 0 20px;
+}
+div.slide
+{ 
+  display: block;
+  font-family: Bitstream Vera Sans, sans-serif;
+  background-image: url('dlsfooterpad.png');
+
+/*
+  background-image: url('dlsfooter.svg');
+*/
+  background-position: bottom right;
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: contain;
+  -moz-background-size: contain;
+  padding: 20px;
+  page-break-after: always;
+}
+.red { color: red; }
+table 
+{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 40px;
+  font-size: 100%;
+}
+th 
+{
+  text-align: left;
+}
+td, th
+{
+  border: 1px solid gainsboro;
+  padding: 5px 10px;
+  vertical-align: top;
+}
+pre, code
+{
+  font-family: "Bitstream Vera Sans Mono", Monaco, monospace;
+  font-size: 90%;   
+}
+pre.prettyprint
+{
+  background-color: whitesmoke;
+  border-style: none;
+}
+code
+{
+  font-weight: bold;
+}
+img.centered
+{
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+video.fullslide
+{
+  margin: -20px -20px -20px -20px;
+}
