@@ -3,7 +3,7 @@
 # 
 # Abs: makereleaseJars is a bash source script to manage the release of jar files and 
 #      associated deliverables for a version tagged release of the Java implementation 
-#      of EPICS v4.
+#      of EPICS v4. 
 #
 # Usage: 
 #      Following a tagged release of ALL 3 of the pv*Java modules (pvDataJava, pvIOCJava, pvAccessJava),
@@ -17,7 +17,7 @@
 #            ./<pathto-pcDataWWW/scripts>/makereleaseJars.sh
 #  
 #      A user should unpack the resulting tar.gz with, for instance:
-#            tar -zxvf EPICSv4-Java-1.0-BETA.tar.gz
+#            tar zxvf EPICSv4-Java-1.0-BETA.tar.gz
 #
 # Ref: http://epics-pvdata.sourceforge.net/release.html
 #
@@ -48,11 +48,18 @@ hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata
 hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/exampleJava
 # For common_setup.bash script:
 hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/common
-# For README:
-hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
+# For README. Note, no tag is used for pvDataWWW. We assume the README and other web files
+# may change following a tagged release, even though they refer to a tagged release.
+hg clone ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
 
-(cd pvIOCJava && hg archive ../$OUTDIR/pvIOCJava/xml)
-(cd pvServiceJava && hg archive ../$OUTDIR/pvServiceJava/xml)
+(cd pvIOCJava && hg archive -I "xml/" ../$OUTDIR/pvIOCJava)
+# Hm, need src/ too for the runtime!!!! Because it has XMLs in it. Argghhhhhhhhhhhhhhhhh
+(cd pvIOCJava && hg archive -I "src/" ../$OUTDIR/pvIOCJava)
+# And server/!!! too.
+(cd pvIOCJava && hg archive -I "server/" ../$OUTDIR/pvIOCJava)
+
+
+(cd pvServiceJava && hg archive -I "xml" ../$OUTDIR/pvServiceJava)
 (cd exampleJava && hg archive ../$OUTDIR/exampleJava)
 (cd common && hg archive ../$OUTDIR/common)
 

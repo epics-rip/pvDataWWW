@@ -21,7 +21,7 @@ $0~/Scribe:/ { print; next }
 }
 
 #! Highlight new topic
-/NEW TOPIC/{ print "**********************"; print; print "**********************"; next }
+/NEW TOPIC/||/[Nn]ew [Tt]opic/ { print "**********************"; print; print "**********************"; next }
 
 #! Process RESOLUTIONS, AIs and ISSUES
 /RES(OLUTION)?[ ]*[:-]/||/[Rr]es(olution)?[ ]*[:-]/ { print "***********"; print; print "***********"; next }
