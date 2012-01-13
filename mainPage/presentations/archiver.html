@@ -1,0 +1,82 @@
+<html>
+
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<script src="../docs/styles/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="slides.css" />
+</head>
+
+<div class="slide">
+<h1>EPICS4 Archiver Interface</h1>
+James Rowland
+</div>
+
+<div class="slide">
+<h2>EPICS Archiver</h2>
+<ul>
+<li>Raw data</li>
+<li>Decimated data <span class="red">done on the fly</span></li>
+</ul>
+</div>
+
+<div class="slide">
+<h2>SLAC Extensions</h2>
+<ul>
+<li>Decimate old data to files</li>
+<li>Improves retrieval speed</li>
+<li>Uses archiver file format</li>
+<li>Hence no statistics (min/max/mean)</li>
+</div>
+
+<div class="slide">
+<h2>Archiver Example</h2>
+<ul>
+<li>C++ RPC Server</li>
+<li>Uses Archiver API (find, iterate)</li>
+<li>Decimate and statistics <span class="red">on the fly</span></li>
+<li>Returns NTTable</li>
+</div>
+
+<div class="slide">
+<h2>Improving Performance</h2>
+<ul>
+<li>Pre-decimate data with statistics</li>
+<li>Can use RDB (innodb or index-ordered tables)</li>
+</div>
+
+<div class="slide">
+<h2>Minimal Schema</h2>
+<pre>
+CREATE TABLE samples (
+channel VARCHAR(80), 
+timestamp INT, 
+min DOUBLE PRECISION, 
+max DOUBLE PRECISION, 
+mean DOUBLE PRECISION, 
+sum DOUBLE PRECISION, 
+count INT, 
+PRIMARY KEY(channel, timestamp)) 
+ENGINE=InnoDB;
+</pre>
+</div>
+
+<div class="slide">
+<h2>Query</h2>
+<pre>
+select min, max from samples 
+where channel = 'BL-AL-IOC-01:CPU:LOAD' and 
+timestamp > 661731600 and 
+timestamp < 661737600 
+limit 10;
+</div>
+
+<div class="slide">
+<h2>Data Size</h2>
+<ul>
+<li>12TB raw</li>
+<li>350GB decimated to CSV using 10 minute interval</li>
+<li>Decimation at 100MB/s</li>
+<li>MySQL not benchmarked</li>
+</div>
+
+</html>
