@@ -4,25 +4,140 @@
 <meta http-equiv="X-UA-Compatible" content="IE=8" />
 <script src="../docs/styles/prettify.js"></script>
 <link rel="stylesheet" type="text/css" href="slides.css" />
-<style>
-img 
-{
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-img.small
-{
-  display: block;
-  width: 75%;
-  height: 75%;
-}
-</style>
 </head>
 
 <div class="slide">
 <h1>NTImage</h1>
 James Rowland
+</div>
+
+<div class="slide">
+<h2>areaDetector</h2>
+<ul>
+<li>This software was originally developed by Mark Rivers</li>
+<li>In use at APS, NSLS, DLS, SLS, BESSY, NSRRC and others</li>
+<li><a style="font-size: 75%" href="http://cars9.uchicago.edu/software/epics/areaDetector.html">
+http://cars9.uchicago.edu/software/epics/areaDetector.html</a></li>
+</ul>
+</div>
+
+<div class="slide">
+<h2>areaDetector NDArray</h2>
+<ul>
+<li>The only common structured type in EPICS3</li>
+<li>Multi-dimensional Array</li>
+<li>Image Metadata</li>
+<li>Unstructured Metadata</li>
+</ul>
+</div>
+
+<div class="slide">
+<h2>NTImage</h2>
+<li>Standardize</li>
+<li>Direct mapping of AD-NDArray to pvData</li>
+</ul>
+</div>
+
+<div class="slide">
+<h2>NTArray</h2>
+Add extra dimensions
+<pre>
+structure NTArray
+    scalar_t[]  value
+    string      function    // optional
+    timeStamp_t timeStamp   // optional
+    alarm_t     alarm       // optional
+    display_t   display     // optional
+    long[]      dims        // optional, new
+</pre>
+</div>
+
+<div class="slide">
+<h2>NTImage (2)</h2>
+<pre>
+structure NTImage
+    // array part
+    // image part
+    // metadata part
+</pre>
+</div>
+
+<div class="slide">
+<h2>NTImage (3)</h2>
+<pre>
+structure NTImage
+    // array part
+    scalar_t[]  value
+    string      function
+    timeStamp_t timeStamp
+    alarm_t     alarm
+    display_t   display
+    long[]      dims
+    ...
+</pre>
+</div>
+
+<div class="slide">
+<h2>NTImage (4)</h2>
+<pre>
+structure NTImage
+    // image part
+    int colorMode // blessed
+    int bayerPattern // blessed
+    char [4] fourcc // new
+    int [] offsets
+    int [] binning
+    int [] reverse
+    int [] fullDims
+    ...
+</pre>
+</div>
+
+<div class="slide">
+<h2>NTImage (5)</h2>
+<pre>
+structure NTImage
+    // metadata part
+    int uniqueId
+    string [] attributeDescriptions
+    int [] attributeSourceTypes
+    string [] attributeSources
+    variant_t [] attributes
+    ...
+</pre>
+</div>
+
+<div class="slide">
+<h2>Efficiency</h2>
+<ul>
+<li>It's an array, no more or less efficient than anything else, <span class="red">depending on encoding</span></li>
+<li>Don't need zero-copy from socket to user buffer (tested at 10GbE)</li>
+<li>Would like zero-copy from ByteBuffer to user buffer pool</li>
+</ul>
+</div>
+
+<div class="slide">
+<h2>Variant Type</h2>
+<pre>structure variant_t
+    string name
+    int dataType
+    byte [] bValue
+    short [] hValue
+    int [] iValue
+    long [] lValue
+    float [] fValue
+    double [] dValue
+    string [] sValue
+    timestamp_t [] tValue
+    alarm_t [] aValue
+</pre>
+</div>
+
+<div class="slide">
+<h2>Variant Type (2)</h2>
+Why variant types when we have introspection?<p>
+When using putGet the pvData type is fixed by the server.<p>
+<span class="red">Discuss!</span>
 </div>
 
 </html>

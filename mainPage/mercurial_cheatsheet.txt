@@ -1,5 +1,5 @@
-MERCURIAL ON MAC DEVELOPMENT CHEATSHEET
-===============================
+MERCURIAL CHEATSHEET FOR EPICS V4
+=================================
 
 This is a EPICS v4 development note on using command line Mercurial (hg) command 
 line commands for EPICS V4 development.
@@ -8,12 +8,14 @@ Auth: Greg White, 29-Sep-2011.
 Status: Presently only includes notes on how to use Mercurial
 for interfacing to the epics-pvdata software repository.
 Mod: 19-Dec-2011. Greg. Removed duplicate hg add help, and some typos.
+     12-Jan-2012. Greg. Added tag stuff from Symlab (thanks whoever wrote that!)
 
 Tutorials on Mercurial
------------------
+----------------------
 http://hginit.com/
 http://mercurial.selenic.com/wiki/Tutorial
 http://hgbook.red-bean.com/read/a-tour-of-mercurial-the-basics.html
+http://www.symlab.org/wiki/index.php/Using_Mercurial_Tags
 
 Installation
 ------------
@@ -114,13 +116,36 @@ for HTTP by many institutions. Use the ssh one above.
 
 
 Add Files to your local repository 
-----------------------------------
+==================================
 Analogous to cvs add.
 
+Add a file
+----------
 Use hg add <filename>
 E.g.:
 % hg add charter_14092011.html
 [pcp044184:repo/pvDataWWW/mainPage] greg% hg add charter_15092011.html
+
+Add a directory
+---------------
+Done with hg add
+
+To add a directory with files in it, just add the directory. Directories and files beneath will be added:
+E.g.:
+% hg add talks
+adding talks/.DS_Store
+adding talks/2010/gabriele_PVManager.pptx
+adding talks/2011/.DS_Store
+adding talks/2011/bob_V4EPICS201109.pptx
+adding talks/2011/marty_pvDataEtc.ppt
+
+Update your repo with changes made in source-forge:
+===================================================
+1. Pull changes made in SF down to your repo, done with hg pull.
+%  hg pull ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
+
+2. Then, to give yourself access to these changes, run hg update 
+% hg update
 
 Get status of your local repository
 -----------------------------------
@@ -178,27 +203,6 @@ putting them in epics-pvdata at sourceforge is now a 3 stage process:
    remote: Running changegroup hook
 
 
-Add files and directories
-=========================
-Done with hg add
-
-To add a directory with files in it, just add the directory. Directories and files beneath will be added:
-E.g.:
-% hg add talks
-adding talks/.DS_Store
-adding talks/2010/gabriele_PVManager.pptx
-adding talks/2011/.DS_Store
-adding talks/2011/bob_V4EPICS201109.pptx
-adding talks/2011/marty_pvDataEtc.ppt
-
-Update your repo with changes made in source-forge:
-===================================================
-1. Pull changes made in SF down to your repo, done with hg pull.
-%  hg pull ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataWWW
-
-2. Then, to give yourself access to these changes, run hg update 
-% hg update
-
 Mercurial Configuration (.hgrc in your home directory)
 ======================================================
 
@@ -221,3 +225,85 @@ Add a new alias to commit everything except configure/RELEASE and configure/CONF
 
 [alias]
 cmt = commit -X configure/RELEASE -X configure/CONFIG_SITE
+
+Tags
+====
+[** The text below is from an excellent writeup on tags at Symlab
+http://www.symlab.org/wiki/index.php/Using_Mercurial_Tags **]
+
+Using Mercurial Tags
+Mercurial (Hg) tags provide a way of giving a meaningful textual identifier to a
+specific changeset. As such, Hg tags identify a specific revision of the repository.
+
+Mercurial supports two types of tags – local and global.
+
+Local Tags
+----------
+Local tags are stored in the .hg/localtags file (which is not part of the managed
+repository and is not replicated).
+
+As local tags are not propagated with a clone, push or pull operation, developers are
+free to use them for whatever purpose they would like.
+
+Having said that they are not propagated, they are still visible in remote
+repositories, which is useful when sharing changes within a development team. For
+example, Alice can create a local tag "For-Bill", and Bill can pull from that tag to
+his own repository, even though the tag itself will not then appear in Bill's
+repository. Bill can re-tag it locally ("From-Alice") if he thinks that might be
+useful.
+
+Global Tags 
+----------- 
+
+Global tags are stored in a file called .hgtags, which is a version-controlled file
+within the repository. Like all other version controlled files, this will be
+replicated when the repository is cloned and all changes to this file (for example,
+moving a tag to a different changeset) will appear as changes in the repository
+history.  Creating a global tag creates a new commit (because you are updating a
+controlled file).  Because the tags are controlled by a version controlled file, if
+you have only cloned a part of a repository, you will only be able to see the tags
+that are created by changesets in the part you have cloned.  
+
+As a particular example, if you clone from a repository, and use the -r flag with a
+tag name, then you will receive the history from that repository up to the tagged
+revision, but you won't recive the changeset that defines the tag. CONSEQUENTLY, IN
+YOUR CLONE THE TAG WILL NOT APPEAR.  As global tags would be propagated if the work
+were pushed to the master repository, they should be generally avoided,
+unless by prior agreement from the EPICS V4 team.
+
+Tags used by EPICS V4
+Global tags are used in EPICS V4 to label builds and releases. We use a standard 
+format for tagging releases and builds, conformant to the Maven common practice. 
+See the "EPICS V4 Versioned Release Guide"
+http://epics-pvdata.sourceforge.net/release.html 
+for more details.
+
+Working with Tags
+Tag names can be used in many mercurial commands: wherever a revision can be
+supplied. Such commands include clone, push, pull, and update, but this is not an exclusive list.
+
+For example
+hg update 1.0-BETA
+will update to the source used to release a particular repo such as pvDataJava.
+
+In addition, there are two commands specifically for managing tags.
+hg tags -v
+will list the tags present in this copy of the repository
+
+hg tag -l <TagName>
+will create a local tag on the current revision
+
+hg tag <TagName>
+will create a global tag on the current revision (but please note the consequences above)
+
+hg tag [-l] -r <REV> <TagName>
+will create a tag on another revision
+
+Note that when you create a global tag Mercurial will automatically commit it (but no
+other 
+files in your working directory) with a standard message. Superusers can use the more 
+advanced tag options to control this and other details of the commit.
+
+Tags can also be managed via GUI tools.
+For more about working with tags, you may wish to read the Mercurial documentation
+

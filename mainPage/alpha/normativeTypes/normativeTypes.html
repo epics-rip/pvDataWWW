@@ -25,18 +25,18 @@
 <h1>EPICS V4 Normative Types</h1>
 
 <h2 class="nocount" id="L49">EPICS V4 Normative Types, Editors Draft,
-2011.12.03</h2>
+2012.01.13</h2>
 <dl>
   <dt>Latest version:</dt>
     <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
   <dt>Previous version:</dt>
     <dd><a
-      href="normativeTypes_20111121.html">normative_types_specification_20111110.html</a></dd>
+      href="normativeTypes_20111121.html">normative_types_specification_20111112.html</a></dd>
   <dt>Editors:</dt>
     <dd>Bob Dalesio, Brookhaven National Lab</dd>
     <dd>Greg White, SLAC, PSI</dd>
-    <dd>Greg White, SLAC, PSI</dd>
     <dd>James Roland, Diamond</dd>
+    <dd>Marty Kraimer, BNL</dd>
 </dl>
 <hr />
 
@@ -71,25 +71,25 @@ accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
 <div class="toc">
 <ul>
   <li><a href="#L49">EPICS V4 Normative Types, Editors Draft,
-  2011.12.03</a></li>
+  2012.01.13</a></li>
   <li><a href="#L80">Abstract</a></li>
   <li><a href="#L90">Status of this Document</a></li>
   <li><a href="#L112">Table of Contents</a></li>
   <li><a href="#L116">Introduction</a></li>
-  <li><a href="#L167">Normative Type Fields</a>
+  <li><a href="#L167">Normative Type Fields</a> 
     <ul>
-      <li><a href="#L236">Simple Normative Type Fields - scalar types</a>
+      <li><a href="#L236">Simple Normative Type Fields - scalar types</a> 
         <ul>
           <li><a href="#L243">scalar_t</a></li>
         </ul>
       </li>
       <li><a href="#L256">Simple Normative Type Fields - array of scalar
-        types</a>
+        types</a> 
         <ul>
           <li><a href="#L258">scalar_t[]</a></li>
         </ul>
       </li>
-      <li><a href="#L264">Structured Normative Fields</a>
+      <li><a href="#L264">Structured Normative Fields</a> 
         <ul>
           <li><a href="#L268">enum_t</a></li>
           <li><a href="#L290">timeStamp_t</a></li>
@@ -99,7 +99,7 @@ accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
           <li><a href="#L407">control_t</a></li>
         </ul>
       </li>
-      <li><a href="#L424">Structure Array Normative Fields</a>
+      <li><a href="#L424">Structure Array Normative Fields</a> 
         <ul>
           <li><a href="#L428">enum_t[]</a></li>
           <li><a href="#L440">timeStamp_t[]</a></li>
@@ -109,30 +109,35 @@ accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
     </ul>
   </li>
   <li><a href="#L464">Normative Type Standard Optional Fields</a></li>
-  <li><a href="#L478">General Normative Types</a>
+  <li><a href="#L478">General Normative Types</a> 
     <ul>
       <li><a href="#L485">NTScalar</a></li>
       <li><a href="#L529">NTEnum</a></li>
-      <li><a href="#L563">NTArray</a></li>
+      <li><a href="#L563">NTArray</a> 
+        <ul>
+          <li><a href="#L624">Single dimensional array</a></li>
+          <li><a href="#L630">Simple multidimensional array</a></li>
+          <li><a href="#L648">Notes and Questions.</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
-  <li><a href="#L602">Specific Normative Types</a>
+  <li><a href="#L658">Specific Normative Types</a> 
     <ul>
-      <li><a href="#L618">NTNameValue</a></li>
-      <li><a href="#L657">NTMultichannelArray</a></li>
-      <li><a href="#L706">NTTimeDomainArray</a></li>
-      <li><a href="#L745">NTFrequencyDomainArray</a></li>
-      <li><a href="#L787">NTHistogram</a></li>
-      <li><a href="#L794">NTNumericArray</a></li>
-      <li><a href="#L846">NTMultichannelArray</a></li>
-      <li><a href="#L857">NTStatistic</a></li>
-      <li><a href="#L907">NTImage</a></li>
-      <li><a href="#L916">NTTable</a></li>
-      <li><a href="#L924">NTChannelFinderDirectory</a></li>
-      <li><a href="#L935">NTXAlarm</a></li>
+      <li><a href="#L674">NTNameValue</a></li>
+      <li><a href="#L713">NTMultichannelArray</a></li>
+      <li><a href="#L762">NTTimeDomainArray</a></li>
+      <li><a href="#L801">NTFrequencyDomainArray</a></li>
+      <li><a href="#L843">NTHistogram</a></li>
+      <li><a href="#L861">NTMultichannelArray</a></li>
+      <li><a href="#L867">NTStatistic</a></li>
+      <li><a href="#L917">NTImage</a></li>
+      <li><a href="#L926">NTTable</a></li>
+      <li><a href="#L934">NTChannelFinderDirectory</a></li>
+      <li><a href="#L945">NTXAlarm</a></li>
     </ul>
   </li>
-  <li><a href="#L939">Non-Normative Types</a></li>
+  <li><a href="#L949">Non-Normative Types</a></li>
 </ul>
 </div>
 <hr />
@@ -506,7 +511,10 @@ particular use cases.</p>
     timeStamp_t timeStamp   // optional field
     alarm_t     alarm       // optional field
     display_t   display     // optional field
-    long[]      dims        // optional field</pre>
+    int[]       dims        // optional field
+    string      dataType    // optional and value must be byte
+    bool        endian      // optional (false,true) =&gt; {little,big}
+    int[]       strides     // optional field</pre>
 
 <p>where</p>
 <dl>
@@ -523,11 +531,84 @@ particular use cases.</p>
     <dd>Standard optional field</dd>
   <dt>display</dt>
     <dd>This field is an additional optional field.</dd>
-  <dt>doms</dt>
-    <dd>This field is an additional optional field to support multi-dimensional arrays.</dd>
+  <dt>dims</dt>
+    <dd>This field is an additional optional field to support multi-dimensional
+      arrays.</dd>
+  <dt>dataType</dt>
+    <dd>In this case value must be typed byte. In addition endian and
+      elementSize must be defined. The following are standard types: boolean,
+      byte, short, int, long, float, double, string, object. </dd>
+  <dt>endian</dt>
+    <dd>Byte order of each element.</dd>
+  <dt>strides</dt>
+    <dd>See numPy definition of strides.</dd>
 </dl>
 
-<h2 id="L602">Specific Normative Types</h2>
+<p>This normative types can be used for several different types of array.</p>
+
+<h4 id="L624">Single dimensional array</h4>
+
+<p>This has a definition as follows:</p>
+<pre>structure NTArray
+    scalar_t[]  value
+    string      function    // optional field
+    timeStamp_t timeStamp   // optional field
+    alarm_t     alarm       // optional field
+    display_t   display     // optional field</pre>
+
+<h4 id="L630">Simple multidimensional array</h4>
+
+<p>This has a definition like:</p>
+<pre>structure NTArray
+    scalar_t[]  value
+    string      function    // optional field
+    timeStamp_t timeStamp   // optional field
+    alarm_t     alarm       // optional field
+    display_t   display     // optional field
+    int[]       dims </pre>
+
+<p>Mathlab Array and HDF5 Array</p>
+
+<p>This has a definition like:</p>
+<pre>structure NTArray
+    scalar_t[]  value
+    string      function    // optional field
+    timeStamp_t timeStamp   // optional field
+    alarm_t     alarm       // optional field
+    display_t   display     // optional field
+    int[]       dims        
+    string      dataType    
+    bool        endian    </pre>
+
+<p>NumPy Array and areaDetector Array</p>
+
+<p>This has a definition like:</p>
+<pre>structure NTArray
+    scalar_t[]  value
+    string      function    // optional field
+    timeStamp_t timeStamp   // optional field
+    alarm_t     alarm       // optional field
+    display_t   display     // optional field
+    int[]       dims        
+    string      dataType    
+    bool        endian    
+    int[]       strides  </pre>
+
+<h4 id="L648">Notes and Questions.</h4>
+
+<p>This refers to arrays that specify dataType.</p>
+
+<p>A C client is responsible for casting and element indexing, although helper
+functions may be provided. The Python and Matlab interfaces cast and provide
+operators for indexing (square brackets). For Java byteBuffer can be used to
+convert between the byte array and the actual data type.</p>
+
+<p>It is not necessary to store element size as it can be calculated by from
+the datatype (double is 8 etc.)</p>
+
+<p>James stated that alignment can be calculated. How?</p>
+
+<h2 id="L658">Specific Normative Types</h2>
 
 <p>Specific normative types are types defined by the EPICS V4 working group and
 are oriented towards specific uses and applications. Compare to <a
@@ -540,7 +621,7 @@ currently defined types are each described in a section below.</p>
   <li>Frequencies are always in Hz.</li>
 </ul>
 
-<h3 id="L618">NTNameValue</h3>
+<h3 id="L674">NTNameValue</h3>
 
 <p>This is a type appropriate for many RPC (Remote Procedure Call) service
 requests.</p>
@@ -568,7 +649,7 @@ requests.</p>
     <dd>Standard optional field.</dd>
 </dl>
 
-<h3 id="L657">NTMultichannelArray</h3>
+<h3 id="L713">NTMultichannelArray</h3>
 
 <p>MultichannelArray aggregates an array of scalar values into a single array
 variable. </p>
@@ -607,7 +688,7 @@ variable. </p>
       timeStamp.</dd>
 </dl>
 
-<h3 id="L706">NTTimeDomainArray</h3>
+<h3 id="L762">NTTimeDomainArray</h3>
 
 <p>NTTimeDomainArray expresses an array of values that have a constant time
 between each value. </p>
@@ -634,7 +715,7 @@ between each value. </p>
     <dd>An array of numeric scalars.</dd>
 </dl>
 
-<h3 id="L745">NTFrequencyDomainArray</h3>
+<h3 id="L801">NTFrequencyDomainArray</h3>
 <pre>structure NTFrequencyDomainArray
   string      function      // optional field
   alarm_t     alarm         // optional field
@@ -661,7 +742,7 @@ between each value. </p>
     <dd>An array of numeric scalars.</dd>
 </dl>
 
-<h3 id="L787">NTHistogram</h3>
+<h3 id="L843">NTHistogram</h3>
 
 <p><b>NEEDS WORK</b></p>
 <pre>structure NTHistogram
@@ -671,56 +752,9 @@ between each value. </p>
   double      firstValue
   double      lastValue  
   enum_t      mode                 // LINEAR and LOGARITHMIC 
-  long        Nbuckets             // array size
-  long[]      values</pre>
+  scalar_t[]  values       // integer types are unsigned</pre>
 
-<h3 id="L794">NTNumericArray</h3>
-<div style="color:red">To be deleted, as merged with NTArray</div><p>
-This is a multi-dimensional homogenous array of numeric data.<p>
-Old definition (can't use this in Java with a copy because no fast cast from byte array to other arrays):
-
-<pre style="color: red">structure NTNumericArray
-  typeIdentifier_t typeIdentifier
-  int dataType
-  long [] dims
-  byte [] data // at least product(dims) * element_size(datatype)
-  alarm_t alarm
-  timestamp_t timeStamp</pre>
-Models and their names: 
-<ol>
-  <li>Matlab (NumericArray) 
-    <pre>int datatype;
-ssize_t [] dims;
-char * data[product(dims) * element_size(datatype)]</pre>
-  </li>
-  <li>areaDetector (considering the array part of the areaDetector image only) 
-    <pre>int datatype;
-size_t [] dims;
-char * data[at least product(dims) * element_size(datatype)]</pre>
-    Plus information about position relative to origin </li>
-  <li>HDF5 (dataset/dataspace) 
-    <pre>int datatype;
-size_t [] dims;
-char * data[product(dims) * element_size(datatype)]</pre>
-    Plus support for chunked arrays (non-contiguous storage with a mapping from
-    co-ordinates to storage) And initial/maximum dimensions </li>
-  <li>Numpy Array (ndarray) 
-    <pre>int datatype;
-int element_size;
-int alignment;
-size_t [] dims; // max 32 dimensions
-size_t [] strides;
-char * data[at least product(dims) * element_size]</pre>
-    Plus the ability to have arrays of Python objects </li>
-</ol>
-In all cases at the C level the client is responsible for casting and element
-indexing, although helper functions may be provided. The Python and Matlab
-interfaces cast and provide operators for indexing (square brackets). 
-
-<p>It is not necessary to store element size as it can be calculated by from
-the datatype (double is 8 etc.) Alignment can also be calculated.
-
-<h3 id="L846">NTMultichannelArray</h3>
+<h3 id="L861">NTMultichannelArray</h3>
 
 <p>MultichannelArray is a type to aggregate an array of scalar values into a
 single array variable. </p>
@@ -734,7 +768,7 @@ single array variable. </p>
   double[] deltaTimes      // The time relative to the timeStamp in seconds. If not relevant, should be valued 0.0
  </pre>
 
-<h3 id="L857">NTStatistic</h3>
+<h3 id="L867">NTStatistic</h3>
 
 <p><b>NEEDS WORK</b></p>
 
@@ -777,10 +811,10 @@ can't archive at the native rate. </p>
   <dt>N</dt>
 </dl>
 
-<h3 id="L907">NTImage</h3>
-The EPICSv3 image type is provided by <a
+<h3 id="L917">NTImage</h3>
+The EPICS V3 image type is provided by <a
 href="http://cars9.uchicago.edu/software/epics/areaDetector.html">areaDetector</a>.
-The EPICSv4 image type (NTImage) will be a superset of this functionality. The
+The EPICS V4 image type (NTImage) will be a superset of this functionality. The
 variant type used for encoding metadata is also suitable for encoding table
 columns. byte [] data may contain a compressed image so the size may not be at
 least prod(dims) * element_size(datatype) 
@@ -844,7 +878,7 @@ structure NTImage
 
     variant_t [] attributes</pre>
 
-<h3 id="L916">NTTable</h3>
+<h3 id="L926">NTTable</h3>
 
 <p>NTTable is intended to be used when exchanging data which looks like a
 table. For instance table of BPM values of a whole accelerator section, or
@@ -863,7 +897,7 @@ xxx fields and label MUST have the same length, which is the number of rows in
 the table. The value of each label can be used as a label for the associated
 column.</p>
 
-<h3 id="L924">NTChannelFinderDirectory</h3>
+<h3 id="L934">NTChannelFinderDirectory</h3>
 
 <p><b>NEEDS WORK</b></p>
 
@@ -882,10 +916,10 @@ structure NTChannelFinderDirectory
 <p>The length of channelInfo must either be zero or the same as the length of
 channelName</p>
 
-<h3 id="L935">NTXAlarm</h3>
+<h3 id="L945">NTXAlarm</h3>
 TBD 
 
-<h2 id="L939">Non-Normative Types</h2>
+<h2 id="L949">Non-Normative Types</h2>
 
 <p>Users and developers using EPICS V4 are free to defined their own special
 purpose types on top of PVStructure (or the other PV Types) but should note

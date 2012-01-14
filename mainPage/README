@@ -21,6 +21,7 @@ SUMMARY
 -------
 The C++ implementation of EPICS V4 is in 1.0-BETA/EPICSv4-1.0-BETA.tar.gz
 The Java implementation of EPICS V4 is in 1.0-BETA/EPICSv4-Java-1.0-BETA.tar.gz
+
 See the document "Getting Started with EPICS V4," 
 http://epics-pvdata.sourceforge.net/gettingStarted.html
 
@@ -33,11 +34,14 @@ and example usage are given in [16].
 
 
 MINIMUM FILES FOR EPICS V4 JAVA IMPLEMENTATION 
-----------------------------------
+----------------------------------------------
 The file EPICSv4-Java-1.0-BETA.tar.gz includes all (and only) the Java
-implementation of EPICS V4. Specifically the tar includes the following
-JAR files, plus the source for some examples (in examplesJava/) plus 
-necessary XML files and scripts.
+implementation of EPICS V4. On Unix systems, the tar file might be 
+unpacked with the command:
+  % tar xvfz EPICSv4-Java-1.0-BETA.tar.gz
+
+Specifically the tar includes the following JAR files, plus the source 
+for some examples (in examplesJava/) plus necessary XML files and scripts.
 
 pvAccess-1.0-BETA.jar *    The EPICS V4 "wire protocol" [6] [7]
 pvData-1.0-BETA.jar *      The EPICS V4 support for high 
@@ -48,8 +52,10 @@ pvIOC-1.0-BETA.jar *       The EPICS V4 Input/Output Processor
 (*) The specific version number may change following modification of
 this README. It was last updated when the 1.0-BETA was released.
 
-You can also download and build the source from Mercurial. For that,
-see instructions in "Getting Started with EPICS V4" [16]. 
+See instructions in "Getting Started with EPICS V4" [16]. This 
+includes both how to build the Java distribution from sources downloaded
+from the Mercurial repositories at SourceForge, and the alternative of 
+downloading the tar.gz.
 
 
 FOR CONNECTING EPICS V4 to EPICS V3 IN JAVA
