@@ -1158,6 +1158,7 @@ Both parties MUST constantly monitor connection is valid and not simply relay on
 
 <p>
 When connection is closed all related resources MUST be freed. On server side all channels including their requests MUST be destroyed. On client side all channels and their requests MUST be put to disconnected state and searching for channels initiated.
+All related ID-s MUST be freed too, i.e. serverChannelID, clientChannelID, and requestID-s. They MAY be recycled - used for other channels/requests in the future. <br/>
 When disconnected client channels are found on the network and connection is re-established, channels are put to back to connected state and all their requests re-initialized; in addition, monitors are re-started. 
 </p>
 
@@ -1185,12 +1186,11 @@ Channel MUST be in CONNECTED state to be able to accept channel related requests
 <p>
 When the connection is lost, the channel state MUST be set to DISCONNECTED. In this state client MUST start the connection process as descibed above. On re-connect, channel state MUST be set back to CONNECTED.
 </p>
-A channel can be destroyed any time (in any state) and its state MUST be set to DESTROYED. Once channel is destroyed, it
+A channel MAY be destroyed any time (in any state) and then its state MUST be set to DESTROYED. Once the channel is destroyed, it
 MUST NOT be used anymore.
 </p>
 
 <h2 id="channelRequestLifecycle">Channel Request Life-cycle</h2>
-<p>
 
 <div class="image" align="center">
 <img src="image/pvAccessSpec_RequestStates.png" width="66%"/>
@@ -1198,6 +1198,17 @@ MUST NOT be used anymore.
 </div>
 
 <p>
+Channel requests (get, put, get-put, RPC, process) have a state. When instantiated, they MUST are in INIT state. A specific per request initialization message MUST be sent to the server. The request MUST NOT be used until successful initialization response is received from the server and put to READY state. If initialization fails, client MUST be notified about failure and the request put to DESTROYED state.
+</p>
+<p>
+Actual actions, e.g. get, MAY be invoked only when a request is in READY state. When one action is in progress, the request is put to REQUEST_IN_PROGRESS state and set back to READY state when ended. This implies that actions MUST NOT be run in parallel.
+</p>
+<p>
+When connection is lost, a request MUST be put to DISCONNECTED state and automatically re-initialized when connection is re-established (as the request where newly instantiated).
+</p>
+<p>
+A request MAY be destroyed any time (in any state) and then its state MUST be set to DESTROYED. Once the request is destroyed, it
+MUST NOT be used anymore.
 </p>
 
 <h2 id="flowControl">Flow Control</h2>
