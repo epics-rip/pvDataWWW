@@ -37,7 +37,7 @@
   <dt>Editors:</dt>
     <dd>Bob Dalesio, Brookhaven National Lab</dd>
     <dd>Greg White, SLAC, PSI</dd>
-    <dd>James Roland, Diamond</dd>
+    <dd>James Rowland, Diamond</dd>
     <dd>Marty Kraimer, BNL</dd>
 </dl>
 <hr />
@@ -763,7 +763,9 @@ can't archive at the native rate. </p>
 
 <h3 id="L902">NTImage</h3>
 The EPICS V3 image type is provided by <a
-href="http://cars9.uchicago.edu/software/epics/areaDetector.html">areaDetector</a>. 
+href="http://cars9.uchicago.edu/software/epics/areaDetector.html">areaDetector</a>.
+
+See the <a href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/_n_d_array_8h_source.html">NDArray</a> class declaration for details of the image properties.
 
 <p>The EPICS V4 image type (NTImage) will be a superset of this functionality.
 The variant type used for encoding metadata is also suitable for encoding table
@@ -791,8 +793,8 @@ least prod(dim) * element_size(datatype) </p>
 
 <p>These fields are the same as for NTArray defined previously.</p>
 
-<p><b>NOTE James</b> What if this is a compressed image? How will a generic
-tool that only knows NTArray do with this array&gt;</p>
+<p>
+A generic tool that operates on NTArrays will be able to use the image as long as compression is not used.
 
 <h4 id="L927">NTImage Image Part</h4>
 <pre>structure NTImage
@@ -810,27 +812,34 @@ tool that only knows NTArray do with this array&gt;</p>
 <dl>
   <dt>colorMode</dt>
     <dd>This is one of the following: 
-      <pre>0 - monochromatic
-1 - rgb
-2   yuv
-???
+      <pre>
+NDColorModeMono = 0,    /**< Monochromatic image */
+NDColorModeBayer,   /**< Bayer pattern image, 1 value per pixel but with color filter on detector */
+NDColorModeRGB1,    /**< RGB image with pixel color interleave, data array is [3, NX, NY] */
+NDColorModeRGB2,    /**< RGB image with row color interleave, data array is [NX, 3, NY]  */
+NDColorModeRGB3,    /**< RGB image with plane color interleave, data array is [NX, NY, 3]  */
+NDColorModeYUV444,  /**< YUV image, 3 bytes encodes 1 RGB pixel */
+NDColorModeYUV422,  /**< YUV image, 4 bytes encodes 2 RGB pixel */
+NDColorModeYUV411   /**< YUV image, 6 bytes encodes 4 RGB pixels */
        </pre>
     </dd>
   <dt>bayerPattern</dt>
     <dd>This is one of the following: 
-      <pre>0 - rgb
-1 - gbr
-???
+      <pre>
+NDBayerRGGB        = 0,    /**< First line RGRG, second line GBGB... */
+NDBayerGBRG        = 1,    /**< First line GBGB, second line RGRG... */
+NDBayerGRBG        = 2,    /**< First line GRGR, second line BGBG... */
+NDBayerBGGR        = 3     /**< First line BGBG, second line GRGR... */
        </pre>
     </dd>
   <dt>fourcc</dt>
-    <dd>Identifies codec in case of compressed data. ???</dd>
+    <dd>Identifies codec in case of compressed data. "JPEG", for example. <a href="http://www.faqs.org/rfcs/rfc2361.html">List of codecs</a></dd>
   <dt>offset</dt>
     <dd>Offset for each dimension.</dd>
   <dt>binning</dt>
-    <dd>???</dd>
+    <dd>The binning (pixel summation, 1=no binning) relative to original data source</dd>
   <dt>reverse</dt>
-    <dd>???</dd>
+    <dd>The orientation (0=normal, 1=reversed) relative to the original data source</dd>
   <dt>fullDim</dt>
     <dd>The size of each dimension. This may be a chunk of metadata part</dd>
 </dl>
@@ -841,7 +850,6 @@ tool that only knows NTArray do with this array&gt;</p>
   <li>bytesPerPixel, samplesPerPixel and pixelStride can be calculated from the
     image fields. Byte order isn't required because pvData deals with the byte
     order for the metadata.</li>
-  <li><b>NOTE James:</b> Look at the ??? above. Needs more explaination.</li>
 </ul>
 
 <h4 id="L985">NTImage Metadata Part</h4>
@@ -901,18 +909,21 @@ array of alarms, or an array of timeStamps. A variant structure is defined as:
 <p>where</p>
 <dl>
   <dt>uniqueId</dt>
-    <dd><b>James what is this</b> 
-      <pre>0 - ???
-1 - ???
-???
+    <dd>A number that must be unique for all NDArrays produced by a driver after it has started</dd>
        </pre>
     </dd>
   <dt>attributeDescriptions</dt>
     <dd>A description of the attribute.</dd>
   <dt>attributeSourceTypes</dt>
-    <dd><b>James what is this</b></dd>
+    <dd>
+<pre>
+NDAttrSourceDriver = 0,  /**< Attribute is obtained directly from driver */
+NDAttrSourceParam,   /**< Attribute is obtained from parameter library */
+NDAttrSourceEPICSPV  /**< Attribute is obtained from an EPICS PV */
+</pre>
+</dd>
   <dt>attributeSources</dt>
-    <dd><b>James what is this</b></dd>
+    <dd>Source string - EPICS PV name or DRV_INFO string></dd>
   <dt>attributes</dt>
     <dd>The "table" for each atrribute.</dd>
 </dl>
