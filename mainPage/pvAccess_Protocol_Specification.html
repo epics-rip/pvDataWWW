@@ -25,12 +25,12 @@
 <h1>pvAccess Protocol Specification</h1>
 
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
-<h2 class="nocount">EPICS v4 Working Group, Second Public Working Draft, 9-Jan-2012</h2>
+<h2 class="nocount">EPICS v4 Working Group, Second Public Working Draft, 16-Jan-2012</h2>
 
 <dl>
 <dt>This version:</dt>
 <dd><a href=
-"http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120109.html">pvAccess_Protocol_Specification_20120109.html</a></dd>
+"http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120109.html">pvAccess_Protocol_Specification_20120116.html</a></dd>
 <dt>Latest version:</dt>
 <dd><a href=
 "http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -57,7 +57,7 @@ and Industrial Control System.</a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 
 <!-- Statement about why this version exists -->
-<p>This is the 9 January 2012 version of the pvAccess Protocol Specification. This
+<p>This is the 16 January 2012 version of the pvAccess Protocol Specification. This
 version was approved by the <a href="http://epics-pvdata.sourceforge.net/home.html">EPICS V4 Working group</a> to be published as the Second Public Working Draft of the specification. This
 public working draft is intended for the EPICS community to review and
 comment. Resulting comments will drive subsequent revisions of the
@@ -596,7 +596,10 @@ Server MUST accept this message also over TCP/IP.</p>
 <tr><td style="text-align:right;font-family:monospace">searchInstanceIDs</td><td>IDs, associated with names in the request, relevant to this response.</td></tr>
 </table>
 
-<h3 id="protocolMessages:applicationMessages:createChannel">Create channel (0x07)</h3>
+<h3 id="protocolMessages:applicationMessages:createChannel">Create channel (0x07)</h3><p>
+A channel provides a communication path beween a client and a server hosted process variable. A "create channel" message is sent to a server to create a channel. Each channel instance MUST be bound only to one connection.
+</p>
+
 <pre>
 struct createChannelRequest {    struct {        int clientChannelID;        string channelName;    } channels[];};
 
@@ -624,7 +627,10 @@ A client uses the serverChannelID value for all subsequent requests on the chann
 assumptions/checks about how given IDs are generated. IDs MUST be unique within a connection and MAY be recycled
 once channel is disconnected.</p>
 
-<h3 id="protocolMessages:applicationMessages:destroyChannel">Destroy channel (0x08)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:destroyChannel">Destroy channel (0x08)</h3><p>
+A "destroy channel" message is sent to a server to destroy a channel that was previously created with create channel message.
+</p>
+<pre>
 struct destroyChannelRequest {    struct {        int clientChannelID;        int serverChannelID;    } channels[];};
 
 struct destroyChannelResponse {    struct {        int clientChannelID;        int serverChannelID;
@@ -654,7 +660,10 @@ NOTE: A server MUST send this message to a client to notify the client about ser
 Subsequently, a client MUST mark channel as disconnected and start sending search request messages for the channel.<br/>
 </p>
 
-<h3 id="protocolMessages:applicationMessages:channelGet">Channel get (0x0A)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:channelGet">Channel get (0x0A)</h3><p>
+A "channel get" set of messages are used to retrieve (get) data from the channel.
+</p>
+<pre>
 struct channelGetRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08 for INIT;
     FieldDesc pvRequestIF;    PVField pvRequest;};struct channelGetResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvStructureIF;};</pre>
 
@@ -705,7 +714,10 @@ After get request is successfully initialized, client can issue actual get reque
 <p>
 NOTE: if DESTROY mask is applied, server MUST destroy request after get response and client MUST do the same after it receives the response.
 </p>
-<h3 id="protocolMessages:applicationMessages:channelPut">Channel put (0x0B)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:channelPut">Channel put (0x0B)</h3><p>
+A "channel put" set of messages are used to set (put) data to the channel.
+</p>
+<pre>
 struct channelPutRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelPutResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvPutStructureIF;};</pre>
 
 <table style="caption-side:bottom">
@@ -752,6 +764,11 @@ struct channelPutRequest {    int serverChannelID;    int requestID;    byte 
 <tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
 </table>
 
+<p>
+A "get-put" request retrieves remote put structure. This MAY be used by user applications
+to show data that were set last time.
+</p>
+
 <pre>
 struct channelGetPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40;};struct channelGetPutResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvPutStructureData;};</pre>
 
@@ -772,7 +789,11 @@ struct channelGetPutRequest {    int serverChannelID;    int requestID;    by
 <tr><td style="text-align:right;font-family:monospace">pvPutStructureData</td><td>Remote put data structure.</td></tr>
 </table>
 
-<h3 id="protocolMessages:applicationMessages:channelPutGet">Channel put-get (0x0C)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:channelPutGet">Channel put-get (0x0C)</h3><p>
+A "channel put-get" set of messages are used to set (put) data to the channel and then immediately retrieve data from the channel.
+Channel is usually processed between put and get.
+</p>
+<pre>
 struct channelPutGetRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelPutGetResponseInit {    int requestID;    byte subcommand;     Status status;    [if status.type == OK | WARNING] FieldDesc pvPutStructureIF;    [if status.type == OK | WARNING] FieldDesc pvGetStructureIF;};</pre>
 
 <table style="caption-side:bottom">
@@ -819,7 +840,12 @@ After put-get request is successfully initialized, client can issue actual put-g
 <tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">pvGetStructureData</td><td>Get data structure.</td></tr>
 </table>
-<pre>// get remote put structure datastruct channelGetPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x80;};struct channelGetPutResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvPutStructureData;};</pre>
+
+<p>
+A "get-put" request retrieves remote put structure. This MAY be used by user applications
+to show data that were set last time.
+</p>
+<pre>struct channelGetPutRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x80;};struct channelGetPutResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvPutStructureData;};</pre>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Channel get put request.</caption>
@@ -837,7 +863,12 @@ After put-get request is successfully initialized, client can issue actual put-g
 <tr><td style="text-align:right;font-family:monospace">status</td><td>Completion status.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">pvPutStructureData</td><td>Remote put data structure.</td></tr>
 </table>
-<pre>// get remote get structure datastruct channelGetGetRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40;};struct channelGetGetResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvGetStructureData;};</pre>
+
+<p>
+A "get-get" request retrieves remote get structure. This MAY be used by user applications
+to show data that were retrieved last time.
+</p>
+<pre>struct channelGetGetRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x40;};struct channelGetGetResponse {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] PVField pvGetStructureData;};</pre>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Channel get get request.</caption>
@@ -856,7 +887,10 @@ After put-get request is successfully initialized, client can issue actual put-g
 <tr><td style="text-align:right;font-family:monospace">pvGetStructureData</td><td>Remote get data structure.</td></tr>
 </table>
 
-<h3 id="protocolMessages:applicationMessages:channelMonitor">Channel monitor (0x0D)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:channelMonitor">Channel monitor (0x0D)</h3><p>
+A "channel monitor" set of messages are used to monitor data of the channel using subscribe mechanism.
+</p>
+<pre>
 struct channelMonitorRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelMonitorResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvStructureIF;};</pre>
 
 <table style="caption-side:bottom">
@@ -879,11 +913,20 @@ struct channelMonitorRequestInit {    int serverChannelID;    int requestID; 
 </table>
 
 <p>
+pvRequest structure SHOULD be used to specify monitor queue size and algorithm (all implementation specific).
+</p>
+
+<p>
 After monitor request is successfully initialized, client can issue actual monitor request(s).
 </p>
 
-<pre>
-struct channelStartMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x44;};struct channelStopMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x04;};struct channelDestroyMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x10;};</pre>
+<p>
+The following messages MUST be used to start (resume), stop (suspend) monitoring and to destroy monitor request (subscription):
+</p><pre>
+struct channelStartMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x44;};
+</pre>
+<pre>struct channelStopMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x04;};</pre>
+<pre>struct channelDestroyMonitorRequest {    int serverChannelID;    int requestID;    byte subcommand = 0x10;};</pre>
 
 <table style="caption-side:bottom">
 <caption style="font-weight:bold">Channel monitor requests.</caption>
@@ -910,7 +953,11 @@ There is response for requests above.
 <tr><td style="text-align:right;font-family:monospace">pvStructureData</td><td>Data structure.</td></tr>
 <tr><td style="text-align:right;font-family:monospace">overrunBitSet</td><td>BitSet indicating overrun fields.</td></tr>
 </table>
-<h3 id="protocolMessages:applicationMessages:channelArray">Channel array (0x0E)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:channelArray">Channel array (0x0E)</h3><p>
+A "channel array" set of messages are used to handle remote arrays. Requests allows you to:
+retrieve (get) and set (put) data from/to the array, and changing its length (number of valid elements in the array) and capacity. 
+</p>
+<pre>
 struct channelArrayRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelArrayResponseInit {    int requestID;    byte subcommand;    Status status;    [if status.type == OK | WARNING] FieldDesc pvArrayIF;};</pre>
 
 <table style="caption-side:bottom">
@@ -998,7 +1045,10 @@ struct channelSetLengthRequest {    int serverChannelID;    int requestID;   
 </table>
 
 
-<h3 id="protocolMessages:applicationMessages:destroyRequest">Destroy request (0xF)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:destroyRequest">Destroy request (0xF)</h3><p>
+A "destroy request" messages is used destroy any request instance, i.e. an instance with requestID.
+</p>
+<pre>
 // destroys any request with given requestIDstruct destroyRequest {    int serverChannelID;    int requestID;};</pre>
 
 <table style="caption-side:bottom">
@@ -1008,11 +1058,10 @@ struct channelSetLengthRequest {    int serverChannelID;    int requestID;   
 <tr><td style="text-align:right;font-family:monospace">requestID</td><td>Request ID, same as in request init message.</td></tr>
 </table>
 
-<p>
-Destroys any request instance with given requestID.
+<h3 id="protocolMessages:applicationMessages:channelProcess">Channel process (0x10)</h3><p>
+A "channel process" set of messages are used to trigger channel to process.
 </p>
-
-<h3 id="protocolMessages:applicationMessages:channelProcess">Channel process (0x10)</h3><pre>
+<pre>
 struct channelProcessRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    [if serverStatusIF != NULL_TYPE_CODE] PVField pvRequest;};struct channelProcessResponseInit {    int requestID;    byte subcommand;    Status status;};</pre>
 
 <table style="caption-side:bottom">
@@ -1056,7 +1105,11 @@ struct channelProcessRequest {    int serverChannelID;    int requestID;    b
 </table>
 
 
-<h3 id="protocolMessages:applicationMessages:channelGetField">Get channel introspection data (0x11)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:channelGetField">Get channel type introspection data (0x11)</h3><p>
+A "get channel type introspection data" messages is used to retrieve channel type introspection data, i.e.
+description of all channel fields and their types.
+</p>
+<pre>
 struct channelGetFieldRequest {    int serverChannelID;    int requestID;    string subFieldName;  // entire record if empty};struct channelGetFieldResponse {    int requestID;    Status status;    [if status.type == OK | WARNING] FieldDesc subFieldIF;};</pre>
 
 <table style="caption-side:bottom">
@@ -1075,7 +1128,11 @@ struct channelGetFieldRequest {    int serverChannelID;    int requestID;    
 <tr><td style="text-align:right;font-family:monospace">subFieldIF</td><td>Requested field introspection data.</td></tr>
 </table>
 
-<h3 id="protocolMessages:applicationMessages:message">Message (0x12)</h3><pre>
+<h3 id="protocolMessages:applicationMessages:message">Message (0x12)</h3><p>
+A "message" message is used by a server to provide a client human readable messages regarding a specific request.
+This message MUST NOT be used to report request completion status.
+</p>
+<pre>
 struct message {    int requestID;    byte messageType; // info = 0, warning = 1, error = 2, fatalError = 3    string message;};</pre>
 
 <table style="caption-side:bottom">
@@ -1086,12 +1143,10 @@ struct message {    int requestID;    byte messageType; // info = 0, warning =
 <tr><td style="text-align:right;font-family:monospace">message</td><td>Message.</td></tr>
 </table>
 
-<p>
-This message is sent from the server to provide human readable messages regarding requests.
+<h3 id="protocolMessages:applicationMessages:channelRPC">Channel RPC (0x14)</h3><p>
+A "channel RPC" set of messages are used to provide remote procedure call (RPC) support over pvAccess.
 </p>
-
-
-<h3 id="protocolMessages:applicationMessages:channelRPC">Channel RPC (0x14)</h3><pre>
+<pre>
 struct channelRPCRequestInit {    int serverChannelID;    int requestID;    byte subcommand = 0x08;    FieldDesc pvRequestIF;    PVField pvRequest;};struct channelRPCResponseInit {    int requestID;    byte subcommand;    Status status;};</pre>
 
 <table style="caption-side:bottom">
