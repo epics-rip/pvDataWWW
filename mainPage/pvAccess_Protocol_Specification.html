@@ -61,10 +61,8 @@ Control System.</a></p>
 <!-- Statement about why this version exists -->
 
 <p>This is the 16 January 2012 version of the pvAccess Protocol Specification.
-This version was approved by the <a
-href="http://epics-pvdata.sourceforge.net/home.html">EPICS V4 Working group</a>
-to be published as the Second Public Working Draft of the specification. This
-public working draft is intended for the EPICS community to review and comment.
+This version is an editors draft towards the Second Public Working Draft. The
+Second Public Working Draft will be intended for the EPICS community to review and comment.
 Resulting comments will drive subsequent revisions of the specification and the
 EPICS V4 Working Group's reference implementation.</p>
 
@@ -202,8 +200,7 @@ free, otherwise a dynamically allocated port SHOULD be used as a fallback. </p>
 <p>pvAccess heavily depends on <a
 href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a
 href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>]. All data MUST
-be sent as pvData objects. The protocol is optimized for performance and aims
-to send minimum amount of data while maintaining some condition. pvAccess
+be sent as pvData objects. The protocol is optimized for performance. pvAccess
 supports segmented messages and thus allows the sending of large amounts of
 data using small buffers. The maximum message size is not limited with respect
 to the send or receive buffer sizes. </p>
@@ -212,11 +209,11 @@ to the send or receive buffer sizes. </p>
 <ul>
   <li>A set of data encoding rules that determine how the various data types
     are encoded and deserialized</li>
+  <li>A set of rules that determine how client and server agree on a particular
+    encoding</li>
   <li>A number of message types, that define the interchange between clients
     and servers, together with rules which specify what message is to be sent
-    under what circumstances</li>
-  <li>A set of rules that determine how client and server agree on a particular
-    encoding.</li>
+    under what circumstances.</li>
 </ul>
 
 <h2 id="dataEncoding">Data Encoding</h2>
@@ -225,18 +222,19 @@ to the send or receive buffer sizes. </p>
 keeping with these goals, the encoding does not align primitive types on word
 boundaries and therefore eliminates the wasted space and additional complexity
 that alignment requires. The pvAccess data encoding simply produces a stream of
-contiguous bytes; data MUST NOT contain no padding bytes and MUST NOT be
+contiguous bytes; data MUST NOT contain padding bytes and MUST NOT be
 aligned on word boundaries.<br />
 However, array encoding is an exception. All arrays MUST be aligned to 64-bit
 boundaries (the first element of each array is padded). The message header MUST
 also be 64-bit aligned. </p>
 
-<p>For connection-oriented communication (TCP/IP), byte-order is "negotiated"
-between client and server - server wins. In order to allow all the
+<p>For connection-oriented communication (TCP/IP), server forces client to
+use its byte-order. Each message contains an endiannes
+flag in order to allow all the
 intermediates to forward data without requiring it to be unmarshaled (so that
 the intermediates can forward requests by simply copying blocks of binary
-data), and in order not to require a specific byte-order for connection-less
-protocols (UDP), each message contains an endiannes flag. </p>
+data) and in order not to require a specific byte-order for connection-less
+protocols (UDP). </p>
 
 <h3 id="dataEncoding:sizes">Sizes</h3>
 
@@ -254,8 +252,8 @@ always be a non-negative number and encoded as follows: </p>
 </ol>
 
 <p>Using this encoding to indicate size is significantly cheaper than always
-using an 32-bit integer to store the size. This is especially true when
-marshalling sequences of short strings: counts of up to 254 require only a
+using a 32-bit integer to store the size. This is especially true when
+marshalling sequences of short strings; counts of up to 254 require only a
 single byte instead of four. This comes at the expense of counts greater than
 254, which require five bytes instead of four. However, for sequences or
 strings of length greater than 254, the extra byte is insignificant. </p>
@@ -328,22 +326,22 @@ std::string. </p>
 <h3 id="dataEncoding:arrays">Arrays</h3>
 
 <p>Arrays MUST be encoded as a size representing the number of elements in the
-array, followed by the elements encoded as specified for their type. </p>
+array, followed by the elements encoded as specified for their type (as specified in these sections). </p>
 
 <h3 id="dataEncoding:bitSets">BitSets</h3>
 
-<p>BitSet is a pvData internal data type that represents bits. </p>
+<p>BitSet is a pvData internal data type that represents an ordered set of bits. </p>
 
-<p>For performance reasons BitSet implementation SHOULD store bits as long-s,
+<p>For performance reasons BitSet implementation SHOULD store bits as 64-bit integers,
 however serialization is size optimized and REQUIRES to send only least
-possible number of bytes (LSB part that covers all the bits set).<br />
-BitSet holding n bits is encoded as: </p>
+possible number of bytes that encode all the bits in the set.<br />
+A bitSet holding n bits is encoded as: </p>
 <ul>
   <li>number of bytes needed to serialize BitSet: size type containing value of
     S = ceil(n/8)</li>
-  <li>L long-s containing first 64-multiple of bits (LSB to MSB), integers are
+  <li>L 64-bit integers containing first 64-multiple of bits (LSB to MSB), integers are
     encoded in currently selected byte order, L = floor((n+7)/64)</li>
-  <li>B byte-s containing remaining bits in LSB to MSB order: B = S - 8*L</li>
+  <li>B bytes containing remaining bits in LSB to MSB order: B = S - 8*L</li>
 </ul>
 
 <table style="caption-side:bottom">

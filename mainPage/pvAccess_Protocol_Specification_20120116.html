@@ -200,9 +200,7 @@ free, otherwise a dynamically allocated port SHOULD be used as a fallback. </p>
 <p>pvAccess heavily depends on <a
 href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a
 href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>]. All data MUST
-be sent as pvData objects. The protocol is optimized for performance and
-aims to send the minimum number of bits necessary to inform peers of
-changes in endpoint data values. pvAccess
+be sent as pvData objects. The protocol is optimized for performance. pvAccess
 supports segmented messages and thus allows the sending of large amounts of
 data using small buffers. The maximum message size is not limited with respect
 to the send or receive buffer sizes. </p>
@@ -211,11 +209,11 @@ to the send or receive buffer sizes. </p>
 <ul>
   <li>A set of data encoding rules that determine how the various data types
     are encoded and deserialized</li>
+  <li>A set of rules that determine how client and server agree on a particular
+    encoding</li>
   <li>A number of message types, that define the interchange between clients
     and servers, together with rules which specify what message is to be sent
-    under what circumstances</li>
-  <li>A set of rules that determine how client and server agree on a particular
-    encoding.</li>
+    under what circumstances.</li>
 </ul>
 
 <h2 id="dataEncoding">Data Encoding</h2>
@@ -230,8 +228,8 @@ However, array encoding is an exception. All arrays MUST be aligned to 64-bit
 boundaries (the first element of each array is padded). The message header MUST
 also be 64-bit aligned. </p>
 
-<p>For connection-oriented communication (TCP/IP), byte-order is "negotiated"
-between client and server - server wins. Each message contains an endiannes
+<p>For connection-oriented communication (TCP/IP), server forces client to
+use its byte-order. Each message contains an endiannes
 flag in order to allow all the
 intermediates to forward data without requiring it to be unmarshaled (so that
 the intermediates can forward requests by simply copying blocks of binary
@@ -328,22 +326,22 @@ std::string. </p>
 <h3 id="dataEncoding:arrays">Arrays</h3>
 
 <p>Arrays MUST be encoded as a size representing the number of elements in the
-array, followed by the elements encoded as specified for their type. </p>
+array, followed by the elements encoded as specified for their type (as specified in these sections). </p>
 
 <h3 id="dataEncoding:bitSets">BitSets</h3>
 
 <p>BitSet is a pvData internal data type that represents an ordered set of bits. </p>
 
-<p>For performance reasons BitSet implementation SHOULD store bits as long-s,
+<p>For performance reasons BitSet implementation SHOULD store bits as 64-bit integers,
 however serialization is size optimized and REQUIRES to send only least
-possible number of bytes (LSB part that covers all the bits set).<br />
+possible number of bytes that encode all the bits in the set.<br />
 A bitSet holding n bits is encoded as: </p>
 <ul>
   <li>number of bytes needed to serialize BitSet: size type containing value of
     S = ceil(n/8)</li>
-  <li>L long-s containing first 64-multiple of bits (LSB to MSB), integers are
+  <li>L 64-bit integers containing first 64-multiple of bits (LSB to MSB), integers are
     encoded in currently selected byte order, L = floor((n+7)/64)</li>
-  <li>B byte-s containing remaining bits in LSB to MSB order: B = S - 8*L</li>
+  <li>B bytes containing remaining bits in LSB to MSB order: B = S - 8*L</li>
 </ul>
 
 <table style="caption-side:bottom">
