@@ -26,7 +26,7 @@
 <ul>
   <li><a href="#Table">Table of Contents</a></li>
   <li><a href="#Introducti">Introduction</a></li>
-  <li><a href="#Overview">Overview of EPICSv4</a> 
+  <li><a href="#Overview">Overview of EPICSv4</a>
     <ul>
       <li><a href="#Type">Type System and Serialization (pvData)</a></li>
       <li><a href="#Network">Network Procotol (pvAccess)</a></li>
@@ -34,12 +34,13 @@
       <li><a href="#Normative">Normative Types</a></li>
     </ul>
   </li>
-  <li><a href="#Standard">Standard Components and Nominal Architectures</a> 
+  <li><a href="#Standard">Standard Components and Nominal Architectures</a>
     <ul>
       <li><a href="#Hello">Hello World</a></li>
       <li><a href="#Process">Process Control / SCADA</a></li>
       <li><a href="#EPICSv3">EPICSv3 Integration (v3Channel)</a></li>
       <li><a href="#Client">Client Stream Query (pvManager)</a></li>
+      <li><a href="#Client">Operator Interfaces (OPI)</a></li>
       <li><a href="#Service">Service Aggregation (Gather)</a></li>
       <li><a href="#Scripting">Scripting</a></li>
       <li><a href="#Save">Save and Restore</a></li>
@@ -171,6 +172,12 @@ especially GUIs. <img src="arch_pvmanager.png" alt="pvmanager diagram" />
 
 <div class="editme">
 Gabriele put some information in here. </div>
+
+<h3 id="Client">Operator Interfaces (OPI)</h3>
+The proposed client tool for OPI is <a
+href="http://cs-studio.sourceforge.net">Control System Studio</a> (CSS) BOY.
+The BOY widgets will be updated to use pvManager as their data source. <img
+src="arch_boy.png" alt="opi diagram" /> 
 
 <h3 id="Service">Service Aggregation (Gather)</h3>
 Many facilites need to concatenate and summarize information from many
