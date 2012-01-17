@@ -200,9 +200,13 @@ free, otherwise a dynamically allocated port SHOULD be used as a fallback. </p>
 <p>pvAccess heavily depends on <a
 href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a
 href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>]. All data MUST
-be sent as pvData objects. The protocol is optimized for performance. pvAccess
-supports segmented messages and thus allows the sending of large amounts of
-data using small buffers. The maximum message size is not limited with respect
+be sent as pvData objects. The protocol aims to send the minimum number of bits
+necessary to inform peers of changes in endpoint data values subject to performance
+considerations. That is, it combines CPU and wire data size considerations to
+optimise overall control network throughput.
+pvAccess supports segmented messages and thus allows the sending of large
+amounts of data using optimal buffer sizing.
+The maximum message size is not limited with respect
 to the send or receive buffer sizes. </p>
 
 <p>The pvAccess protocol definition consists of three major parts:</p>
@@ -228,8 +232,8 @@ However, array encoding is an exception. All arrays MUST be aligned to 64-bit
 boundaries (the first element of each array is padded). The message header MUST
 also be 64-bit aligned. </p>
 
-<p>For connection-oriented communication (TCP/IP), server forces client to
-use its byte-order. Each message contains an endiannes
+<p>For connection-oriented communication (TCP/IP), the server MUST REQUIRE that
+the client uses the server's byte order. Each message contains an endiannes
 flag in order to allow all the
 intermediates to forward data without requiring it to be unmarshaled (so that
 the intermediates can forward requests by simply copying blocks of binary
