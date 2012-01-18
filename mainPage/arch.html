@@ -42,14 +42,15 @@
       <li><a href="#Client">Client Stream Query (pvManager)</a></li>
       <li><a href="#Client">Operator Interfaces (OPI)</a></li>
       <li><a href="#Service">Service Aggregation (Gather)</a></li>
-      <li><a href="#Scripting">Scripting</a></li>
+      <li><a href="#Model">Model Service</a></li>
+      <li><a href="#Relational">Relational Database Service</a></li>
+      <li><a href="#Name">Name Resolution Server</a></li>
+      <li><a href="#Scripting">Machine Physics and Scripting</a></li>
       <li><a href="#Save">Save and Restore</a></li>
       <li><a href="#Time-Serie">Time-Series Database</a></li>
       <li><a href="#Data">Data Acquisition</a></li>
-      <li><a href="#Service1">Service Oriented Architecture (SOA) and
+      <li><a href="#Service1">Service Oriented Architectures (SOA) and
         Directory Services</a></li>
-      <li><a href="#Relational">Relational Database Service</a></li>
-      <li><a href="#Name">Name Resolution Server</a></li>
     </ul>
   </li>
 </ul>
@@ -82,9 +83,9 @@ Linux and OSX. <!-- check this! -->
 pvData is a run-time type system with serialization and introspection. A
 similar product is <a
 href="http://code.google.com/apis/protocolbuffers/">Google Protocol
-Buffers</a>, an important difference is that pvData always has the full type
-information (including field names) present when messages are encoded or
-decoded. 
+Buffers</a> (PB), an important difference is that pvData always has the full
+type information (including field names) present when messages are encoded or
+decoded, while PB depends on precompiled stubs on each side. 
 
 <h3 id="Network">Network Procotol (pvAccess)</h3>
 See also <a href="pvAccess_Protocol_Specification.html">pvAccess Protocol
@@ -100,7 +101,7 @@ with the type determined by the server. </p>
 <ul>
   <li>Introspection 
     <ul>
-      <li>GetField (client asks for the type of a channel)</li>
+      <li>GetField (client asks for the type of a channel endpoint)</li>
     </ul>
   </li>
   <li>Request/Response 
@@ -147,13 +148,13 @@ within a facility, to use their own network protocol and data model.
 The RPC server does not contain an EPICSv4 database, the developer implements
 the processing in C++, Java or Python code.</p>
 
-<p><img src="arch_hello.png" alt="hello world diagram" /> </p>
+<p><img src="archfiles/arch_hello.png" alt="hello world diagram" /> </p>
 
 <h3 id="Process">Process Control / SCADA</h3>
 EPICSv4 supports all EPICSv3 messaging patterns including publish/subscribe
 via Monitors. 
 
-<p><img src="arch_ioc.png" alt="ioc diagram" /> </p>
+<p><img src="archfiles/arch_ioc.png" alt="ioc diagram" /> </p>
 
 <h3 id="EPICSv3">EPICSv3 Integration (v3Channel)</h3>
 Currently EPICSv4 focusses on high-level applications. It is expected that
@@ -162,13 +163,14 @@ available for EPICSv4 IOCs. v3Channel is a pvAccess server that runs on an
 EPICSv3 IOC, allowing EPICSv4 clients to communicate with EPICSv3 process
 variables. 
 
-<p><img src="arch_v3.png" alt="v3 integration diagram" /> </p>
+<p><img src="archfiles/arch_v3.png" alt="v3 integration diagram" /> </p>
 
 <h3 id="Client">Client Stream Query (pvManager)</h3>
 <a href="http://pvmanager.sourceforge.net">pvManager</a> is a client utility
 library for EPICSv3 and EPICSv4 that performs rate reduction and averaging on
 data streams. This abstration layer makes writing robuts clients easier,
-especially GUIs. <img src="arch_pvmanager.png" alt="pvmanager diagram" /> 
+especially GUIs. <img src="archfiles/arch_pvmanager.png"
+alt="pvmanager diagram" /> 
 
 <div class="editme">
 Gabriele put some information in here. </div>
@@ -177,7 +179,7 @@ Gabriele put some information in here. </div>
 The proposed client tool for OPI is <a
 href="http://cs-studio.sourceforge.net">Control System Studio</a> (CSS) BOY.
 The BOY widgets will be updated to use pvManager as their data source. <img
-src="arch_boy.png" alt="opi diagram" /> 
+src="archfiles/arch_boy.png" alt="opi diagram" /> 
 
 <h3 id="Service">Service Aggregation (Gather)</h3>
 Many facilites need to concatenate and summarize information from many
@@ -191,33 +193,59 @@ point. The Gather service can also support EPICSv3 Channel Access. This is so
 that Gather can be used without upgrading existing EPICSv3 servers with
 v3Channel. Gather can be used as a software component or a service. </p>
 
-<p>Gather used as a software component: <img src="arch_gather.png"
+<p>Gather used as a software component: <img src="archfiles/arch_gather.png"
 alt="gather diagram" /> Gather used as a service component (details omitted):
-<img src="arch_gatherservice.png" alt="gather service diagram" /> </p>
+<img src="archfiles/arch_gatherservice.png" alt="gather service diagram" />
+</p>
 
 <div class="editme">
 Marty put some information in here </div>
 
-<h3 id="Scripting">Scripting</h3>
+<h3 id="Model">Model Service</h3>
+The Model Service returns information from the machine model, such as the
+linear optics matrices of a particle accelerator. It may return
+pre-calculated values or connect to a simulation code. <img
+src="archfiles/arch_model.png" alt="model service diagram" /> 
+
+<h3 id="Relational">Relational Database Service</h3>
+
+<p>Most facilites need to retrieve information from relational database
+tables. The RDB Service provides a database-independent way to perform canned
+queries over EPICSv4. The mapping from a query name to an SQL query string
+can be stored in the Directory Service (discussed later) or in the RDB
+itself.</p>
+<img src="archfiles/arch_rdb.png" alt="rdb service diagram" /> 
+
+<h3 id="Name">Name Resolution Server</h3>
+EPICSv3 includes a little-used name server that can respond to UDP name
+requests with the target IP address and TCP port of the server, replacing the
+UDP broadcast name resolution. It would be possible to have a Name Resolution
+Server of this type in EPICSv4. 
+
+<h3 id="Scripting">Machine Physics and Scripting</h3>
 Matlab Middlelayer is an interactive scripting environment used for machine
 commissioning. The EPICSv4 Java client connects Matlab to high-level services
 and process data. The Normative Types provide data in a form suitable for
 manipulation without further processing, such as timestamps in Matlab date
-format, and tables as structures of arrays. 
+format, and tables as structures of arrays. <img src="archfiles/arch_mml.png"
+alt="mml diagram" /> 
 
 <h3 id="Save">Save and Restore</h3>
 Process data setpoints must be saved to permanent storage and restored to
 reset the facility to a known working state. MASAR is the EPICSv4 Save and
 Restore tool. It combines RPC, Service Aggregation (Gather), and RDB access.
 An RPC client initiates the save or restore request, the MASAR server Gathers
-the process variables and stores them in the RDB. 
+the process variables and stores them in the RDB. <img
+src="archfiles/arch_masr.png" alt="masr diagram" /> 
 
 <h3 id="Time-Serie">Time-Series Database</h3>
-The Channel Archiver returns tables of time-series data. EPICS archivers are
-a family of specialized time-series databases. The EPICS Channel Archiver
-(RTree) provides an XMLRPC server, this is a web service protocol using XML
-to serialize requests and responses over an HTTP connection. The Archiver
-returns vectors of EPICSv3 data types as the result of time range queries. 
+EPICS archivers are a familiy of time-series databases. The EPICS Channel
+Archiver (RTree) is a chunked array store with an RTree index and a C++ API,
+libStorage. The EPICSv4 archive service provides a pvAccess RPC interface to
+these files, supporting range queries with on-the-fly decimation including
+statistics (mean/min/max) into a table structure. This replaces the XMLRPC
+interface distributed with the EPICS Channel Archiver. <img
+src="archfiles/arch_archiver.png" alt="archiver diagram" /> 
 
 <h3 id="Data">Data Acquisition</h3>
 X-Ray detectors produce image frames annotated with experimental metadata. 10
@@ -225,43 +253,38 @@ Gigabit Ethernet is increasingly used to transport these images from the
 acquisition machine to a storage server. Protocols for this include network
 or distributed file systems such as NFS or Lustre, or custom TCP protocols.
 Each custom TCP protocol must deal with connection handing, error handing and
-serialization. Data is stored in HDF5 files. 
+serialization. Data is stored in HDF5 files. pvAcces provides an efficient
+TCP transport for structured image types in conjunction with areaDetector.
+<img src="archfiles/arch_detector.png" alt="detector diagram" /> 
 
-<h3 id="Service1">Service Oriented Architecture (SOA) and Directory
+<h3 id="Service1">Service Oriented Architectures (SOA) and Directory
 Services</h3>
-Very roughly, SOA = Services + Discovery. The discovery mechanism is
-ChannelFinder, the EPICSv4 Directory Service. 
+EPICSv4 services are self-describing through introspection of channel
+endpoints. EPICSv4 services are also discoverable via broadcast name
+resolution of globally unique channel endpoint names. Further discoverability
+can be provided by the Directory Service. The EPICSv4 directory service is <a
+href="http://sourceforge.net/projects/channelfinder">ChannelFinder</a>. 
 
-<p>ChannelFinder can return lists of Channel names and properties associated
-with a particular key. This can be used to answer queries such as 'return a
-list of channels that are connected to a magnet'. Other high-level services
-such as Backup and Restore may depend on the information in the Directory
-Service. The Directory Service may store information in a relational database
-but the goal is to have a simple interface that models the connections
-between items in a typical control system in a standard way. </p>
+<p>ChannelFinder returns lists of Channel names and properties associated
+with a particular key. This can be used to answer queries such as "return a
+list of channels endpoint names that are connected to this magnet". Other
+high-level services such as Save and Restore may depend on the information in
+the Directory Service. The Directory Service may store information in a
+relational database, but the interface exposes the associations between items
+in a typical facility in a standard way. </p>
 
-<p>The first vesion of the EPICSv4 Directory Service will be based on <a
-href="http://sourceforge.net/projects/channelfinder">ChannelFinder</a>.
-ChannelFinder is a REST directory web service with a relational database back
-end. An EPICSv4 interface to ChannelFinder is under development. </p>
+<p>ChannelFinder is a REST web service, and was designed to be used in
+EPICSv3 and EPICSv4 installations. The REST interface provides additional
+authentication functionality, but a pvAccess interface to ChannelFinder is
+under development to facilitate integration with EPICSv4.</p>
 
 <p>The ability to populate the Directory Service from an <a
 href="http://aps.anl.gov/epics/irmis/index.php">IRMIS</a> database is also
-under development but using IRMIS is not mandated. </p>
+under development but using IRMIS is not mandated. <img
+src="archfiles/arch_ds.png" alt="directory services diagram" /> </p>
 
 <div class="editme">
 Ralph put some information in here </div>
-
-<h3 id="Relational">Relational Database Service</h3>
-Most facilites need to retrieve information from relational database tables.
-The RDB Service provides a database-independent way to perform canned queries
-over EPICSv4. The mapping from a query name to an SQL query string can be
-stored in the Directory Service or in the RDB itself. 
-
-<h3 id="Name">Name Resolution Server</h3>
-EPICSv3 includes a little-used name server that can respond to UDP name
-requests with the target IP address and TCP port of the server, replacing the
-UDP broadcast name resolution. It would be possible to have a Name Resolution
-Server of this type in EPICSv4. </div>
+</div>
 </body>
 </html>
