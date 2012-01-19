@@ -15,65 +15,77 @@
      .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
      table { margin-left: auto; margin-right: auto }
      .diagram { text-align: center; margin: 2.5em 0 }
-     body { margin-right: 10% }
 /*]]>*/</style>
 </head>
 
 <body>
 
 <div class="head">
-<h1  style="text-align:center">EPICS V4 Normative Types</h1>
+<h1>EPICS V4 Normative Types</h1>
 
-<h2 class="nocount" id="L51">EPICS V4 Normative Types, Editors Draft,
-2012.01.16</h2>
+<h2 class="nocount" id="L51">EPICS V4 Normative Types, Editors' Draft, 18-Jan-2012</h2>
 <dl>
   <dt>Latest version:</dt>
     <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
+  <dt>This version:</dt>
+    <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
   <dt>Previous version:</dt>
     <dd><a
-      href="normativeTypes_20111121.html">normative_types_specification_20111113.html</a></dd>
+      href="normativeTypes_20120116.html">normative_types_specification_20120116.html</a></dd>
   <dt>Editors:</dt>
-    <dd>Bob Dalesio, Brookhaven National Lab</dd>
+    <dd>Bob Dalesio, BNL</dd>
     <dd>Greg White, SLAC, PSI</dd>
     <dd>James Rowland, Diamond</dd>
     <dd>Marty Kraimer, BNL</dd>
 </dl>
 
+
 <h2 class="nocount" id="L84">Abstract</h2>
 
-<p>PLEASE REPLACE ME</p>
+<p>This document defines a standard set of data types and data structures, to aid
+interoperability of peers at the application level of an EPICS V4 network.</p>
+
+<p>The 
+types described here are approximately equivalent to EPICS V3 "DBR types", though Normative
+Types extend the concept to structured data. Additionally these types may be
+used to define pvIOC records, or may be used purely for data exchange though
+the dynamic data exchangle interfaces offered by pvAccess and pvData.</p>
+
+<p>The basic structure of all Normative Types is described, including how
+a pvData datum identifies itself as conforming to a Normative Type, and
+the definition of each Normative Type is given.</p>
 
 <p>For more information about EPICS, please refer to the home page of the <a
 href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
 Control System.</a></p>
 
-<h2 class="nocount" id="L96">Status of this
-Document</h2>
+<h2 class="nocount" id="L96">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the working copy of this document. Comments are welcome.</p>
+<p>This is the January 18th, 2012 vesion of the Normative Types document.
+This version is an editors draft towards the First Public Working Draft. The First
+Public Working Draft will be intended for the EPICS community to review and
+comment. Resulting comments will drive subsequent revisions of the Normative Types
+specification and the EPICS V4 Working Group's reference implementations of
+software that helps create, populate and exchange Normative Type PVData.
+</p>
+
+<p> Comments are welcome, though bear in mind this is a pre-public release
+version. 
+</p>
 
 <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
 highlighted (through style sheets, and in uppercase in the source) are used in
 accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
 2119) indicates exemption. </p>
-<!-- Additional free form content goes here
- PLease always include this statement of terms, unless it's really silly -->
+
 <!--NewPage-->
 <!-- this is for html2ps -->
 </div>
-<hr />
-
-<h2 class="nocount" style="text-align:center" id="L120">Table of Contents</h2>
-<hr />
+<h2 class="nocount" id="L120">Table of Contents</h2>
 
 <div class="toc">
-<ul>
-  <li><a href="#L51">EPICS V4 Normative Types, Editors Draft,
-  2012.01.16</a></li>
-  <li><a href="#L84">Abstract</a></li>
-  <li><a href="#L96">Status of this Document</a></li>
-  <li><a href="#L120">Table of Contents</a></li>
+<ol>
   <li><a href="#L124">Introduction</a></li>
   <li><a href="#L177">Normative Type Fields</a> 
     <ul>
@@ -139,12 +151,22 @@ accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
     </ul>
   </li>
   <li><a href="#L1074">Non-Normative Types</a></li>
-</ul>
+</ol>
 </div>
-<hr />
 
-<h2 style="text-align:center" id="L124">Introduction</h2>
-<hr />
+
+<h2 id="L124">Introduction</h2>
+
+<p>The Normative Types descibed in this document are intended to be a
+set of well known data types, including structured data types, capable of handling
+a significant portion of exchanges common in big science. Since EPICS V4 makes it
+possible to exchange an infinite variety of structured
+data types between EPICS V4 peers, the intention is that by
+conforming only to Normative Types, a peer can ensure that any Normative Type
+conforming
+client will be able to understand the data transmitted to it, and be able to
+take processing steps appropriate to that data. </p>
+
 
 <p>EPICS version 4 supplies types for memory resident structured data. EPICS V4
 Normative Types defines types that build on the pvData types.</p>
@@ -185,10 +207,10 @@ where
     timeStamp_t timeStamp
     alarm_t     alarm
     double      value</pre>
-<hr />
 
-<h2 style="text-align:center" id="L177">Normative Type Fields</h2>
-<hr />
+
+<h2  id="L177">Normative Type Fields</h2>
+
 
 <p>A field of a normative type ( <span
 style="font-weight:bold;">ndfield_t</span> ) is any of the following:</p>
@@ -449,11 +471,11 @@ structureArray.</p>
   <dt>anyName</dt>
     <dd>The name of the field can be any valid name.</dd>
 </dl>
-<hr />
 
-<h2 style="text-align:center" id="L507">Normative Type Standard Optional
+
+<h2  id="L507">Normative Type Standard Optional
 Fields</h2>
-<hr />
+
 
 <p>A primary reason for normative types is to pass data between a client and a
 service.</p>
@@ -471,10 +493,10 @@ client has two optional fields alarm and timeStamp:</p>
 
 <p>A normative type can be used both for sending data from client to service
 and from service to client.</p>
-<hr />
 
-<h2 style="text-align:center" id="L525">General Normative Types</h2>
-<hr />
+
+<h2  id="L525">General Normative Types</h2>
+
 
 <p>The General Normative Types are for encapsulating data of any kind of
 application or use case. Compare to <a href="#specificnormativetypes ">Specific
@@ -564,10 +586,10 @@ particular use cases.</p>
     <dd>This field is an additional optional field to support multi-dimensional
       arrays.</dd>
 </dl>
-<hr />
 
-<h2 style="text-align:center" id="L658">Specific Normative Types</h2>
-<hr />
+
+<h2  id="L658">Specific Normative Types</h2>
+
 
 <p>Specific normative types are types defined by the EPICS V4 working group and
 are oriented towards specific uses and applications. Compare to <a
@@ -965,10 +987,10 @@ channelName</p>
 
 <h3 id="L1068">NTXAlarm</h3>
 TBD 
-<hr />
 
-<h2 style="text-align:center" id="L1074">Non-Normative Types</h2>
-<hr />
+
+<h2  id="L1074">Non-Normative Types</h2>
+
 
 <p>Users and developers using EPICS V4 are free to defined their own special
 purpose types on top of PVStructure (or the other PV Types) but should note
