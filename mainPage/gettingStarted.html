@@ -572,7 +572,7 @@ to be an empty string, if you have troubles building it for other than the host 
  
  <li>Build pvAccess. <code>cd pvAccessCPP</code>, and create the
 <code>pvAccess/configure/RELEASE.local</code> file.
-Add the locations of EPICS_BASE and PVDATA appropriately.
+Add the locations of EPICS_BASE and PVDATA appropriately. Edit CONFIG_SITE if needed.
 <pre>
 % make
 </pre>
@@ -582,7 +582,7 @@ Add the locations of EPICS_BASE and PVDATA appropriately.
  <li>Build pvIOCCPP. <code>cd pvIOCCPP</code>, and add the
 <code>
 configure/RELEASE.local</code> file. 
-Add the locations of EPICS_BASE, PVACCESS and PVDATA appropriately.
+Add the locations of EPICS_BASE, PVACCESS and PVDATA appropriately. Edit CONFIG_SITE if needed.
  <pre>
 % make
 </pre>
@@ -621,10 +621,10 @@ to set the correct paths. Like this:</li>
 <pre>
 epicsEnvSet("ARCH","linux-x86")
 epicsEnvSet("IOC","iocexample")
-epicsEnvSet("TOP","/<your pvXXX directory>/pvIOCCPP/example/example/pvIOC")
+epicsEnvSet("TOP","/home/example/epics4/pvIOCCPP/example/example/pvIOC")
 epicsEnvSet("EPICS_BASE","/usr/local/epics/base-3.14.12")
-epicsEnvSet("PVDATA","/<your pvXXX directory>/pvDataCPP")
-epicsEnvSet("PVACCESS","/<your pvXXX directory>/pvAccessCPP")
+epicsEnvSet("PVDATA","/home/example/epics4/pvDataCPP")
+epicsEnvSet("PVACCESS","/home/example/epics4/pvAccessCPP")
 </pre>
 <li>Then
 <pre>
@@ -635,7 +635,7 @@ Example should compile without errors.
 <li>Change directory to the iocBoot example directory and start it:
 <pre>
 % cd iocBoot/iocexample
-% ../../bin/<arch>/example st.cmd
+% ../../bin/&ltarch&gt/example st.cmd
 </pre>
 ("arch" refers to the architecture for which you have built, e.g. linux-x86)
 </li>
@@ -852,6 +852,8 @@ float03
 epics>  
 </pre>
 
+Note: the errors in the above output like <pre>Record "int03" does not have a field "PREC"</pre>
+are due to the way the example records are loaded. They can be safely ignored in this case.
 
 <h2>References</h2>
 <dt id="downloadsite">[EPICS V4 download site]</dt>
