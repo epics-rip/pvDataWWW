@@ -550,17 +550,24 @@ detailed above</a>, which require that they are built in the order pvDataCPP, pv
 </p>
 
 <ol>
-  <li><p>Build pvData. <code>cd pvDataCPP</code>, and create a <code>configure/RELEASE.local</code> file. In it
-  set the
-  EPICS_BASE to point to your EPICS release. Be sure that you have at least the
+  <li><p>Build pvData. <code>cd pvDataCPP</code>, and create a <code>configure/RELEASE.local</code> file. (This file is included from configure/RELEASE with the line <code>-include $(TOP)/configure/RELEASE.local</code>.) In it
+  set EPICS_BASE to point to your EPICS release. If you downloaded the
+ tarball from the Sourceforge page instead of cloning from Mercurial, you can
+ use the RELEASE.local.example in the root directory, but drop the PVACCESS 
+and PVDATA definitions in that file. They will create conflicts and the build will fail.) 
+</p>
+<p>
+Be sure that you have at least the
 release 3.14.12. Trying to build with an earlier one is basically a waste of time.
-(This file is included from configure/RELEASE with the line <code>-include $(TOP)/configure/RELEASE.local</code>.)
+
+You may also need to edit the CONFIG_SITE file to include a line that defines <code> CROSS_COMPILER_TARGET_ARCHS </code>
+to be an empty string, if you have troubles building it for other than the host architecture. At the time of writing, building for vxWorks had problems.
 </p>
   <pre>
 % make
 </pre>
-<p>pvData should build without errors. You get a heap of warnings but they can be
-  ignored</p>
+<p>pvData should then build without errors. You get a heap of warnings but they can be
+  ignored.</p>
  </li>
  
  <li>Build pvAccess. <code>cd pvAccessCPP</code>, and create the
