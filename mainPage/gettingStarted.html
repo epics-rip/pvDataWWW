@@ -551,10 +551,12 @@ detailed above</a>, which require that they are built in the order pvDataCPP, pv
 
 <ol>
   <li><p>Build pvData. <code>cd pvDataCPP</code>, and create a <code>configure/RELEASE.local</code> file. (This file is included from configure/RELEASE with the line <code>-include $(TOP)/configure/RELEASE.local</code>.) In it
-  set EPICS_BASE to point to your EPICS release. If you downloaded the
+  set EPICS_BASE to point to your EPICS release. 
+</p>
+<p>If you downloaded the
  tarball from the Sourceforge page instead of cloning from Mercurial, you can
  use the RELEASE.local.example in the root directory, but drop the PVACCESS 
-and PVDATA definitions in that file. They will create conflicts and the build will fail.) 
+and PVDATA definitions in that file. They will create conflicts and the build will fail.
 </p>
 <p>
 Be sure that you have at least the
