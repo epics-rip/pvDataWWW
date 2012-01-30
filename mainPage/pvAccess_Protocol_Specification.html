@@ -326,7 +326,7 @@ UTF-8 format array of bytes. Size gives the number of bytes that follow it and
 not the number of UTF-8 characters. An empty string MUST be encoded with a size
 of zero. </p>
 <p>
-Strings MUST NOT be NULL-terminated and MUST NOT contain a zero byte. NULL
+Strings MUST NOT be NULL-terminated and MUST NOT contain any zero bytes. NULL
 strings are not supported. </p>
 
 <p>On the wire, pvAccess MUST transmit all strings as Unicode strings in UTF-8.
@@ -490,10 +490,6 @@ and no message and no stackDump are to be sent, then the special type value
     byte type = -1;
 };</pre>
 
-<p>NOTE: a decision was made not to use a potentially large set of hardcoded
-error codes (enum), covering predicted issues. Rather, Status uses a short
-summary error "type" code, and permits any status message. This allows Status
-to express problems precisely, and avoids book-keeping problems. </p>
 
 <p>Examples of Status serialization: </p>
 <pre>Hexdump [Status OK] size = 1
