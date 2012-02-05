@@ -24,11 +24,11 @@
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
 <h2 class="nocount" id="L50">EPICS v4 Working Group, Second Public Working
-Draft, 17-Jan-2012</h2>
+Draft, 05-Feb-2012</h2>
 <dl>
   <dt>This version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120117.html">pvAccess_Protocol_Specification_20120117.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120205.html">pvAccess_Protocol_Specification_20120205.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -63,7 +63,7 @@ Control System.</a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 17 January 2012 version of the pvAccess Protocol Specification.
+<p>This is the 5 February 2012 version of the pvAccess Protocol Specification.
 This version is an editors draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review and comment.
 Resulting comments will drive subsequent revisions of the specification and the
@@ -97,7 +97,8 @@ in RFC 2119) indicates exemption. </p>
       <li><a href="#dataEncoding:status">Status</a></li>
       <li><a href="#dataEncoding:introspectionData">Introspection Data</a>
         <ul>
-          <li><a href="#dataEncoding:example">Example</a></li>
+          <li><a href="#dataEncoding:example1">Example #1</a></li>
+          <li><a href="#dataEncoding:example1">Example #2</a></li>
         </ul>
       </li>
       <li><a href="#dataEncoding:data">Data</a>
@@ -200,7 +201,7 @@ protocol itself supports IPv6, i.e. all addresses are IPv6 encoded. </p>
 used (to be accepted by IANA). The default connection port SHOULD be used if
 free, otherwise a dynamically allocated port SHOULD be used as a fallback. </p>
 
-<p>pvAccess heavily depends on <a
+<p>pvAccess was designed to support <a
 href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a
 href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>]. All data MUST
 be sent as pvData objects. The protocol aims to send the minimum number of bits
@@ -253,14 +254,17 @@ always be a non-negative number and encoded as follows: </p>
   <li>If the number of elements is less than 255, the size MUST be encoded as a
     single byte containing an unsigned 8-bit integer indicating the number of
     elements</li>
-  <li>If the number of elements is greater than or equal to 255, then the size
-    MUST be encoded as a byte with value 255, followed by a positive signed
-    32-bit integer indicating the number of elements. This implies maximum size
-    of 2^31-1.</li>
+  <li>If the number of elements is less than 2^31-1, then the size MUST be encoded as an
+    unsigned 8-bit integer with value 255, followed by a positive signed 32-bit integer
+    indicating the number of elements.
+  <li>If the number of elements is greater than or equal to 2^31-1, then the size
+    MUST be encoded as an unsigned 8-bit integer with value 255, followed by a positive signed
+    32-bit integer with value 2^31-1, followed by a positive signed 64-bit integer
+    indicating the number of elements. This implies maximum size of 2^63-1.</li>
 </ol>
 
 <p>Using this encoding to indicate size is significantly cheaper than always
-using a 32-bit integer to store the size. This is especially true when
+using a 32-bit (or even 64-bit) integer to store the size. This is especially true when
 marshalling sequences of short strings; counts of up to 254 require only a
 single byte instead of four. This comes at the expense of counts greater than
 254, which require five bytes instead of four. However, for sequences or
@@ -268,7 +272,7 @@ strings of length greater than 254, the extra byte is insignificant. </p>
 
 <h3 id="dataEncoding:basicTypes">Basic Types</h3>
 
-<p>The basic types MUST be encoded as shown in Table 1. Integer types (byte,
+<p>The basic types MUST be encoded as shown in Table 1. Signed integer types (byte,
 short, int, long) MUST be represented as two’s complement numbers. Floating
 point types (float, double) MUST use the IEEE-754 standard formats [<a
 href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a>]. </p>
@@ -289,16 +293,32 @@ href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a>]. </p>
       <td>Signed 8-bit integer.</td>
     </tr>
     <tr>
+      <td style="text-align:right;font-weight:bold">ubyte</td>
+      <td>Unsigned 8-bit integer.</td>
+    </tr>
+    <tr>
       <td style="text-align:right;font-weight:bold">short</td>
       <td>Signed 16-bit integer.</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-weight:bold">ushort</td>
+      <td>Unsigned 16-bit integer.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-weight:bold">int</td>
       <td>Signed 32-bit integer.</td>
     </tr>
     <tr>
+      <td style="text-align:right;font-weight:bold">uint</td>
+      <td>Unsigned 32-bit integer.</td>
+    </tr>
+    <tr>
       <td style="text-align:right;font-weight:bold">long</td>
       <td>Signed 64-bit integer.</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-weight:bold">ulong</td>
+      <td>Unsigned 64-bit integer.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-weight:bold">float</td>
@@ -311,20 +331,12 @@ href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a>]. </p>
   </tbody>
 </table>
 
-<p>Unsigned integers are not supported.</p>
-
-<p>NOTE: Although unsigned integers are not supported by the pvAccess protocol itself, the
-pvData API above pvAccess will include standardized facilities for user level code at
-server and client sides, to communicate the sign of given integer values through
-pvAccess along with the raw data. Therefore, as a practical matter for deployers, that a
-a given value should be interpretted as unsigned or signed, is supported by EPICS V4.</p>
-
 <h3 id="dataEncoding:strings">Strings</h3>
 
 <p>Strings MUST be encoded as a size, followed by the string contents in a
 UTF-8 format array of bytes. Size gives the number of bytes that follow it and
-not the number of UTF-8 characters. An empty string MUST be encoded with a size
-of zero. </p>
+not the number of UTF-8 characters. UTF-8 multi-byte characters MUST NOT be broken.
+An empty string MUST be encoded with a size of zero.</p>
 <p>
 Strings MUST NOT be NULL-terminated and MUST NOT contain any zero bytes. NULL
 strings are not supported. </p>
@@ -441,6 +453,12 @@ Hexdump [{8}] size = 3
 Hexdump [{15}] size = 3
 02 00 80                                           ...
 
+Hexdump [{55}] size = 8
+07 00 00 00  00 00 00 80                            .... .... 
+
+Hexdump [{56}] size = 9
+08 01 00 00  00 00 00 00  00                       .... .... .
+
 Hexdump [{63}] size = 9
 08 80 00 00  00 00 00 00  00                       .... .... .
 
@@ -478,13 +496,13 @@ is nominally defined as: </p>
 <pre>struct Status {
     byte type;      // enum { OK = 0, WARNING = 1, ERROR = 2, FATAL = 3 }
     string message;
-    string stackDump;   // optional (provides more context data about the error), can be empty
+    string callTree;   // optional (provides more context data about the error), can be empty
 };</pre>
 
 <p>In practice, since the majority of Status instances would be OK with no
-message and no stackDump, a special definition of Status SHOULD be used in the
+message and no callTree, a special definition of Status SHOULD be used in the
 common case that all three of these conditions are met. If Status would be OK
-and no message and no stackDump are to be sent, then the special type value
+and no message and no callTree are to be sent, then the special type value
 <code>-1</code> is used and string fields are omitted: </p>
 <pre>struct StatusOK {
     byte type = -1;
@@ -496,10 +514,10 @@ and no message and no stackDump are to be sent, then the special type value
 FF                                                 .
 
 Hexdump [WARNING, "Low memory", ""] size = 13
-01 0A 4C 6F  77 20 6D 65  6D 6F 72 79  FF          ..Lo w me mory .
+01 0A 4C 6F  77 20 6D 65  6D 6F 72 79  00          ..Lo w me mory .
 
 Hexdump [ERROR, "Failed to get, due to unexpected exception", (stack dump)] size = 264
-01 2A 46 61  69 6C 65 64  20 74 6F 20  67 65 74 2C  .*Fa iled  to  get, 
+02√ 2A 46 61  69 6C 65 64  20 74 6F 20  67 65 74 2C  .*Fa iled  to  get, 
 20 64 75 65  20 74 6F 20  75 6E 65 78  70 65 63 74   due  to  unex pect 
 65 64 20 65  78 63 65 70  74 69 6F 6E  DB 6A 61 76  ed e xcep tion .jav 
 61 2E 6C 61  6E 67 2E 52  75 6E 74 69  6D 65 45 78  a.la ng.R unti meEx 
@@ -546,7 +564,7 @@ when connection is established. </p>
     <tr>
       <td>0xFF</td>
       <td style="font-weight:bold">NULL_TYPE_CODE</td>
-      <td>No introspection data.</td>
+      <td>No introspection data (also implies no data).</td>
     </tr>
     <tr>
       <td>0xFE + ID</td>
@@ -559,6 +577,16 @@ when connection is established. </p>
       <td style="font-weight:bold">FULL_WITH_ID_TYPE_CODE</td>
       <td>Serialization contains an ID (that can be used later, if cached) and
         full interface description.</td>
+    </tr>
+    <tr>
+      <td>0xFC + FieldDesc</td>
+      <td style="font-weight:bold">FULL_TYPE_CODE</td>
+      <td>Serialization contains only full interface description.</td>
+    </tr>
+    <tr>
+      <td>0xFB - 0x00</td>
+      <td>RESERVED</td>
+      <td>Reserved for future usage, MUST NOT be used.</td>
     </tr>
   </tbody>
 </table>
@@ -646,7 +674,32 @@ REQUIRES the name of the structure. </p>
   </tbody>
 </table>
 
-<h4 id="dataEncoding:example">Example</h4>
+<h4 id="dataEncoding:example1">Example #1</h4>
+
+<p>Given the following structure, as may be expressed by a pvData Structure:
+</p>
+<pre>structure  
+    byte[] value
+    structure  timeStamp
+        long secondsPastEpoch
+        int nanoSeconds
+        int userTag
+    structure  alarm
+        int severity
+        int status
+        string message</pre>
+
+<p>The introspection description of the above structure is be encoded by
+pvAccess as the following: </p>
+<pre>FD 00 01 20  00 03 11 05  76 61 6C 75  65 FD 00 02  ...  .... valu e... 
+20 09 74 69  6D 65 53 74  61 6D 70 03  04 10 73 65   .ti meSt amp. ..se 
+63 6F 6E 64  73 50 61 73  74 45 70 6F  63 68 03 0B  cond sPas tEpo ch.. 
+6E 61 6E 6F  53 65 63 6F  6E 64 73 03  07 75 73 65  nano Seco nds. .use 
+72 54 61 67  FD 00 03 20  05 61 6C 61  72 6D 03 03  rTag ...  .ala rm.. 
+08 73 65 76  65 72 69 74  79 03 06 73  74 61 74 75  .sev erit y..s tatu 
+73 07 07 6D  65 73 73 61  67 65                    s..m essa ge</pre>
+
+<h4 id="dataEncoding:example2">Example #2</h4>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
@@ -693,13 +746,6 @@ pvAccess as the following: </p>
 
 <p>Data (i.e. PVField) MUST encode raw values. </p>
 
-<p>Each structure can (depending on message definition) have a BitSet instance
-defining what subset of that structure's fields have been serialized. This
-allows partial serialization of structures. That is, sending only fields that
-have changed rather then the entire structure. Each node of a structure
-corresponds to one bit; if a bit is set then its corresponding field has been
-serialized, otherwise not. BitSet does not apply to array elements. </p>
-
 <h4 id="data:example1">Example #1</h4>
 <pre>structure 
     byte[] value [1,2,3]
@@ -717,6 +763,13 @@ serialized, otherwise not. BitSet does not apply to array elements. </p>
 03 01 02 03  11 22 33 44  55 66 77 88  AA BB CC DD  .... ."3D Ufw. .... 
 EE EE EE EE  11 11 11 11  22 22 22 22  0B 41 6C 6C  .... .... """" .All 
 6F 2C 20 41  6C 6C 6F 21                            o, A llo! </pre>
+
+<p>Each structure can (depending on message definition) have a BitSet instance
+defining what subset of that structure's fields have been serialized. This
+allows partial serialization of structures. That is, sending only fields that
+have changed rather then the entire structure. Each node of a structure
+corresponds to one bit; if a bit is set then its corresponding field has been
+serialized, otherwise not. BitSet does not apply to array elements. </p>
 
 <h4 id="data:example2">Example #2</h4>
 
@@ -751,7 +804,7 @@ structure: </p>
 15                int nanoSeconds</pre>
 
 <p>The structure above requires 16 bits.<br />
-If bit corresponding to a structure node is set then all the fields of that
+If the bit corresponding to a structure node is set then all the fields of that
 node MUST be de-/serialized. </p>
 
 <h2 id="connectionManagement">Connection Management</h2>
@@ -991,51 +1044,67 @@ it were expressed by the following structure: </p>
   </tbody>
 </table>
 
-<p>Protocol MUST be backward compatible. Current version is 0. </p>
+<p>All implementations MUST support all prior versions of the protocol.</p>
 
 <table style="caption-side:bottom">
   <caption style="font-weight:bold">pvAccess Header Flags Description.</caption>
   <tbody>
     <tr>
       <th>bit</th>
+      <th>Value</th>
       <th>Description</th>
     </tr>
     <tr>
+      <td rowspan="2" style="text-align:right;font-family:monospace">0</td>
       <td style="text-align:right;font-family:monospace">0</td>
-      <td>Application/Control [0/1] message.</td>
+      <td>Application message.</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">1</td>
+      <td>Control message.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">1,2,3</td>
-      <td>Unused</td>
+      <td colspan="2">Unused</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">4</td>
-      <td>First message (of set of segmented messages).</td>
+      <td rowspan="4" style="text-align:right;font-family:monospace">5,4</td>
+      <td style="text-align:right;font-family:monospace">00</td>
+      <td>Not segmented message.</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">5</td>
-      <td>Last message (of set of segmented messages).</td>
+      <td style="text-align:right;font-family:monospace">01</td>
+      <td>First messsage (of set of segmented messages).</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">10</td>
+      <td>Last messsage (of set of segmented messages).</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">11</td>
+      <td>Middle message (of set of segmented messages).</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">6</td>
-      <td>Unused.</td>
+      <td colspan="2">Unused</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">7</td>
-      <td>Little/Big [0/1] endian byte order.</td>
+      <td rowspan="2" style="text-align:right;font-family:monospace">7</td>
+      <td style="text-align:right;font-family:monospace">0</td>
+      <td>Little endian byte order.</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">1</td>
+      <td>Big endian byte order.</td>
     </tr>
   </tbody>
 </table>
 
-<p>NOTE: If bits 4 and 5 are both set, this indicates this message is between
-the first and last message of a set of segmented messages. This implies that
-bit 4 MUST be set for all but the last message, and bit 5 MUST be set for all
-but the first message. <br />
-If neither is set then this message MUST not be a part of a segmented set. <br
-/>
+<p>
 Between two segmented message of the same set there MUST NOT be any other
 application message then the segmented message of the same set. Control
-messages are allowed to be in-between. </p>
+messages are allowed to be in-between.
+</p>
 
 <h2 id="protocolMessages:applicationMessages">Application Messages</h2>
 
@@ -1097,7 +1166,7 @@ announce new servers and server restarts. </p>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">protocol</td>
-      <td>Protocol name, e.g. "tcp" for standard pvAccess TCP/IP
+      <td>Protocol name, "tcp" for standard pvAccess TCP/IP
       communication.</td>
     </tr>
     <tr>
@@ -1401,7 +1470,7 @@ below. </p>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">protocol</td>
-      <td>Protocol name, e.g. "tcp" for standard pvAccess TCP/IP
+      <td>Protocol name, "tcp" for standard pvAccess TCP/IP
       communication.</td>
     </tr>
     <tr>
