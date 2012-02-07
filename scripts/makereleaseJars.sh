@@ -27,6 +27,9 @@
 #       Added creating a tar.gz, converted upload of exampleJava.jar to only 
 #       including its source in the tar.gz (more useful than the jar for examples)
 #       and also include the common dir in the tar.gz. 
+#       07-Feb-2012, Greg White (greg@slac.stanford.edu)
+#       Added bundling pvService, since that's no again required after stuff 
+#       removed from pvData.
 # ============================================================================
 USER=gregorywhite
 TAG=1.0-BETA
@@ -37,6 +40,7 @@ cd $OUTDIR
 wget http://epics.sourceforge.net/maven2/epics/pvData/$TAG/pvData-$TAG.jar
 wget http://epics.sourceforge.net/maven2/epics/pvAccess/$TAG/pvAccess-$TAG.jar
 wget http://epics.sourceforge.net/maven2/epics/pvIOC/$TAG/pvIOC-$TAG.jar
+wget http://epics.sourceforge.net/maven2/epics/pvService/$TAG/pvService-$TAG.jar
 cd ..
 # For use of Java from jars, one still needs some source. xmls, example source, and common
 # setup scripts in particular.
