@@ -605,109 +605,47 @@ Started document [<a href="#bib:pvIOCCPP">bib:pvIOCCPP</a>].
  V4 to access EPICS V3 PVs. That is, a version 3 IOC makes the values of V3 channels
 available through pvAccess to EPICS V4 pvAccess clients. </p> 
 
-<h5>To deploying an IOC with pvAccess support:</h5>
+<h5>To deploy an IOC with pvAccess support:</h5>
 
  <ol>
    <li>   
-   <code>cd</code> to the example directory <span class="editor">TODO: Add in which
-   repo, pvDataCPP?</span></li>
-   <li>Unzip the example.zip file <span class="editor">TODO: Add command for unzip</span>
-   </li>
-   <li><code>cd</code> to the  "example" directory that was extracted</li>
-   <li>read the README file. In essence:</li>
-   <ol>
-     <li>cd pvIOC</li>
-     <li>edit configure/RELEASE. Set again the paths for your EPICS base and for the pv[Data|Access\IOC]CPP directories. </ll>
-</ol>
+   The pvIOCCPP build (assuming it was successful) has created a ready-to-run example. The source code for it is in the directory <code> pvIOCCPP/testApp/testV3Channel</code>.</li>
+   The build also created a boot directory in the pvIOCCPP root, named iocBoot/testV3Channel.
+   <code>cd</code> to that directory.
 <li>Create a file named envPaths. This file contains a number of epicsEnvSet commands
 to set the correct paths. Like this:</li>
 <pre>
 epicsEnvSet("ARCH","linux-x86")
-epicsEnvSet("IOC","iocexample")
-epicsEnvSet("TOP","/home/example/epics4/pvIOCCPP/example/example/pvIOC")
+epicsEnvSet("IOC","testV3Channel")
+epicsEnvSet("TOP","/home/example/epics4/pvIOCCPP")
 epicsEnvSet("EPICS_BASE","/usr/local/epics/base-3.14.12")
-epicsEnvSet("PVDATA","/home/example/epics4/pvDataCPP")
-epicsEnvSet("PVACCESS","/home/example/epics4/pvAccessCPP")
+epicsEnvSet("PVDATA","$(TOP)/../pvDataCPP")
+epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 </pre>
-<li>Then
+<li>From the iocBoot/testV3Channel directory you can start the test ioc (on the host, as a "soft" IOC):
 <pre>
-% make
-</pre>
-Example should compile without errors.
-</li>
-<li>Change directory to the iocBoot example directory and start it:
-<pre>
-% cd iocBoot/iocexample
 % ../../bin/&ltarch&gt/example st.cmd
 </pre>
 ("arch" refers to the architecture for which you have built, e.g. linux-x86)
 </li>
 <li>
-The EPICS databases are in directory <code>example/pvIOC/db/</code>. You can add db files, templates etc. there.
+The EPICS databases are under the pvIOCCPP root, in  <code>pvIOCCPP/db</code>. You can add db files, templates etc. there.
 Edit the st.cmd to make it load your EPICS databases.
 </li>
 </ol>
-<p>
-About the directory structures
-</p>
-<pre>
-pvData:
-
-bin             - ?
-configure       - ?
-lib             - ?
-include         - ?
-documentation   - ?
-pvDataApp  - source code
-testApp    - test code. [TODO How much of this is generally useful?]
-test       - [TODO: looks like test scripts. Could these be described somehow]
-</pre>
-
-<pre>
-pvAccessCPP
-
-bin               
-configure
-lib
-include
-documentation
-pvAccessApp
-testApp          - test code
-scripts
-</pre>
-
-<pre>
-pvIOCCPP
-
-bin
-configure
-db
-dbd
-documentation
-example
-include
-iocBoot
-lib
-pvIOCApp
-testApp
-</pre>
-
-<p class="editor">
-[TODO: Are the QtC-xxx files somehow usable (with Qt Creator or similar) or is this just leftovers from a try?
-</p>
 
 <p><strong>sample output from my test to run the IOC</strong>.</p>
 
 <pre>
-bash-3.2$ ../../bin/SL5-x86/example st.cmd
+bash-3.2$ ../../bin/linux-x86/example st.cmd
 < envPaths
-epicsEnvSet("ARCH","SL5-x86")
-epicsEnvSet("IOC","iocexample")
-epicsEnvSet("TOP","/home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP/example/example/pvIOC")
+epicsEnvSet("ARCH","linux-x86")
+epicsEnvSet("IOC","testV3Channel")
+epicsEnvSet("TOP","/home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP")
 epicsEnvSet("EPICS_BASE","/usr/local/epics/base-3.14.12")
 epicsEnvSet("PVDATA","/home/scratch/korhonen/EPICSv4/testbuild/pvDataCPP")
 epicsEnvSet("PVACCESS","/home/scratch/korhonen/EPICSv4/testbuild/pvAccessCPP")
-cd /home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP/example/example/pvIOC
+cd /home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP
 ## Register all support components
 dbLoadDatabase("dbd/example.dbd")
 example_registerRecordDeviceDriver(pdbbase)
@@ -772,7 +710,7 @@ dbLoadRecords("db/dbString.db","name=string03")
 dbLoadRecords("db/dbStringArray.db","name=stringArray03")
 dbLoadRecords("db/dbEnum.db","name=enum03")
 dbLoadRecords("db/dbCounter.db","name=counter03");
-cd /home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP/example/example/pvIOC/iocBoot/iocexample
+cd /home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP/iocBoot/testV3Channel
 iocInit()
 Starting iocInit
 ############################################################################
@@ -857,6 +795,54 @@ epics>
 
 Note: the errors in the above output like <pre>Record "int03" does not have a field "PREC"</pre>
 are due to the way the example records are loaded. They can be safely ignored in this case.
+
+<p>
+About the directory structures
+</p>
+<pre>
+pvData:
+
+bin/&ltarch&gt      - regression test programs for pvData
+configure       - configuration for build, as in EPICS v3 base. 
+lib             - libraries (libpvData) for other components to use
+include         - header files (obviously)
+documentation   - pvData documentation (html)
+pvDataApp       - source code
+testApp         - regression test code.
+test            - scripts that execute the regression tests.
+</pre>
+
+<pre>
+pvAccessCPP
+
+bin              - example programs and regression tests for pvAccess
+configure        - configuration for build, as in EPICS v3 base. 
+lib              - libraries (libpvAccess) for other components to use
+include          - header files
+documentation    - pvAccess documentation (html)
+pvAccessApp      - source code of pvAccess
+testApp          - regression test code
+scripts          - scripts that execute the regression tests.
+</pre>
+
+<pre>
+pvIOCCPP
+
+bin              - binary for the example IOC
+configure        - configuration for build, as in EPICS v3 base.
+db               - EPICS database (template) files
+dbd              - EPICS V3 dbd (database definition) files.
+documentation    - pvIOC documentation (html)
+include          - header files
+iocBoot          - boot directories for the example IOC(s)
+lib              - libraries (libpvIOC etc.)
+pvIOCApp         - pvIOC source code
+testApp          - sample code for a test IOC and RPC service
+</pre>
+
+<p class="editor">
+[TODO: Are the QtC-xxx files somehow usable (with Qt Creator or similar) or is this just leftovers from a try?
+</p>
 
 <h2>References</h2>
 <dt id="downloadsite">[EPICS V4 download site]</dt>
