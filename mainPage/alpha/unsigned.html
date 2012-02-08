@@ -256,7 +256,7 @@ interface PVULong extends PVScalar {
     BigInteger getWider();    // new method
 }
 
-public interface PVByteArray extends PVScalarArray{
+public interface PVUByteArray extends PVScalarArray{
      int get(int offset, int length, ByteArrayData data);
      int put(int offset,int length, byte[] from, int fromOffset);
      void shareData(byte[] from);
@@ -264,7 +264,7 @@ public interface PVByteArray extends PVScalarArray{
      int get(int offset, int length, short[] dest, int toOffset);
 }
 
-public interface PVLongArray extends PVScalarArray{
+public interface PVULongArray extends PVScalarArray{
      int get(int offset, int length, LongArrayData data);
      int put(int offset,int length, long[] from, int fromOffset);
      void shareData(byte[] from);
