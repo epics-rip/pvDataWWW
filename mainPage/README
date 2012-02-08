@@ -2,13 +2,16 @@ EPICS V4 README
 
 This README file describes the download files available for EPICS V4.
 
-Status: This is the 11-Jan-2011 version of the README, and pertains to the
-1.0-BETA release of EPICS V4. This differs from the 20-Dec-2011 version
-in that covers the Java release by tar.zip rather than just jar files.
+Status: This is the 08-Feb-2011 version of the README, and pertains to the
+1.0-BETA release of EPICS V4. This differs from the 11-Jan-2012 version
+in that it re-includes the pvService jar file for Java, again 
+necessary for RPC.
+
 Author: 28-Nov-2011 Greg White (gregory.white @ psi.ch) for EPICS 
 V4 team [1]
 Mod: 20-Dec-2011, Greg White, for 1.0-BETA, Java and C++.
      11-Jan-2012, Greg White, for EPICSv4-Java-1.0-BETA.tar.gz
+     08-Feb-2012, Greg White, for EPICSv4-Java-1.0-1-BETA.tar.gz
 -----------------------------------------------------------------
 
 EPICS V4 [1] is a software toolkit for developing advanced control
@@ -20,7 +23,7 @@ EPICS version 4.
 SUMMARY
 -------
 The C++ implementation of EPICS V4 is in 1.0-BETA/EPICSv4-1.0-BETA.tar.gz
-The Java implementation of EPICS V4 is in 1.0-BETA/EPICSv4-Java-1.0-BETA.tar.gz
+The Java implementation of EPICS V4 is in 1.0-BETA/EPICSv4-Java-1.0-1-BETA.tar.gz
 
 See the document "Getting Started with EPICS V4," 
 http://epics-pvdata.sourceforge.net/gettingStarted.html
@@ -35,19 +38,20 @@ and example usage are given in [16].
 
 MINIMUM FILES FOR EPICS V4 JAVA IMPLEMENTATION 
 ----------------------------------------------
-The file EPICSv4-Java-1.0-BETA.tar.gz includes all (and only) the Java
+The file EPICSv4-Java-1.0.1-BETA.tar.gz includes all (and only) the Java
 implementation of EPICS V4. On Unix systems, the tar file might be 
 unpacked with the command:
-  % tar xvfz EPICSv4-Java-1.0-BETA.tar.gz
+  % tar xvfz EPICSv4-Java-1.0.1-BETA.tar.gz
 
 Specifically the tar includes the following JAR files, plus the source 
 for some examples (in examplesJava/) plus necessary XML files and scripts.
 
-pvAccess-1.0-BETA.jar *    The EPICS V4 "wire protocol" [6] [7]
-pvData-1.0-BETA.jar *      The EPICS V4 support for high 
+pvAccess-1.0.1-BETA.jar *    The EPICS V4 "wire protocol" [6] [7]
+pvData-1.0.1-BETA.jar *      The EPICS V4 support for high 
                                performance data interchange [8]
-pvIOC-1.0-BETA.jar *       The EPICS V4 Input/Output Processor 
+pvIOC-1.0.1-BETA.jar *       The EPICS V4 Input/Output Processor 
                                (IOC). I.e. the server side [9] 
+pvService-1.0.1-BETA.jar *   RPC support.
 
 (*) The specific version number may change following modification of
 this README. It was last updated when the 1.0-BETA was released.
