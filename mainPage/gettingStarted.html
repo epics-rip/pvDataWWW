@@ -179,34 +179,34 @@ href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.ne
 
 <li>Untar it
 <pre>
-% tar xvfz EPICSv4-Java-1.0-BETA.tar.gz
+% tar xvfz EPICSv4-Java-1.0.1-BETA.tar.gz
 </pre>
 You should see:
 <pre>
-% cd EPICSv4-Java-1.0-BETA/
-gregsmac:EPICSv4-Java-1.0-BETA greg$ ls
-total 2976
-2064 -rw-r--r--   1 greg  staff  1054753 19 Dec 20:14 pvIOC-1.0-BETA.jar
- 496 -rw-r--r--   1 greg  staff   251071 19 Dec 20:13 pvAccess-1.0-BETA.jar
- 392 -rw-r--r--   1 greg  staff   197488 19 Dec 20:02 pvData-1.0-BETA.jar
-  16 -rw-r--r--   1 greg  staff     5487 13 Jan 15:17 README
-   0 drwxr-xr-x   9 greg  staff      306 13 Jan 15:17 exampleJava
-   0 drwxr-xr-x   5 greg  staff      170 13 Jan 15:17 common
-   0 drwxr-xr-x   3 greg  staff      102 13 Jan 15:17 pvIOCJava
-   0 drwxr-xr-x   3 greg  staff      102 13 Jan 15:17 pvServiceJava
-   8 -rw-r--r--   1 greg  staff        9 13 Jan 15:17 tag.txt
+% cd EPICSv4-Java-1.0.1-BETA
+% ls
+total 3200
+   0 drwxr-xr-x  12 greg  staff      408  8 Feb 11:08 ./
+   0 drwxr-xr-x   4 greg  staff      136  8 Feb 11:29 ../
+  16 -rw-r--r--   1 greg  staff     5715  8 Feb 11:08 README
+   0 drwxr-xr-x   6 greg  staff      204  8 Feb 11:08 common/
+   0 drwxr-xr-x  10 greg  staff      340  8 Feb 11:08 exampleJava/
+ 496 -rw-r--r--   1 greg  staff   251087  7 Feb 19:21 pvAccess-1.0.1-BETA.jar
+ 392 -rw-r--r--   1 greg  staff   197533  7 Feb 17:46 pvData-1.0.1-BETA.jar
+2056 -rw-r--r--   1 greg  staff  1049064  7 Feb 17:53 pvIOC-1.0.1-BETA.jar
+   0 drwxr-xr-x   5 greg  staff      170  8 Feb 11:08 pvIOCJava/
+ 232 -rw-r--r--   1 greg  staff   114918  7 Feb 19:27 pvService-1.0.1-BETA.jar
+   0 drwxr-xr-x   3 greg  staff      102  8 Feb 11:08 pvServiceJava/
+   8 -rw-r--r--   1 greg  staff       11  8 Feb 11:08 tag.txt
 </pre>
 </li>
 
-<li>Compile examples with Maven (driven by the pom.xml included in exampleJava/)
-<pre>
-$ cd exampleJava/
-$ mvn compile
-</pre>
-This should result in class files in exampleJava/target/classes/*.class
-</li>
 
-<li>Modify common/source/pvCommon_setup.bash. Change the value of JAVAIOC to be the name of the directory containing the xml/ directory of the pvIOC structures. eg, in this example:
+
+<li>Modify common/source/pvCommon_setup.bash. Change the value of JAVAIOC to be the
+name of the directory containing the xml/ directory of the pvIOC structures. eg, in
+this example:
+
 <pre>
 export JAVAIOC=/Users/greg/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA/pvIOCJava
 </pre>
@@ -214,18 +214,23 @@ export JAVAIOC=/Users/greg/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA
 
 <li>Modify helloWorld_setup.bash
 <ol>
-  <li>Location of pvCommon_setup.bash:
+
+  <li>Set your location of pvCommon_setup.bash, e.g.:
   <pre>
    source $HOME/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA/common/source/pvCommon_setup.bash
   </pre>
   </li>
-  <li>Root of EPICS V4 stuff (ie, the directory created by the untar):
+
+  <li>Set the root dir of the EPICS V4 stuff (ie, the directory created by the untar):
     <pre>
    WORKSPACE=$HOME/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA
   </pre>
   </li>
-  <li>CLASSPATH to point to your compiled examples and downloaded jars, rather than, as shipped, the locations
-  where Eclipse development using the source would leave things:
+
+  <li>CLASSPATH to point to your compiled examples and downloaded jars, rather than,
+  as shipped, the locations where Eclipse development using the source would leave
+  things:
+
   <pre>
   CLASSPATH=${EXAMPLES}/target/classes
   CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvData-1.0-BETA.jar
@@ -234,23 +239,41 @@ export JAVAIOC=/Users/greg/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA
   </pre>
   </li>
 </ol>
-<li>
-Start the server (you'll see quite a lot of output. Check there are no complaints of
-file-not-found):
+
+<li>Compile examples. This can be done with Maven (driven by the pom.xml included in
+exampleJava/),or simply with javac (after you've used helloWorld_setup.bash to set
+the CLASSPATH):
 <pre>
-% cd EPICSv4-Java-1.0-BETA/exampleJava/src/helloWorld/
+cd to exampleJava/, then
+$ mvn compile
+or
+cd to exampleJava/, then
+$ source src/helloWorld/hellowWorld_setup.bash
+$ (mkdir target; cd target; mkdir classes)    # since javac won't mkdir -d dir
+$ javac -sourcepath src src/helloWorld/*.java -d target/classes
+</pre>
+Either of these should result in class files in exampleJava/target/classes/*.class
+</li>
+
+<li>Start the server (you'll see quite a lot of output. Check there are no complaints
+of file-not-found):
+
+<pre>
+cd to exampleJava/src/helloWorld/
 % ./helloServerRunner
 </pre>
+
 </li>
-<li>In another process, run the client, giving an argument:
+
+<li>In another process, run the client, giving an argument. The client will find the
+server process, send the argument, receive a greeting for that argument, and print it: 
 <pre>
+cd to exampleJava/src/helloWorld/, then
 % ./helloClientRunner Martha
 Hello Martha
 </pre>
 </li>
 </ol>
-
-
 
 <h3 id="sourcedownload">Getting EPICS V4 Java Implementation Source and Build using Mercurial and Maven</h3>
 
@@ -326,7 +349,7 @@ in particular [<a href="#hgrepoinit">hg repo init</a>].</p>
 
 <p>To download the source using Mercurial, use an "hg clone" executed
 while in the directory you created and in which you executed the "hg init", i.e. "ev4hg" in
-the example above. You will need at least the 3 core "normative" module Java
+the example above. You will need at least the 4 core "normative" module Java
 implementations, as above. The "common" repo is useful too, for setup files etc:</p>
 
 <pre>
@@ -334,6 +357,7 @@ implementations, as above. The "common" repo is useful too, for setup files etc:
 % hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
 % hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessJava
 % hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCJava
+% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceJava
 % hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/common
 </pre>
 
@@ -405,9 +429,12 @@ you probably knew that.]
 
 % cd ../pvIOCJava
 % mvn compile install -DJAVAIOC=$PWD -Dmaven.test.skip=true
+
+% cd ../pvServiceJava
+% mvn compile install 
 </pre>
 
-<p>The above 3 complete the build of the EPICS v4 core. To compile and install
+<p>The above 4 complete the build of the EPICS v4 core. To compile and install
 EPICS v4 examples as well, if you cloned examplesJava above, then build it with
 the following:</p>
 
@@ -433,6 +460,7 @@ version tags, i.e. "1.0-SNAPSHOT" in the example below, will vary as EPICS V4 ma
 /Users/greg/.m2/repository/epics/pvAccess/1.0-SNAPSHOT/pvAccess-1.0-SNAPSHOT.jar
 /Users/greg/.m2/repository/epics/pvData/1.0-SNAPSHOT/pvData-1.0-SNAPSHOT.jar
 /Users/greg/.m2/repository/epics/pvIOC/1.0-SNAPSHOT/pvIOC-1.0-SNAPSHOT.jar
+/Users/greg/.m2/repository/epics/pvService/1.0-SNAPSHOT/pvService-1.0-SNAPSHOT.jar
 </pre>
 
 <p>Note that the results gave you not only jar files under <code>~/.m2/</code>, but the sources and
@@ -471,13 +499,22 @@ href="#ev4examples">ev4examples</a>]. At the time of writing, examplesJava conta
 2 examples, both of RPC style servers (that is, pass arguments to EPICS V4 server, get data back
 dependent on the arguments).</p>
 
-<p>In particular, you may like to start with the,  <a
+<dl>
+  <dt>helloWorld</dt>
+  <dd>In particular, you may like to start with the,  <a
 href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src/helloWorld">
-helloWorld example service</a>. Start with its <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HELLOWORLD_README.txt" >HELLOWORLD_README.txt</a>
-</p>
-
-<p>The <a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/e144f4b3b8ed/src/rdbService"
+helloWorld example service</a>. HelloWorld is composed of a server and a client. The
+  server is built on top of a EPICS V4 JavaIOC, which process a single EPICS V4
+  record which shows how to define a record for taking a single argument (a persons
+  name to whom to say hello). The service returns a string which greets
+  that person. The client prints the received greeting. Start with its <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HELLOWORLD_README.txt"
+  >HELLOWORLD_README.txt</a>. This demonstrates an EPICS V4 record whose value is subject to
+  a user argument.
+</dd>
+<dt>rdbService<dt>
+  <dd>
+  The <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/e144f4b3b8ed/src/rdbService"
 >rdbService</a> example is a complete functional server for accessing SQL databases
 such Oracle via an EPICS V4 server, and returning the resulting table ResultSet data
 back to an EPICS V4 client. rdbService illustrates:</P>
@@ -487,6 +524,9 @@ back to an EPICS V4 client. rdbService illustrates:</P>
   retries the query and can rebuild the connection if any query fails - for high
   reliability and to make sure if the database backend ever cycles, the EPICS v4 server need
   not be restarted.</li>
+  <li>Passing string messages bac
+  k to the client in the event of the server
+  detecting an error or other diagnostic</li> 
   <li>Putting complex data into an EPICS V4 pvStructure (the basic complex data
   object of pvData), ready for returning results back to the EPICS V4 client</li>
   <li>Client side calling the server, and getting the results</li>
@@ -496,6 +536,9 @@ back to an EPICS V4 client. rdbService illustrates:</P>
   <li>Helpers for trasformation of array pvData to Java Vectors</li>
   <li>Formatting pvStructure encoded data for printing.</li>
 </ol>
+</dd>
+</dl>
+
   
 
 <h2>C++ Development</h2>
@@ -877,7 +920,7 @@ testApp          - sample code for a test IOC and RPC service
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Fri Jan 20 17:19:02 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Feb  8 12:04:09 CET 2012 <!-- hhmts end -->
 
 </body>
 </html>
