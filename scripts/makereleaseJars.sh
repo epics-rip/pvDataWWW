@@ -62,11 +62,12 @@ hg clone ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataW
 # And server/!!! too.
 (cd pvIOCJava && hg archive -I "server/" ../$OUTDIR/pvIOCJava)
 
-
 (cd pvServiceJava && hg archive -I "xml" ../$OUTDIR/pvServiceJava)
 (cd exampleJava && hg archive ../$OUTDIR/exampleJava)
 (cd common && hg archive ../$OUTDIR/common)
 
+# There's a benign bug here: as code this creates a TAG/ dir at the same level as parent dir.
+# but it packages the tar correctly with just the README from pvDataWWW. 
 (cd pvDataWWW && hg archive -I mainPage/README ../../$OUTDIR)
 cp pvDataWWW/mainPage/README $OUTDIR
 rm -fr $OUTDIR/pvDataWWW
