@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>Proposal for implementation of unsigned integers</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
+</head>
+
+<body>
+<h1>Proposal for implementation of unsigned integers 03-Jan-2012</h1>
+
+<h2 style="text-align: center">Introduction</h2>
+
+<p>The following are the changes required in pvData to support unsigned
+integers.</p>
+
+<p>For C++ unsigned will be fully supported.</p>
+
+<p>Because Java does not implement unsigned integers a "best" effort is
+implemented.</p>
+<ul>
+  <li>The data implementation for scalar and array implementation of unsigned
+    will be exactly the same as the signed implementation. For example the
+    implementation of <b>PVInt</b> will be identical to <b>PVUint</b>.</li>
+  <li>The Convert facility will perform the proper conversions between signed
+    and unsigned.</li>
+  <li>No attempt will be made to detect integer overflow and throw
+  exceptions.</li>
+</ul>
+
+<p>pvAccess will also have to be changed to support unsigned.</p>
+
+<h2 style="text-align: center">PVData Meta Language</h2>
+
+<p>The following:</p>
+<dl>
+  <dt>scalar</dt>
+    <dd>A scalar field can be any of the following: 
+      <dl>
+        <dt style="font-family: courier;">boolean</dt>
+          <dd>Has the value<span style="font-family: courier;">true</span> or
+            <span style="font-family: courier;">false</span></dd>
+        <dt style="font-family: courier;">byte</dt>
+          <dd>An 8 bit signed integer.</dd>
+        <dt style="font-family: courier;">short</dt>
+          <dd>An 16 bit signed integer.</dd>
+        <dt style="font-family: courier;">int</dt>
+          <dd>An 32 bit signed integer.</dd>
+        <dt style="font-family: courier;">long</dt>
+          <dd>An 64 bit signed integer.</dd>
+        <dt style="font-family: courier;">float</dt>
+          <dd>A IEEE float.</dd>
+        <dt style="font-family: courier;">double</dt>
+          <dd>A IEEE double.</dd>
+        <dt style="font-family: courier;">string</dt>
+          <dd>An immutable string.</dd>
+      </dl>
+    </dd>
+  <dt>scalarArray</dt>
+    <dd>A scalarArray field is an array of any of the scalar types. 
+      <dl>
+        <dt style="font-family: courier;">boolean[]</dt>
+        <dt style="font-family: courier;">byte[]</dt>
+        <dt style="font-family: courier;">short[]</dt>
+        <dt style="font-family: courier;">int[]</dt>
+        <dt style="font-family: courier;">long[]</dt>
+        <dt style="font-family: courier;">float[]</dt>
+        <dt style="font-family: courier;">double[]</dt>
+        <dt style="font-family: courier;">string[]</dt>
+      </dl>
+    </dd>
+</dl>
+
+<p>will be changed to:</p>
+<dl>
+  <dt>scalar</dt>
+    <dd>A scalar field can be any of the following: 
+      <dl>
+        <dt style="font-family: courier;">boolean</dt>
+          <dd>Has the value <span style="font-family: courier;">true</span> or
+            <span style="font-family: courier;">false</span></dd>
+        <dt style="font-family: courier;">byte</dt>
+          <dd>An 8 bit signed integer.</dd>
+        <dt style="font-family: courier;">short</dt>
+          <dd>An 16 bit signed integer.</dd>
+        <dt style="font-family: courier;">int</dt>
+          <dd>An 32 bit signed integer.</dd>
+        <dt style="font-family: courier;">long</dt>
+          <dd>An 64 bit signed integer.</dd>
+        <dt style="font-family: courier;">ubyte</dt>
+          <dd>An 8 bit unsigned integer.</dd>
+        <dt style="font-family: courier;">ushort</dt>
+          <dd>An 16 bit unsigned integer.</dd>
+        <dt style="font-family: courier;">uint</dt>
+          <dd>An 32 bit unsigned integer.</dd>
+        <dt style="font-family: courier;">ulong</dt>
+          <dd>An 64 bit unsigned integer.</dd>
+        <dt style="font-family: courier;">float</dt>
+          <dd>A IEEE float.</dd>
+        <dt style="font-family: courier;">double</dt>
+          <dd>A IEEE double.</dd>
+        <dt style="font-family: courier;">string</dt>
+          <dd>An immutable string.</dd>
+      </dl>
+    </dd>
+  <dt>scalarArray</dt>
+    <dd>A scalarArray field is an array of any of the scalar types. 
+      <dl>
+        <dt style="font-family: courier;">boolean[]</dt>
+        <dt style="font-family: courier;">byte[]</dt>
+        <dt style="font-family: courier;">short[]</dt>
+        <dt style="font-family: courier;">int[]</dt>
+        <dt style="font-family: courier;">long[]</dt>
+        <dt style="font-family: courier;">ubyte[]</dt>
+        <dt style="font-family: courier;">ushort[]</dt>
+        <dt style="font-family: courier;">uint[]</dt>
+        <dt style="font-family: courier;">ulong[]</dt>
+        <dt style="font-family: courier;">float[]</dt>
+        <dt style="font-family: courier;">double[]</dt>
+        <dt style="font-family: courier;">string[]</dt>
+      </dl>
+    </dd>
+</dl>
+
+
+<h2 style="text-align: center">Interface Definitions</h2>
+
+<h3>Types</h3>
+
+<p>The following:</p>
+<pre>enum ScalarType {
+    pvBoolean,
+    pvByte,pvShort,pvInt,pvLong,
+    pvFloat,pvDouble,
+    pvString;
+    // The following are convenience methods
+    public boolean isInteger();
+    public boolean isNumeric();
+    public boolean isPrimitive();
+    public static ScalarType getScalarType(String type);
+    public String toString();
+}</pre>
+
+<p>Will be changed to:</p>
+<pre>enum ScalarType {
+    pvBoolean,
+    pvByte,pvShort,pvInt,pvLong,
+    pvUByte,pvUShort,pvUInt,pvULong,
+    pvFloat,pvDouble,
+    pvString;
+    // The following are convenience methods
+    public boolean isInteger();
+    public boolean isUInteger();
+    public boolean isNumeric();
+    public boolean isPrimitive();
+    public static ScalarType getScalarType(String type);
+    public String toString();
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>boolean</dt>
+    <dd>true or false</dd>
+  <dt>byte</dt>
+    <dd>An 8 bit signed byte</dd>
+  <dt>short</dt>
+    <dd>16 bit signed integer</dd>
+  <dt>int</dt>
+    <dd>32 bit signed integer</dd>
+  <dt>long</dt>
+    <dd>64 bit signed integer</dd>
+  <dt>ubyte</dt>
+    <dd>An 8 bit unsigned byte</dd>
+  <dt>ushort</dt>
+    <dd>16 bit unsigned integer</dd>
+  <dt>uint</dt>
+    <dd>32 bit unsigned integer</dd>
+  <dt>ulong</dt>
+    <dd>64 bit unsigned integer</dd>
+  <dt>float</dt>
+    <dd>32 bit IEEE float</dd>
+  <dt>double</dt>
+    <dd>64 bit IEEE float</dd>
+  <dt>string</dt>
+    <dd>An immutable string. The Java implementation is String. For other
+      implementations the network representation must be the same as for Java.
+      Note that a string is treated like it is a scaler.</dd>
+</dl>
+
+<p>In C++ there is a set of typedefs for the primitive types. The following
+will be added for unsigned types:</p>
+<pre>typedef uint8_t  uint8;
+typedef uint16_t uint16;
+// definitions for uint32 and uint54 already exist
+
+typedef uint8 *  UByteArray;
+typedef uint16 * UShortArray;
+typedef uint32 * UIntArray;
+typedef uint64 * ULongArray;</pre>
+
+<h3>Introspection Interfaces</h3>
+
+<p>No changes.</p>
+
+<h3>Data Interfaces</h3>
+
+<p>The following:</p>
+
+<p>Each scalar type has an associated data interface: PVBoolean, PVByte,
+PVShort, PVInt, PVLong, PVFloat, PVDouble, and PVString.</p>
+
+<p>Will be changed to:</p>
+
+<p>Each scalar type has an associated data interface: PVBoolean, PVByte,
+PVShort, PVInt, PVLong, PVUByte, PVUShort, PVUInt, PNULong, PVFloat, PVDouble,
+and PVString. </p>
+
+<p></p>
+
+<p>For Java the get and put methods will have the same definition for the
+unsigned type as for the signed type. For C++ the methods will have unsigned
+types.</p>
+
+<p>For example in Java PVUByte is:</p>
+<pre>interface PVUByte extends PVScalar {
+    byte get();
+   void put(byte value)
+}</pre>
+
+<p>For C++ PVByte is:</p>
+<pre>class PVByte: public PVScalar {
+    virtual uint8 get() = 0;
+   virtual void put(uint8 value) = 0;
+}</pre>
+
+<h3>Introspection and Data creation</h3>
+
+<p>No changes.</p>
+
+<h3>pvData Conversion</h3>
+
+<p>pvData provides a conversion utility that is defined in Java by <b>interface
+Convert</b> and in C++ by <b>class Convert</b></p>
+
+<p>In Java the following methods will be added.</p>
+<pre>    interface Convert {
+        byte toUByte(PVField pv);
+        short toUShort(PVField pv);
+        int   toUInt(PVField pv);
+        long  toULong(PVField pv);
+        void fromUByte(PVField pv, byte from);
+        void  fromUShort(PVField pv, short from);
+        void  fromUInt(PVField pv, int from);
+        void  fromULong(PVField pv, long from);
+        int toUByteArray(PVScalarArray pv,
+            int offset, int len, byte[]to, int toOffset);
+        int toUShortArray(PVScalarArray pv,
+            int offset, int len, short[]to, int toOffset);
+        int toUIntArray(PVScalarArray pv,
+            int offset, int len, int[]to, int toOffset);
+        int toULongArray(PVScalarArray pv,
+            int offset, int len, long[]to, int toOffset);
+        int fromUByteArray(PVScalarArray pv,
+            int offset, int len, byte[]from, fromOffset);
+        int fromUShortArray(PVScalarArray pv,
+            int offset, int len, short[]from, fromOffset);
+        int fromUIntArray(PVScalarArray pv,
+            int offset, int len, int[]from, fromOffset);
+        int fromULongArray(PVScalarArray pv,
+            int offset, int len, long[]from, fromOffset);
+    }</pre>
+
+<p>NOTE that the argument types are just like the unsigned argument types.</p>
+
+<p>In C++ the following methods will be added:</p>
+<pre>    class Convert {
+        uint8 toUByte(PVField *pv);
+        uint16 toUShort(PVField *pv);
+        uint32   toUInt(PVField *pv);
+        uint64  toULong(PVField *pv);
+        void fromUByte(PVField *pv, uint8 from);
+        void  fromUShort(PVField *pv, uint16 from);
+        void  fromUInt(PVField *pv, uint32 from);
+        void  fromULong(PVField *pv, uint64 from);
+        int toUByteArray(PVScalarArray *pv, int offset, int len,
+            UByteArray to, int toOffset);
+        int toUShortArray(PVScalarArray *pv, int offset, int len,
+            UShortArray to, int toOffset);
+        int toUIntArray(PVScalarArray *pv, int offset, int len,
+            UIntArray to, int toOffset);
+        int toULongArray(PVScalarArray *pv, int offset, int len,
+            ULongArray to, int toOffset);
+        int fromUByteArray(PVScalarArray *pv, int offset, int len,
+            UByteArray rom, fromOffset);
+        int fromUShortArray(PVScalarArray *pv, int offset, int len,
+            UShortArray from, fromOffset);
+        int fromUIntArray(PVScalarArray *pv, int offset, int len,
+            UIntArray from, fromOffset);
+        int fromULongArray(PVScalarArray *pv, int offset, int len,
+            ULongArray from, fromOffset);
+    }</pre>
+
+<p>In addition the internal case statements that have choices for all the
+integer types will add choices for all the unsigned integer types. When a
+widening operation is required the code will do the "correct" conversion, i.e.
+if an unsigned integer is converted to a wider integer (signed or unsigned)
+type high order bits will be made 0.</p>
+</body>
+</html>
