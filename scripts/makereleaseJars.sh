@@ -32,7 +32,7 @@
 #       removed from pvData.
 # ============================================================================
 USER=gregorywhite
-TAG=1.0-BETA
+TAG=1.0.1-BETA
 OUTDIR="EPICSv4-Java-$TAG"
 TARFILE="$OUTDIR.tar.gz"
 mkdir -p $OUTDIR
