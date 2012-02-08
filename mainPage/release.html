@@ -6,38 +6,35 @@
  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <meta http-equiv="PRAGMA" content="NO-CACHE">
   <meta http-equiv="EXPIRES" content="0">
+<meta name="keywords" content="EPICS, EPICSv4, epics release" />
  <title>EPICS Version 4 Development Resources</title>
- <link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css"
- type="text/css" media="screen" />
- <link rel="stylesheet" type="text/css"
- href="http://www.w3.org/Guide/pubrules-style.css" />
- <link rel="stylesheet" type="text/css" href="epicsv4.css" />
- <style type="text/css">
-   @media print {
-     body { margin-right: 10%;
-     font-size: smaller }
-   }
-   @media screen {
-     body { margin-right: 10% }
-   }
- </style>
+ <!-- Include the epicsv4 base.css, and the css for epics v4 documents -->
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="epicsv4.css" />
 </head>
 <body>
 
 <h1>EPICS Version 4 Release Guide</h1>
 
+<p>This is an EPICS V4 working group internal note, on the procedure for a version
+  numbered release of EPICS V4.</p>
+
 <p>Release steps:
 
 <ol>
-<li>Tag Mercurial repositories (currently pvData, pvAccess, pvIOC)</li>
+<li>Tag Mercurial repositories (currently pvData, pvAccess, pvIOC, pvService)</li>
 <li>Clone tagged repositories to a build server (your local machine or Jenkins)</li>
 <li>Generate release documentation and upload to sourceforge web area</li>
 <li>Create release archives and upload to sourceforge file area</li>
 </ol>
 
-Release scripts are in mercurial under <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
+Release scripts are in mercurial under <a
+href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
+</p>
+
 <p>
 During the release process documentation (both written and generated) is copied from the <code>documentation</code> directory in each repository to <code>epics-pvdata.sourceforge.net/docbuild/$REPO/$TAGNAME/documentation</code>.
+</p>
 
 <h2>C++</h2>
 <p><strong>Code:</strong></p>
@@ -133,7 +130,14 @@ and push:
 
 hg push
 </pre>
-This results in remote repository that is versioned in tagged.
+<p>Additionally hg tag and push the common/ repo</p>
+<pre>
+% cd ../common/
+% hg tag 1.0-BETA
+% hg push
+</pre>
+
+<p>This results in remote repository that is versioned in tagged.
 Now Jenkins will build 1.0-BETA version and deploy JARs in EPICS remote repository.
 
 Before making any changes to the project (the best thing is to do it
@@ -142,7 +146,9 @@ not override the deployed 1.0-BETA. However, hold on a second Tex, it's a good i
 to versify that Jenkins has built and deployed the 1.0-BETA release jar file, before
 pushing this new version, since this one will also result in a build and
 deployment. Check the Maven build products directory <a
-href="http://epics.sourceforge.net/maven2/epics/">http://epics.sourceforge.net/maven2/epics/</a>, then:
+href="http://epics.sourceforge.net/maven2/epics/">http://epics.sourceforge.net/maven2/epics/</a>,
+then:
+</p>
 <pre>
 <version>1.1-SNAPSHOT</version>
 
@@ -151,17 +157,21 @@ and
 hg commit pom.xml
 hg push
 </pre>
+<p>Again, update also the tag in common/, as above.</p>
+
 <h3>Create the user download tarball</h3>
 <p>The download tarball is what we put in the SourceForge download files area, and
 includes all the EPICS V4 jars just created, plus
 associated source, XMLs, scripts etc needed by someone to get going. 
 </p>
+<p>Edit the pvDataWWW/scripts/makereleaseJars.sh file, updating the the TAG variable
+in particular. Then run /makereleaseJars.sh.</p>
 <pre>
 % cd to dir that has repo root directory in it, eg ~/Development/epicsV4/, since that
 dir contains ev4hg/
 % mkdir tmp
 % cd tmp
-% ../pvDataWWW/scripts/makereleaseJars.sh
+% ../ev4hg/pvDataWWW/scripts/makereleaseJars.sh
 </pre>
 
 <p><strong>Documentation:</strong></p>
@@ -173,6 +183,6 @@ area.</p>
 
 <hr>
 <address>EPICS V4 Working Group</address>
-<!-- hhmts start -->Last modified: Wed Jan 11 18:42:07 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Feb  7 21:05:13 CET 2012 <!-- hhmts end -->
 </body>
 </html>
