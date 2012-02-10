@@ -203,8 +203,8 @@ free, otherwise a dynamically allocated port SHOULD be used as a fallback. </p>
 
 <p>pvAccess was designed to support <a
 href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a
-href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>]. All data MUST
-be sent as pvData objects. The protocol aims to send the minimum number of bits
+href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>].
+The protocol aims to send the minimum number of bits
 necessary to inform peers of changes in endpoint data values subject to performance
 considerations. That is, it combines CPU and wire data size considerations to
 optimise overall control network throughput.
@@ -231,13 +231,13 @@ a pvAccess equivalent of Channel Access' EPICS_CA_MAX_ARRAY_BYTES.</p>
 keeping with these goals, the encoding does not align primitive types on word
 boundaries and therefore eliminates the wasted space and additional complexity
 that alignment requires. The pvAccess data encoding simply produces a stream of
-contiguous bytes; data MUST NOT contain padding bytes and MUST NOT be
-aligned on word boundaries.<br />
+contiguous bytes; data MUST NOT contain padding bytes and the implementation MUST NOT try
+to align data on word boundaries.<br />
 However, array encoding is an exception. All arrays MUST be aligned to 64-bit
 boundaries (the first element of each array is padded). The message header MUST
-also be 64-bit aligned. </p>
+also be 64-bit aligned (as being an alignment reference point). </p>
 
-<p>For connection-oriented communication (TCP/IP), the server MUST REQUIRE that
+<p>For connection-oriented communication (TCP/IP), the server REQUIRES that
 the client uses the server's byte order. Each message contains an endiannes
 flag in order to allow all the
 intermediates to forward data without requiring it to be unmarshaled (so that
@@ -286,7 +286,7 @@ href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a>]. </p>
     </tr>
     <tr>
       <td style="text-align:right;font-weight:bold">boolean</td>
-      <td>A single byte with value non-zero value for true, 0 for false.</td>
+      <td>A single byte with value non-zero value for true, zero for false.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-weight:bold">byte</td>
@@ -357,84 +357,14 @@ array, followed by the elements encoded as specified for their type (as specifie
 
 <h3 id="dataEncoding:bitSets">BitSets</h3>
 
-<p>BitSet is a pvData internal data type that represents an ordered set of bits. </p>
+<p>BitSet is a data type that represents a finite sequence of bits.</p>
 
-<p>For performance reasons BitSet implementation SHOULD store bits as 64-bit integers,
-however serialization is size optimized and REQUIRES to send only least
-possible number of bytes that encode all the bits in the set.</p>
+<p>BitSet is encoded as a byte array. Bits are serialized in groups of eight in ascending order (LSB to MSB).
+Serialization is size optimized and REQUIRES to send only least possible number of bytes that encode all the bits
+in the set.</p>
 <p>
-A bitSet holding n bits is encoded as: </p>
-<ul>
-  <li>A Size value indicating the number of bytes needed to serialize the BitSet;
-  that is, a Size type containing value S, where 
-    S = ceil(n/8)</li>
-  <li>L 64-bit integers, containing the first 64-multiple of bits from n (Least Significant Bits,
-    LSB to Most Significant Bits, MSB), 
-    encoded in the currently selected byte order, where L = floor((n+7)/64)</li>
-  <li>B bytes containing the remaining bits from n, in LSB to MSB order, where B = S - 8*L</li>
-</ul>
 
-<table style="caption-side:bottom">
-  <caption style="font-weight:bold">Example of how BitSet is encoded.</caption>
-  <tbody>
-    <tr>
-      <th># bits</th>
-      <th>S</th>
-      <th>L</th>
-      <th>B</th>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-weight:bold">0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-weight:bold">1</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-weight:bold">7</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-weight:bold">8</td>
-      <td>1</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-weight:bold">15</td>
-      <td>2</td>
-      <td>0</td>
-      <td>2</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-weight:bold">63</td>
-      <td>8</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-weight:bold">64</td>
-      <td>8</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-weight:bold">65</td>
-      <td>9</td>
-      <td>1</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>Examples of BitSet serialization (big-endian byte order): </p>
+<p>Examples of BitSet serialization: </p>
 <pre>Hexdump [{}] size = 1
 00                                                 .
 
@@ -457,10 +387,10 @@ Hexdump [{55}] size = 8
 07 00 00 00  00 00 00 80                            .... .... 
 
 Hexdump [{56}] size = 9
-08 01 00 00  00 00 00 00  00                       .... .... .
+08 00 00 00  00 00 00 00  01                       .... .... .
 
 Hexdump [{63}] size = 9
-08 80 00 00  00 00 00 00  00                       .... .... .
+08 00 00 00  00 00 00 00  80                       .... .... .
 
 Hexdump [{64}] size = 10
 09 00 00 00  00 00 00 00  00 01                    .... .... ..
@@ -478,16 +408,16 @@ Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50}] size = 8
 07 00 01 02  03 04 05 06                            .... .... 
 
 Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58}] size = 9
-08 07 06 05  04 03 02 01  00                       .... .... .
+08 00 01 02  03 04 05 06  07                       .... .... .
 
 Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67}] size = 10
-09 07 06 05  04 03 02 01  00 08                    .... .... ..
+09 00 01 02  03 04 05 06  07 08                    .... .... ..
 
 Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67, 72, 75}] size = 11
-0A 07 06 05  04 03 02 01  00 08 09                 .... .... ...
+0A 00 01 02  03 04 05 06  07 08 09                 .... .... ...
 
 Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67, 72, 75, 81, 83}] size = 12
-0B 07 06 05  04 03 02 01  00 08 09 0A               .... .... .... </pre>
+0B 00 01 02  03 04 05 06  07 08 09 0A               .... .... .... </pre>
 
 <h3 id="dataEncoding:status">Status</h3>
 
@@ -517,7 +447,7 @@ Hexdump [WARNING, "Low memory", ""] size = 13
 01 0A 4C 6F  77 20 6D 65  6D 6F 72 79  00          ..Lo w me mory .
 
 Hexdump [ERROR, "Failed to get, due to unexpected exception", (stack dump)] size = 264
-02√ 2A 46 61  69 6C 65 64  20 74 6F 20  67 65 74 2C  .*Fa iled  to  get, 
+02 2A 46 61  69 6C 65 64  20 74 6F 20  67 65 74 2C  .*Fa iled  to  get, 
 20 64 75 65  20 74 6F 20  75 6E 65 78  70 65 63 74   due  to  unex pect 
 65 64 20 65  78 63 65 70  74 69 6F 6E  DB 6A 61 76  ed e xcep tion .jav 
 61 2E 6C 61  6E 67 2E 52  75 6E 74 69  6D 65 45 78  a.la ng.R unti meEx 
