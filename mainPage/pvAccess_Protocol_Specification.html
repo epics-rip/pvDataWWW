@@ -24,11 +24,11 @@
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
 <h2 class="nocount" id="L50">EPICS v4 Working Group, Second Public Working
-Draft, 05-Feb-2012</h2>
+Draft, 10-Feb-2012</h2>
 <dl>
   <dt>This version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120205.html">pvAccess_Protocol_Specification_20120205.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120210.html">pvAccess_Protocol_Specification_20120210.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -63,7 +63,7 @@ Control System.</a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 5 February 2012 version of the pvAccess Protocol Specification.
+<p>This is the 10 February 2012 version of the pvAccess Protocol Specification.
 This version is an editors draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review and comment.
 Resulting comments will drive subsequent revisions of the specification and the
@@ -541,9 +541,9 @@ Hexdump [ERROR, "Failed to get, due to unexpected exception", (stack dump)] size
 description (i.e. an instance of a Field). A PVField is encoded as raw values
 only. The Field provides metadata, which describes the data type of its
 associated PVField. Since many different PVField instances share the same
-introspection description, the introspection description SHOULD be cached to avoid repeatedly sending it
+introspection description, the introspection description of structures SHOULD be cached to avoid repeatedly sending it
 over the wire. Thus, Field encoding starts with a byte whose value must be one
-of the following: NULL, ID only or ID with actual Field serialization. The ID
+of the following: NULL, ID only or ID with actual Field serialization or actual Field serialization only. The ID
 MUST be encoded as short, and is a key used to cache Field descriptions. This
 cache is called the "introspection registry". IDs MUST be valid only within one
 connection. Moreover, they MUST be defined only by the sender. The receiver
@@ -558,13 +558,13 @@ when connection is established. </p>
   <tbody>
     <tr>
       <th>Field Encoding</th>
-      <th>Type</th>
+      <th>Name</th>
       <th>Description</th>
     </tr>
     <tr>
       <td>0xFF</td>
       <td style="font-weight:bold">NULL_TYPE_CODE</td>
-      <td>No introspection data (also implies no data).</td>
+      <td>No structure introspection data (also implies no data).</td>
     </tr>
     <tr>
       <td>0xFE + ID</td>
@@ -579,27 +579,193 @@ when connection is established. </p>
         full interface description.</td>
     </tr>
     <tr>
-      <td>0xFC + FieldDesc</td>
-      <td style="font-weight:bold">FULL_TYPE_CODE</td>
-      <td>Serialization contains only full interface description.</td>
-    </tr>
-    <tr>
-      <td>0xFB - 0x00</td>
+      <td>0xFB - 0xE0</td>
       <td>RESERVED</td>
       <td>Reserved for future usage, MUST NOT be used.</td>
+    </tr>
+    <tr>
+      <td>FieldDesc<br/> (0xDF - 0x00)</td>
+      <td></td>
+      <td>Serialization contains only full interface description.</td>
     </tr>
   </tbody>
 </table>
 
 <p>An actual Field introspection description (FieldDesc) MUST be encoded as a
 byte that consists of 2 nibbles (4-bits). The upper nibble (Most Significant Bits,
-MSBs) define the Field
-type (i.e. Type), the low nibble (LSB) defines the data type (i.e. ScalarType)
-for scalar and scalarArray types. That byte MUST be then followed by the Field
+MSBs) is used for the type selector and flags. The lower nibble is type (bits 7-5)
+depended and used for size encoding. 
+</p>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold">Type Encoding.</caption>
+  <tbody>
+    <tr>
+      <th>bit</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td rowspan="8" style="text-align:right;font-family:monospace">7-5</td>
+      <td style="text-align:right;font-family:monospace">111</td>
+      <td>reserved (MUST never be used)</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">110</td>
+      <td rowspan="2">reserved (MUST not be used)</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">101</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">100</td>
+      <td>structure</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">011</td>
+      <td style="font-weight:bold">string</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">010</td>
+      <td>floating-point</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">001</td>
+      <td>integer</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">000</td>
+      <td style="font-weight:bold">boolean</td>
+    </tr>
+    <tr>
+      <td rowspan="2" style="text-align:right;font-family:monospace">4</td>
+      <td style="text-align:right;font-family:monospace">1</td>
+      <td>array flag</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">0</td>
+      <td>scalar flag</td>
+    </tr>
+    <tr>
+      <td rowspan="8" style="text-align:right;font-family:monospace">3-0</td>
+      <td style="text-align:right;font-family:monospace"></td>
+      <td>type (bits 7-5) depended</td>
+    </tr>
+  </tbody>
+</table>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold">Integer Type Size Encoding (type = '0b001').</caption>
+  <tbody>
+    <tr>
+      <th>bit</th>
+      <th>Value</th>
+      <th>Type Name</th>
+    </tr>
+    <tr>
+      <td rowspan="2" style="text-align:right;font-family:monospace">3</td>
+      <td style="text-align:right;font-family:monospace">1</td>
+      <td>unsigned flag</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">0</td>
+      <td>signed flag</td>
+    </tr>
+    <tr>
+      <td rowspan="8" style="text-align:right;font-family:monospace">2-0</td>
+      <td style="text-align:right;font-family:monospace">111</td>
+      <td rowspan="4">reserved</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">110</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">101</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">100</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">011</td>
+      <td style="font-weight:bold">long</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">010</td>
+      <td style="font-weight:bold">int</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">001</td>
+      <td style="font-weight:bold">short</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">000</td>
+      <td style="font-weight:bold">byte</td>
+    </tr>
+  </tbody>
+</table>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold">Floating-Point Size Encoding (type = '0b010').</caption>
+  <tbody>
+    <tr>
+      <th>bit</th>
+      <th>Value</th>
+      <th>Type Name</th>
+      <th>IEEE 754-2008 Name</th>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">3</td>
+      <td style="text-align:right;font-family:monospace"></td>
+      <td colspan="2">reserved</td>
+    </tr>
+    <tr>
+      <td rowspan="8" style="text-align:right;font-family:monospace">2-0</td>
+      <td style="text-align:right;font-family:monospace">111</td>
+      <td colspan="2" rowspan="3">reserved</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">110</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">101</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">100</td>
+      <td>reserved</td>
+      <td>binary128 (Quadruple)</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">011</td>
+      <td style="font-weight:bold">double</td>
+      <td>binary64 (Double)</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">010</td>
+      <td style="font-weight:bold">float</td>
+      <td>binary32 (Single)</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">001</td>
+      <td>reserved</td>
+      <td>binary16 (Half)</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">000</td>
+      <td colspan="2">reserved</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+For all other types bits 3-0 MUST be '0b0000'.
+</p>
+
+<p>
+That byte MUST be then followed by the Field
 instance name encoded as a string. Structure and structureArray types REQUIRE
 more description. A structure REQUIRES an array of Fields (size followed by one
-or more Field as described above). StructureArray is similar, in addition it
-REQUIRES the name of the structure. </p>
+or more Field as described above). StructureArray REQUIRES an introspection data
+of a structure being an array element.</p>
 
 <table style="caption-side:bottom">
   <caption style="font-weight:bold">FieldDesc Encoding.</caption>
@@ -610,66 +776,24 @@ REQUIRES the name of the structure. </p>
       <th>Description</th>
     </tr>
     <tr>
-      <td>0x00 | ScalarType (0b0000xxxx) + name</td>
+      <td><a style="font-family:monospace">0bxxx0xxxx</a> + name</td>
       <td style="font-weight:bold">scalar</td>
       <td>Scalar.</td>
     </tr>
     <tr>
-      <td>0x10 | ScalarType (0b0000xxxx) + name</td>
+      <td><a style="font-family:monospace">0bxxx1xxxx</a> + name</td>
       <td style="font-weight:bold">scalarArray</td>
       <td>Array of scalars.</td>
     </tr>
     <tr>
-      <td>0x20 (0b00100000) + name + Field[]</td>
+      <td><a style="font-family:monospace">0b1000xxxx</a> + name + Field[]</td>
       <td style="font-weight:bold">structure</td>
       <td>Structure.</td>
     </tr>
     <tr>
-      <td>0x30 (0b00110000) + name + (structure name + Field[])</td>
+      <td><a style="font-family:monospace">0b1001xxxx</a> + name + Field (type of structure)</td>
       <td style="font-weight:bold">structureArray</td>
       <td>Array of structures.</td>
-    </tr>
-  </tbody>
-</table>
-
-<table style="caption-side:bottom">
-  <caption style="font-weight:bold">ScalarType Nibble Encoding.</caption>
-  <tbody>
-    <tr>
-      <th>Encoding</th>
-      <th>ScalarType</th>
-    </tr>
-    <tr>
-      <td>0 (0b0000)</td>
-      <td style="text-align:left;font-weight:bold">boolean</td>
-    </tr>
-    <tr>
-      <td>1 (0b0001)</td>
-      <td style="text-align:left;font-weight:bold">byte</td>
-    </tr>
-    <tr>
-      <td>2 (0b0010)</td>
-      <td style="text-align:left;font-weight:bold">short</td>
-    </tr>
-    <tr>
-      <td>3 (0b0011)</td>
-      <td style="text-align:left;font-weight:bold">int</td>
-    </tr>
-    <tr>
-      <td>4 (0b0100)</td>
-      <td style="text-align:left;font-weight:bold">long</td>
-    </tr>
-    <tr>
-      <td>5 (0b0101)</td>
-      <td style="text-align:left;font-weight:bold">float</td>
-    </tr>
-    <tr>
-      <td>6 (0b0110)</td>
-      <td style="text-align:left;font-weight:bold">double</td>
-    </tr>
-    <tr>
-      <td>7 (0b0111)</td>
-      <td style="text-align:left;font-weight:bold">string</td>
     </tr>
   </tbody>
 </table>
