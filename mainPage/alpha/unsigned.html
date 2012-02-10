@@ -19,11 +19,9 @@
 </head>
 
 <body>
-<h1>Proposal for implementation of unsigned integers 08-Jan-2012</h1>
+<h1>Proposal for implementation of unsigned integers 10-Feb-2012</h1>
 
-
-<h2 style="text-align: center">Introduction</h2>
-
+<h2>Introduction</h2>
 
 <p>The following are the changes required in pvData to support unsigned
 integers.</p>
@@ -34,25 +32,80 @@ integers.</p>
 implemented.</p>
 <ul>
   <li>The data implementation for scalar and array implementation of unsigned
-    will be the same as the signed implementation except for a new convenience method.
-    For example the implementation of <b>PVInt</b> will be identical to <b>PVUint</b>
-    except for a new convenience method <b>getWider</b>.</li>
+    will be the same as the signed implementation except for a new convenience
+    method. For example the implementation of <b>PVInt</b> will be identical to
+    <b>PVUint</b> except for a new convenience method <b>getWider</b>.</li>
   <li>The Convert facility will perform the proper conversions between signed
     and unsigned.</li>
   <li>No attempt will be made to detect integer overflow and throw
   exceptions.</li>
 </ul>
 
-<p>As part of the changes for unsigned support the C++ implementation will use <b>size_t</b>
-instead of <b>int</b> for everything related to size or length.
-This means that C++ on 64 bit architectures will support arrays of size greater than 2 gigaElements.</p>
+<p>As part of the changes for unsigned support the C++ implementation will use
+<b>size_t</b> instead of <b>int</b> for everything related to size or length.
+This means that C++ on 64 bit architectures will support arrays of size greater
+than 2 gigaElements.</p>
 
-<p>pvAccess will also have to be changed to support unsigned.
-The protocol specification already allows lengths greater than 2 gigaElements.</p>
+<p>pvAccess will also have to be changed to support unsigned. The protocol
+specification already allows lengths greater than 2 gigaElements.</p>
 
+<h2>Examples</h2>
 
-<h2 style="text-align: center">PVData Meta Language</h2>
+<p>For C++ clients the use of the unsigned classes should be obvious because
+unsigned is fully supported. A Java client, because Java does not support
+unsigned, must take care when using the unsigned interfaces. The following
+gives an example for an unsigned scalar, an unsigned array, and usage of the
+Convert facility. </p>
 
+<h3>Unsigned PVScalar</h3>
+
+<p>When a client uses one of the unsigned data interfaces, the client must be
+aware that get returns a signed not an unsigned type. For put the user must be
+aware that the implementation performs no checks for unsigned.</p>
+
+<p>For example:</p>
+<pre>    void someMethod(PVUByte pvValue) {
+        byte val = pvValue.get();
+        if(byte&lt;0) {
+            // BE WARY IT IS AN UNSIGNED BYTE
+            // COULD DO SOMETHING LIKE
+            short uxxx = xxx;
+            xxx &amp;= 0x00FF;
+        }
+        // OR JUST
+        short uxxx = pvValue.getWider();
+    }</pre>
+
+<h3>Unsigned PVArray</h3>
+
+<p>When a client uses one of the unsigned data interfaces, the client must be
+aware that get is returning a signed not an unsigned type. For put the user
+must be aware that thye implementation performs no checks on the input value.
+For example:</p>
+<pre>void someMethod (PVUByteArray pvValue) {
+    ByteArrayData data;
+    int len = pvValue.getLenth();
+    int num = pvValue.get(0,len,data);
+    byte[] value = data.data; // BE WARY MAY CONTAIN unsigned bytes
+    // OR JUST
+    short[] uvalue = mew Short[pvValue.getLength()];
+    num = pvValue.get(0,len,uvalue,0);</pre>
+
+<h3>New Convert Features</h3>
+
+<p>The Convert Facliity has methods to handle unsigned. Any methods that
+internally performs a widening operation implements the proper semantics. For
+example if the conversion is from a byte to a short and the byte is unsigned
+the upper bits are set to 0 after the byte is copied to the short.</p>
+
+<p>In addition the Convert Facliity has methods that support unsigned. For
+example:</p>
+<pre>    fromUByte(PVField pv,byte from);</pre>
+
+<p>If the PVField is a wider type: pvShort,
+pvUShort,pvInt,pvUUnt,pvLong,pvULONG then the upper bits are set to 0</p>
+
+<h2>PVData Meta Language</h2>
 
 <p>The following:</p>
 <dl>
@@ -144,9 +197,7 @@ The protocol specification already allows lengths greater than 2 gigaElements.</
     </dd>
 </dl>
 
-
-<h2 style="text-align: center">Interface Definitions</h2>
-
+<h2>Interface Definitions</h2>
 
 <h3>Types</h3>
 
@@ -237,14 +288,14 @@ PVShort, PVInt, PVLong, PVFloat, PVDouble, and PVString.</p>
 <p>Each scalar type has an associated data interface: PVBoolean, PVByte,
 PVShort, PVInt, PVLong, PVUByte, PVUShort, PVUInt, PNULong, PVFloat, PVDouble,
 and PVString. </p>
+
 <h4>Java</h4>
 
 <p>For Java the get and put methods will have the same definition for the
 unsigned type as for the signed type.</p>
 
 <p>Some examples are:</p>
-<pre>
-interface PVUByte extends PVScalar {
+<pre>interface PVUByte extends PVScalar {
     byte get();
     void put(byte value);
     short getWider();    // new method
@@ -270,17 +321,15 @@ public interface PVULongArray extends PVScalarArray{
      void shareData(byte[] from);
      // NEW METHOD
      int get(int offset, int length, BigInteger[] dest, int toOffset);   
-}
-</pre>
+}</pre>
+
 <h4>C++</h4>
 
 <p>PVByte is:</p>
-<pre>
-class PVByte: public PVScalar {
+<pre>class PVByte: public PVScalar {
     virtual uint8 get() = 0;
    virtual void put(uint8 value) = 0;
-}
-</pre>
+}</pre>
 
 <h3>Introspection and Data creation</h3>
 
@@ -354,19 +403,19 @@ integer types will add choices for all the unsigned integer types. When a
 widening operation is required the code will do the "correct" conversion, i.e.
 if an unsigned integer is converted to a wider integer (signed or unsigned)
 type high order bits will be made 0.</p>
-<h2>size_t instead of int for length and size</h2>
-<p>Since it has already been decided that we give up on complete 
-compatibility between Java an C++ there will be one additional change 
-while implementing unsigned.</p>
 
-<p>For C++ the type associated for  anything associated with length will be 
-<b>size_t</b> instead of <b>int</b>.
-This means that on a 64 bit architecture C++ will support arrays &gt; 2 
-giga elements in size.
-If an application creates arrays &gt; 2 giga elements than the array can 
-not be shared with a Java client or with a 32 bit C++ client.</p>
+<h2>size_t instead of int for length and size</h2>
+
+<p>Since it has already been decided that we give up on complete compatibility
+between Java an C++ there will be one additional change while implementing
+unsigned.</p>
+
+<p>For C++ the type associated for anything associated with length will be
+<b>size_t</b> instead of <b>int</b>. This means that on a 64 bit architecture
+C++ will support arrays &gt; 2 giga elements in size. If an application creates
+arrays &gt; 2 giga elements than the array can not be shared with a Java client
+or with a 32 bit C++ client.</p>
 
 <p>Note that the pvAccess network specification already supports this.</p>
-
 </body>
 </html>
