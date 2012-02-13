@@ -198,8 +198,38 @@ alt="gather diagram" /> Gather used as a service component (details omitted):
 <img src="archfiles/arch_gatherservice.png" alt="gather service diagram" />
 </p>
 
-<div class="editme">
-Marty put some information in here </div>
+<h4>Gather Implementation</h4>
+<p>Gather is ready for testing. The server is implemented in Java.
+The client is implemented in Java, C++, and Python.
+It is expected that the way gather currently presents data to the client will change
+but until it has been used by real applications it is not clear what to do.</p>
+<p>The current sources are avaliable via the following mercurial repositories:</p>
+<dl>
+   <dt>Java</dt>
+    <dd>epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceJava</dd>
+   <dt>C++ and Python</dt>
+    <dd>epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceCPP</dd>
+</dl>
+<p>The latest documentation is:</p>
+<dl>
+   <dt>Java</dt>
+    <dd><a
+ href=
+"http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/raw-file/tip/src/org/epics/pvService/gather/package.html"
+>gather Java</a></dd>
+
+   <dt>C++</dt>
+    <dd><a
+ href=
+"http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceCPP/raw-file/tip/documentation/pvServiceCPP.html"
+>gather C++</a></dd>
+   <dt>Python</dt>
+    <dd><a
+ href=
+"http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceCPP/raw-file/tip/documentation/pvServicePy.html"
+>gather Python</a></dd>
+</dl>
+
 
 <h3 id="Model">Model Service</h3>
 The Model Service returns information from the machine model, such as the
