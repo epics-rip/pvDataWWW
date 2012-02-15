@@ -24,11 +24,11 @@
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
 <h2 class="nocount" id="L50">EPICS v4 Working Group, Second Public Working
-Draft, 10-Feb-2012</h2>
+Draft, 15-Feb-2012</h2>
 <dl>
   <dt>This version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120210.html">pvAccess_Protocol_Specification_20120210.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120215.html">pvAccess_Protocol_Specification_20120215.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -37,7 +37,13 @@ Draft, 10-Feb-2012</h2>
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20111129.html">pvAccess_Protocol_Specification_20111129.html</a></dd>
   <dt>Editors:</dt>
     <dd>Matej Sekoranja, Cosylab</dd>
+    <dd>Marty Kraimer, BNL</dd>
     <dd>Greg White, SLAC, PSI</dd>
+  <dt>Contributors:</dt>
+    <dd>Andrew Johnson, APS</dd>
+    <dd>Benjamin Franksen, HZB</dd>
+</dl>    
+    
 </dl>
 <hr />
 </div>
@@ -63,7 +69,7 @@ Control System.</a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 10 February 2012 version of the pvAccess Protocol Specification.
+<p>This is the 15 February 2012 version of the pvAccess Protocol Specification.
 This version is an editors draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review and comment.
 Resulting comments will drive subsequent revisions of the specification and the
@@ -172,8 +178,8 @@ in RFC 2119) indicates exemption. </p>
         (0x00)</a></li>
       <li><a href="#protocolMessages:controlMessages:ackMark">Acknowledge Total
         Bytes Received (0x01)</a></li>
-      <li><a href="#protocolMessages:controlMessages:endianess">Announce
-        byte-order (0x02)</a></li>
+      <li><a href="#protocolMessages:controlMessages:endianess">Set
+        byte order (0x02)</a></li>
       <li><a href="#protocolMessages:controlMessages:echoRequest">Echo request
         (0x03)</a></li>
       <li><a href="#protocolMessages:controlMessages:echoResponse">Echo
@@ -242,7 +248,7 @@ the client uses the server's byte order. Each message contains an endiannes
 flag in order to allow all the
 intermediates to forward data without requiring it to be unmarshaled (so that
 the intermediates can forward requests by simply copying blocks of binary
-data) and in order not to require a specific byte-order for connection-less
+data) and in order not to require a specific byte order for connection-less
 protocols (UDP). </p>
 
 <h3 id="dataEncoding:sizes">Sizes</h3>
@@ -812,7 +818,7 @@ pvAccess as the following: </p>
         int status 0x22222222
         string message Allo, Allo!</pre>
 
-<p>is serialzied as (big-endian byte-order): </p>
+<p>is serialzied as (big-endian byte order): </p>
 <pre>Hexdump [Serialized structure] size = 40
 03 01 02 03  11 22 33 44  55 66 77 88  AA BB CC DD  .... ."3D Ufw. .... 
 EE EE EE EE  11 11 11 11  22 22 22 22  0B 41 6C 6C  .... .... """" .All 
@@ -870,8 +876,8 @@ MUST be connected with exactly one TCP connection for each QoS parameter value.
 
 <p>When establishing a TCP connection, a simple handshake MUST be performed.
 The client opens a TCP connection to the server and waits until the Connection
-Validation message is received. The server MUST initially send a Set byte-order
-control message to notify the client about byte-order to be used for this TCP
+Validation message is received. The server MUST initially send a Set byte order
+control message to notify the client about byte order to be used for this TCP
 connection. After that the server MUST send the Connection Validation message.
 If client correctly decodes messages it responds with a Connection Validation
 response message. After that, client may start sending requests. The client
@@ -879,9 +885,9 @@ SHOULD keep the connection established until the last active channel gets
 destroyed. However, to optimize resource reallocation it MAY delay connection
 destruction. </p>
 
-<p>Both parties MUST constantly monitor connection is valid and not simply
-relay on TCP mechanisms. The only way to ensure this is by sending data. If
-there is no send operation called within a predetermined period of time, an
+<p>Both parties MUST constantly monitor whether the connection is valid and
+not simply rely on TCP mechanisms. The only way to ensure this is by sending data. If
+there is no send operation called within a predetermined (15 seconds) period of time, an
 echo message MUST be sent. In case of connection failure, TCP will report
 connection loss on send. If there is no response in a predetermined period of
 time, the connection SHOULD be marked as unresponsive. Echo message MUST be
@@ -908,6 +914,14 @@ re-established, channels are put to back to connected state and all their
 requests re-initialized; in addition, monitors are re-started. </p>
 
 <h2 id="channelLifecycle">Channel Life-cycle</h2>
+
+<p>
+pvAccess uses the concept of a 'channel' to denote a connection to a single
+named resource that resides on some server. Channels are subordinate to the
+TCP connection between a client and server: a channel can only be created
+if a TCP connection has already been established; likewise, if the TCP
+connection is terminated, then all subordinate channels are implicitly destroyed.
+</p>
 
 <div class="image" style="text-align:center">
 <img src="image/pvAccessSpec_ChannelStates.png" alt="Channel State Diagram"
@@ -976,11 +990,11 @@ anymore. </p>
 
 <h2 id="flowControl">Flow Control</h2>
 
-<p>Usually flow control algorithms wait for congestion to occur before they are
+<p style="font-style:italic;">Usually flow control algorithms wait for congestion to occur before they are
 triggered. They are causal. However, due to the isolated nature of TCP
 connection - there are always only two parties involved - it is possible to
 predict congestions using the following algorithm: </p>
-<ul>
+<ul style="font-style:italic;">
   <li>both parties exchange their receive socket and local buffer sizes</li>
   <li>periodically, i.e. every N bytes, they send a control message marking
     total bytes sent to the other party</li>
@@ -992,7 +1006,7 @@ predict congestions using the following algorithm: </p>
     should never exceed the total sum of receive buffers.</li>
 </ul>
 
-<p>Flow control is needed only to optimize subscription messages back to the
+<p style="font-style:italic;">Flow control is needed only to optimize subscription messages back to the
 client (i.e. monitors), for other large messages TCP flow control is
 sufficient. <br />
 A pvAccess implementation SHOULD implement flow control such that each endpoint
@@ -1003,9 +1017,9 @@ monitors' circular buffer queues. </p>
 
 <h3 id="flowControlExample">Flow Control Example</h3>
 
-<p>The intention of flow control is to avoid having the following behavior
+<p style="font-style:italic;">The intention of flow control is to avoid having the following behavior
 (pure TCP flow control): </p>
-<ul>
+<ul style="font-style:italic;">
   <li>Let's assume the client's Rx buffers are full</li>
   <li>The server is sending monitors until TCP detects client's Rx buffer is
     full</li>
@@ -1017,17 +1031,17 @@ monitors' circular buffer queues. </p>
   monitors!)</li>
 </ul>
 
-<p>Such as situation as described above would result in monitors as below
+<p style="font-style:italic;">Such as situation as described above would result in monitors as below
 (identified by their sequential number): </p>
 <pre>0 1 2 3 4 (buffers full) 7 8 9 10 11 12 (buffers full) 22 23 24 25 26 27 28 (buffers full)</pre>
 
-<p>Flow control can make this better: </p>
+<p style="font-style:italic;">Flow control can make this better: </p>
 <pre>0 1 2 3 4 (buffers full) 7 8 (buffers full, but for a less time since server would send only as much as the client can handle) 10 11 (...) 14 15 (...) 18 19</pre>
 
-<p>The result is more fluid and up-to-date arrival of monitors (to overcome
+<p style="font-style:italic;">The result is more fluid and up-to-date arrival of monitors (to overcome
 problem of having combination of slow processing and large buffers). </p>
 
-<p>Requiring a flow control (in addition to already existing monitor queues)
+<p style="font-style:italic;">Requiring a flow control (in addition to already existing monitor queues)
 adds complexity to the protocol implementation. It needs to be decided and
 evaluated if flow control SHOULD be implemented. </p>
 
@@ -1038,7 +1052,8 @@ search messages are usually sent to a broadcast addresses and servers hosting
 searched channels respond with a message containing their server address and
 port.<br />
 In addition pvAccess transparently supports multicast, if an address is a
-multicast address the implementation SHOULD transparently handle it. </p>
+multicast address the implementation SHOULD transparently handle it
+(join the multicast group in order to receive multicast messages).</p>
 
 <p>To be specified: Proper UDP congestion control SHOULD be implemented to
 prevent flooding the network with UDP search messages. Currently a simple and
@@ -1064,7 +1079,7 @@ it were expressed by the following structure: </p>
     byte magic;
     byte version;
     byte flags;
-    byte messageType;
+    byte messageCommand;
     int payloadSize;
 };</pre>
 
@@ -1088,8 +1103,8 @@ it were expressed by the following structure: </p>
       <td>Message flags.</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">messageType</td>
-      <td>Message type (i.e. create, get, put, process, etc.).</td>
+      <td style="text-align:right;font-family:monospace">messageCommand</td>
+      <td>Message command (i.e. create, get, put, process, etc.).</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">payloadSize</td>
@@ -1119,7 +1134,7 @@ it were expressed by the following structure: </p>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">1,2,3</td>
-      <td colspan="2">Unused</td>
+      <td colspan="2">Unused, MUST be 0.</td>
     </tr>
     <tr>
       <td rowspan="4" style="text-align:right;font-family:monospace">5,4</td>
@@ -1140,7 +1155,7 @@ it were expressed by the following structure: </p>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">6</td>
-      <td colspan="2">Unused</td>
+      <td colspan="2">Unused, MUST be 0.</td>
     </tr>
     <tr>
       <td rowspan="2" style="text-align:right;font-family:monospace">7</td>
@@ -1162,9 +1177,12 @@ messages are allowed to be in-between.
 
 <h2 id="protocolMessages:applicationMessages">Application Messages</h2>
 
-<p>This section describes all the application messages (0-th bit of
-<i>pvAccessHeader.flags</i> is not set) for different
-<i>pvAccessHeader.messageType</i> values. </p>
+<p>This section describes the message payloads for application messages. 
+Each subsection describes a single message command (<i>pvAccessHeader.messageCommand</i>).
+</p>
+
+<p> "request" means a message sent by a client, and "response" means it is
+sent by the server.</p>
 
 <p>In order to understand specific application messages it is strongly
 recommended to be familiar with the <a
@@ -1225,7 +1243,7 @@ announce new servers and server restarts. </p>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">serverStatusIF</td>
-      <td>Optional server status Field description, NULL_TYPE_CODE is none.</td>
+      <td>Optional server status Field description, NULL_TYPE_CODE MUST be used indicate absence of data.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">serverStatus</td>
@@ -1245,13 +1263,13 @@ message send). </p>
 <p>Each server implementation SHOULD emit its own beacons, e.g. if a server is
 supporting data transmission over TCP/IP and UDP/IP there SHOULD both emit
 beacons. If the implementations are tightly coupled, i.e. they have the same
-lifecycle and share the same channels, then only one server MIGHT emit beacons.
+lifecycle and share the same channels, then only one server MAY emit beacons.
 </p>
 
 <p>NOTE: Servers SHOULD synchronize their internal clocks using NTP or some
 other suitable time source before sending their first beacon.<br />
 NOTE: Due to the fact that UDP does not guarantee delivery, a server MUST send
-several beacons to notify that it is alive (e.g. 15 beacons with 1Hz period).
+several beacons to notify that it is alive (15 beacons with 1Hz period).
 After longer period it MAY stop sending them, however it is recommended that is
 SHOULD do it with a low rate (one beacon per every couple of minutes) to report
 serverStatus.<br />
@@ -1366,7 +1384,7 @@ struct connectionValidationResponse {
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">7</td>
-      <td>Unused.</td>
+      <td>Unused, MUST be 0.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">8</td>
@@ -1382,15 +1400,15 @@ struct connectionValidationResponse {
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">11-15</td>
-      <td>Unused.</td>
+      <td>Unused, MUST be 0.</td>
     </tr>
   </tbody>
 </table>
 
-<p>Each QoS parameter value REQUIRES a separate TCP/IP connection. Low-latency
-priority bit signals transport implementation to try to respond with low
-latency. Throughput priority bit signals transport implementation to try to
-maximize throughput. How this is achieved depends on specific implementation.
+<p>Each QoS parameter value REQUIRES a separate TCP/IP connection.
+If the Low-latency priority bit is set, then the client should minimize
+latency; if the Throughput priority bit is set, the client should maximize
+throughput. How this is achieved depends on specific implementation.
 Compression bit enables compression for the connection (TBD: fast and streaming
 mode algorithm to be used). </p>
 
@@ -1481,7 +1499,7 @@ struct searchRequest {
   </tbody>
 </table>
 
-<p>The response to a search request MUST be sent as messageType 0x04, see
+<p>The response to a search request is defined as messageCommand 0x04, see
 below. </p>
 
 <h3 id="protocolMessages:applicationMessages:searchResponse">Search response
@@ -1534,6 +1552,10 @@ below. </p>
     </tr>
   </tbody>
 </table>
+
+<p>
+Client MUST examine the protocol member field to verify it supports exchange protocol; if not, the search response is ignored.
+</p>
 
 <h3 id="protocolMessages:applicationMessages:createChannel">Create channel
 (0x07)</h3>
@@ -3169,9 +3191,9 @@ struct channelRPCResponse {
 
 <h2 id="controlMessages">Control Messages</h2>
 
-<p>This section describes all the control messages (0-th bit of
-<i>pvAccessHeader.flags</i> is set) for different
-<i>pvAccessHeader.messageType</i> values. </p>
+<p>This section describes the message payloads for control messages. 
+Each subsection describes a single message command (<i>pvAccessHeader.messageCommand</i>).
+</p>
 
 <p>Control messages are messages without payload and are used internally by the
 procotol, e.g. to handle byte order, flow control. Payload size field contains
@@ -3188,14 +3210,38 @@ Received (0x01)</h3>
 <p>Payload size field holds the acknowledge value of total bytes received (must
 match previously received marked value). </p>
 
-<h3 id="protocolMessages:controlMessages:endianess">Announce byte-order
+<h3 id="protocolMessages:controlMessages:endianess">Set byte order
 (0x02)</h3>
 
-<p>7-th bit of header flags field indicated selected byte-order. Payload equals
-0. <br />
+<p>7-th bit of header flags field indicates server's selected byte order
+for the connection via this message was received. <br/>
+Client MUST encode all the messages sent via this connection using this byte order. <br/>
+Client decoding byte order depends on payload size field value:
+</p>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold">Client Decoding</caption>
+  <tbody>
+    <tr>
+      <th>Payload Size Field Value</th>
+      <th>Meaning</th>
+    </tr>
+    <tr>
+      <td><a style="font-family:monospace">0x00000000</td>
+      <td>Client MUST decode all the messages received via this connection using server's selected byte order.</td>
+    </tr>
+    <tr>
+      <td><a style="font-family:monospace">0xFFFFFFFF</td>
+      <td>Client MUST decode all the messages sent received this connection as indicated by each message byte order flag.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
 This MUST be the first message sent by a server when connection is established.
-<br />
-NOTE: message is byte-order independed. </p>
+For connection-less protocols this message is not sent and byte order is determined per message using its byte order flag.
+</p>
+<p>NOTE: this message is byte order independed. </p>
 
 <h3 id="protocolMessages:controlMessages:echoRequest">Echo request (0x03)</h3>
 
@@ -3231,7 +3277,7 @@ request message. </p>
       <td align="left" colspan="3">TCP/IP connection established</td>
     </tr>
     <tr>
-      <td>announceByteOrderControlMessage</td>
+      <td>setByteOrderControlMessage</td>
       <td>----&gt;</td>
       <td></td>
     </tr>
