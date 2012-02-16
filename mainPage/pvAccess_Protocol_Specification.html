@@ -91,8 +91,8 @@ in RFC 2119) indicates exemption. </p>
 
 <div class="toc">
 <ul>
-  <li><a href="#overview">Overview</a></li>
-  <li><a href="#dataEncoding">Data Encoding</a>
+  <li>1. <a href="#overview">Overview</a></li>
+  <li>2. <a href="#dataEncoding">Data Encoding</a>
     <ul>
       <li><a href="#dataEncoding:sizes">Sizes</a></li>
       <li><a href="#dataEncoding:userData">User Data</a>
@@ -113,31 +113,32 @@ in RFC 2119) indicates exemption. </p>
             </ul>
           </li>
           <li><a href="#dataEncoding:status">Status</a></li>
-        </ul>
-      </li>
-      <li><a href="#dataEncoding:introspectionData">Introspection Data</a>
-        <ul>
-          <li><a href="#dataEncoding:example1">Example #1</a></li>
-          <li><a href="#dataEncoding:example2">Example #2</a></li>
+          <li><a href="#dataEncoding:introspectionData">Introspection Data</a>
+            <ul>
+              <li><a href="#dataEncoding:example1">Example #1</a></li>
+              <li><a href="#dataEncoding:example2">Example #2</a></li>
+            </ul>
+          </li>
         </ul>
       </li>
     </ul>
   </li>
-  <li><a href="#connectionManagement">Connection Management</a></li>
-  <li><a href="#channelLifecycle">Channel Life-cycle</a></li>
-  <li><a href="#channelRequestLifecycle">Channel Request Life-cycle</a></li>
-  <li><a href="#flowControl">Flow Control</a>
+  <li>3. <a href="#connectionManagement">Connection Management</a></li>
+  <li>4. <a href="#channelLifecycle">Channel Life-cycle</a></li>
+  <li>5. <a href="#channelRequestLifecycle">Channel Request Life-cycle</a></li>
+  <li>6. <a href="#flowControl">Flow Control</a>
     <ul>
       <li><a href="#flowControlExample">Flow Control Example</a></li>
     </ul>
   </li>
-  <li><a href="#channelDiscovery">Channel Discovery</a></li>
-  <li><a href="#protocolMessages">Protocol Messages</a>
+  <li>7. <a href="#channelDiscovery">Channel Discovery</a></li>
+  <li>8. <a href="#communicationExample">Communication Example</a></li>
+  <li>9. <a href="#protocolMessages">Protocol Messages</a>
     <ul>
       <li><a href="#protocolMessages:messageHeader">Message header</a></li>
     </ul>
   </li>
-  <li><a href="#protocolMessages:applicationMessages">Application Messages</a>
+  <li>10. <a href="#protocolMessages:applicationMessages">Application Messages</a>
     <ul>
       <li><a href="#protocolMessages:applicationMessages:beacon">Beacon
         (0x00)</a></li>
@@ -180,7 +181,7 @@ in RFC 2119) indicates exemption. </p>
         RPC (0x14)</a></li>
     </ul>
   </li>
-  <li><a href="#controlMessages">Control Messages</a>
+  <li>11. <a href="#controlMessages">Control Messages</a>
     <ul>
       <li><a href="#protocolMessages:controlMessages:mark">Mark Total Byte Sent
         (0x00)</a></li>
@@ -194,8 +195,7 @@ in RFC 2119) indicates exemption. </p>
         response (0x04)</a></li>
     </ul>
   </li>
-  <li><a href="#communicationExample">Communication Example</a></li>
-  <li><a href="#futureProtocolChanges">Future Protocol Changes/Updates</a></li>
+  <li>12. <a href="#futureProtocolChanges">Future Protocol Changes/Updates</a></li>
 </ul>
 </div>
 
@@ -282,7 +282,7 @@ always be a non-negative number and encoded as follows: </p>
     implies maximum size of 2^63-1.</li>
 </ol>
 
-<p>Using this encoding to indicate size is significantly cheaper than always
+<p style="font-style:italic;">Using this encoding to indicate size is significantly cheaper than always
 using a 32-bit (or even 64-bit) integer to store the size. This is especially
 true when marshalling sequences of short strings; counts of up to 254 require
 only a single byte instead of four. This comes at the expense of counts greater
@@ -362,7 +362,7 @@ broken. An empty string MUST be encoded with a size of zero.</p>
 <p>Strings MUST NOT be NULL-terminated and MUST NOT contain any zero bytes.
 NULL strings are not supported. </p>
 
-<p>On the wire, pvAccess MUST transmit all strings as Unicode strings in UTF-8.
+<p style="font-style:italic;">On the wire, pvAccess MUST transmit all strings as Unicode strings in UTF-8.
 Non-C++ bindings of the implementations SHOULD use strings in their
 language-native Unicode representation and convert automatically to and from
 UTF-8 for transmission, so applications can transparently use characters from
@@ -557,7 +557,7 @@ Hexdump [ERROR, "Failed to get, due to unexpected exception", (call tree)] size 
 61 74 69 6F  6E 45 78 61  6D 70 6C 65  73 2E 6A 61  atio nExa mple s.ja 
 76 61 3A 31  32 36 29 0A                            va:1 26). </pre>
 
-<h3 id="dataEncoding:introspectionData">Introspection Data</h3>
+<h4 id="dataEncoding:introspectionData">Introspection Data</h4>
 
 <p>Introspection data describes the type of a user data item. It is not itself
 user data, but rather meta data. Introspection data appears in one of four
@@ -830,7 +830,7 @@ defining an array element type.</p>
   </tbody>
 </table>
 
-<h4 id="dataEncoding:example1">Example #1</h4>
+<h5 id="dataEncoding:example1">Example #1</h5>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
@@ -855,7 +855,7 @@ pvAccess as the following: </p>
 08 73 65 76  65 72 69 74  79 03 06 73  74 61 74 75  .sev erit y..s tatu 
 73 07 07 6D  65 73 73 61  67 65                    s..m essa ge</pre>
 
-<h4 id="dataEncoding:example2">Example #2</h4>
+<h5 id="dataEncoding:example2">Example #2</h5>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
@@ -899,6 +899,12 @@ pvAccess as the following: </p>
 61 67 65 FE  00 02                                  age. ..</pre>
 
 <h2 id="connectionManagement">Connection Management</h2>
+
+<p>pvAccess uses the concept of a "channel" to denote a connection to a single
+named resource that resides on some server. Channels are subordinate to the TCP
+connection between a client and server: a channel can only be created if a TCP
+connection has already been established; likewise, if the TCP connection is
+terminated, then all subordinate channels are implicitly destroyed. </p>
 
 <p>Each TCP connection has associated QoS parameters. Regardless of how many
 channels are handled by either client or server, each client and server pair
@@ -946,12 +952,6 @@ re-established, channels are put to back to connected state and all their
 requests re-initialized; in addition, monitors are re-started. </p>
 
 <h2 id="channelLifecycle">Channel Life-cycle</h2>
-
-<p>pvAccess uses the concept of a 'channel' to denote a connection to a single
-named resource that resides on some server. Channels are subordinate to the TCP
-connection between a client and server: a channel can only be created if a TCP
-connection has already been established; likewise, if the TCP connection is
-terminated, then all subordinate channels are implicitly destroyed. </p>
 
 <div class="image" style="text-align:center">
 <img src="image/pvAccessSpec_ChannelStates.png" alt="Channel State Diagram"
@@ -1092,6 +1092,103 @@ prevent flooding the network with UDP search messages. Currently a simple and
 robust algorithm is used in the reference implementation. The algorithm needs
 to be specified (or some more clever algorithm invented). </p>
 
+<h2 id="communicationExample">Communication Example</h2>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold">Communication Example.</caption>
+  <tbody>
+    <tr>
+      <th>Server</th>
+      <th></th>
+      <th>Client</th>
+    </tr>
+    <tr>
+      <td></td>
+      <td>&lt;----</td>
+      <td>searchRequest (UDP broadcast/multicast)</td>
+    </tr>
+    <tr>
+      <td>searchResponse (UDP unicast)</td>
+      <td>----&gt;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td align="left" colspan="3">TCP/IP connection established</td>
+    </tr>
+    <tr>
+      <td>setByteOrderControlMessage</td>
+      <td>----&gt;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>connectionValidationRequest</td>
+      <td>----&gt;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>&lt;----</td>
+      <td>connectionValidationResponse</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>&lt;----</td>
+      <td>createChannelRequest</td>
+    </tr>
+    <tr>
+      <td>createChannelResponse</td>
+      <td>----&gt;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>&lt;----</td>
+      <td>channelGetRequestInit</td>
+    </tr>
+    <tr>
+      <td>channelGetResponseInit</td>
+      <td>----&gt;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>&lt;----</td>
+      <td>channelGetRequest</td>
+    </tr>
+    <tr>
+      <td>channelGetResponse</td>
+      <td>----&gt;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>&lt;----</td>
+      <td>. . .</td>
+    </tr>
+    <tr>
+      <td>. . .</td>
+      <td>----&gt;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>&lt;----</td>
+      <td>destroyRequest</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>&lt;----</td>
+      <td>channelDestroyRequest</td>
+    </tr>
+    <tr>
+      <td>channelDestroyResponse</td>
+      <td>----&gt;</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+
 <h2 id="protocolMessages">Protocol Messages</h2>
 
 <p>The pvAccess protocol uses two protocol message types: </p>
@@ -1226,7 +1323,7 @@ message MUST be sent over the same transport the request was received.</p>
 
 <h3 id="protocolMessages:applicationMessages:beacon">Beacon (0x00)</h3>
 
-<p>Beacons MUST be broadcasted/multicasted over UDP. Beacons SHOULD be used to
+<p>Servers MUST broadcast/multicast beacons over UDP. Beacons are be used to
 announce new servers and server restarts. </p>
 <pre>struct beaconMessage {
     short beaconSequenceId;
@@ -1283,7 +1380,8 @@ announce new servers and server restarts. </p>
   </tbody>
 </table>
 
-<p>A beacon received from an as yet unknown serverAdddressIPv6:serverPort means
+<p>When each server is started it MUST start emitting beacons. Clients MUST monitor
+all the beacons. A beacon received from an as yet unknown serverAdddressIPv6:serverPort means
 new server has come online. A beacon with the same
 serverAdddressIPv6:serverPort address as one already received but different
 startupTime{Seconds,Nanos} means that a server was restarted. In both cases
@@ -1297,14 +1395,16 @@ beacons. If the implementations are tightly coupled, i.e. they have the same
 lifecycle and share the same channels, then only one server MAY emit beacons.
 </p>
 
-<p>NOTE: Servers SHOULD synchronize their internal clocks using NTP or some
-other suitable time source before sending their first beacon.<br />
-NOTE: Due to the fact that UDP does not guarantee delivery, a server MUST send
+<p>Servers SHOULD synchronize their internal clocks using NTP or some
+other suitable time source before sending their first beacon.</p>
+
+<p>Due to the fact that UDP does not guarantee delivery, a server MUST send
 several beacons to notify that it is alive (15 beacons with 1Hz period). After
 longer period it MAY stop sending them, however it is recommended that is
-SHOULD do it with a low rate (one beacon per every couple of minutes) to report
-serverStatus.<br />
-NOTE: Beacons SHOULD not used to report connection-valid status. </p>
+SHOULD do it with a low rate (one beacon per minute) to report
+serverStatus.</p>
+
+<p>Beacons SHOULD not used to report connection-valid status. </p>
 
 <h3 id="protocolMessages:applicationMessages:connectionValidation">Connection
 validation (0x01)</h3>
@@ -3282,102 +3382,6 @@ order is determined per message using its byte order flag. </p>
 
 <p>Response to a echo request. Payload size field contains the same value as in
 request message. </p>
-
-<h2 id="communicationExample">Communication Example</h2>
-
-<table style="caption-side:bottom">
-  <caption style="font-weight:bold">Communication Example.</caption>
-  <tbody>
-    <tr>
-      <th>Server</th>
-      <th></th>
-      <th>Client</th>
-    </tr>
-    <tr>
-      <td></td>
-      <td>&lt;----</td>
-      <td>searchRequest (UDP broadcast/multicast)</td>
-    </tr>
-    <tr>
-      <td>searchResponse (UDP unicast)</td>
-      <td>----&gt;</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td align="left" colspan="3">TCP/IP connection established</td>
-    </tr>
-    <tr>
-      <td>setByteOrderControlMessage</td>
-      <td>----&gt;</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>connectionValidationRequest</td>
-      <td>----&gt;</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>&lt;----</td>
-      <td>connectionValidationResponse</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>&lt;----</td>
-      <td>createChannelRequest</td>
-    </tr>
-    <tr>
-      <td>createChannelResponse</td>
-      <td>----&gt;</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>&lt;----</td>
-      <td>channelGetRequestInit</td>
-    </tr>
-    <tr>
-      <td>channelGetResponseInit</td>
-      <td>----&gt;</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>&lt;----</td>
-      <td>channelGetRequest</td>
-    </tr>
-    <tr>
-      <td>channelGetResponse</td>
-      <td>----&gt;</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>&lt;----</td>
-      <td>. . .</td>
-    </tr>
-    <tr>
-      <td>. . .</td>
-      <td>----&gt;</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>&lt;----</td>
-      <td>destroyRequest</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>&lt;----</td>
-      <td>channelDestroyRequest</td>
-    </tr>
-    <tr>
-      <td>channelDestroyResponse</td>
-      <td>----&gt;</td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
 
 <h2 id="futureProtocolChanges">Future Protocol Changes/Updates</h2>
 
