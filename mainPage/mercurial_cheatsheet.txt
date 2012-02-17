@@ -202,6 +202,18 @@ putting them in epics-pvdata at sourceforge is now a 3 stage process:
    remote: added 1 changesets with 5 changes to 5 files
    remote: Running changegroup hook
 
+TROUBLESHOOTING
+---------------
+* When you attemp hg push, you get, eg 
+--
+abort: push creates new remote heads!
+(did you forget to merge? use push -f to force)
+--
+Solution is described in http://wiki.geeklog.net/index.php/Using_Mercurial "Merging".
+
+Basically *Don't try to push newly added files while you still have uncommited
+changes lying around (or you will end up with the above).*
+
 
 Mercurial Configuration (.hgrc in your home directory)
 ======================================================
