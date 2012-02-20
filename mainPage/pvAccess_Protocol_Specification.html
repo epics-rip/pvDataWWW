@@ -24,11 +24,11 @@
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
 <h2 class="nocount" id="L50">EPICS v4 Working Group, Second Public Working
-Draft, 15-Feb-2012</h2>
+Draft, 20-Feb-2012</h2>
 <dl>
   <dt>This version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120215.html">pvAccess_Protocol_Specification_20120215.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120220.html">pvAccess_Protocol_Specification_20120220.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -67,7 +67,7 @@ Control System.</a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 15 February 2012 version of the pvAccess Protocol Specification.
+<p>This is the 20 February 2012 version of the pvAccess Protocol Specification.
 This version is an editors draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review
 and comment. Resulting comments will drive subsequent revisions of the
@@ -92,10 +92,10 @@ in RFC 2119) indicates exemption. </p>
 <div class="toc">
 <ul>
   <li>1. <a href="#overview">Overview</a></li>
-  <li>2. <a href="#dataEncoding">Data Encoding</a> 
+  <li>2. <a href="#dataEncoding">Data Encoding</a>
     <ul>
       <li><a href="#dataEncoding:sizes">Sizes</a></li>
-      <li><a href="#dataEncoding:userData">User Data</a> 
+      <li><a href="#dataEncoding:userData">User Data</a>
         <ul>
           <li><a href="#dataEncoding:basicTypes">Basic Types</a></li>
           <li><a href="#dataEncoding:strings">Strings</a></li>
@@ -104,16 +104,16 @@ in RFC 2119) indicates exemption. </p>
           <li><a href="#dataEncoding:example">Encoding example</a></li>
         </ul>
       </li>
-      <li><a href="#dataEncoding:metaData">Meta Data</a> 
+      <li><a href="#dataEncoding:metaData">Meta Data</a>
         <ul>
-          <li><a href="#dataEncoding:bitSets">BitSets</a> 
+          <li><a href="#dataEncoding:bitSets">BitSets</a>
             <ul>
               <li><a href="#dataEncoding:bitSets:example">Partial Structure
                 Serialization</a></li>
             </ul>
           </li>
           <li><a href="#dataEncoding:status">Status</a></li>
-          <li><a href="#dataEncoding:introspectionData">Introspection Data</a> 
+          <li><a href="#dataEncoding:introspectionData">Introspection Data</a>
             <ul>
               <li><a href="#dataEncoding:example1">Example #1</a></li>
               <li><a href="#dataEncoding:example2">Example #2</a></li>
@@ -126,20 +126,19 @@ in RFC 2119) indicates exemption. </p>
   <li>3. <a href="#connectionManagement">Connection Management</a></li>
   <li>4. <a href="#channelLifecycle">Channel Life-cycle</a></li>
   <li>5. <a href="#channelRequestLifecycle">Channel Request Life-cycle</a></li>
-  <li>6. <a href="#flowControl">Flow Control</a> 
+  <li>6. <a href="#flowControl">Flow Control</a>
     <ul>
       <li><a href="#flowControlExample">Flow Control Example</a></li>
     </ul>
   </li>
   <li>7. <a href="#channelDiscovery">Channel Discovery</a></li>
   <li>8. <a href="#communicationExample">Communication Example</a></li>
-  <li>9. <a href="#protocolMessages">Protocol Messages</a> 
+  <li>9. <a href="#protocolMessages">Protocol Messages</a>
     <ul>
       <li><a href="#protocolMessages:messageHeader">Message header</a></li>
     </ul>
   </li>
-  <li>10. <a href="#protocolMessages:applicationMessages">Application
-    Messages</a> 
+  <li>10. <a href="#protocolMessages:applicationMessages">Application Messages</a>
     <ul>
       <li><a href="#protocolMessages:applicationMessages:beacon">Beacon
         (0x00)</a></li>
@@ -182,7 +181,7 @@ in RFC 2119) indicates exemption. </p>
         RPC (0x14)</a></li>
     </ul>
   </li>
-  <li>11. <a href="#controlMessages">Control Messages</a> 
+  <li>11. <a href="#controlMessages">Control Messages</a>
     <ul>
       <li><a href="#protocolMessages:controlMessages:mark">Mark Total Byte Sent
         (0x00)</a></li>
@@ -196,8 +195,7 @@ in RFC 2119) indicates exemption. </p>
         response (0x04)</a></li>
     </ul>
   </li>
-  <li>12. <a href="#futureProtocolChanges">Future Protocol
-  Changes/Updates</a></li>
+  <li>12. <a href="#futureProtocolChanges">Future Protocol Changes/Updates</a></li>
 </ul>
 </div>
 
@@ -284,13 +282,12 @@ always be a non-negative number and encoded as follows: </p>
     implies maximum size of 2^63-1.</li>
 </ol>
 
-<p style="font-style:italic;">Using this encoding to indicate size is
-significantly cheaper than always using a 32-bit (or even 64-bit) integer to
-store the size. This is especially true when marshalling sequences of short
-strings; counts of up to 254 require only a single byte instead of four. This
-comes at the expense of counts greater than 254, which require five bytes
-instead of four. However, for sequences or strings of length greater than 254,
-the extra byte is insignificant. </p>
+<p style="font-style:italic;">Using this encoding to indicate size is significantly cheaper than always
+using a 32-bit (or even 64-bit) integer to store the size. This is especially
+true when marshalling sequences of short strings; counts of up to 254 require
+only a single byte instead of four. This comes at the expense of counts greater
+than 254, which require five bytes instead of four. However, for sequences or
+strings of length greater than 254, the extra byte is insignificant. </p>
 
 <h3 id="dataEncoding:userData">User Data</h3>
 
@@ -365,14 +362,13 @@ broken. An empty string MUST be encoded with a size of zero.</p>
 <p>Strings MUST NOT be NULL-terminated and MUST NOT contain any zero bytes.
 NULL strings are not supported. </p>
 
-<p style="font-style:italic;">On the wire, pvAccess MUST transmit all strings
-as Unicode strings in UTF-8. Non-C++ bindings of the implementations SHOULD use
-strings in their language-native Unicode representation and convert
-automatically to and from UTF-8 for transmission, so applications can
-transparently use characters from non-English alphabets. However, for C++, how
-strings are represented inside a process depends on the platform as well as the
-mapping that is chosen for a particular string. The default mapping to is
-std::string. </p>
+<p style="font-style:italic;">On the wire, pvAccess MUST transmit all strings as Unicode strings in UTF-8.
+Non-C++ bindings of the implementations SHOULD use strings in their
+language-native Unicode representation and convert automatically to and from
+UTF-8 for transmission, so applications can transparently use characters from
+non-English alphabets. However, for C++, how strings are represented inside a
+process depends on the platform as well as the mapping that is chosen for a
+particular string. The default mapping to is std::string. </p>
 
 <h4 id="dataEncoding:arrays">Arrays</h4>
 
@@ -503,7 +499,8 @@ structure: </p>
                     double y 
 6        string factoryRPC
 7        structure arguments
-8            int size</pre>
+8            int size
+</pre>
 
 <p>The structure above requires a BitSet that contains 9 bits.<br />
 If the bit corresponding to a structure node is set, then all the fields of
@@ -608,7 +605,7 @@ when connection is established. </p>
         full interface description.</td>
     </tr>
     <tr>
-      <td>0xFB - 0xE0</td>
+      <td>0xFC - 0xE0</td>
       <td>RESERVED</td>
       <td>Reserved for future usage, MUST NOT be used.</td>
     </tr>
@@ -831,7 +828,8 @@ defining an array element type.</p>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
-<pre>structure  timeStamp
+<pre>
+structure  timeStamp
     long secondsPastEpoch
     int nanoSeconds
     int userTag</pre>
@@ -848,7 +846,8 @@ FD 00 01 80  09 74 69 6D  65 53 74 61  6D 70 03 23  .... .tim eSta mp.#
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
-<pre>structure  ExampleStructure
+<pre>
+structure  ExampleStructure
     byte[] value
     structure  timeStamp
         long secondsPastEpoch
@@ -1161,6 +1160,7 @@ to be specified (or some more clever algorithm invented). </p>
   </tbody>
 </table>
 
+
 <h2 id="protocolMessages">Protocol Messages</h2>
 
 <p>The pvAccess protocol uses two protocol message types: </p>
@@ -1352,14 +1352,14 @@ announce new servers and server restarts. </p>
   </tbody>
 </table>
 
-<p>When each server is started it MUST start emitting beacons. Clients MUST
-monitor all the beacons. A beacon received from an as yet unknown
-serverAdddressIPv6:serverPort means new server has come online. A beacon with
-the same serverAdddressIPv6:serverPort address as one already received but
-different startupTime{Seconds,Nanos} means that a server was restarted. In both
-cases client SHOULD boost searching of not yet found channels. Client MAY
-disconnect old connection or wait until connection loss is detected (on failed
-Echo message send). </p>
+<p>When each server is started it MUST start emitting beacons. Clients MUST monitor
+all the beacons. A beacon received from an as yet unknown serverAdddressIPv6:serverPort means
+new server has come online. A beacon with the same
+serverAdddressIPv6:serverPort address as one already received but different
+startupTime{Seconds,Nanos} means that a server was restarted. In both cases
+client SHOULD boost searching of not yet found channels. Client MAY disconnect
+old connection or wait until connection loss is detected (on failed Echo
+message send). </p>
 
 <p>Each server implementation SHOULD emit its own beacons, e.g. if a server is
 supporting data transmission over TCP/IP and UDP/IP there SHOULD both emit
@@ -1367,13 +1367,14 @@ beacons. If the implementations are tightly coupled, i.e. they have the same
 lifecycle and share the same channels, then only one server MAY emit beacons.
 </p>
 
-<p>Servers SHOULD synchronize their internal clocks using NTP or some other
-suitable time source before sending their first beacon.</p>
+<p>Servers SHOULD synchronize their internal clocks using NTP or some
+other suitable time source before sending their first beacon.</p>
 
 <p>Due to the fact that UDP does not guarantee delivery, a server MUST send
 several beacons to notify that it is alive (15 beacons with 1Hz period). After
 longer period it MAY stop sending them, however it is recommended that is
-SHOULD do it with a low rate (one beacon per minute) to report serverStatus.</p>
+SHOULD do it with a low rate (one beacon per minute) to report
+serverStatus.</p>
 
 <p>Beacons SHOULD not used to report connection-valid status. </p>
 
