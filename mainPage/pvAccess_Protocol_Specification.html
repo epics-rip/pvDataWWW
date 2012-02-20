@@ -39,7 +39,7 @@ Draft, 20-Feb-2012</h2>
     <dd>Matej Sekoranja, Cosylab</dd>
     <dd>Marty Kraimer, BNL</dd>
     <dd>Greg White, SLAC, PSI</dd>
-  <dt>Contributors:</dt>
+  <dt>Invited Expert Contributors:</dt>
     <dd>Andrew Johnson, APS</dd>
     <dd>Benjamin Franksen, HZB</dd>
 </dl>
@@ -68,6 +68,7 @@ Control System.</a></p>
 <!-- Statement about why this version exists -->
 
 <p>This is the 20 February 2012 version of the pvAccess Protocol Specification.
+This version includes material and revisions from the Invited Experts above.
 This version is an editors draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review
 and comment. Resulting comments will drive subsequent revisions of the
@@ -90,10 +91,10 @@ in RFC 2119) indicates exemption. </p>
 <h2 class="nocount" id="toc">Table of Contents</h2>
 
 <div class="toc">
-<ul>
-  <li>1. <a href="#overview">Overview</a></li>
-  <li>2. <a href="#dataEncoding">Data Encoding</a>
-    <ul>
+<ol>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#dataEncoding">Data Encoding</a>
+    <ol>
       <li><a href="#dataEncoding:sizes">Sizes</a></li>
       <li><a href="#dataEncoding:userData">User Data</a>
         <ul>
@@ -121,25 +122,25 @@ in RFC 2119) indicates exemption. </p>
           </li>
         </ul>
       </li>
-    </ul>
+    </ol>
   </li>
-  <li>3. <a href="#connectionManagement">Connection Management</a></li>
-  <li>4. <a href="#channelLifecycle">Channel Life-cycle</a></li>
-  <li>5. <a href="#channelRequestLifecycle">Channel Request Life-cycle</a></li>
-  <li>6. <a href="#flowControl">Flow Control</a>
-    <ul>
+  <li><a href="#connectionManagement">Connection Management</a></li>
+  <li><a href="#channelLifecycle">Channel Life-cycle</a></li>
+  <li><a href="#channelRequestLifecycle">Channel Request Life-cycle</a></li>
+  <li><a href="#flowControl">Flow Control</a>
+    <ol>
       <li><a href="#flowControlExample">Flow Control Example</a></li>
-    </ul>
+    </ol>
   </li>
-  <li>7. <a href="#channelDiscovery">Channel Discovery</a></li>
-  <li>8. <a href="#communicationExample">Communication Example</a></li>
-  <li>9. <a href="#protocolMessages">Protocol Messages</a>
-    <ul>
+  <li><a href="#channelDiscovery">Channel Discovery</a></li>
+  <li><a href="#communicationExample">Communication Example</a></li>
+  <li><a href="#protocolMessages">Protocol Messages</a>
+    <ol>
       <li><a href="#protocolMessages:messageHeader">Message header</a></li>
-    </ul>
+    </ol>
   </li>
-  <li>10. <a href="#protocolMessages:applicationMessages">Application Messages</a>
-    <ul>
+  <li><a href="#protocolMessages:applicationMessages">Application Messages</a>
+    <ol>
       <li><a href="#protocolMessages:applicationMessages:beacon">Beacon
         (0x00)</a></li>
       <li><a
@@ -179,10 +180,10 @@ in RFC 2119) indicates exemption. </p>
         (0x12)</a></li>
       <li><a href="#protocolMessages:applicationMessages:channelRPC">Channel
         RPC (0x14)</a></li>
-    </ul>
+    </ol>
   </li>
-  <li>11. <a href="#controlMessages">Control Messages</a>
-    <ul>
+  <li><a href="#controlMessages">Control Messages</a>
+    <ol>
       <li><a href="#protocolMessages:controlMessages:mark">Mark Total Byte Sent
         (0x00)</a></li>
       <li><a href="#protocolMessages:controlMessages:ackMark">Acknowledge Total
@@ -193,10 +194,10 @@ in RFC 2119) indicates exemption. </p>
         (0x03)</a></li>
       <li><a href="#protocolMessages:controlMessages:echoResponse">Echo
         response (0x04)</a></li>
-    </ul>
+    </ol>
   </li>
-  <li>12. <a href="#futureProtocolChanges">Future Protocol Changes/Updates</a></li>
-</ul>
+  <li><a href="#futureProtocolChanges">Future Protocol Changes/Updates</a></li>
+</ol>
 </div>
 
 <h2 id="overview">Overview</h2>
