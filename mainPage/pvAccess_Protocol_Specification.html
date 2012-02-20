@@ -92,10 +92,10 @@ in RFC 2119) indicates exemption. </p>
 <div class="toc">
 <ul>
   <li>1. <a href="#overview">Overview</a></li>
-  <li>2. <a href="#dataEncoding">Data Encoding</a>
+  <li>2. <a href="#dataEncoding">Data Encoding</a> 
     <ul>
       <li><a href="#dataEncoding:sizes">Sizes</a></li>
-      <li><a href="#dataEncoding:userData">User Data</a>
+      <li><a href="#dataEncoding:userData">User Data</a> 
         <ul>
           <li><a href="#dataEncoding:basicTypes">Basic Types</a></li>
           <li><a href="#dataEncoding:strings">Strings</a></li>
@@ -104,16 +104,16 @@ in RFC 2119) indicates exemption. </p>
           <li><a href="#dataEncoding:example">Encoding example</a></li>
         </ul>
       </li>
-      <li><a href="#dataEncoding:metaData">Meta Data</a>
+      <li><a href="#dataEncoding:metaData">Meta Data</a> 
         <ul>
-          <li><a href="#dataEncoding:bitSets">BitSets</a>
+          <li><a href="#dataEncoding:bitSets">BitSets</a> 
             <ul>
-              <li><a href="#dataEncoding:bitSets:example">Partiral Structure
+              <li><a href="#dataEncoding:bitSets:example">Partial Structure
                 Serialization</a></li>
             </ul>
           </li>
           <li><a href="#dataEncoding:status">Status</a></li>
-          <li><a href="#dataEncoding:introspectionData">Introspection Data</a>
+          <li><a href="#dataEncoding:introspectionData">Introspection Data</a> 
             <ul>
               <li><a href="#dataEncoding:example1">Example #1</a></li>
               <li><a href="#dataEncoding:example2">Example #2</a></li>
@@ -126,19 +126,20 @@ in RFC 2119) indicates exemption. </p>
   <li>3. <a href="#connectionManagement">Connection Management</a></li>
   <li>4. <a href="#channelLifecycle">Channel Life-cycle</a></li>
   <li>5. <a href="#channelRequestLifecycle">Channel Request Life-cycle</a></li>
-  <li>6. <a href="#flowControl">Flow Control</a>
+  <li>6. <a href="#flowControl">Flow Control</a> 
     <ul>
       <li><a href="#flowControlExample">Flow Control Example</a></li>
     </ul>
   </li>
   <li>7. <a href="#channelDiscovery">Channel Discovery</a></li>
   <li>8. <a href="#communicationExample">Communication Example</a></li>
-  <li>9. <a href="#protocolMessages">Protocol Messages</a>
+  <li>9. <a href="#protocolMessages">Protocol Messages</a> 
     <ul>
       <li><a href="#protocolMessages:messageHeader">Message header</a></li>
     </ul>
   </li>
-  <li>10. <a href="#protocolMessages:applicationMessages">Application Messages</a>
+  <li>10. <a href="#protocolMessages:applicationMessages">Application
+    Messages</a> 
     <ul>
       <li><a href="#protocolMessages:applicationMessages:beacon">Beacon
         (0x00)</a></li>
@@ -181,7 +182,7 @@ in RFC 2119) indicates exemption. </p>
         RPC (0x14)</a></li>
     </ul>
   </li>
-  <li>11. <a href="#controlMessages">Control Messages</a>
+  <li>11. <a href="#controlMessages">Control Messages</a> 
     <ul>
       <li><a href="#protocolMessages:controlMessages:mark">Mark Total Byte Sent
         (0x00)</a></li>
@@ -195,7 +196,8 @@ in RFC 2119) indicates exemption. </p>
         response (0x04)</a></li>
     </ul>
   </li>
-  <li>12. <a href="#futureProtocolChanges">Future Protocol Changes/Updates</a></li>
+  <li>12. <a href="#futureProtocolChanges">Future Protocol
+  Changes/Updates</a></li>
 </ul>
 </div>
 
@@ -282,12 +284,13 @@ always be a non-negative number and encoded as follows: </p>
     implies maximum size of 2^63-1.</li>
 </ol>
 
-<p style="font-style:italic;">Using this encoding to indicate size is significantly cheaper than always
-using a 32-bit (or even 64-bit) integer to store the size. This is especially
-true when marshalling sequences of short strings; counts of up to 254 require
-only a single byte instead of four. This comes at the expense of counts greater
-than 254, which require five bytes instead of four. However, for sequences or
-strings of length greater than 254, the extra byte is insignificant. </p>
+<p style="font-style:italic;">Using this encoding to indicate size is
+significantly cheaper than always using a 32-bit (or even 64-bit) integer to
+store the size. This is especially true when marshalling sequences of short
+strings; counts of up to 254 require only a single byte instead of four. This
+comes at the expense of counts greater than 254, which require five bytes
+instead of four. However, for sequences or strings of length greater than 254,
+the extra byte is insignificant. </p>
 
 <h3 id="dataEncoding:userData">User Data</h3>
 
@@ -362,13 +365,14 @@ broken. An empty string MUST be encoded with a size of zero.</p>
 <p>Strings MUST NOT be NULL-terminated and MUST NOT contain any zero bytes.
 NULL strings are not supported. </p>
 
-<p style="font-style:italic;">On the wire, pvAccess MUST transmit all strings as Unicode strings in UTF-8.
-Non-C++ bindings of the implementations SHOULD use strings in their
-language-native Unicode representation and convert automatically to and from
-UTF-8 for transmission, so applications can transparently use characters from
-non-English alphabets. However, for C++, how strings are represented inside a
-process depends on the platform as well as the mapping that is chosen for a
-particular string. The default mapping to is std::string. </p>
+<p style="font-style:italic;">On the wire, pvAccess MUST transmit all strings
+as Unicode strings in UTF-8. Non-C++ bindings of the implementations SHOULD use
+strings in their language-native Unicode representation and convert
+automatically to and from UTF-8 for transmission, so applications can
+transparently use characters from non-English alphabets. However, for C++, how
+strings are represented inside a process depends on the platform as well as the
+mapping that is chosen for a particular string. The default mapping to is
+std::string. </p>
 
 <h4 id="dataEncoding:arrays">Arrays</h4>
 
@@ -469,7 +473,7 @@ Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67, 72, 75}] size = 11
 Hexdump [{8, 17, 24, 25, 34, 40, 42, 49, 50, 56, 57, 58, 67, 72, 75, 81, 83}] size = 12
 0B 00 01 02  03 04 05 06  07 08 09 0A               .... .... .... </pre>
 
-<h5 id="dataEncoding:bitSets:example">Partiral Structure Serialization</h5>
+<h5 id="dataEncoding:bitSets:example">Partial Structure Serialization</h5>
 
 <p>Each structure can (depending on message definition) have a BitSet instance
 defining what subset of that structure's fields have been serialized. This
@@ -485,7 +489,8 @@ structure: </p>
 1        structure timeStamp
 2            long secondsPastEpoch 
 3            int nanoSeconds 
-4        structure[] value 
+4            int userTag
+5        structure[] value 
             structure org.epics.ioc.test.testStructure
                 double value 
                 structure location
@@ -496,19 +501,11 @@ structure: </p>
                 structure location
                     double x
                     double y 
-5        string factoryRPC
-6        structure arguments
-7            int size
-8        structure element
-9            double value
-10            structure alarm
-11                int severity
-12                string message 
-13            structure timeStamp
-14                long secondsPastEpoch
-15                int nanoSeconds</pre>
+6        string factoryRPC
+7        structure arguments
+8            int size</pre>
 
-<p>The structure above requires a BitSet that contains 16 bits.<br />
+<p>The structure above requires a BitSet that contains 9 bits.<br />
 If the bit corresponding to a structure node is set, then all the fields of
 that node MUST be serialized. </p>
 
@@ -834,7 +831,24 @@ defining an array element type.</p>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
-<pre>structure  
+<pre>structure  timeStamp
+    long secondsPastEpoch
+    int nanoSeconds
+    int userTag</pre>
+
+<p>The introspection description of the above structure is be encoded by
+pvAccess as the following: </p>
+<pre>Hexdump [Serialized timeStamp structure IF] size = 55
+FD 00 01 80  09 74 69 6D  65 53 74 61  6D 70 03 23  .... .tim eSta mp.# 
+10 73 65 63  6F 6E 64 73  50 61 73 74  45 70 6F 63  .sec onds Past Epoc 
+68 22 0B 6E  61 6E 6F 53  65 63 6F 6E  64 73 22 07  h".n anoS econ ds". 
+75 73 65 72  54 61 67                              user Tag</pre>
+
+<h5 id="dataEncoding:example2">Example #2</h5>
+
+<p>Given the following structure, as may be expressed by a pvData Structure:
+</p>
+<pre>structure  ExampleStructure
     byte[] value
     structure  timeStamp
         long secondsPastEpoch
@@ -847,56 +861,15 @@ defining an array element type.</p>
 
 <p>The introspection description of the above structure is be encoded by
 pvAccess as the following: </p>
-<pre>FD 00 01 20  00 03 11 05  76 61 6C 75  65 FD 00 02  ...  .... valu e... 
-20 09 74 69  6D 65 53 74  61 6D 70 03  04 10 73 65   .ti meSt amp. ..se 
-63 6F 6E 64  73 50 61 73  74 45 70 6F  63 68 03 0B  cond sPas tEpo ch.. 
-6E 61 6E 6F  53 65 63 6F  6E 64 73 03  07 75 73 65  nano Seco nds. .use 
-72 54 61 67  FD 00 03 20  05 61 6C 61  72 6D 03 03  rTag ...  .ala rm.. 
-08 73 65 76  65 72 69 74  79 03 06 73  74 61 74 75  .sev erit y..s tatu 
-73 07 07 6D  65 73 73 61  67 65                    s..m essa ge</pre>
-
-<h5 id="dataEncoding:example2">Example #2</h5>
-
-<p>Given the following structure, as may be expressed by a pvData Structure:
-</p>
-<pre>structure test1
-    structure timeStamp
-        long secondsPastEpoch
-        int nanoSeconds
-    structure[] value
-        structure org.epics.ioc.test.testStructure
-            double value
-            structure location
-                double x
-                double y
-    string factoryRPC
-    structure arguments
-        int size
-    structure element
-        double value
-        structure alarm
-            int severity
-            string message
-        structure timeStamp
-            long secondsPastEpoch
-            int nanoSeconds</pre>
-
-<p>The introspection description of the above structure is be encoded by
-pvAccess as the following: </p>
-<pre>FD 00 01 20  05 74 65 73  74 31 05 FD  00 02 20 09  .... .tes t1.. .... 
-74 69 6D 65  53 74 61 6D  70 02 04 10  73 65 63 6F  time Stam p... seco 
-6E 64 73 50  61 73 74 45  70 6F 63 68  03 0B 6E 61  ndsP astE poch ..na 
-6E 6F 53 65  63 6F 6E 64  73 FD 00 03  30 05 76 61  noSe cond s... 0.va 
-6C 75 65 20  6F 72 67 2E  65 70 69 63  73 2E 69 6F  lue  org. epic s.io 
-63 2E 74 65  73 74 2E 74  65 73 74 53  74 72 75 63  c.te st.t estS truc 
-74 75 72 65  02 06 05 76  61 6C 75 65  FD 00 04 20  ture ...v alue ...  
-08 6C 6F 63  61 74 69 6F  6E 02 06 01  78 06 01 79  .loc atio n... x..y 
-07 0A 66 61  63 74 6F 72  79 52 50 43  FD 00 05 20  ..fa ctor yRPC ...  
-09 61 72 67  75 6D 65 6E  74 73 01 03  04 73 69 7A  .arg umen ts.. .siz 
-65 FD 00 06  20 07 65 6C  65 6D 65 6E  74 03 06 05  e...  .el emen t... 
-76 61 6C 75  65 FD 00 07  20 05 61 6C  61 72 6D 02  valu e...  .al arm. 
-03 08 73 65  76 65 72 69  74 79 07 07  6D 65 73 73  ..se veri ty.. mess 
-61 67 65 FE  00 02                                  age. ..</pre>
+<pre>Hexdump [Serialized structure IF] size = 122
+FD 00 02 80  10 45 78 61  6D 70 6C 65  53 74 72 75  .... .Exa mple Stru 
+63 74 75 72  65 03 30 05  76 61 6C 75  65 FD 00 03  ctur e.0. valu e... 
+80 09 74 69  6D 65 53 74  61 6D 70 03  23 10 73 65  ..ti meSt amp. #.se 
+63 6F 6E 64  73 50 61 73  74 45 70 6F  63 68 22 0B  cond sPas tEpo ch". 
+6E 61 6E 6F  53 65 63 6F  6E 64 73 22  07 75 73 65  nano Seco nds" .use 
+72 54 61 67  FD 00 04 80  05 61 6C 61  72 6D 03 22  rTag .... .ala rm." 
+08 73 65 76  65 72 69 74  79 22 06 73  74 61 74 75  .sev erit y".s tatu 
+73 60 07 6D  65 73 73 61  67 65                    s`.m essa ge</pre>
 
 <h2 id="connectionManagement">Connection Management</h2>
 
@@ -1188,7 +1161,6 @@ to be specified (or some more clever algorithm invented). </p>
   </tbody>
 </table>
 
-
 <h2 id="protocolMessages">Protocol Messages</h2>
 
 <p>The pvAccess protocol uses two protocol message types: </p>
@@ -1380,14 +1352,14 @@ announce new servers and server restarts. </p>
   </tbody>
 </table>
 
-<p>When each server is started it MUST start emitting beacons. Clients MUST monitor
-all the beacons. A beacon received from an as yet unknown serverAdddressIPv6:serverPort means
-new server has come online. A beacon with the same
-serverAdddressIPv6:serverPort address as one already received but different
-startupTime{Seconds,Nanos} means that a server was restarted. In both cases
-client SHOULD boost searching of not yet found channels. Client MAY disconnect
-old connection or wait until connection loss is detected (on failed Echo
-message send). </p>
+<p>When each server is started it MUST start emitting beacons. Clients MUST
+monitor all the beacons. A beacon received from an as yet unknown
+serverAdddressIPv6:serverPort means new server has come online. A beacon with
+the same serverAdddressIPv6:serverPort address as one already received but
+different startupTime{Seconds,Nanos} means that a server was restarted. In both
+cases client SHOULD boost searching of not yet found channels. Client MAY
+disconnect old connection or wait until connection loss is detected (on failed
+Echo message send). </p>
 
 <p>Each server implementation SHOULD emit its own beacons, e.g. if a server is
 supporting data transmission over TCP/IP and UDP/IP there SHOULD both emit
@@ -1395,14 +1367,13 @@ beacons. If the implementations are tightly coupled, i.e. they have the same
 lifecycle and share the same channels, then only one server MAY emit beacons.
 </p>
 
-<p>Servers SHOULD synchronize their internal clocks using NTP or some
-other suitable time source before sending their first beacon.</p>
+<p>Servers SHOULD synchronize their internal clocks using NTP or some other
+suitable time source before sending their first beacon.</p>
 
 <p>Due to the fact that UDP does not guarantee delivery, a server MUST send
 several beacons to notify that it is alive (15 beacons with 1Hz period). After
 longer period it MAY stop sending them, however it is recommended that is
-SHOULD do it with a low rate (one beacon per minute) to report
-serverStatus.</p>
+SHOULD do it with a low rate (one beacon per minute) to report serverStatus.</p>
 
 <p>Beacons SHOULD not used to report connection-valid status. </p>
 
