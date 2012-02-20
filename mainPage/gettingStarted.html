@@ -22,12 +22,12 @@
 <div class="head">
 <h1>GETTING STARTED WITH EPICS V4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
-<h2 class="nocount">Getting Started with EPICS V4, Editors Draft, 20-Jan-2012</h2>
+<h2 class="nocount">Getting Started with EPICS V4, Editors Draft, 08-Feb-2012</h2>
 <dl>
 <dt>This version:</dt>
 <dd><a href=
 "http://epics-pvdata.sourceforge.net/gettingStarted_20120120.html">
-gettingStarted_20120120.html</a></dd>
+gettingStarted_20120208.html</a></dd>
 <dt>Latest version:</dt>
 <dd><a href=
 "http://epics-pvdata.sourceforge.net/gettingStarted.html">gettingStarted.html</a></dd>
@@ -53,11 +53,10 @@ for Java and C++ are included.</p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
 
-<p>This is the 20-Jan-2012 version of the Getting Started with EPICS V4. This
-version corrects issues in the C++ section, and includes the additions for
-getting started with a Java "binary" download, thus
-avoiding the necessity of installing and using Mercurial from the 13-Jan version. This version
-is also up to date with respect to the BETA 1.0 release.</p>
+<p>This is the 08-Feb-2012 version of the Getting Started with EPICS V4. This
+version includes simplified explanation for compilation without maven for Java, in
+the in step-by-step section. This version
+is up to date with respect to the BETA 1.0 release, incuding the 1.0.1-BETA Java tar file.</p>
 
 <h2>Introduction</h2>
 <p>EPICS V4 is implemented in C++ and Java. Its APIs are in C++ and Java mainly,
@@ -208,7 +207,7 @@ name of the directory containing the xml/ directory of the pvIOC structures. eg,
 this example:
 
 <pre>
-export JAVAIOC=/Users/greg/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA/pvIOCJava
+export JAVAIOC=/Users/greg/Development/epicsV4/releasetest/EPICSv4-Java-1.0.1-BETA/pvIOCJava
 </pre>
 </li>
 
@@ -217,25 +216,26 @@ export JAVAIOC=/Users/greg/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA
 
   <li>Set your location of pvCommon_setup.bash, e.g.:
   <pre>
-   source $HOME/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA/common/source/pvCommon_setup.bash
+   source $HOME/Development/epicsV4/releasetest/EPICSv4-Java-1.0.1-BETA/common/source/pvCommon_setup.bash
   </pre>
   </li>
 
   <li>Set the root dir of the EPICS V4 stuff (ie, the directory created by the untar):
     <pre>
-   WORKSPACE=$HOME/Development/epicsV4/releasetest/EPICSv4-Java-1.0-BETA
+   WORKSPACE=$HOME/Development/epicsV4/releasetest/EPICSv4-Java-1.0.1-BETA
   </pre>
   </li>
 
-  <li>CLASSPATH to point to your compiled examples and downloaded jars, rather than,
-  as shipped, the locations where Eclipse development using the source would leave
+  <li>Edit CLASSPATH to point to your compiled examples and downloaded jars, rather than,
+  as shipped, the locations where maven development using the source would leave
   things:
 
   <pre>
   CLASSPATH=${EXAMPLES}/target/classes
-  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvData-1.0-BETA.jar
-  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvIOC-1.0-BETA.jar
-  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvAccess-1.0-BETA.jar
+  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvData-1.0.1-BETA.jar
+  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvIOC-1.0.1-BETA.jar
+  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvAccess-1.0.1-BETA.jar
+  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvService-1.0.1-BETA.jar
   </pre>
   </li>
 </ol>
@@ -920,7 +920,7 @@ testApp          - sample code for a test IOC and RPC service
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Wed Feb  8 12:04:09 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Feb  8 14:26:15 CET 2012 <!-- hhmts end -->
 
 </body>
 </html>

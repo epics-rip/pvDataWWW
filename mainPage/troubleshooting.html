@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" />
+<meta name="keywords" content="EPICS, EPICSv4" />
+
+<!-- Include the epicsv4 base.css, and the css for epics v4 documents -->
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="epicsv4.css" />
+
+<title>Getting Started with EPICS V4</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+
+
+/*]]>*/
+</style>
+</head>
+
+<div class="head">
+<h1>TROUBLESHOOTING EPICS V4</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+<h2 class="nocount">Troubleshooting EPICS V4 Systems</h2>
+<h2 class="nocount" id="abstract">Status of this document</h2>
+  <p>This document is intended to be <a
+  href="charter.html#informative">informative</a> only. It will be updated on a best effort
+  basis by the EPICS V4 working group.
+  </p>
+<!-- hhmts start -->Last modified: Fri Feb 17 13:32:45 CET 2012 <!-- hhmts end -->
+</div> <!-- Header material -->
+<h2 class="nocount" id="abstract">Abstract</h2>
+<p>This document helps programmers using EPICS V4, to debug issues in their software,
+by listing potential user issues and their resolutions. This is not a buglist for
+EPICS V4 itself, it's a guide to help programmers who are using EPICS V4 find and
+resolve their own bugs.</p>
+<hr>
+
+<ol>
+  
+  <li> You see the following at the server side console:
+  <pre>
+Nov 11, 2011 6:01:21 PM org.epics.ca.server.impl.remote.tcp.BlockingTCPAcceptor initialise
+INFO: Configured TCP port 5066 is unavailable, trying to assign it dynamically.
+Nov 11, 2011 6:01:21 PM org.epics.ca.server.impl.remote.tcp.BlockingTCPAcceptor initialise
+INFO: Using dynamically assigned TCP port 51659.
+</pre>
+You have an instance of the same server running elsewhere.
+  </li>
+  
+  <li>
+  You see the following at the server side console:
+  <pre>
+IOCXMLReader.convert terminating with IOException: /Users/greg/Development/epicsV4/workspace_hg/exampleJava/helloWorld/helloService.xml (No such file or directory)
+</pre>
+  
+  Path to the xml file specifying the server is wrong, check the
+  <code>-record</code> argument in your IOC server startup.  
+  </li>
+
+  <li>The client can't connect to the server, eg:
+  <pre>
+Exception in thread "main" java.lang.RuntimeException: connect error channel destroyed
+        at helloWorld.HelloClient$Client.connectResult(HelloClient.java:115)
+        at org.epics.pvService.rpc.ServiceClientFactory$ServiceClientImpl.waitConnect(ServiceClientFactory.java:98)
+        at helloWorld.HelloClient$Client.connect(HelloClient.java:79)
+        at helloWorld.HelloClient.main(HelloClient.java:44)
+</pre>
+Can be caused by a variety of factors:
+  <ol>
+    <li>
+    Check that the server name used in the client is identical incl case, with the
+  value of recordName in the xml file. Eg, they must both be valued exactly
+  "helloService"
+    </li>
+    <li>
+    <p>Check that no firewall is blocking the comms. Eg, Mac OS X firewall (OS 10.7)
+  if it running, will ask whether "Java" is allowed to accept incoming
+  connections. You may have said no in the past. If this the case the firewall should
+  be reporting into the System Log (open Console and look for messages like <code>11/11/2011 17:03:44.213 Firewall: Deny java data in from ::ffff:129.129.144.131:58978 to port 5067 proto=17</code>
+    To fix this in OS X 10.7, go to System Preferences - Security and Privacy -
+  Firewall tab. Even if the Firewall is in Stop state, it's not really off
+  altogether. Go to "Advanced" and check there is no red dot next to Java in the
+  incoming connections list. It must be green:
+    </p>
+    <img src="image/s&p.png" alt="Safety and Privacy Dialog">
+    <p> Even if the Firewall is allowing connections nominally, you may be asked specifically if you want to to allow connections at the time that an EPICS V4 service is started. You must allow it, or your clients won't
+    find your servers. </p>
+    <img src="image/AllowJavaConnections.png" alt="Allow Java Connections Dialog">
+    </li>
+<li>
+Premature timeout. Transcontinental network connects or slow database backend, etc, will
+cause the client side to timeout the server. 
+You see:
+"RuntimeException: Connection error: channel destroyed". 
+Example:
+% ./getRdb  LCLS:elementInfo.byZ
+Exception in thread "main" java.lang.RuntimeException: Connection error: channel destroyed
+Diagnosis:
+The default 5.0 second delay may not be long enough. Just increase the timeout in your client
+side call to waitRequest. 
+</li>
+    <li>
+   If the connection is failing for a channelRPC record, check that you "factoryRPC" field value
+in your services record database (the xml file) is precisely equal to the FULL classname of 
+your service factory, including, if java, the package name. 
+Eg, if your factory is implemented in a class org.mylab.myCoolEPICSService, then your xml
+should look like:
+    <pre>
+&lt;database&gt;
+   &lt;record recordName = "myCoolEPICSService" extends = "org.epics.pvService.service"&gt;
+   &lt;scalar name =
+       "factoryRPC"&gt;org.mylab.myCoolEPICSService.myCoolEPICSServiceFactory&lt;/scalar&gt;
+&hellip;
+</pre>
+Note that our examples for Java tend to be in the default Java package, so the examples don't have
+the package name. Yours probably will.    
+</li>
+</ol>
+</ol>
+
+
+<address></address>
+
+</body> </html>

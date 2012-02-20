@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$2</title>
+</head>
+<body><b>============= Meeting 08-Feb-2012 =============</b><br
+/><br
+/><b>------------------------ Agenda ----------------------------</b><br
+/>1. Unsigned support review (*Marty*, 30 minutes)<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp; Walkthrough of Marty's proposal, see Marty's email 3-Feb-2012 [3].<br
+/><br
+/>2. Matej's proposal for moving Field serialization to pvData (*Matej*).<br
+/><br
+/>&nbsp;&nbsp; May be very short if no further questions. Prioritisation w.r.t. pvAccess pub.<br
+/><br
+/>3. Meetings coming up.<br
+/><br
+/>&nbsp;&nbsp; Who's going to EPICS mtg at SLAC?<br
+/>&nbsp;&nbsp; IPAC 2012?<br
+/>&nbsp;&nbsp; What talks have been submitted<br
+/>&nbsp;&nbsp; Where shall we hold next developer's meeting. SLAC, New Orleans, PSI?&nbsp;<br
+/><br
+/>4. How are Feb 14th AIs looking [4]?<br
+/><br
+/><br
+/>[1] <a href="http://epics-pvdata.sourceforge.net/home.html#usefulinfo">http://epics-pvdata.sourceforge.net/home.html#usefulinfo</a><br
+/>[2] <a href="http://epicsv4.titanpad.com/2">http://epicsv4.titanpad.com/2</a><br
+/>[3] <a href="https://sourceforge.net/mailarchive/message.php?msg_id=28781455">https://sourceforge.net/mailarchive/message.php?msg_id=28781455</a><br
+/>[4] <a href="https://sourceforge.net/tracker/?group_id=249167&atid=2482257">https://sourceforge.net/tracker/?group_id=249167&amp;atid=2482257</a><br
+/><br
+/><b>------------------------ Minutes ----------------------------</b><br
+/><br
+/>Present: BD, MK, GW, RL, MS, GS, JR, DH<br
+/>Scribe: RL<br
+/><br
+/><b><u>1. Unsigned support review</u></b><br
+/>MK: doc is on the web: <a href="http://epics-pvdata.sourceforge.net/alpha/unsigned.html">http://epics-pvdata.sourceforge.net/alpha/unsigned.html</a><br
+/>MK: C++ unsigned will be fully implemented<br
+/>existing methods stay (returning signed), new methods return wider (signed) types.<br
+/>DH: that's the opposite of what was agreed to at the meeting<br
+/>MK: Hard Java limit: no. of array elements &lt; 2G<br
+/>C++ implementation will use size_t<br
+/>GW: But the semantics of the API methods have been switched.<br
+/>DH: We wanted to default get() to be safe, so it has to promote to the wider type.<br
+/>For scalars: Does not affect the signed types, should not break existing code.<br
+/>MK: For the array types, arrays of both sizes have to be kept and sync'd.<br
+/>DH: The methods will have to hand over different references.<br
+/>MK: Intention was to avoid multiple copies.<br
+/>DH: Have to think about the array types.<br
+/>MK: Arrays and scalars should have a similar interface.<br
+/>GW: Why not start with MK's version, and DH tries to streamline it with the meeting results.<br
+/>JR: User should not by chance get a return value with a wrong sign.<br
+/>MK: How does if affect de-/serialization?<br
+/>DH: What's the issue with that?<br
+/>MK: Serialization should follow and transport the wider type.<br
+/>DH: There is no promotion in serialization. I don't see any issue here.<br
+/>RL: Me neither. The flag on-the-wire was sufficient.<br
+/>ALL: Arrays are a serious issue.<br
+/>GW: Is sticking to the meeting results really that important?<br
+/>DH: Potential problem (physicist using the wrong function), but not a major issue.<br
+/>GW: Why not start with MK's version, and DH thinks to if there's a solution closer to the meeting results.<br
+/><br
+/>************<br
+/><b>RESOLUTION: Unsigned type API</b><br
+/>Interface for unsigned types will have the simple get()/put() functions be unsafe. (I.e. returning the original width types.)<br
+/>Subject to DH finding a good implementation for the originally planned API.<br
+/>************<br
+/><br
+/><b><u>2. Matej's proposal for moving Field serialization to pvData</u></b><br
+/>GW: Can you explain how the serialization code is moved to pvData?<br
+/>MS: Code used to be in pvAccess. Will be changed to pvData having the serialize/deserialize interface.<br
+/>The full serialization interface will be in pvData.<br
+/>GS: So that the python implementation will need its own implementation?<br
+/>MS: Similar to pvField.<br
+/>GS: So pvAccess will deliver the raw byte stream?<br
+/>MS: Yes.<br
+/>DH: Right now the introspection interface serializes and puts the first bytes into the buffer. MS's suggestion will have pvField and pvData do all of the serialization.<br
+/>MS: pvData will also serialize the introspection data. It is a design clean-up.<br
+/>JR: For implementations in other languages, we will need access to the raw byte buffer in the pvAccess API.<br
+/>GW: The public interfaces will not change?<br
+/>MS: The field interface in pvData will get the two additional methods. No change on the user side.<br
+/><br
+/>Bottom line is Matej gets to implement the change the way he proposed.<br
+/><br
+/>JR: Suggests ctypes as a base for the serialization engine. But will follow anything.<br
+/>MK: Can you do a small example?<br
+/>JR: Yes.<br
+/><br
+/><b><u>3. Meetings coming up</u></b><br
+/>Planned Attendances:<br
+/><br
+/>EPICS-Meeting @SLAC: Apr 23-27<br
+/>BD, RL?, JR?, MK?, GW<br
+/><br
+/>IPAC @New Orleans May: 20-25<br
+/>BD<br
+/><br
+/>Showcase:<br
+/>[BD: All of you have surprise talks at the EPICS meeting!]<br
+/>MK: The Gather service is ready to be shown<br
+/>GS: Better wait for the C++ server implementation.<br
+/>No monitor in python (for Orbit service). Fundamental functionality!<br
+/>GW: While the Orbit service gathers the orbits, the client could still do a get().<br
+/><br
+/>GW: Should the next V4 meeting be at the EPICS meeting?<br
+/>Or is someplace else offering to host?<br
+/><br
+/><b><u>4. How are Feb 14th AIs looking</u></b><br
+/>GW: Still a long list... <a href="http://sourceforge.net/tracker/?group_id=249167&atid=2482257">http://sourceforge.net/tracker/?group_id=249167&amp;atid=2482257</a><br
+/>BD: AreaDetector: Mark Rivers is interested to get involved.<br
+/><br
+/>[GW going through the list on SF.net]<br
+/><br
+/>BD: Excused for next week.<br
+/><br
+/></body>
+</html>
