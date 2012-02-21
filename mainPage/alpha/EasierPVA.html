@@ -37,6 +37,7 @@ Features:
 <li>Vectorized</li>
 <li>C++ uses std::vector for name and value lists</li>
 <li>Monitor takes a callback</li>
+<li>Timeouts throw an exception</li>
 </ul>
 
 API:
@@ -52,12 +53,31 @@ API:
 <code>results = ChannelPut(names, values, timeout = 10.0, request = "")</code>
 </li>
 <li>
-<code>results = ChannelGet(names, values, timeout = 10.0, request = "")</code>
+<code>results = ChannelGet(names, timeout = 10.0, request = "")</code>
 </li>
 <li>
 <code>results = ChannelMonitor(names, callback, timeout = 10.0, request = "")</code>
 </li>
 </ul>
+
+<h2>ChannelRPC Example</h2>
+
+Where MakeNameValue returns a PVStructure shared_pointer
+
+<pre>
+// scalar
+string name = "archiver";
+shared_ptr &lt; PVStructure > output = ChannelRPC(name, MakeNameValue("t0", 45045254, "channel", "current"));
+
+// vectorized (eg. useful for querying mulitple devices)
+vector &lt; string > names;
+names.push_back("archiver1");
+names.push_back("archiver2");
+vector &lt; shared_ptr &lt; PVStructure > > inputs;
+inputs.push_back(MakeNameValue("t0", 45045254, "channel", "current"));
+inputs.push_back(MakeNameValue("t0", 45045254, "channel", "vacuum"));
+vector &lt; shared_ptr &lt; PVStructure > > outputs = ChannelRPC(names, inputs);
+</pre>
 
 <h2>Value Types</h2>
 User must be able to provide doubles, double arrays, strings or any PVStructure.
@@ -98,6 +118,23 @@ results = ChannelPut(names, pvstructures)
 Alternatively the user's PVStructure can be type-checked and serialized (this needs a modification to the PVAccess API).</p>
 
 <p>As most applications will use ChannelRPC or primitive types, copying will be ok for a prototype.</p>
+
+<h2>Solutions for copying get results</h2>
+A free list of PVStructures will allow the user to hold on to a copy of of the get result without allocating on every get
+<pre>
+result = ChannelGet(name)
+
+// ChannelGet internals
+if len(freelist) > 0:
+  pvstructure = freelist.pop()
+else:
+  pvstructure = PVStructureFactory.create(channel.type)
+
+get_into(pvstructure)
+return pvstructure
+
+// result pointer destructor puts the structure back on the free list
+</pre>
 
 </body>
 </html>
