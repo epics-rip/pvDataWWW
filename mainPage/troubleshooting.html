@@ -28,7 +28,7 @@
   href="charter.html#informative">informative</a> only. It will be updated on a best effort
   basis by the EPICS V4 working group.
   </p>
-<!-- hhmts start -->Last modified: Fri Feb 17 13:32:45 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Feb 22 15:50:05 CET 2012 <!-- hhmts end -->
 </div> <!-- Header material -->
 <h2 class="nocount" id="abstract">Abstract</h2>
 <p>This document helps programmers using EPICS V4, to debug issues in their software,
@@ -46,7 +46,7 @@ INFO: Configured TCP port 5066 is unavailable, trying to assign it dynamically.
 Nov 11, 2011 6:01:21 PM org.epics.ca.server.impl.remote.tcp.BlockingTCPAcceptor initialise
 INFO: Using dynamically assigned TCP port 51659.
 </pre>
-You have an instance of the same server running elsewhere.
+CHECK: Whether you have an instance of the same server running elsewhere.
   </li>
   
   <li>
@@ -55,7 +55,7 @@ You have an instance of the same server running elsewhere.
 IOCXMLReader.convert terminating with IOException: /Users/greg/Development/epicsV4/workspace_hg/exampleJava/helloWorld/helloService.xml (No such file or directory)
 </pre>
   
-  Path to the xml file specifying the server is wrong, check the
+  CHECK: Path to the xml file specifying the server may be wrong, check the
   <code>-record</code> argument in your IOC server startup.  
   </li>
 
@@ -70,12 +70,12 @@ Exception in thread "main" java.lang.RuntimeException: connect error channel des
 Can be caused by a variety of factors:
   <ol>
     <li>
-    Check that the server name used in the client is identical incl case, with the
+    CHECK: that the server name used in the client is identical, including case, with the
   value of recordName in the xml file. Eg, they must both be valued exactly
   "helloService"
     </li>
     <li>
-    <p>Check that no firewall is blocking the comms. Eg, Mac OS X firewall (OS 10.7)
+    <p>CHECK: no firewall is blocking the comms. Eg, Mac OS X firewall (OS 10.7)
   if it running, will ask whether "Java" is allowed to accept incoming
   connections. You may have said no in the past. If this the case the firewall should
   be reporting into the System Log (open Console and look for messages like <code>11/11/2011 17:03:44.213 Firewall: Deny java data in from ::ffff:129.129.144.131:58978 to port 5067 proto=17</code>
@@ -102,7 +102,7 @@ The default 5.0 second delay may not be long enough. Just increase the timeout i
 side call to waitRequest. 
 </li>
     <li>
-   If the connection is failing for a channelRPC record, check that you "factoryRPC" field value
+   If the connection is failing for a channelRPC record, CHECK that the "factoryRPC" field value
 in your services record database (the xml file) is precisely equal to the FULL classname of 
 your service factory, including, if java, the package name. 
 Eg, if your factory is implemented in a class org.mylab.myCoolEPICSService, then your xml
@@ -118,6 +118,50 @@ Note that our examples for Java tend to be in the default Java package, so the e
 the package name. Yours probably will.    
 </li>
 </ol>
+<li>ISSUE: You see client side messages like:
+<pre style="font-size:smaller">warning PVRecord.registerListener called but listener
+  org.epics.ioc.pvCopy.PVCopyImpl$ThePVCopyImpl$CopyMonitor@d0e999 already
+  registered
+  ...
+
+In bad cases followed by:
+
+Feb 21, 2012 3:52:43 PM org.epics.ca.impl.remote.tcp.BlockingTCPTransport processSendQueue
+WARNING: Exception caught in thread processing send requests.
+java.lang.IllegalStateException: not queueElement returned by last call to getUsed
+at org.epics.pvData.misc.QueueCreate$QueueImpl.releaseUsed(QueueCreate.java:93)
+...
+... more stacktrace
+</pre>
+CHECK: Is your client creating one channelAccess and
+one channelProvider per channel (wrong) or per channel provider (right). I.e.:
+<pre style="font-size:smaller">
+Wrong:
+
+for(int m=0;m<20;m++)
+{
+    ChannelAccess channelAccess = ChannelAccessFactory.getChannelAccess();
+    ChannelProvider channelProvider = channelAccess.getProvider(providerName);
+    ConnectionListener cl = new ConnectionListener();
+    Channel channel = channelProvider.createChannel("counter_"+m, cl, ChannelProvider.PRIORITY_DEFAULT);
+       cl.setChannel(channel);
+    ...
+}
+
+Right:
+
+ChannelAccess channelAccess = ChannelAccessFactory.getChannelAccess();
+ChannelProvider channelProvider = channelAccess.getProvider(providerName);
+ConnectionListener cl = new ConnectionListener();
+for(int m=0;m<20;m++)
+{
+    Channel channel = channelProvider.createChannel("counter_"+m, cl, ChannelProvider.PRIORITY_DEFAULT);
+        cl.setChannel(channel);
+    ...
+}
+
+</pre>
+</li>
 </ol>
 
 
