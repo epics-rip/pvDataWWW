@@ -24,11 +24,11 @@
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
 <h2 class="nocount" id="L50">EPICS v4 Working Group, Second Public Working
-Draft, 20-Feb-2012</h2>
+Draft, 22-Feb-2012</h2>
 <dl>
   <dt>This version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120220.html">pvAccess_Protocol_Specification_20120220.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120222.html">pvAccess_Protocol_Specification_20120222.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -67,7 +67,7 @@ Control System.</a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 20 February 2012 version of the pvAccess Protocol Specification.
+<p>This is the 22 February 2012 version of the pvAccess Protocol Specification.
 This version includes material and revisions from the Invited Experts above.
 This version is an editors draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review
@@ -99,8 +99,8 @@ in RFC 2119) indicates exemption. </p>
       <li><a href="#dataEncoding:userData">User Data</a>
         <ul>
           <li><a href="#dataEncoding:basicTypes">Basic Types</a></li>
-          <li><a href="#dataEncoding:strings">Strings</a></li>
           <li><a href="#dataEncoding:arrays">Arrays</a></li>
+          <li><a href="#dataEncoding:strings">Strings</a></li>
           <li><a href="#dataEncoding:structures">Structures</a></li>
           <li><a href="#dataEncoding:example">Encoding example</a></li>
         </ul>
@@ -214,7 +214,8 @@ protocol itself supports IPv6, i.e. all addresses are IPv6 encoded. </p>
 
 <p>Port numbers 5075 (tcp connection port) and 5076 (udp broadcast port) are
 used (to be accepted by IANA). The default connection port SHOULD be used if
-free, otherwise a dynamically allocated port SHOULD be used as a fallback. </p>
+free, otherwise a dynamically allocated port SHOULD be used as a fallback.
+pvAccess implementations SHOULD allow to configure the default connection port.</p>
 
 <p>pvAccess was designed to support <a
 href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a
@@ -247,10 +248,16 @@ boundaries and therefore eliminates the wasted space and additional complexity
 that alignment requires. The pvAccess data encoding simply produces a stream of
 contiguous bytes; data MUST NOT contain padding bytes and the implementation
 MUST NOT try to align data on word boundaries.<br />
-However, integer and floating-point number type arrays encoding is an
-exception. They MUST be word aligned (the first element of an array is padded).
-The message header MUST be aligned on a 64-bit boundary (as being an alignment
-reference point). </p>
+However, arrays with an element type that is a number (including signed and unsigned
+integer types, and floating point types) are an exception.
+Such arrays MUST be aligned relative to the start of the message, so that the
+first element of the array (and thus all elements) have a byte offset
+(relative to the start of the message) that is divisible by the size (in
+bytes) of an element of the array. This MUST be done by inserting just enough
+bytes before the first element of the array.<br/>
+For instance, an array of float must be 4 byte aligned, which MUST be ensured
+by inserting up to three bytes before the array.
+</p>
 
 <p>For connection-oriented communication (TCP/IP), the server MUST notify the
 client what byte order to use. Each message contains an endiannes flag in order
@@ -268,7 +275,7 @@ other way around. </p>
 
 <p>Many of the types involved in the data encoding, as well as several protocol
 message components, have an associated size (or "count"). Size values MUST
-always be a non-negative number and encoded as follows: </p>
+always be a non-negative integer and encoded as follows: </p>
 <ol>
   <li>If the number of elements is less than 255, the size MUST be encoded as a
     single byte containing an unsigned 8-bit integer indicating the number of
@@ -353,15 +360,32 @@ href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a>]. </p>
   </tbody>
 </table>
 
+<p><i>
+Note on boolean encoding: a receiver MUST NOT assume that a boolean value of true is represented
+by any special non-zero number, nor that the same sender consistently uses the
+same number.
+</i></p>
+
+<h4 id="dataEncoding:arrays">Arrays</h4>
+
+<p>Arrays MUST be encoded as a size representing the number of elements in the
+array, followed by the elements encoded as specified for their type (as
+specified in these sections). </p>
+
 <h4 id="dataEncoding:strings">Strings</h4>
 
-<p>Strings MUST be encoded as a size, followed by the string contents in a
-UTF-8 format array of bytes. Size gives the number of bytes that follow it and
+<p>Strings are encoded as arrays of bytes. The actual content (the bytes in the array)
+MUST be a valid <a href="http://tools.ietf.org/html/rfc3629">UTF-8</a> encoded string.
+
+<p style="font-style:italic;">Particularly, this means that strings MUST be encoded as a size, followed by the string contents in a UTF-8 format as bytes. Size gives the number of bytes that follow it and
 not the number of UTF-8 characters. UTF-8 multi-byte characters MUST NOT be
 broken. An empty string MUST be encoded with a size of zero.</p>
 
-<p>Strings MUST NOT be NULL-terminated and MUST NOT contain any zero bytes.
-NULL strings are not supported. </p>
+<p style="font-style:italic;">
+Implementations that internally use a zero byte or a zero character
+to indicate end-of-string SHOULD NOT include a terminating zero byte
+in the pvAccess string encoding. 'null' strings are not supported.</p>
+
 
 <p style="font-style:italic;">On the wire, pvAccess MUST transmit all strings as Unicode strings in UTF-8.
 Non-C++ bindings of the implementations SHOULD use strings in their
@@ -370,15 +394,6 @@ UTF-8 for transmission, so applications can transparently use characters from
 non-English alphabets. However, for C++, how strings are represented inside a
 process depends on the platform as well as the mapping that is chosen for a
 particular string. The default mapping to is std::string. </p>
-
-<h4 id="dataEncoding:arrays">Arrays</h4>
-
-<p>Arrays MUST be encoded as a size representing the number of elements in the
-array, followed by the elements encoded as specified for their type (as
-specified in these sections). </p>
-
-<p>Integer and floating-point number type arrays MUST be word aligned (the
-first element of an array is padded).</p>
 
 <h4 id="dataEncoding:structures">Structures</h4>
 
@@ -1272,9 +1287,15 @@ it were expressed by the following structure: </p>
   </tbody>
 </table>
 
-<p>Between two segmented message of the same set there MUST NOT be any other
-application message then the segmented message of the same set. Control
+<p>Between two segmented messages of the same set there MUST NOT be any other
+application message than the segmented message of the same set. Control
 messages are allowed to be in-between. </p>
+<p>
+Alignment offset MUST be preserved between segmented messages, i.e. if a last
+sent byte of a segmented message is misaligned by 6 bytes to 64-bit aligned 
+start of the message reference point then the next segmented message needs to insert
+6 padding bytes at the start of the next segmented message payload.
+</p>
 
 <h2 id="protocolMessages:applicationMessages">Application Messages</h2>
 
