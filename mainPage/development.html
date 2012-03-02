@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head>
  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  <meta http-equiv="PRAGMA" content="NO-CACHE">
-  <meta http-equiv="EXPIRES" content="0">
+  <meta http-equiv="PRAGMA" content="NO-CACHE"/>
+  <meta http-equiv="EXPIRES" content="0"/>
  <title>EPICS Version 4 Development Resources</title>
  <!-- link rel="stylesheet" href="http://www.w3.org/2005/10/w3cdoc.css"
  type="text/css" media="screen" />
@@ -29,28 +29,41 @@
 	
 
 <!-- Very top date banner -->
-<table style="border-width:0px" width="100%">
-  <tbody style="color:#005A9C">
+<table width="100%" style="border-width:0px">
     <tr>
-      <td width="50%" style="font-size:150%">EPICS V4</td>
-      <td width="50%" style="text-align:right;color:black;font-size:70%">
+      <td colspan="3" style="text-align:right;color:black;font-size:70%">
 	<span style="text-align:right;">
-<!-- hhmts start -->Last modified: Thu Jan 19 18:03:33 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Fri Mar  2 21:35:32 CET 2012 <!-- hhmts end -->
 	</span>
       </td>
     </tr>
-  </tbody>
+    <tr>
+      
+      <td>
+	<table id="logo" style="border-width:0px" class="image">
+	  <caption
+	    style="text-align:center;letter-spacing:0.3em;font-size:70%;font-weight:lighter"
+	align="top">EPICS V4
+	  </caption>
+	  <tr><td><img align="left" src="image/logos/EV4logo_blue_sanstext_med.png" alt="EV4 logo"/></td></tr>
+	</table>
+      </td>
+
+      <td width="100%"
+	style="text-align:center;letter-spacing:0.1em;font-size:200%;color:#4C3BCA">Development
+      Resources</td>
+      <td padding="0px" border-width="0px"></td>
+    </tr>
 </table>
-<h1 style="letter-spacing:0.1em; text-align:center">Development Resources</h1>
 
 <table class="masthead" vspace="4px" width="100%" style="font-weight:bold">
   <tbody align="center">
     <tr>
       <td align="center"><a href="index.html">HOME</a></td>
  
-      <td align="center" style="background-color: rgb(0,128,255);"><span class="selectedtab" >DEVELOPMENT</span</td>
-      <td align="center"><a href="https://sourceforge.net/projects/epics-pvdata/files/">DOWNLOAD</a></td>
-      <td align="center"><a
+      <td align="center" class="selected"> <span class="selectedtab" >DEVELOPMENT</span></td>
+      <td align="center">
+	<a href="https://sourceforge.net/projects/epics-pvdata/files/">DOWNLOAD</a></td>
       <td align="center"><a href="features.html">FEATURES</a></td>
       <td align="center"><a href="home.html">WORKING GROUP</a></td>
       <td align="center"><a
@@ -59,6 +72,7 @@
       </td>
       <td align="center"><a href="faq.html">FAQ</a></td>
    </tr>
+   </tbody>
 </table>
 
 <p style="margin-top:30px">This page includes references for development with EPICS V4, to
@@ -72,11 +86,13 @@ documentation generation etc.</p>
 <ul>
     <li><a href="http://sourceforge.net/projects/epics-pvdata/files/">EPICS V4
   download site</a></li>
-  <li><a href="http://epics-pvdata.sourceforge.net/README">EPICS V4 download site README</a>
+  <li><a href="http://epics-pvdata.sourceforge.net/README">EPICS V4 download site README</a></li>
   <li><strong><a href="gettingStarted.html">Getting Started with EPICS
   V4</a></strong>. A first steps guide to getting the code, building it, and
-  references to the basic examples.
+  references to the basic examples
   </li>
+  <li><a href="troubleshooting.html" >First steps in troubleshooting EPICS
+  V4</a>. Presently oriented towards service development</li>
 </ul>
 
 <h2>Normative Modules Software and Documentation</h2>
@@ -104,11 +120,11 @@ description for <code>org.epics.ca.client</code>.</p>
     Documentation:
      <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html"> 
-    Latest, <a
+    Latest</a>, <a
     href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html">
     1.0-BETA Release 
-    </a>
-    </a><p>JavaDoc: 
+    </a></p>
+    <p>JavaDoc: 
      <a
     href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataJava%20-%20Build/javadoc/">Latest</a>, <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a></p>
  
@@ -124,7 +140,7 @@ description for <code>org.epics.ca.client</code>.</p>
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/raw-file/tip/documentation/pvDataCPP.html">Latest</a>,
     <a
     href="http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/1.0-BETA/documentation/pvDataCPP.html">1.0-BETA Release </a>
-    <p>
+    </p>
     <p>Doxygen
     <a
     href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataCPP%20-%20Build/doxygen/files.html">Latest</a>, <a href=" http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a>
@@ -151,11 +167,11 @@ description for <code>org.epics.ca.client</code>.</p>
     Documentation:
      <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html"> 
-    Latest, <a
+    Latest</a>, <a
     href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessJava/1.0-BETA/documentation/pvAccessJava.html">
     1.0-BETA Release 
     </a>
-    </a><p>JavaDoc: 
+    </p><p>JavaDoc: 
      <a
     href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvAccessJava%20-%20Build/javadoc/">Latest</a>, <a href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessJava/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a></p>
  
@@ -173,7 +189,7 @@ description for <code>org.epics.ca.client</code>.</p>
     <a
     href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessCPP/1.0-BETA/documentation/pvAccessCPP.html">1.0-BETA Release 
     (not yet written)</a>
-    <p>
+    </p>
     <p>Doxygen
     <a
     href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvAccessCPP%20-%20Build/doxygen/files.html">Latest</a>, <a href=" http://epics-pvdata.sourceforge.net/docbuild/pvAccessCPP/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a>
@@ -203,11 +219,11 @@ Group</dd>
     Documentation:
      <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/raw-file/tip/documentation/pvIOCJava.html"> 
-    Latest, <a
+    Latest</a>, <a
     href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/1.0-BETA/documentation/pvIOCJava.html">
     1.0-BETA Release 
     </a>
-    </a><p>JavaDoc: 
+    </p><p>JavaDoc: 
      <a
     href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvIOCJava%20-%20Build/javadoc/">Latest</a>, <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a></p>
  
@@ -223,7 +239,7 @@ Group</dd>
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html">Latest</a>,
     <a
     href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/pvIOCCPP.html">1.0-BETA Release </a>
-    <p>
+    </p>
     <p>Doxygen
     <a
     href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvIOCCPP%20-%20Build/doxygen/files.html">Latest</a>, <a href=" http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/html/index.html">1.0-BETA Release </a>
@@ -253,7 +269,7 @@ V4 from source:</p>
   for EPICS V4 development</a></li>
   <li><a href="release.html">EPICS V4 Versioned Release Guide</a></li>
   <li><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/">EPICS V4
-  Sourceforge HgWeb Mercurial Repos (SCM source)</li>
+  Sourceforge HgWeb Mercurial Repos (SCM source)</a></li>
   <li><a href="http://epics.sourceforge.net/maven2/epics/">EPICS V4 Sourceforge Maven
   repos (CI build products)</a></li>
   <li><a

@@ -1,9 +1,9 @@
 /*
-   Base stylesheet for EPICS v4, for inclusion in all* web pages (those
+   Base stylesheet for EPICS v4, for inclusion in all web pages (those
    intended for display, like index.html, and those intended as documents
    like gettingStarted.html). 
  
-   Based on the w3c base.css. 
+   Based on the w3c base.css but extended and modified quite a lot.
  */
 
 body {
@@ -22,7 +22,6 @@ a:link { text-decoration: none; color: blue }
 a:visited { text-decoration: none; color: blue }
 a:hover { text-decoration: underline; color: blue }
 a.priv { color:rgb(150,0,0) } /* private class is to indicate a link only accessible within SLAC */
-
 a:link img, a:visited img { border-style: none } /* no border on img links */
 
 a img { color: white; }        /* trick to hide the border in Netscape 4 */
@@ -36,8 +35,13 @@ th, td { /* ns 4 */
 
 h1, h2, h3, h4, h5, h6 { text-align: left }
 /* background should be transparent, but WebTV has a bug */
+/* w3c blue #005A9C */
+/* Our light blue #6C6BF4 */
+/* Our darker blue #6C4BF4 */
+
+/* EPICS V4 blue = #4C3BCA. Style all headers in that. */
 h1, h2, h3,h4 { 
-    color: #005A9C; 
+    color: #4C3BCA; 
     background: white 
     margin-bottom: 0;
     padding-bottom: 0.15em;
@@ -45,8 +49,8 @@ h1, h2, h3,h4 {
 }
 h1 { font: 170% sans-serif }
 h2 { font: 140% sans-serif }
-h3 { font: 120% sans-serif }
-h4 { font: bold 100% sans-serif }
+h3 { font: 120% sans-serif;  padding-top: .9em }
+h4 { font: bold 100% sans-serif; margin-bottom: 0.5em }
 h5 { font: italic 100% sans-serif }
 h6 { font: small-caps 100% sans-serif }
 h2 { margin-top: 1.5em;  
@@ -60,23 +64,46 @@ div.head { margin-bottom: 1em }
 div.head h1 { margin-top: 2em; clear: both }
 div.head table { margin-left: 2em; margin-top: 2em }
 
+/* Copyright notice, really small */
 p.copyright { font-size: small }
 p.copyright small { font-size: small }
 
-@media screen {  /* hide from IE3 */
-a[href]:hover { background: #ffa }
-}
+/* The ed class of paragraphs and spans is for editors notes. Put them in red with [] around text */
+p.ed { color:red }
+p.ed:before { content:"[" }
+p.ed:after { content:"]" }
+span.ed { color:red }
+span.ed:before { content:"[" }
+span.ed:after { content:"]" }
 
+/* "bib" class of <a> tags is used for constructing a link to the 
+bibliography, in [ link ]. And bib class of dt puts [ ] around text of the definition 
+list item used to mark up the bibliography */
+a.bib:before { content:"[" }
+a.bib:after { content:"]" }
+dt.bib:before { content:"[" }
+dt.bib:after { content:"]" }
+
+/* Indent pre */
 pre { margin-left: 2em }
+pre, code { font-family: monospace } /* navigator 4 requires this */
 
-dt, dd { margin-top: 0; margin-bottom: 0 } /* opera 3.50 */
+/* Definition lists, space so each definition has space between last and dt of the next */
+dt { margin-top: .5em; margin-bottom: 0 } /* opera 3.50 */
+dd { margin-top: 0; margin-bottom: .5em }
 dt { font-weight: bold }
 
-pre, code { font-family: monospace } /* navigator 4 requires this */
+/* Make lists a little more spaced out */
+li { margin-bottom:0.5em }
+ul, ol li:first-child { margin-top:0.3em }
 
 ul.toc, ol.toc {
   list-style: disc;		/* Mac NS has problem with 'none' */
   list-style: none;
+}
+
+@media screen {  /* hide from IE3 */
+a[href]:hover { background: #ffa }
 }
 
 @media aural {  

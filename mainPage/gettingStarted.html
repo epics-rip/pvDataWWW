@@ -13,8 +13,7 @@
 
 <style type="text/css">
 /*<![CDATA[*/
-
-
+h2 { page-break-before : always; }
 /*]]>*/
 </style>
 </head>
@@ -22,7 +21,8 @@
 <div class="head">
 <h1>GETTING STARTED WITH EPICS V4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
-<h2 class="nocount">Getting Started with EPICS V4, Editors Draft, 08-Feb-2012</h2>
+<h2 class="nocount" >
+  Getting Started with EPICS V4, Editors Draft, 08-Feb-2012</h2>
 <dl>
 <dt>This version:</dt>
 <dd><a href=
@@ -56,14 +56,20 @@ for Java and C++ are included.</p>
 <p>This is the 08-Feb-2012 version of the Getting Started with EPICS V4. This
 version includes simplified explanation for compilation without maven for Java, in
 the in step-by-step section. This version
-is up to date with respect to the BETA 1.0 release, incuding the 1.0.1-BETA Java tar file.</p>
+is up to date with respect to the BETA 1.0 release, inlcuding the 1.0.1-BETA Java tar file.</p>
+<p>
+The next version should include: section after step-by-step like "going further"
+which
+points to existing pv* documentation. Troubleshooting CLASSPATH and finding XML files.
+</p>
 
 <h2>Introduction</h2>
+
 <p>EPICS V4 is implemented in C++ and Java. Its APIs are in C++ and Java mainly,
 though wrappers are being produced for Python and Matlab. This document covers only
 development Java and C++.</p>
 
-<h2>The Code Modules that Comprise EPICS V4</h2>
+<h3>The Code Modules that Comprise EPICS V4</h3>
 
 <p>At minimum EPICS V4 is comprised of 3 "core" modules, pvIOC, pvData, and
 pvAccess. You need all 3. The
@@ -226,7 +232,8 @@ export JAVAIOC=/Users/greg/Development/epicsV4/releasetest/EPICSv4-Java-1.0.1-BE
   </pre>
   </li>
 
-  <li>Edit CLASSPATH to point to your compiled examples and downloaded jars, rather than,
+  <li>Edit CLASSPATH to point to where your examples code class files should end
+  up; and to point to the downloaded jars, rather than,
   as shipped, the locations where maven development using the source would leave
   things:
 
@@ -256,12 +263,15 @@ Either of these should result in class files in exampleJava/target/classes/*.cla
 </li>
 
 <li>Start the server (you'll see quite a lot of output. Check there are no complaints
-of file-not-found):
+of file-not-found).
 
 <pre>
 cd to exampleJava/src/helloWorld/
 % ./helloServerRunner
 </pre>
+<em>Tip: If you get a ClassNotFound, you can diagnose your runtime
+environment's CLASSPATH by sourcing  helloWorld_setup.bash and then running a
+command like <code>printenv CLASSPATH | tr : '\n' | xargs -I{} ls {}</code></em>
 
 </li>
 
@@ -920,7 +930,7 @@ testApp          - sample code for a test IOC and RPC service
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Wed Feb  8 14:26:15 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Feb 22 14:03:05 CET 2012 <!-- hhmts end -->
 
 </body>
 </html>
