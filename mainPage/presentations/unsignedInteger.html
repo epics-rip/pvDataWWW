@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>Unsigned Integer Discussion</title>
+</head>
+
+<body>
+<h1 style="text-align: center">Unsigned Integer Discussion<br />
+2012.01.19</h1>
+
+<h2>Overview</h2>
+
+<p>This is a discussion of support for unsigned integers by pvData and
+pvAccess.</p>
+
+<p>The definition of scalarType is:</p>
+<pre>enum ScalarType {
+    pvBoolean,
+    pvByte,pvShort,pvInt,pvLong,
+    pvFloat,pvDouble,
+    pvString;
+    ...
+}</pre>
+
+<p>Both Matej and Marty feel strongly that there should NOT be unsigned types
+defined in scalarType:</p>
+<pre>enum ScalarType {
+    pvBoolean,
+    pvByte,pvShort,pvInt,pvLong,
+    pvUnsignedByte,pvUnsignedShort,pvUnsignedInt,pvUnsignedLong,
+    pvFloat,pvDouble,
+    pvString;
+    ...
+}</pre>
+
+<p>The primary reason is that Java has no support for unsigned integers.</p>
+
+<p>But there should be a way for a data source of unsigned integers to let the
+user of the data know that the integer is unsigned. The rest of this document
+proposes a simple change to pvData and to the pvAccess wire protocol that
+allows this information to be passed from the data source to the client.</p>
+
+<h2>Change to pvData</h2>
+
+<p>A new method will be added to interface Field, which is the base
+introspection interface:</p>
+<pre>interface Field {
+    String getFieldName();
+    Type getType();
+    bool isUnsigned();   // NEW METHOD
+    void toString(StringBuilder buf);
+    void toString(StringBuilder buf,int indentLevel);
+    String toString();
+}</pre>
+
+<p>In addition new methods will be added to FieldCreate, which is the factory
+for creating introspection interfaces:</p>
+<pre>interface FieldCreate {
+    Field create(String fieldName,Field field);
+    Scalar createScalar(String fieldName,ScalarType scalarType);
+    ScalarArray createScalarArray(String fieldName,ScalarType elementType);
+    // BEGIN NEW METHODS
+    Scalar createUnsignedScalar(String fieldName,ScalarType scalarType);
+    ScalarArray createUnsignedScalarArray(String fieldName,ScalarType elementType);
+    // END NEW METHODS
+    StructureArray createStructureArray(String fieldName,Structure elementStructure);
+    Structure createStructure(String fieldName, Field[] field);
+}</pre>
+
+<h2>Change to pvAccess</h2>
+
+<p>The protocol specification currently specifies:</p>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold">FieldDesc Encoding.</caption>
+  <tbody>
+    <tr>
+      <th>FieldDesc Encoding</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>0x00 | ScalarType (0b0000xxxx) + name</td>
+      <td style="font-weight:bold">scalar</td>
+      <td>Scalar.</td>
+    </tr>
+    <tr>
+      <td>0x10 | ScalarType (0b0000xxxx) + name</td>
+      <td style="font-weight:bold">scalarArray</td>
+      <td>Array of scalars.</td>
+    </tr>
+    <tr>
+      <td>0x20 (0b00100000) + name + Field[]</td>
+      <td style="font-weight:bold">structure</td>
+      <td>Structure.</td>
+    </tr>
+    <tr>
+      <td>0x30 (0b00110000) + name + (structure name + Field[])</td>
+      <td style="font-weight:bold">structureArray</td>
+      <td>Array of structures.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This will be changed to:</p>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold">FieldDesc Encoding.</caption>
+  <tbody>
+    <tr>
+      <th>FieldDesc Encoding</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>0x00 | ScalarType (0b0000xxxx) + name</td>
+      <td style="font-weight:bold">scalar</td>
+      <td>Scalar.</td>
+    </tr>
+    <tr>
+      <td>0x10 | ScalarType (0b0000xxxx) + name</td>
+      <td style="font-weight:bold">scalarArray</td>
+      <td>Array of scalars.</td>
+    </tr>
+    <tr>
+      <td>0x40 | ScalarType (0b0000xxxx) + name</td>
+      <td style="font-weight:bold">scalar</td>
+      <td>Unsigned Scalar. Only valid for integer types</td>
+    </tr>
+    <tr>
+      <td>0x50 | ScalarType (0b0000xxxx) + name</td>
+      <td style="font-weight:bold">scalarArray</td>
+      <td>Array of unsigned scalars.</td>
+    </tr>
+    <tr>
+      <td>0x20 (0b00100000) + name + Field[]</td>
+      <td style="font-weight:bold">structure</td>
+      <td>Structure.</td>
+    </tr>
+    <tr>
+      <td>0x30 (0b00110000) + name + (structure name + Field[])</td>
+      <td style="font-weight:bold">structureArray</td>
+      <td>Array of structures.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>NOTE: For Scalar the leading 0x00 is changed to 0x40. For scalarArray the
+leading 0x10 is changed to 0x50.</p>
+
+<h2>How does client code discover if an integer scalar or array is
+unsigned?</h2>
+
+<p>A client that has ANY introspection interface can just call isUnsigned().
+For example:</p>
+<pre>    PVInt pvInt = ???
+    PVByteArray *pvByteArray = ???
+    boolean result;
+    ...
+    if(pvInt.getField().isUnsigned()) {/* it is unsigned */}
+    if(pvByteArray.getField().isUnsigned()) { /* it is unsigned */ }</pre>
+
+<h2>Convert</h2>
+
+<p>The convert class is a general purpose class that has methods to do all or
+almost all legal conversions between pvData objects and between pvData objects
+and strings and primitive types. Some of these methods should check for
+unsigned integers and perform appropriate conversions.</p>
+
+<p><b>However</b>, Convert should not raise exceptions if an integer overflow
+occurs. Note that neither Java or C++ raise an exception if an integer overflow
+occurs.</p>
+ . 
+
+<p>A quick look shows that all methods that convert an integer to 1) a wider
+integer, 2) a double or float, or 3) a string, should check if the integer is
+unsigned and take appropriate action. For example:</p>
+<pre>        public String toString(PVScalar pv) {
+            ScalarType type = pv.getScalar().getScalarType();
+            switch (type) {
+            case pvBoolean: {
+                PVBoolean value = (PVBoolean)pv;
+                boolean val = value.get();
+                return val ? "true" : "false";
+            }
+            case pvByte: {
+                PVByte value = (PVByte) pv;
+                return String.valueOf(value.get());
+            }
+            case pvShort: {
+                PVShort value = (PVShort) pv;
+                return String.valueOf(value.get());
+            }
+           ...</pre>
+
+<p>Should be changed to:</p>
+<pre>        public String toString(PVScalar pv) {
+            Scalar scalar = pv.getScalar();
+            ScalarType type = scalar.getScalarType();
+            boolean isUnsigned = scalar.isUnsigned()
+            switch (type) {
+            case pvBoolean: {
+                PVBoolean value = (PVBoolean)pv;
+                boolean val = value.get();
+                return val ? "true" : "false";
+            }
+            case pvByte: {
+                PVByte value = (PVByte) pv;
+                if(isUnsigned) {
+                    byte byteValue = = pv.get();
+                    short shortValue = byteValue;
+                    shortValue &amp;= 0x00FF;
+                    return String.valueOf(shortValue);
+                }
+                return String.valueOf(value.get());
+            }
+            case pvShort: {
+                PVShort value = (PVShort) pv;
+                if(isUnsigned) {
+                    short shortValue = = pv.get();
+                    int intValue = shortValue;
+                    intValue &amp;= 0x0000FFFF;
+                    return String.valueOf(intValue);
+                }
+                return String.valueOf(value.get());
+            }
+           ...</pre>
+
+<p>The Java and C++ implementations of Convert will both make the same
+changes.</p>
+</body>
+</html>
