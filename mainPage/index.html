@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head>
   <meta http-equiv="content-type" content="text/html" />
-  <meta http-equiv="PRAGMA" content="NO-CACHE">
-  <meta http-equiv="EXPIRES" content="0">
+  <meta http-equiv="PRAGMA" content="NO-CACHE"/>
+  <meta http-equiv="EXPIRES" content="0"/>
   <title>EPICS Version 4 Home Page</title>
   <link rel="stylesheet" type="text/css" href="base.css" />
   <link rel="stylesheet" type="text/css" href="epicsv4web.css" />
@@ -26,27 +26,41 @@
 <!-- dummy to check if Jenkins has woken up -->
 
 <body>
-<!-- Very top date banner -->
-<table style="border-width:0px" width="100%">
-  <tbody style="color:#005A9C">
+<table width="100%" style="border-width:1px">
     <tr>
-      <td width="50%" style="font-size:150%">EPICS V4</td>
-      <td width="50%" style="text-align:right;color:black;font-size:70%">
+      <td colspan="3" style="text-align:right;color:black;font-size:70%">
 	<span style="text-align:right;">
-<!-- hhmts start -->Last modified: Thu Jan 19 18:03:04 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Fri Mar  2 21:41:30 CET 2012 <!-- hhmts end -->
 	</span>
       </td>
     </tr>
-  </tbody>
-</table>
+    <tr>
+      <td>
 
-<h1 style="text-align:center;letter-spacing:0.2em;font-size:300%">EPICS Version 4</h1>
+	<table id="logo" style="border-width:0px" class="image">
+	  <caption
+	    style="text-align:center;letter-spacing:1.0em;font-size:70%;font-weight:lighter"
+	    align="top">EPICS V4
+	  </caption>
+	  <tr><td><img align="left" src="image/logos/EV4logo_blue_sanstext_lg.png"
+	  alt="EPICS V4 logo"/></td></tr>
+	</table
+ 
+      </td>
+      <td width="100%"
+      style=
+"text-align:center;letter-spacing:0.2em;font-size:300%;color:#4C3BCA">EPICS
+      Version 4
+      </td>
+      <td padding="0px" border-width="0px"></td>
+    </tr>
+</table>
 
 <table class="masthead" vspace="4px" width="100%" style="font-weight:bold">
   <tbody align="center">
     <tr>
       <!-- #005a9c rgb(0,128,255); -->
-      <td align="center" style="background-color:rgb(0,128,255);">
+      <td align="center" class="selected">
 	<span class="selectedtab" >HOME</span>
       </td>
       <td align="center"><a href="development.html">DEVELOPMENT</a></td>
@@ -57,10 +71,11 @@
       <td align="center" ><a href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE PROJECT</a></td>      
       <td align="center"><a href="http://epics-pvdata.sourceforge.net/faq.html">FAQ</a></td>
    </tr>
+   </tbody>
 </table>
 
 <p style="margin-top:30px">This is the homepage of EPICS Version 4, a software toolkit for writing the control
-system and online scientific services of large experimental facilities.<p>
+system and online scientific services of large experimental facilities.</p>
  
 <p><a href="http://www.aps.anl.gov/epics">EPICS</a> is a set of Open Source
 software tools, libraries and applications developed collaboratively and used
@@ -105,7 +120,7 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	  href="http://sourceforge.net/projects/epics-pvdata/support">Support</a></li>
 	  <li><a href="development.html#pvData">pvData</a></li>
 	  <li><a href="development.html#pvAccess">pvAccess</a></li>
-	  <li><a href="development.html#pvIOC">pvIOC</a></li>
+	  <li><a href="development.html#pvioc">pvIOC</a></li>
 	  <li><a href="development.html#pvService">pvService</a></li>
 	  <li><a
 	href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/">Mercurial
@@ -177,7 +192,7 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	  <li><a href="pvAccess_Protocol_Specification.html">pvAccess
 	  Specification</a></li>
 	  <li><a
-	  href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">Normative
+	  href="alpha/normativeTypes/normativeTypes.html">Normative
 	  Types</a></li>
 	  <li><a
 	  href="http://epics-pvdata.sourceforge.net/arch.html">Architectures</a></li>
@@ -248,12 +263,18 @@ of work in early 2012. </p>
 
 <p>This section is a very short summary of the status of EPICS V4 overall, and gives
 help on how an interested engineer might want to use it now.</p> <p><strong>Last
-updated 20-Dec-2011:</strong></p>
+updated 03-Mar-2012:</strong></p>
 
-<p> <strong>As of 20-Dec-2011 EPICS V4 is in beta</strong>. The core standards of
+<p> <strong>Since 20-Dec-2011 EPICS V4 has been in beta</strong>. The core standards of
 EPICS V4, and their implementations, are complete with respect to the January 2012
-milestones. The specification of pvAccess is at Second Public Working Draft and ready
-for comments.</p>
+milestones. The beta is useable for distributed high level data services. The first production 
+service is being deployed at PSI, and the underlying data tools are in production at Diamond.</p>
+
+<p>Present work is in adding unsigned integer support, improving programmer ease of
+use, and the pvAccess and Normative Type specifications. The specification of
+pvAccess has been approaching Second Public Working Draft. Presently it is being
+expert reviewed prior to announcement. The definitions of the interoperable data
+types, "Normative Types" is approaching First Public Working Draft.</p>
 
 <p>In acute summary, support for managed distributed data acquisition is quite far
 along and can be used now. This includes acquisition from EPICS V3 PVs via EPICS V4
@@ -261,9 +282,7 @@ tools or components. The basis for services and "RPC in EPICS" is complete, and 
 are example services in Java and C++. Largely documentation is up to date with
 respect to implemented code. </p>
 
-<p>So, the beta is useable for distributed high level data services. However,
-there is not yet an easy to use framework for
-Service Oriented Architecture (SOA). The primary area in which EPICS V4 is not yet ready for
+<p>The primary area in which EPICS V4 is not yet ready for
 use is that part which is the core value of the EPICS V3 IOC, record processing for
 controls. This is because we are adding to EPICS first, then will re-implement the
 exiting excellent functionality in EPICS version 3. See below for a complete
@@ -485,7 +504,7 @@ the time of writing).</p>
 
 <dl class="normativeproddescr">
 <dt id="pvservice">pvService</dt>
-<dd>pvService presently includes early stage development for an online accerlator
+<dd>pvService presently includes early stage development for an online accelerator
   model service, and a framework for managing data acquisitions from many devices
   server side (the Gather service framework).</dd>
 <dd><strong>Implementations:</strong>
