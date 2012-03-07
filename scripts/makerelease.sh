@@ -1,6 +1,6 @@
 #!/bin/bash
 USER=jrowlandls
-TAG=test1
+TAG=marchtest
 OUT="EPICSv4-$TAG"
 TARFILE="$OUT.tar.gz"
 mkdir -p $OUT
