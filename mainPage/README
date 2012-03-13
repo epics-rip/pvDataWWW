@@ -2,7 +2,9 @@ EPICS V4 README
 
 This README file describes the download files available for EPICS V4.
 
-Status: This is the 08-Feb-2011 version of the README, and pertains to the
+13-Mar-2012: Added C++ release "Marchtest" for internal review only.
+
+Status: This is the 08-Feb-2012 version of the README, and pertains to the
 1.0-BETA release of EPICS V4. This differs from the 11-Jan-2012 version
 in that it re-includes the pvService jar file for Java, again 
 necessary for RPC.
