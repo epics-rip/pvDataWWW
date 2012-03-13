@@ -1,6 +1,6 @@
 #!/bin/bash
 USER=jrowlandls
-TAG=test1
+TAG=marchtest
 # better use functions or loops in BASH!
 hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
 hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessCPP
@@ -8,8 +8,6 @@ hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata
 cp RELEASE.local CONFIG_SITE.local pvDataCPP/configure
 cp RELEASE.local CONFIG_SITE.local pvAccessCPP/configure
 cp RELEASE.local CONFIG_SITE.local pvIOCCPP/configure
-# don't build the example that depends on Normative Types
-patch -p0 < pvIOCCPP_noNT.patch
 (cd pvDataCPP && make && doxygen)
 (cd pvAccessCPP && make && doxygen)
 (cd pvIOCCPP && make && doxygen)

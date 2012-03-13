@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 EZPVA - Easy PVAccess</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
+</head>
+
+<html>
+<body>
+
+<h1>Easy API</h1>
+
+Based on these EPICSv3 designs:
+<ul>
+<li><a href="http://controls.diamond.ac.uk/downloads/python/cothread/2-3/docs/html/catools.html">cothread.catools</a></li>
+<li><a href="http://www.slac.stanford.edu/grp/ssrl/spear/epics/extensions/labca/manual/node5.html">labCa</a></li>
+<li>Command Line CAGET</li>
+</ul>
+
+Features:
+<ul>
+<li>Blocking (with timeout)</li>
+<li>Vectorized</li>
+<li>C++ uses std::vector for name and value lists</li>
+<li>Monitor takes a callback</li>
+<li>Timeouts throw an exception</li>
+</ul>
+
+API:
+
+<ul>
+<li>
+<code>results = ChannelRPC(names, values, timeout = 10.0, request = "")</code>
+</li>
+<li>
+<code>results = ChannelPutGet(names, values, timeout = 10.0, request = "")</code>
+</li>
+<li>
+<code>results = ChannelPut(names, values, timeout = 10.0, request = "")</code>
+</li>
+<li>
+<code>results = ChannelGet(names, timeout = 10.0, request = "")</code>
+</li>
+<li>
+<code>results = ChannelMonitor(names, callback, timeout = 10.0, request = "")</code>
+</li>
+</ul>
+
+<h2>ChannelRPC Example</h2>
+
+Where MakeNameValue returns a PVStructure shared_pointer
+
+<pre>
+// scalar
+string name = "archiver";
+shared_ptr &lt; PVStructure > output = ChannelRPC(name, MakeNameValue("t0", 45045254, "channel", "current"));
+
+// vectorized (eg. useful for querying mulitple devices)
+vector &lt; string > names;
+names.push_back("archiver1");
+names.push_back("archiver2");
+vector &lt; shared_ptr &lt; PVStructure > > inputs;
+inputs.push_back(MakeNameValue("t0", 45045254, "channel", "current"));
+inputs.push_back(MakeNameValue("t0", 45045254, "channel", "vacuum"));
+vector &lt; shared_ptr &lt; PVStructure > > outputs = ChannelRPC(names, inputs);
+</pre>
+
+<h2>Value Types</h2>
+User must be able to provide doubles, double arrays, strings or any PVStructure.
+
+<ul>
+<li>double</li>
+<li>double []</li>
+<li>String</li>
+<li>PVStructure</li>
+</ul>
+
+<h2>Problems</h2>
+The Easy API breaks the pvAccess container model (apart from ChannelRPC). The user does NOT want to do this:
+
+<pre>
+pvstructures = ChannelPutConnect(names)
+modify(pvstructures)
+results = ChannelPutPut(names, pvstructures)
+</pre>
+
+The user wants to do this:
+
+<pre>
+pvstructures = make_some_pvstructures_at_my_leisure()
+# type check when trying to put
+results = ChannelPut(names, pvstructures)
+</pre>
+
+Or possibly:
+
+<pre>
+pvstructures = ChannelPutReturnPrototypes(names)
+modify(pvstructures)
+results = ChannelPut(names, pvstructures)
+</pre>
+
+<p>One way to do this is by copying the user's PVStructure into the channel's PVStructure field by field. 
+Alternatively the user's PVStructure can be type-checked and serialized (this needs a modification to the PVAccess API).</p>
+
+<p>As most applications will use ChannelRPC or primitive types, copying will be ok for a prototype.</p>
+
+<h2>Solutions for copying get results</h2>
+A free list of PVStructures will allow the user to hold on to a copy of of the get result without allocating on every get
+<pre>
+result = ChannelGet(name)
+
+// ChannelGet internals
+if len(freelist) > 0:
+  pvstructure = freelist.pop()
+else:
+  pvstructure = PVStructureFactory.create(channel.type)
+
+get_into(pvstructure)
+return pvstructure
+
+// result pointer destructor puts the structure back on the free list
+</pre>
+
+</body>
+</html>
