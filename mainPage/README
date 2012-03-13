@@ -2,14 +2,17 @@ EPICS V4 README
 
 This README file describes the download files available for EPICS V4.
 
-Status: This is the 08-Feb-2011 version of the README, and pertains to the
+
+Status: This is the 08-Feb-2012 version of the README, and pertains to the
 1.0-BETA release of EPICS V4. This differs from the 11-Jan-2012 version
 in that it re-includes the pvService jar file for Java, again 
 necessary for RPC.
 
 Author: 28-Nov-2011 Greg White (gregory.white @ psi.ch) for EPICS 
 V4 team [1]
-Mod: 20-Dec-2011, Greg White, for 1.0-BETA, Java and C++.
+Mod:
+     13-Mar-2012, Jams Rowland, Added C++ release "Marchtest" for internal review only.
+     20-Dec-2011, Greg White, for 1.0-BETA, Java and C++.
      11-Jan-2012, Greg White, for EPICSv4-Java-1.0-BETA.tar.gz
      08-Feb-2012, Greg White, for EPICSv4-Java-1.0-1-BETA.tar.gz
 -----------------------------------------------------------------
@@ -24,6 +27,7 @@ SUMMARY
 -------
 The C++ implementation of EPICS V4 is in 1.0-BETA/EPICSv4-1.0-BETA.tar.gz
 The Java implementation of EPICS V4 is in 1.0-BETA/EPICSv4-Java-1.0-1-BETA.tar.gz
+"Marchtest" for internal review only.
 
 See the document "Getting Started with EPICS V4," 
 http://epics-pvdata.sourceforge.net/gettingStarted.html
