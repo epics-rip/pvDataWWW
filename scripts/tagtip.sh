@@ -1,6 +1,6 @@
 #!/bin/bash
 USER=jrowlandls
-TAG=marchtest
+TAG=1.0.1-BETA
 hg clone ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
 hg clone ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessCPP
 hg clone ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCCPP

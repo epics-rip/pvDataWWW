@@ -1,6 +1,6 @@
 #!/bin/bash
 USER=jrowlandls
-TAG=marchtest
+TAG=1.0.1-BETA
 # better use functions or loops in BASH!
 hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
 hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessCPP
