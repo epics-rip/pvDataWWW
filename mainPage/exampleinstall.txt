@@ -1,0 +1,553 @@
+PSI EPICS V4 SWISSFEL INSTALLATION DESIGN
+========================================= 
+
+This document describes a plan for the install of EPICS V4 core, services 
+and clients, at PSI. It also includes support for a programmer, and includes 
+a summary of a programmer's development cycle for developing EPICS services 
+against this installation. 
+
+This document has been written for system managers and architects at PSI
+primarily, as a proposal for the EPICS V4 install, but it may be used as 
+template for other institutions.
+
+Greg White, 16-Feb-2012, gregory.white@psi.ch
+
+STATUS OF THIS DOCUMENT
+-----------------------
+This is an INFORMATIVE [3] document of EPICS V4. It is NOT intended to descibe 
+a recommended install for EPICS V4 sites generally.
+
+Presently this document only includes the Java implementation of EPICS V4
+at PSI. It does not include the C++ implementation. That must be added soon. 
+
+SUMMARY:
+--------
+
+CVS:
+
+CVS module G/EPICS = now contains the EPICS V3 source distribution (not build products)
+CVS module G/EPICS4 = will contain the EPICS V4 source distribution (not build products)
+CVS module G/EPICS4_EXT = will contain the source of the services and extensions PSI 
+                          will build using the EPICS4 platform.
+
+In production:
+
+/usr/local/epics/          = build products of all epics related material (v3 & v4, plus
+                             what PSI produces using the EPICS platform)
+                 base@     = existing symlink to EPICS V3 base build
+                 base4@    = will symlink to EPICS V4 base build and Java binary distribution
+                 ext/services/ = will contain services build products of services
+ 	                     either generated or built by PSI/
+
+Configuration:
+ 
+/etc/sysconfig/epics       = will define environment variables for the base installation,
+/etc/sysconfig/epics_local = will define PSI specific variables for EPICS V4
+                             platform using systems
+/etc/init.d/rdbservice     = is the startup file
+
+A programmer can use rdb_dev.bash to override the defaults set in the scripts above.
+      
+Host: gfa-e4 (EPICS V4 services host at PSI)
+
+
+1. Core Installation
+====================
+
+This section describes how to install EPICS V4 "core" on a given host. 
+
+The directories and files described in this section, must be in the filesystem of
+each host that is used for development OR for runtime use, of the EPICS V4 platform.
+ 
+Note EPICS V4 includes EPICS V3. It is intended that an installer configures their
+EPICS V4 install to work with an existing EPICS V3 install. TBAdded: should add how
+to configure EPICS V4 to point to a V3 install.
+
+
+1.1 Basic V4 core install location
+----------------------------------
+   
+Create a directory to host the C and Java of EPICS V4 base, version 1.0-BETA, in the
+same directory that presently contains epics v3. Create also a symlink to points to
+the version, for pathname version independence.
+
+In /usr/local/epics/
+
+   mkdir base-4.1.0
+   ln -s base-4.1.0 base4
+
+Create the subdirs for CPP and Java implementations of EPICS V4 core
+
+   cd base4
+   mkdir java
+   mkdir cpp
+ 
+[For EPICS V4 WG comment: Note, the directory name contains "4" - the epics version,
+but not the "dot" number I introduced for our tagging, eg 1.0.*1*. This seems right
+to me. That dot number should be for small changes that are forward and back
+compatible.
+
+So, this directory structure specifically assumes java and C++ major and EPICS and v4
+major num go together (that is, when we release a EPICS V4 1.2, we'll release both C
+and Java for it together, and they would be collocated in an install directory named
+base-4.1.2/). "dot" releases would not imply a new directory, and C and Java dot
+numbers can increment independently. That seems reasonable. Comments?]
+
+Download:
+
+The EPICS V4 download site is:
+http://sourceforge.net/projects/epics-pvdata/files/
+
+Eg After downloading from Sourceforge, you might use SSH copy (scp) to ship files to 
+our EPICS v4 host computer fin-lc. Eg
+
+    scp jca-2.3.2.jar <username>@fin-lc:/usr/local/epics/base4/java/ver/.
+
+
+1.2. Installing V4 Core for Java 
+--------------------------------
+ 
+We will put the EPICS V4 java install in /usr/local/epics/base4/java/
+
+Download EPICSv4-Java-1.0.1-BETA.tar.gz from the EPICS V4 download site [1].
+Place it in  /usr/local/epics/base4/java/
+
+   [From /usr/local/epics/base4] cd java
+   cp <download area>/EPICSv4-Java-1.0.1-BETA.tar.gz .
+
+While in /usr/local/epics/base4/java/, untar it using simply
+
+   tar xvfz EPICSv4-Java-1.0.1-BETA.tar.gz
+
+This will create a directory named: 
+   /usr/local/epics/base4/java/EPICSv4-Java-1.0.1-BETA
+
+Create a symlink in the java/ dir also for this, so the java incremental version
+release can be changed safely by symlink:
+
+   ln -s EPICSv4-Java-1.0.1-BETA ver
+
+You can remove the tar (rm EPICSv4-Java-1.0.1-BETA.tar.gz)
+
+
+1.2.1. Install caj/jca for V3 ca support
+----------------------------------------
+
+If you don't already have it, download caj (caj-1.1.8.jar) from either
+its homepage [2], or the EPICS V4 files page [1]. It can be placed in
+say /usr/local/epics/base4/java/ver/.
+
+If you don't already have it, download jca [3] (jca-2.3.2.jar), from either
+its homepage [3], or the EPICS V4 files page [1]. It can be placed in
+say /usr/local/epics/base4/java/ver/.
+
+
+
+Example result of Java install for EPICS V4 core
+------------------------------------------------
+
+So the dir structure in full, expanding the path related to EPICS v4 Java, would be for
+example:
+
+/usr/local/epics/
+                 base -> base-3.14.12
+                 base-3.14.12/
+                 base-3.14.8/
+                 extensions/
+                 base4 -> base-4.1.0
+                 base-4.1.0/
+                            cpp/
+                            java/
+                                 ver -> EPICSv4-Java-1.0.1-BETA
+                                 EPICSv4-Java-1.0.1-BETA/
+
+And in ver@ you'd expect the following files from the tar: 
+/usr/local/epics/base4/java/ver
+[white_g@finlc01 ver]$ ls
+total 4216
+   8 drwxr-xr-x 6 white_g sls    4096 Feb  9 14:50 .
+   8 drwxr-xr-x 3 white_g sls    4096 Feb  9 14:15 ..
+ 480 -rw-r--r-- 1 white_g sls  244018 Feb  9 14:41 caj-1.1.8.jar
+   8 drwxr-xr-x 3 white_g sls    4096 Feb  8 11:08 common
+   8 drwxr-xr-x 4 white_g sls    4096 Feb  8 11:08 exampleJava
+ 488 -rw-r--r-- 1 white_g sls  246494 Feb  9 14:50 jca-2.3.2.jar
+ 496 -rw-r--r-- 1 white_g sls  251087 Feb  7 19:21 pvAccess-1.0.1-BETA.jar
+ 392 -rw-r--r-- 1 white_g sls  197533 Feb  7 17:46 pvData-1.0.1-BETA.jar
+2056 -rw-r--r-- 1 white_g sls 1049064 Feb  7 17:53 pvIOC-1.0.1-BETA.jar
+   8 drwxr-xr-x 5 white_g sls    4096 Feb  8 11:08 pvIOCJava
+ 232 -rw-r--r-- 1 white_g sls  114918 Feb  7 19:27 pvService-1.0.1-BETA.jar
+   8 drwxr-xr-x 3 white_g sls    4096 Feb  8 11:08 pvServiceJava
+  16 -rw-r--r-- 1 white_g sls    5715 Feb  8 11:08 README
+   8 -rw-r--r-- 1 white_g sls      11 Feb  8 11:08 tag.txt
+
+Services and clients would access resources for EPICS V4 Java with pathnames like:
+/usr/local/epics/base4/java/ver/
+
+
+1.2. Install V4 Core for C++ 
+--------------------------
+
+To be added. Note this chapter should include a section on how to adjust an install
+of pvIOCCPP/configure/RELEASE.local, pvAccess/configure/RELEASE.local etc to point to
+the sibling V3 install.
+
+
+2. Install EPICS V4 default environment 
+=======================================
+
+Write basic /etc/sysconfig support, in /etc/sysconfig/epics. This file would be
+sourced by EPICS V4 process setup scripts to acquire the basic environment. See
+Appendix A.1.
+
+/etc/sysconfig/epics would set for instance E4_VERSION, E4_CLASSPATH, E4_BIN_PATH,
+etc.
+
+Write also /etc/sysconfig/epics_local. This file will define the location of 
+PSI's local products that use the EPICS V4 platform. See Appendix A.2.
+
+
+
+3. Write daemon service startup
+===============================
+
+Write service startup scripts in /etc/init.d/. These are started at boot time of
+their home hosts, to start your EPICS V4 services (so before doing this you would
+have created some services). The files you place in or under /etc/init.d/ eg
+"rdbservice" would assume /etc/sysconfig/epics and epics_local have been
+sourced in their process.
+
+In my example (see /fin/devl/ev4proto/etc/init.d) I've sourced them and set the
+PATH. ** Don't know how you handle PATH setting at PSI - do you allow startup
+scripts to manipulate it? **
+
+/etc/init.d/rdbservice start() command executes "daemon rdbServerRunner".
+rdbServerRunner starts the service (a java command) with exec -a rdbservice.
+/etc/init.d/rdbservice stop() command executes "killproc rdbservice".
+
+/etc/init.d/rdbservice responds to start|stop|restart|status
+
+So, for users pgrep and pkill look like this:
+[white_g@finlc01 psiRdbService]$ pgrep rdbservice
+10004
+[white_g@finlc01 psiRdbService]$ pkill rdbservice
+
+
+4. Services and extensions production area at PSI
+================================================
+
+4.1 Basic location of platform *using* products external to the base, will be in the
+ext/ subdirectory. PSI's EPICS V4 services' build products will be in ext/services/
+
+     cd /usr/local/epics
+     (mkdir ext; cd ext; mkdir services)
+     cd services
+      
+     In /usr/local/epics/ext/services/ create
+          bin/          executables, including "executable" scripts 
+          script/       scripts (sourced), and others.
+          classes/      java class files
+          xml/         XML files
+
+
+--- ---
+Programmer's guide:
+
+     
+5. An EPICS V4 platform programmers development cycle
+=====================================================
+
+This is the minimum SCM, edit and release cycle of a PSI programmer modifying
+a PSI service that uses the EPICS V4 install design described above:
+ 
+cvs co G/EPICS4_EXT/services/psiRdbService
+cd G/EPICS4_EXT/services/psiRdbService
+source rdb_dev.bash $PWD      - Set env for local compiles and execution 
+
+mkdir classes                 - Because java -d classes needs dir classes to exist)
+gmake                         - To compile class files locally
+
+bin/rdbServerRunner           - Start the rdb service locally (kill production first)
+[in another process] 
+   cd G/EPICS4_EXT/services/psiRdbService
+   source rdb_dev.bash $PWD 
+   bin/rdbClientRunner <somequeryname>
+
+(cd to parent of G/ dir, then) 
+cvs commit -m "comment"  G/EPICS4_EXT/services/psiRdbService
+
+gmake install                 - To install your modified rdbService in production 
+                                per 4.1 above.
+
+NOTE. The way I've done it here, PSI's EPICS V4 using products, eg rdbService,
+are deployed to /usr/local/epics/services (a sibling dir of base/ and base4). 
+Doesn't have to be that way though, the products could be deployed in any dir.
+Also note that we can, if we want to, deploy only the products of services
+that will be run on a given machine, to that machine. 
+
+
+
+APPENDIX A
+==========
+A.1. /etc/sysconfig/epics - The basic EPICS V4 system configuration would be
+as follows:
+
+#!-*- sh -*- 
+# 
+# Abs: System config basis of EPICS V4. 
+#
+# Usage: This script should be placed in /etc/sysconfig/ and sourced by
+#        processes wishing to acquire the fundamental runtime environment
+#        of EPICS V4 on this host.
+#
+#        *At PSI we have chosen to write this file so that the relationship
+#         between this file and using scripts, is that the using scripts 
+#         use the environment variables we export in this file, to set the
+#         actual ones locally. Eg, we set E4_CLASSPATH here, then
+#         process setups can use E4_CLASSPATH to set their CLASSPATH.
+#
+# Remarks: Presently this file only includes the runtime set up for 
+#        EPICS V4 processes. It should also be taught C++
+#        basic setup. 
+#
+#        Also, at present this file sets up only epics v4. It could also 
+#        set up independent epics V3 things.
+#
+# Ref: http://epics-pvdata.sourceforge.net/
+#      
+#
+# ----------------------------------------------------------------------------
+# Auth: 09-Feb-2012, Greg White (greg@slac.stanford.edu, gregory.white@psi.ch)
+# Mod:  
+# ============================================================================
+
+E4_INSTALL_BASE=/usr/local/epics/base4
+ 
+# Set the EPICS V4 version used on this host. This is used in setting
+# CLASSPATH elements etc to. At present it does not have a strong
+# association with the pathname (eg  .../java/EPICSv4-Java-1.0.1-BETA/)
+# but it would be a good idea to keep these in sync.
+#
+E4_VERSION='1.0.1-BETA'
+
+# Set the location of basic pvIOC database xmls, JAVAIOC. This is from 
+# EPICS V4 java implementation file common/source/pvCommon_setup.bash. 
+#
+E4_JAVAIOC=${E4_INSTALL_BASE}/java/ver/pvIOCJava
+
+# The pvService basic xmls directory as in the distribution:
+E4_PVSERVICE=${E4_INSTALL_BASE}/java/ver/pvServiceJava
+
+# Set a basic CLASSPATH variable. At PSI we choose to set an environment
+# variable which can be used in setting the CLASSPATH of a process, rather 
+# than setting its CLASSPATH for it. Other labs may choose differently.
+#
+E4_CLASSPATHROOT=${E4_INSTALL_BASE}/java/ver 
+E4_CLASSPATH=${E4_CLASSPATHROOT}/pvIOC-${E4_VERSION}.jar
+E4_CLASSPATH=${E4_CLASSPATH}:${E4_CLASSPATHROOT}/pvData-${E4_VERSION}.jar
+E4_CLASSPATH=${E4_CLASSPATH}:${E4_CLASSPATHROOT}/pvAccess-${E4_VERSION}.jar
+E4_CLASSPATH=${E4_CLASSPATH}:${E4_CLASSPATHROOT}/pvService-${E4_VERSION}.jar
+E4_CLASSPATH=${E4_CLASSPATH}:${E4_CLASSPATHROOT}/caj-1.1.8.jar
+E4_CLASSPATH=${E4_CLASSPATH}:${E4_CLASSPATHROOT}/jca-2.3.2.jar
+
+# Exports
+#
+export E4_VERSION
+export E4_JAVAIOC
+export E4_PVSERVICE
+export E4_CLASSPATH
+
+
+---------------------------------
+A.2 /etc/sysconfig/epics_local - The basic EPICS V4 PSI using systems system 
+configuration would be as follows:
+
+#!-*- sh -*- 
+# 
+# Abs: System config basis of PSI's local EPICS V4 using systems. 
+#
+# Usage: This script should be placed in /etc/sysconfig/ and sourced by
+#        processes wishing to acquire the environment
+#        of PSI's systems that use EPICS V4 platform.
+#
+# Ref: http://epics-pvdata.sourceforge.net/
+#      
+#
+# ----------------------------------------------------------------------------
+# Auth: 09-Feb-2012, Greg White (greg@slac.stanford.edu, gregory.white@psi.ch)
+# Mod:  
+# ============================================================================
+
+# The pvService basic xmls directory as in the distribution:
+#
+E4_PVSERVICE_LOCAL=/usr/local/epics/ext/services
+E4_CLASSPATH_LOCAL=${E4_PVSERVICE_LOCAL}/classes
+
+# Exports
+#
+export E4_PVSERVICE_LOCAL
+export E4_CLASSPATH_LOCAL
+---------------------------------
+
+
+APPENDIX B: rdb_setup.bash setups up for a EPICS V4 platform using system
+=========================================================================
+This would not be part of a system which uses the EPICS V4 platform.
+It uses that environment set in the /etc/sysconfig files to 
+sets its own environment according to those defaults.
+
+psiRdbService/script/rdb_setup.bash:
+#!-*- sh -*- 
+# 
+# Abs: rdb_setup.bash is a bash source script to set the runtime
+#      environment for execution of the rdbService example of an EPICS V4
+#      client/server system.
+# 
+# Use: This script should be "sourced" prior to comilation, or execution of 
+#      both the client and server sides of rdbSerivice, "rdbServerRunner" and
+#     "rdbClientRunner". 
+#
+# Remarks: 
+#
+# Sources: 
+#  
+# Ref: RDBSERVICE_README.txt
+#
+# ----------------------------------------------------------------------------
+# Auth: 14-Sep-2011, Greg White (greg@slac.stanford.edu).
+# Mod:  
+# ============================================================================
+
+# EPICS V4 global defaults
+#
+JAVAIOC=${E4_JAVAIOC}
+PVSERVICE=${E4_PVSERVICE}
+
+# PSI global defaults
+#
+# psiRdbService specific
+#
+RDBXML=${PVSERVICE_LOCAL:-${E4_PVSERVICE_LOCAL}}/xml
+
+# Classpath: look for classes for psiRdbService in PVSERVICE_LOCAL
+# if it's defined (as it may have been for development by rdb_dev.bash).
+# Otherwise start in the production PSI production dir E4_PVSERVICE_LOCAL.
+# Then add the EPICS V4 distrbition, and JDBC
+#
+CLASSPATH=${PVSERVICE_LOCAL:-${E4_PVSERVICE_LOCAL}}/classes
+CLASSPATH=${CLASSPATH}:${E4_CLASSPATH}
+CLASSPATH=${CLASSPATH}:/usr/lib/oracle/10.2.0.3/client/lib/ojdbc14.jar
+
+# Append service bin to PATH
+#
+PATH=${PATH}:${PVSERVICE_LOCAL:-${E4_PVSERVICE_LOCAL}}/bin
+
+# Exports
+#
+export JAVAIOC
+export RDBXML
+export PVSERVICE
+export CLASSPATH
+export PATH
+
+
+---------------------------------
+
+
+APPENDIX C: Example development setup file
+==========================================
+
+ext/services/psiRdbService/rdb_dev.bash
+
+#!
+#! Abs: Sets (and resets) the development environment for local development 
+#!      of rdbService
+#! 
+#! Rem: This file would be sourced by a developer wishing to do local
+#!      development of the rdbService at PSI.
+#!
+#! Usage: source rdb_dev.bash [<directory>]
+#!
+#!      where <directory> is the filesystem directory in which the
+#!      developer has checked psiRdbService. That is <directory> should
+#!      contain the src/, xml/, bin/, etc directories of psiRdbService
+#!      in the developer's workspace.
+#!
+#!      e.g. $ source rdb_dev.bash $PWD
+#!           $ gmake
+#!           $ rdbServerRunner   (to run local server from local classes)
+#! 
+
+source /etc/sysconfig/epics
+source /etc/sysconfig/epics_local
+
+# If given a directory name, modify paths to prepend that dir
+#
+if [ $# -gt 0 ] && [ -d "$1" ]; then
+  export PVSERVICE_LOCAL=${1}
+  export PATH=${1}/bin:${PATH}
+fi
+
+---------------------------------
+
+
+
+APPENDIX D: Sample Makefile
+===========================
+
+The following makefile can be used for development of rdbService, and install
+to the areas listed in 4.1 above:
+
+ext/services/psiRdbService/Makefile:
+
+#!/usr/bin/gmake
+#!-*- make -*-
+#
+# Abs: Compiles and builds psiRdbService and can be used to install
+#      build products and exectables.
+# 
+# Rem: psiRdbService is a simple EPICS v4 RPC service to get data out
+#      of a relational database like Oracle and make it available as a
+#      EPICS V4 record value.
+#
+# Usage: E4_CLASSPATH must be in the environment, ie /etc/syconfig/epics
+#        has been sourced. Then gmake.
+#
+# Ref: 
+# ----------------------------------------------------------------------------
+# Auth: 10-Feb-2012, Greg White (gregory.white@psi.ch, greg@slac.stanford.edu)
+# Mod:  
+# ============================================================================
+
+JAVAC=javac
+classes/%.class : src/%.java
+		$(JAVAC) -sourcepath src -classpath $(E4_CLASSPATH) -d classes $<
+
+sources = $(wildcard src/ch/psi/rdbService/namedValues/*.java) \
+          $(wildcard src/ch/psi/rdbService/pvDataHelper/*.java) \
+          $(wildcard src/ch/psi/rdbService/*.java)
+   
+classfiles = $(patsubst src/%.java, classes/%.class, $(sources))
+
+all : $(classfiles)
+
+clean :
+      find classes -name "*.class" -exec rm {} \;
+
+install : 
+	rsync -av --exclude '*~' classes \
+          fin-lc:${E4_PVSERVICE_LOCAL}
+	  rsync -av --exclude '*~' xml  \
+          fin-lc:${E4_PVSERVICE_LOCAL}
+	  rsync -av --exclude '*~' bin \
+          fin-lc:${E4_PVSERVICE_LOCAL}
+	  rsync -av --exclude '*~' script \
+          fin-lc:${E4_PVSERVICE_LOCAL}
+
+
+REFERENCES
+==========
+[1] http://sourceforge.net/projects/epics-pvdata/files/
+[2] CAJ download, http://epics.sourceforge.net/maven2/epics/caj/1.1.8/
+[3] http://epics-pvdata.sourceforge.net/charter.html#glossary
+
+

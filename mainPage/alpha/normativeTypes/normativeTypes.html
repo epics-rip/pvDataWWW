@@ -34,7 +34,7 @@
   <dt>Latest version:</dt>
     <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
   <dt>This version:</dt>
-    <dd><a href="normativeTypes.html">normativeTypes_20120302.html</a></dd>
+    <dd><a href="normativeTypes_2012030.html">normativeTypes_20120302.html</a></dd>
   <dt>Previous version:</dt>
     <dd><a
       href="normativeTypes_20120120.html">normativeTypes_20120120.html</a></dd>
@@ -179,7 +179,7 @@ a given Ntype then, can be ascertained at runtime by the <a
   Type, but this may change in future revisions of this specification</li>
   <li>The fields of the Structure are all from the set of<a href="#L177"> Normative
   Type Fields</a> below</li>
-  <li>There are 0 or more fields of the structure</li>
+  <li>There are 1 or more fields of the structure</li>
 </ol>
 
 <h3>Syntax and Grammar Conventions</h3>
@@ -225,8 +225,10 @@ where:
   <dt><span class="nterm">ntfield</span></dt>
     <dd>One of the valid <a href="#L177">Normative Type Fields</a> as defined below</dd>
   <dt>fieldName</dt>
-    <dd>Must follow the pvData field naming conventions. <span class="ed">must add
-   reference: Marty?</span></dd>
+    <dd>The identifier of the field. Where the field is a terminal in the grammar
+   (ie, does not have  &lt;&gt; around its name) then the fieldName is a PVData Field
+   name, as returned by a call to getFieldName() on the Field member object. <span class="ed">must add
+   reference to Field, getFieldName when this interface is settled?</span></dd>
    <dt>:opt</dt>
     <dd>Indicates that the preceding field is optional in the normative type</dd>
       <dt>// <span class="term">comment text</span></dt>
@@ -675,23 +677,27 @@ of possible values each described by an n-tuple).</p>
 <dl>
   
   <dt>value</dt>
-    <dd>The numerical data comprising the matrix</dd>
+    <dd>The numerical data comprising the matrix. The value is given as a single array.</dd>
     
   <dt>dim</dt>
     <dd>
 
-      <span class="term">dim</span> indicates the dimensions of the data in the value field. The
-      number of elements in <span class="term">value</span> MUST be the product of the elements of
-      dim. If dim is not present in the NTMatrix, the NTMatrix MUST be interpreted
-      as describing a vector. If dim is present, then all of its values MUST be > 0. If
-      dim is present and contains a single element, then the NTMatrix MUST be interpreted
-      as describing a vector. A dim of 2 elements describes a matrix, where the first
-      element of dim gives the number of rows, and the second element of dim gives
-      the number columns. If dim is present and contains 2 elements, of which the
-      first is unity, and the second is not (therefore must be >1) then the NTMatrix MUST
-      be interpreted as describing a row vector. If dim is present as contains 2
-      elements, of which the second is unity, and the first is not (therefore must be
-      >1) then the NTMatrix MUST be interpreted as describing a column vector.
+      <span class="term">dim</span> indicates the dimensions of the data in the value
+      array field. The number of elements in <span class="term">value</span> MUST be
+      the product of the elements of dim. If <span class="term">dim</span> is not
+      present in an instance of NTMatrix, then that NTMatrix MUST be interpreted as
+      describing a vector. If <span class="term">dim</span> is present, then all of
+      its values MUST be > 0. If <span class="term">dim</span> is present and
+      contains a single element, then the NTMatrix MUST be interpreted as describing
+      a vector. A <span class="term">dim</span> of 2 elements describes a matrix,
+      where the first element of <span class="term">dim</span> gives the number of
+      rows, and the second element of <span class="term">dim</span> gives the number
+      columns. If <span class="term">dim</span> is present and contains 2 elements,
+      of which the first is unity, and the second is not (therefore must be >1) then
+      the NTMatrix MUST be interpreted as describing a row vector. If <span
+      class="term">dim</span> is present as contains 2 elements, of which the second
+      is unity, and the first is not (therefore must be >1) then the NTMatrix MUST be
+      interpreted as describing a column vector.
       
     </dd>
 </dl>
@@ -707,7 +713,7 @@ row-major order (ie C like) or column-major (Fortran, Matlab). Answer to this de
 on whether Ntypes may be conformantly used other than in interoperations (ie, for
 processing too). If the normative spec says that it covers only interop, then it has
 no business telling a user how to represent their data prior to packaging. But if an
-instance of an NTMatrix defined structure may be used in processing, then its in
+instance of an NTMatrix defined structure may be used in processing, then its
 memory layout must be predictable.</p>
       
 
