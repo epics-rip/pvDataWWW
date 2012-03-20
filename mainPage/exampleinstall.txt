@@ -288,6 +288,19 @@ that will be run on a given machine, to that machine.
 
 APPENDIX A
 ==========
+
+Appendix A describes the core scripts which form the core runtime and
+development environment of EPICS V4 at PSI. The file /etc/sysconfig/epics defines
+those things which will be universal to all EPICS V4 installs anywhere. The
+file  /etc/sysconfig/epics_local specializes the install for the local 
+environment at PSI. Other institutions can copy these and amend as they need.
+
+The principle employed in both config files is that they set environment
+variables whose value can be used by other scripts to set the values of such
+variables as CLASSPATH and PATH. The epics v4 config files don't set those 
+environment variables themselves.
+
+
 A.1. /etc/sysconfig/epics - The basic EPICS V4 system configuration would be
 as follows:
 
@@ -389,7 +402,7 @@ export E4_CLASSPATH_LOCAL
 ---------------------------------
 
 
-APPENDIX B: rdb_setup.bash setups up for a EPICS V4 platform using system
+APPENDIX B: rdb_setup.bash Example setup up for a EPICS V4 platform using system
 =========================================================================
 This would not be part of a system which uses the EPICS V4 platform.
 It uses that environment set in the /etc/sysconfig files to 
