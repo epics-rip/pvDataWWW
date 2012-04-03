@@ -28,7 +28,7 @@ Draft, 22-Feb-2012</h2>
 <dl>
   <dt>This version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120222.html">pvAccess_Protocol_Specification_20120222.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120403.html">pvAccess_Protocol_Specification_20120403.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -67,7 +67,7 @@ Control System.</a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 22 February 2012 version of the pvAccess Protocol Specification.
+<p>This is the 3 April 2012 version of the pvAccess Protocol Specification.
 This version includes material and revisions from the Invited Experts above.
 This version is an editors draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review
@@ -802,10 +802,9 @@ Bits, MSBs) is used for the type selector and flags. The lower nibble is type
 
 <p>For all other types bits 3-0 MUST be '0b0000'. </p>
 
-<p>That byte MUST be then followed by the Field instance name encoded as a
-string. Structure and structureArray types REQUIRE more description. A
-structure REQUIRES an array of Fields (size followed by one or more Field as
-described above). StructureArray REQUIRES an introspection data of a structure
+<p>Structure and structureArray types REQUIRE more description. A
+structure REQUIRES a named array of Fields (size followed by one or more (field name, Field) pairs.
+StructureArray REQUIRES an introspection data of a structure
 defining an array element type.</p>
 
 <table style="caption-side:bottom">
@@ -817,23 +816,22 @@ defining an array element type.</p>
       <th>Description</th>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0bxxx0xxxx</a> + name</td>
+      <td><a style="font-family:monospace">0bxxx0xxxx</a></td>
       <td style="font-weight:bold">scalar</td>
       <td>Scalar.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0bxxx1xxxx</a> + name</td>
+      <td><a style="font-family:monospace">0bxxx1xxxx</a></td>
       <td style="font-weight:bold">scalarArray</td>
       <td>Array of scalars.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b1000xxxx</a> + name + Field[]</td>
+      <td><a style="font-family:monospace">0b1000xxxx</a> + (field name, FieldDesc)[]</td>
       <td style="font-weight:bold">structure</td>
       <td>Structure.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b1001xxxx</a> + name + Field (type
-        of structure)</td>
+      <td><a style="font-family:monospace">0b1001xxxx</a> + structure FieldDesc</td>
       <td style="font-weight:bold">structureArray</td>
       <td>Array of structures.</td>
     </tr>
@@ -845,25 +843,24 @@ defining an array element type.</p>
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
 <pre>
-structure  timeStamp
+structure
     long secondsPastEpoch
     int nanoSeconds
     int userTag</pre>
 
 <p>The introspection description of the above structure is be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized timeStamp structure IF] size = 55
-FD 00 01 80  09 74 69 6D  65 53 74 61  6D 70 03 23  .... .tim eSta mp.# 
-10 73 65 63  6F 6E 64 73  50 61 73 74  45 70 6F 63  .sec onds Past Epoc 
-68 22 0B 6E  61 6E 6F 53  65 63 6F 6E  64 73 22 07  h".n anoS econ ds". 
-75 73 65 72  54 61 67                              user Tag</pre>
+<pre>Hexdump [Serialized structure IF] size = 45
+FD 00 01 80  03 10 73 65  63 6F 6E 64  73 50 61 73  .... ..se cond sPas 
+74 45 70 6F  63 68 23 0B  6E 61 6E 6F  53 65 63 6F  tEpo ch#. nano Seco 
+6E 64 73 22  07 75 73 65  72 54 61 67  22          nds" .use rTag "</pre>
 
 <h5 id="dataEncoding:example2">Example #2</h5>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
 <pre>
-structure  ExampleStructure
+structure
     byte[] value
     structure  timeStamp
         long secondsPastEpoch
@@ -876,15 +873,14 @@ structure  ExampleStructure
 
 <p>The introspection description of the above structure is be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized structure IF] size = 122
-FD 00 02 80  10 45 78 61  6D 70 6C 65  53 74 72 75  .... .Exa mple Stru 
-63 74 75 72  65 03 30 05  76 61 6C 75  65 FD 00 03  ctur e.0. valu e... 
-80 09 74 69  6D 65 53 74  61 6D 70 03  23 10 73 65  ..ti meSt amp. #.se 
-63 6F 6E 64  73 50 61 73  74 45 70 6F  63 68 22 0B  cond sPas tEpo ch". 
-6E 61 6E 6F  53 65 63 6F  6E 64 73 22  07 75 73 65  nano Seco nds" .use 
-72 54 61 67  FD 00 04 80  05 61 6C 61  72 6D 03 22  rTag .... .ala rm." 
-08 73 65 76  65 72 69 74  79 22 06 73  74 61 74 75  .sev erit y".s tatu 
-73 60 07 6D  65 73 73 61  67 65                    s`.m essa ge</pre>
+<pre>Hexdump [Serialized structure IF] size = 105
+FD 00 01 80  03 05 76 61  6C 75 65 30  09 74 69 6D  .... ..va lue0 .tim 
+65 53 74 61  6D 70 FD 00  01 80 03 10  73 65 63 6F  eSta mp.. .... seco 
+6E 64 73 50  61 73 74 45  70 6F 63 68  23 0B 6E 61  ndsP astE poch #.na 
+6E 6F 53 65  63 6F 6E 64  73 22 07 75  73 65 72 54  noSe cond s".u serT 
+61 67 22 05  61 6C 61 72  6D FD 00 02  80 03 08 73  ag". alar m... ...s 
+65 76 65 72  69 74 79 22  06 73 74 61  74 75 73 22  ever ity" .sta tus" 
+07 6D 65 73  73 61 67 65  60                       .mes sage `</pre>
 
 <h2 id="connectionManagement">Connection Management</h2>
 
