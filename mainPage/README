@@ -4,9 +4,7 @@ This README file describes the download files available for EPICS V4.
 
 
 Status: This is the 08-Feb-2012 version of the README, and pertains to the
-1.0-BETA release of EPICS V4. This differs from the 11-Jan-2012 version
-in that it re-includes the pvService jar file for Java, again 
-necessary for RPC.
+1.0-BETA release of EPICS V4 (including 1.0.1-BETA). 
 
 Author: 28-Nov-2011 Greg White (gregory.white @ psi.ch) for EPICS 
 V4 team [1]
@@ -25,8 +23,10 @@ EPICS version 4.
 
 SUMMARY
 -------
-The C++ implementation of EPICS V4 is in 1.0-BETA/EPICSv4-1.0-BETA.tar.gz
-The Java implementation of EPICS V4 is in 1.0-BETA/EPICSv4-Java-1.0-1-BETA.tar.gz
+The latest tagged release of both C++ and Java implementations of EPICS V4 are in 1.0.1-BETA/
+
+The C++ implementation of EPICS V4 is in 1.0.1-BETA/EPICSv4-1.0.1-BETA.tar.gz
+The Java implementation of EPICS V4 is in 1.0.1-BETA/EPICSv4-Java-1.0-1-BETA.tar.gz
 "Marchtest" for internal review only.
 
 See the document "Getting Started with EPICS V4," 
@@ -34,9 +34,9 @@ http://epics-pvdata.sourceforge.net/gettingStarted.html
 
 FILES FOR EPICS V4 C++ IMPLEMENTATION 
 -------------------------------------
-The file EPICSv4-1.0-BETA.tar.gz includes all (and only) the C++
+The file EPICSv4-1.0.1-BETA.tar.gz includes all (and only) the C++
 implementation of EPICS V4, plus a make system based on EPICS V3's
-makefiles. This is available under folder 1.0-BETA/. Build instructions
+makefiles. This is available under folder 1.0.1-BETA/. Build instructions
 and example usage are given in [16].
 
 
@@ -65,7 +65,11 @@ includes both how to build the Java distribution from sources downloaded
 from the Mercurial repositories at SourceForge, and the alternative of 
 downloading the tar.gz.
 
-
+FOR CONNECTING EPICS V4 to EPICS V3 IN C++
+-------------------------------------------
+See pvIOC C++ implementation documentation [17], v3Channel section, for help
+on connecting EPICS V3 channels to EPICS V4.
+ 
 FOR CONNECTING EPICS V4 to EPICS V3 IN JAVA
 --------------------------------------------
 The pvAccess server (part of pvAccess, above) allows an existing
@@ -128,4 +132,5 @@ http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e5
 http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src
 [15] ChannelRPC facility javadoc in pvIOC, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/rpcSupport.html
 [16] Getting Started with EPICS V4, http://epics-pvdata.sourceforge.net/gettingStarted.html
+[17] pvIOC C++ implementation documentation, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html
 
