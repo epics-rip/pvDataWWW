@@ -27,7 +27,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Tue Apr  3 10:43:33 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Thu Apr  5 15:28:46 CEST 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -64,6 +64,7 @@
       <td align="center"><a href="development.html">DEVELOPMENT</a></td>
       <td align="center"><a
 	href="https://sourceforge.net/projects/epics-pvdata/files/">DOWNLOAD</a></td>
+      <td align="center"><a href="literature.html">DOCUMENTATION</a></td>
       <td align="center"><a href="features.html">FEATURES</a></td>
       <td align="center"><a href="home.html">WORKING GROUP</a></td>
       <td align="center" ><a href="http://sourceforge.net/projects/epics-pvdata">SOURCEFORGE PROJECT</a></td>      
@@ -101,7 +102,7 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	  <li><a 
 	  href="#softwaredevel">Development Summary </a></li>
 	  <li><a 
-	  href="#literature">Literature</a></li>
+	  href="#literature">Documentation</a></li>
 	  <li><a 
 	  href="#talks">Talks</a></li>
 	</ul>
@@ -131,6 +132,22 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
       <ul  class="quicklinks_outer">
 	<li><a
 	href="https://sourceforge.net/projects/epics-pvdata/files/">DOWNLOAD</a></li>
+      </ul>
+
+      <ul class="quicklinks_outer">
+	<li><a href="literature.html">DOCUMENTATION</a></li>
+	<ul class="quicklinks_inner">
+	  <li><a href="literature.html#swdoc">Programmers Reference</a></li>
+	  <li><a href="literature.html#normative">pvAccess
+	  Specification</a></li>
+	  <li><a
+	  href="literature.html#normative">Normative
+	  Types</a></li>
+	  <li><a
+	  href="literature.html#informativedocs">Architectures</a></li>
+	  <li><a href="literature.html#internal">Internal Documents</a></li>
+	  <li><a href="literature.html#talks">Talks and Papers</a></li>
+	</ul>
       </ul>
 
       <ul class="quicklinks_outer">
@@ -181,19 +198,6 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	  <li><a href="charter.html#scope">Goals</a></li>
 	  <li><a href="charter.html#deliverables">Deliverables</a></li>
 	  <li><a href="charter.html#milestones">Milestones</a></li>
-	</ul>
-      </ul>
-
-      <ul class="quicklinks_outer">
-	<li><a href="#literature">Literature</a></li>
-	<ul class="quicklinks_inner">
-	  <li><a href="pvAccess_Protocol_Specification.html">pvAccess
-	  Specification</a></li>
-	  <li><a
-	  href="alpha/normativeTypes/normativeTypes.html">Normative
-	  Types</a></li>
-	  <li><a
-	  href="http://epics-pvdata.sourceforge.net/arch.html">Architectures</a></li>
 	</ul>
       </ul>
 
@@ -619,159 +623,6 @@ pvIOCCPP, pvServiceCPP.
 See <a
 href="gettingStarted.html" >Getting Started with EPICS V4</a>
 </p>
-
-<h2 id="literature">Literature</h2>
-  
-  <p>The following are the present publications of the EPICS V4 Working Group.</p>
-
-<h3 id="swdoc">Reference Programmers Documentation</h3>
-
-  <p>The following are links to the reference documentation and programmers guides of
-  the reference implementations of the core modules of EPICS V4 (pvData, pvAccess and
-  pvIOC):</p>
-  <ul>
-    <li><b>pvData Java Reference Documentation</b>. Detailed documentation of the Java
-    implementation of pvData,
-    the
-    data modelling and data manipulation APIs of EPICS V4. <em>Status of Software and Documentation is Complete Beta</em>:
-     <a
-    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html"> 
-    Latest version, <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html">
-    1.0-BETA Release version 
-    </a><br />
-    JavaDoc: 
-    <a
-    href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataJava%20-%20Build/javadoc/">
-    JavaDoc of Latest</a>,
-    <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/html/index.html">
-    JavaDoc of 1.0-BETA Release </a>
-    </li>
-    
-    <li><b>pvData C++ Reference Documentation</b>.  Detailed documentation of the C++
-    implementation of pvData,
-    the
-    data modelling and data manipulation APIs of EPICS V4. <em>Status of Software and Documentation is Complete Beta</em>:
-     <a
-    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/raw-file/tip/documentation/pvDataCPP.html">Latest
-     version</a>,
-    <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/1.0-BETA/documentation/pvDataCPP.html">1.0-BETA 
-    Release version</a><br >Doxygen: 
-    <a
-    href="https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataCPP%20-%20Build/doxygen/files.html">
-    Doxygen of Latest</a>,
-    <a href="
-     http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/1.0-BETA/documentation/html/index.html">
-    Doxygen of 1.0-BETA Release </a>
-    </li>
-  </ul>
-  
-    
-<h3 id="normativedocs">Normative Track Documents</h3>
-<p>The following are normative works of the EPICS V4 Working Group. That is, these
-contain formal descriptions of
-  algorithms and methods. In general they represent core deliverables of the working group. These are proposals for standards
-on which implementations of EPICS V4 should be based. As such, these documents go
-through a long term iterative public review process. The status given is an
-  indication of the maturity of the work. </p>
-  <ul>
-  <li><a
-  href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess
-  Protocol Specification</a>. <em>Status is Second Public Working Draft</em>
-  </li>
-  <li><b><a
-  href="arch.html">EPICS V4 Overview and Architectures</a></b>. This document summarises the function of various technologies in the
-  EPICS V4 sphere, and outlines how they might be used together in various design
-  patterns for efficient control systems.  <em>Status is Editors
-  Draft</em>.
-  </li>
-  <li><a href="alpha/normativeTypes/normativeTypes.html">Normative Types Specification</a>. <em>Status is Editors Draft</em></li>
-</ul>
-
-<h3 id="informativedocs">Informative</h3>
-<p>The following are works of the EPICS V4 Working Group that are intended to
-supply supporting material. They may be concerned with tools and utilities supplied
-by EPICS V4, but they should not be considered standards or
-recommendations for EPICS Version 4:</p>
-<ul>
-  <li id="gettingstarted"><b><a href="gettingStarted.html">Getting Started with EPICS V4</a></b>. This is
-  a first steps introduction to downloading EPICS V4, writing your first data
-  server, and connecting to V3 IOC PVs. Java and C++ steps are given. Status is is complete.
-  </li> 
-  <li id="exampleinstall"><a href="http://epics-pvdata.sourceforge.net/exampleinstall.txt" >PSI EPICS
-  Installation Example</a>. This is a PSI internal design document for how EPICS V4 Java
-  support for servics, and actual first data services themselves (for accessing an
-  Oracle DB), were
-  depoloyed at PSI. Status is Working Draft - this is an "as implemented"
-  description. http://epics-pvdata.sourceforge.net/exampleinstall.txt</li>
-  
-</ul>
-
-<h3 id="internal">Internal, Proposals, Alpha Software Documentation, and Early Drafts</h3>
-<p>The following are internal documents of the EPICS v4 Working Group:</p>
-<ul>
-  <li id="codingstyle"><a
-  href="Coding_Style_Guidelines.html">Coding Style Guidelines</a>. This is the
-  standard for source code to be followed for EPICS V4 reference software
-  implementations. <em>Status is it includes only Java, and requires some edits with
-  respect to comments in the review telecon.</em>
-  </li>
-  <li id="unsigned"><a href="http://epics-pvdata.sourceforge.net/alpha/EasierPVA.html">Unsigned
-  Integer data exchange support - Proposal</a>The design proposal for how direct support of unsigned
-  integers can be added to pvAccess and pvData. Status is Working Draft, this draft
-  forms the basis for the unsigned support being added to EPICS V4 (Spring
-  2012).</li>
-  <li><a
-  href=
-"http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/raw-file/tip/easyPVA/documentation/easyPVA.html"
->Easy PvAccess (easyPVA)</a>. Programmers guide to a simple API for exchanging
-    pvData defined data accross the pvAccess protocol. <em>Status: the
-     software is still in alpha and can be found in mercurial repo <a
-    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/file/tip">alphaCPP</a>;
-    status of the documentation is Editors Draft.</em> See also <a href="#easyAPI" >Easy
-    API - Proposal</a> below  
-  </li>
-  <li><a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/alpha/EasierPVA.html"
-  >Easy API - Proposal.</a> This is a one-page description of a wrapper for the above easyPVA
-  EPICS V4 API, intended for truely trivial EPICS V4 client programming. <em>Status:
-  Simple proposal document, intended to illustrate functionality to be integrated
-  into easyPVA</em>.</li>
-  <li><a href="alpha/gatherStatus.html" >Gather service platform</a>. The Gather Service Platform is a software toolkit on
-    top of EPICS V4 pv modules, to help build a service for efficiently managing the
-    acquisition of the values of a large number of V3 PVs, and making results
-    available as an EPICS V4 record. <em>Status: This document is a medium maturity Editors draft
-    of alpha level software.</em>
-  </li>
-</ul>
-  
-<h2 id="talks">Talks</h2>
-
-<p>The following are slides and materials of EPICS V4 presentations, most recent first:</p>
-<ul>
-  <li><a href="talks/2011/FRBHMULT06.pptx">EPICS V4 Expands Support to Physics Application, Data Acquisition, and Data
-  Analysis</a>, Bob Dalesio, oral 
-  given at ICALEPCS 2011, Powerpoint, http://epics-pvdata.sourceforge.net/talks/2011/FRBHMULT06.pptx</li>
-   <li><a href="talks/2011/EPICSv4roadmap.pdf">EPICS V4 Roadmap</a>, Greg White,  talk
-  given at EPICS 2011 fall meeting (PSI), PDF, http://epics-pvdata.sourceforge.net/talks/2011/EPICSv4roadmap.pdf</li>
-  <li><a href="talks/2011/EV4Services.pdf">EPICS V4 Services</a>, Greg White,  talk
-  given at EPICS 2011 fall meeting (PSI), PDF, http://epics-pvdata.sourceforge.net/talks/2011/EV4Services.pdf</li>
-<li><a href="http://epics-pvdata.sourceforge.net/talks/2011/bob_V4EPICS201109.pptx">
-EPICS Version 4   Development Plan</a>, Bob Dalesio, talk given at EPICS 2011 fall meeting (PSI), powerpoint,
-http://epics-pvdata.sourceforge.net/talks/2011/bob_V4EPICS201109.pptx</li>
-<li><a href="http://epics-pvdata.sourceforge.net/talks/2011/marty_pvDataEtc.ppt">pvData,
-pvAccess, pvIOC, pvService, Overview and Status</a>, Marty Kramer et al, talk given at
-EPICS 2011 fall meeting (PSI), powerpoint
-http://epics-pvdata.sourceforge.net/talks/2011/marty_pvDataEtc.ppt</li>
-<li><a href="http://epics-pvdata.sourceforge.net/talks/2010/gabriele_PVManager.pptx">PVManager</a>,
-Gabriele Carcassi, talk given at EPICS 2010 spring meeting (BNL), powerpoint
-http://epics-pvdata.sourceforge.net/talks/2010/gabriele_PVManager.pptx</li>
-<li><a href="http://www.c-ad.bnl.gov/pac2011/proceedings/papers/mop252.pdf">Server
-Development for NSLS-II Physics Applications and Performance Analysis</a>, Guobao
-Shen and Marty Kraimer (BNL), proceedings of the Particle Accelerator Conference 2011.
-</ul>
 
 </td>
 </tr>
