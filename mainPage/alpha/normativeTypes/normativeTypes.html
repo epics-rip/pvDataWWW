@@ -164,29 +164,28 @@ accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
 <hr />
 <h2 id="introduction">Introduction</h2>
 
-<p>The Normative Types described in this document are intended to be a set of data
-types, including structured data types, that are suitable to be used as the
-application level data package of a significant portion of data exchanges. In
+<p>The Normative Types described in this document are a set of software designs for high
+  level <a href="http://en.wikipedia.org/wiki/Data_type#Composite_types" >composite data
+types</a> suitable for the application level data exchange between EPICS V4 network endpoints. In
 particular, they are intended for use in online scientific instrument
-operations. Since EPICS V4 makes it possible to exchange an infinite variety of
-structured data types between EPICS V4 peers, the intention is that by conforming
-only to Normative Types, a peer can ensure that any Normative Type conforming client
-will be able to understand the data transmitted to it, and be able to take processing
-steps appropriate to that data. </p>
+operations. The intention is that where the endpoints in an EPICS V4 network all use only 
+Normative Types, each peer in the network should be able to understand all the data
+transmitted to it, at least syntactically, and be able to take processing
+steps appropriate to that data.</p>
 
 <p>The EPICS version 4 module PVData <a class="bib" href="#bib:pvdata">bib:pvdata</a> supplies
 a typing mechanism and object management API for efficiently defining, creating,
 accessing and updating memory resident structured data. EPICS V4 module PVAccess <a class="bib"
- href="#bib:pvaccess">bib:pvaccess</a> supports the efficient exchange of pvData
+ href="#bib:pvaccess">bib:pvaccess</a> supports the efficient exchange of PVData
 defined data between EPICS V4 network peers. EPICS V4 Normative Types, defines some
-general purpose data types, that build on the pvData. These are designed to be
+general purpose data types, that build on the PVData. These are designed to be
 generally applicable to controls and the application level of scientific
 instruments. </p>
 
-<p>The simplest example is the Normative Type "NTScalar". When a client receives a pvData datum which identifies itself as being
-of type NTScalar, the client will know to expect the scalar's value will be
-accompanied by an indication of alarm severity and a timestamp (see example
-below).</p>
+<p>The simplest example is the Normative Type "NTScalar". When a client receives a
+PVData datum which identifies itself as being of type NTScalar, the client will know
+to expect the scalar's value will be accompanied by an indication of alarm severity
+and a timestamp (see example below).</p>
 
 <p>An example of a simple normative type is the NTScalar:</p>
 <pre>structure NTScalar
@@ -196,7 +195,7 @@ below).</p>
 </pre>
 <p>
 
-A more complex example; if a client receives a pvData datum which identifies itself as being
+A more complex example; if a client receives a PVData datum which identifies itself as being
 of type NTTable, this document specifies that it should expect the datum to contain 0 or more
 arrays of different types. The definition of NTTable below will say that the client
 should interpret the arrays as the columns of a table,
