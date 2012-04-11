@@ -1,10 +1,14 @@
-/*
- *     EPICS V4 Stylesheet for documents, as opposed to web pages. Eg normative documents,
- *     gettingStarted.html etc. 
- *
- *     Auth: Greg White, greg@slac.stanford.edu.
- *     Mod:  21-Feb-2012,  Greg White, greg@slac.stanford.edu, added page break control. 
- */
+/*=====================================================================================
+
+EPICS V4 Stylesheet for documents, as opposed to web pages. Eg normative documents,
+gettingStarted.html etc. 
+ 
+---------------------------------------------------------------------------------------
+Auth: Greg White, greg@slac.stanford.edu.
+Mod:  21-Feb-2012, Greg White, greg@slac.stanford.edu, added page break control.
+      11-Apr-2012, Greg White, added div.contents, to fix bug in Chrome support
+                   for class="nocount".  
+======================================================================================*/
 
 /* Support for headers. Assume h1 is the title, so doesn't have a counter. Put counters
    on h2 and h3, but not h4 or further. 
@@ -14,25 +18,26 @@
    Table of Contents) 
 */
 body { counter-reset: h2; }
+div.contents { counter-reset: h2 }  
 h2.nocount:before { content: "" }
-h2:before {
-      content: counter(h2) ". ";
-      display: inline;
-      page-break-before:always;
-    }
 h2.nocount {
       counter-increment: none;
       counter-reset: none;
-      page-break-before:auto;
-    }
+      page-break-before: auto;
+}
+h2:before {
+      content: counter(h2) ". ";
+      display: inline;
+      page-break-before: always;
+}
 h2 {
       counter-increment: h2;
       counter-reset: h3;
-    }
+}
 h3:before {
       content: counter(h2) "." counter(h3) " ";
       display: inline;
-    }
+}
 h3 { counter-increment: h3; }
 h4 { margin-left: 0 }
 
