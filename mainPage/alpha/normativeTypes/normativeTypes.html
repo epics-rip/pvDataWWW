@@ -29,55 +29,7 @@
      span.user:after { content:">" }
      .nonnorm { font-style:italic }
 /*]]>*/</style>
-
-<!--
-The following Javascript Table of Contents generator has been shamelessly
-purloined from the following blog:
-http://blog.magnetiq.com/post/497600148/automatic-table-of-contents-generation
-Minor change to the script found there: .* was added to
-the regex that matches h tags, so it matches not just say <h2> but also <h2 
-class="nocount"> etc. 
--->
-<script type="text/javascript">
-window.onload = function () {
-        var toc = "";
-        var level = 0;
-
-	document.getElementById("contents").innerHTML =
-		document.getElementById("contents").innerHTML.replace(
-			/<h([\d]).*>([^<]+)<\/h([\d])>/gi,
-			function (str, openLevel, titleText, closeLevel) {
-				if (openLevel != closeLevel) {
-					return str;
-				}
-
-				if (openLevel > level) {
-					toc += (new Array(openLevel - level + 1))
-                                               .join("<ol>");
-				} else if (openLevel < level) {
-					toc += (new Array(level - openLevel + 1))
-                                               .join("</ol>");
-				}
-
-				level = parseInt(openLevel);
-
-				var anchor = titleText.replace(/ /g, "_");
-				toc += "<li><a href=\"#" + anchor + "\">"
-                                       + titleText + "</a></li>";
-
-				return "<h" + openLevel + "><a name=\"" + anchor
-                                       + "\">" + titleText + "</a></h" + closeLevel
-                                       + ">";
-			}
-		);
-
-	if (level) {
-		toc += (new Array(level + 1)).join("</ol>");
-	}
-
-	document.getElementById("toc").innerHTML += toc;
-};
-</script>
+<script type="text/javascript" src="../../script/tocgen.js"></script>
 
 </head>
 		
@@ -283,7 +235,7 @@ field may be optional, and may be described along with a comment:</p>
   <dt><span class="term">NTname</span></dt>
     <dd>The name of the Normative Type</dd>
   <dt><span class="nterm">ntfield</span></dt>
-    <dd>One of the valid <a href="#L177">Normative Type Fields</a> as defined below</dd>
+    <dd>One of the valid <a href="#normative_type_fields">Normative Type Fields</a> as defined below</dd>
   <dt>fieldName</dt>
     <dd>The identifier of the field. Where the field is a terminal in the grammar
    (ie, does not have  &lt;&gt; around its name) then the fieldName is a PVData Field
@@ -323,14 +275,14 @@ one of the following: </p>
 | <span class="nterm">control_t[]</span>     // an array of control setpoint range boundaries 
 </pre>
 
-<h3 id="L241">Simple Normative Type Fields - scalar types</h3>
+<h3>Simple Normative Type Fields - scalar types</h3>
 
 <p>Note that of all the Normative Type fields only <span class="nterm">scalar_t</span> is of simple type,
 that is, having a single or array value. All the others are represented by a
 structure (see <a href="#structuredNormativeFields">Structure Normative
 Fields</a> below). </p>
 
-<h4 id="L248">scalar_t</h4>
+<h4>scalar_t</h4>
 
 <p>The field is a scalar value. Scalar fields would be implemented with PVData field
   Type <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485" >"scalar"</a>:</p>
@@ -347,7 +299,7 @@ Fields</a> below). </p>
 |  string   // UTF-8 *
 </pre>
 
-<h4 id="L263">scalar_t[]</h4>
+<h4>scalar_t[]</h4>
 
 <p>The field is an array of scalars. Scalar array fields would be implemented with PVData field
   Type <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485" >"scalarArray"</a>:</p>
@@ -375,7 +327,7 @@ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documenta
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
 >"structureArray"</a>.</p>
 
-<h4 id="L273">enum_t</h4>
+<h4>enum_t</h4>
 
 <p>An <span class="nterm">enum_t[]</span> describes an enumeration. The field is a
   structure describing a value drawn from a given set of valid values also given. It
@@ -413,7 +365,7 @@ structure enum
   class="nterm">enum_t</span> above.</p>
 
 
-<h4 id="L295">time_t</h4>
+<h4>time_t</h4>
 
 <p>A <span class="nterm">time_t</span> describes a defined point in time. The field is a structure describing a time relative to
 midnight on January 1st, 1970 UTC. It is implemented as a pvData field of Type
@@ -584,7 +536,7 @@ Type <a
 class="nterm">alarmlimit_t</span> above.</p>
 
 
-<h4 id="L380">display_t</h4>
+<h4>display_t</h4>
 
 <p>A <span class="nterm">display_t</span> is a structure that describes some typical attributes of
 a numerical value that are of interest when displaying the value on a computer screen
@@ -645,7 +597,7 @@ Type <a
 class="nterm">display_t</span> above.</p>
 
 
-<h4 id="L412">control_t</h4>
+<h4>control_t</h4>
 <p>An <span class="nterm">control_t</span> is a structure that describes a range,
 given by the interval
 (limitlow,limithigh), within which it is expected some control software or hardware
@@ -716,14 +668,14 @@ field. </p>
 </pre>
 
 
-<h2  id="L525">General Normative Types</h2>
+<h2>General Normative Types</h2>
 
 <p>The General Normative Types are for encapsulating data of any kind of
 application or use case. Compare to <a href="#specificnormativetypes ">Specific
 Normative Types</a> defined later in this document, and which are oriented to
 particular use cases.</p>
 
-<h3 id="L534">NTScalar</h3>
+<h3>NTScalar</h3>
 
 <p>NTScalar is an EPICS V4 Normative Type that describes a single scalar value plus metadata:</p>
 <pre>structure  NTScalar
@@ -742,7 +694,7 @@ particular use cases.</p>
       "value" and can be of any simple scalar type as defined above.</dd>
 </dl>
 
-<h3 id="L578">NTEnum</h3>
+<h3>NTEnum</h3>
 
 <p>NTEnum is an EPICS V4 Normative Type that describes an enumeration (a closed set
 of possible values each described by an n-tuple).</p>
@@ -772,7 +724,7 @@ of possible values each described by an n-tuple).</p>
     </dd>
  </dl>
 
-<h3 id="L612">NTMatrix</h3>
+<h3>NTMatrix</h3>
 
 <p>NTMatrix is an EPICS V4 Normative Type used to define a matrix, specifically a
  2-dimensional array of real numbers.</p>
@@ -834,7 +786,7 @@ row-major order in memory when using the C binding, or column-major at other tim
 (Fortran, Matlab), would not be sensible.</p>
       
 
-<h3 id="ntvariantarray">NTVariantArray</h3>
+<h3>NTVariantArray</h3>
 
 <p>NTVariantArray is an EPICS V4 Normative Type to define a single structure which
 contains an number of arrays, each of different type, but where the value of the
@@ -891,7 +843,7 @@ than that presently selected by <code>dataType</code> MAY be populated; in this 
 </dl>
 
 
-<h2  id="L658">Specific Normative Types</h2>
+<h2>Specific Normative Types</h2>
 
 
 <p>The "specific normative types" below are types oriented towards application level
@@ -905,7 +857,7 @@ currently defined types are each described in a section below.</p>
   <li>Frequencies MUST be in Hz.</li>
 </ul>
 
-<h3 id="L676">NTNameValue</h3>
+<h3>NTNameValue</h3>
 
 <p>NTNameValue is an EPICS V4 Normative Type that describes a single name (or "key")
 string and associated array of scalar value. </p>
@@ -940,7 +892,7 @@ system device, by property name and (possibly array) property value. </p>
     <dd>The datum identified by the name field.</dd>
 </dl>
 
-<h3 id="L715">NTMultichannelArray</h3>
+<h3>NTMultichannelArray</h3>
 
 <p>MultichannelArray is an EPICS V4 Normative Type that aggregates an array of scalar
 values from different EPICS Process Variable (PV) channel sources, into a single variable. </p>
@@ -991,7 +943,7 @@ quadrupoles' desired field values. </p>
 NTMultichannelArray expresses measured values, but a NTMultichannelArray can be used
 to express desired values or setpoint values too.</p>
 
-<h3 id="L764">NTTimeDomainArray</h3>
+<h3>NTTimeDomainArray</h3>
 
 <p>NTTimeDomainArray is an EPICS V4 Normative Type that expresses an array of values
 from a single signal, where there has been a constant time between each sample; for
@@ -1023,7 +975,7 @@ deltaTime. Need an expert.</p>
 </dl>
 <p class="ed">Need to include units?</p>
 
-<h3 id="L803">NTFrequencyDomainArray</h3>
+<h3>NTFrequencyDomainArray</h3>
 
 <p>NTFrequencyDomainArray is the EPICS V4 Normative Type for expressing the values of
 a signal with respect to frequency.</p>
@@ -1055,7 +1007,7 @@ whether harmonics' frequencies are absolute or relative to frequencies[0].</p>
 </dl>
 <p class="ed">Need to include units?</p>
 
-<h3 id="L845">NTHistogram</h3>
+<h3>NTHistogram</h3>
 
 <p>NTHistogram is the EPICS V4 Normative Type used to encode the data and
 representation of a (1 dimensional) histogram. Specifically, it encapsulates frequency
@@ -1096,7 +1048,7 @@ scale), would be communicated using a range array of decades (1.0E01,
 <p>The array length of <code>range</code> MUST be the array length of counts + 1. </p>
 
 
-<h3 id="L852">NTAggregate</h3>
+<h3>NTAggregate</h3>
 
 <p>NTAggregate is the EPICS V4 Normative Type to compactly convey data which
 combines, several measurements, or observations. An NTAggregate would give a simple
@@ -1166,7 +1118,7 @@ arithmetic mean of the observation data being summarized by this NTAggregate.</p
 service agents to compute the value of the <code>sd</code> field, is not defined.</p>
 
 
-<h3 id="L902">NTImage</h3>
+<h3>NTImage</h3>
 <p>NTImage is the EPICS V4 Normative Type to express image data, particularly camera
 images. One NTImage gives one frame.</p>
 
