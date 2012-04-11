@@ -18,8 +18,9 @@ Usage:
   <div id="toc">
     <h2 class="nocount">Table of Contents</h2>
   </div>
-* Put your contents - everything you want in the TOC, inside a div with id "contents".
-  <div id="contents">
+* Put your contents - everything you want in the TOC, inside a div with id "contents"
+  and class="contents". 
+  <div id="contents" class="contents">
     ...
   </div>
 
@@ -39,13 +40,17 @@ Usage:
   source, like <h2 id="descrip"> will be overwritten by the script, so #descrip won't
   work.
 
+  NOTE 3: <div id="contents" has also class="contents"> to work with epicsv4.css div
+  class contents, to work around bug in Chrome where it doesn't do css for class
+  ="nocount".
+
   See the Normative Types doc for an example [2]
    
 Ref: [1] http://blog.magnetiq.com/post/497600148/automatic-table-of-contents-generation
      [2] http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html
 ==================================================================
-Auth: Stolen and adapted by Greg White, 12-Apr-2012.
-Mod: 
+Auth: Stolen and adapted by Greg White, 11-Apr-2012.
+Mod: 11-Apr-2012, Greg White. Added to usage that should make div with class="contents"
 ================================================================*/
 
 window.onload = function () {
