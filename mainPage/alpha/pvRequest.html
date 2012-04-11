@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS JavaIOC: Java Input/Output Controller</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
+</head>
+
+<body>
+
+<h1>pvRequest</h1>
+<h2>Introduction</h2>
+<p>This document discusses the requirements for pvRequest and pvCopy.</p>
+<p>The following methods of PVAccess::Channel all have a pvRequest argument:</p>
+<pre>
+createChannelProcess
+createChannelGet
+createChannelPut
+createChannelPutGet
+createChannelRPC
+createMonitor
+createChannelArray
+</pre>
+<p>In every case the actual argument is:</p>
+<pre>
+PVStructure pvRequest
+</pre>
+<p>This is a deliberate design decision. The code in the server that implements the methods for ChannelProcess, ... , ChannelArray
+determines the valid semantics for pvRequest.
+Thus different types of services can define their own syntax without requiring any changes in pvAccess itself.
+The service only has to implement some subset of ChannelProcess, ... ,ChannelArray.</p>
+<p>pvAccess also provides a facility CreateRequestFactory that has a single method:</p>
+<pre>
+PVStructure createRequest(String request,Requester requester);
+</pre>
+<p>Thus it accepts a request string and produces a PVStructure.
+The syntax is designed for use by pvIOCJava.
+In fact the results of createRequest are currently not completely compatible with the Channel implementation provided with
+pvIOCJava. It works for the common cases that have been used to date,
+but bugs remain.</p>
+<p>The syntax currently accepted by createRequest is rather powerful and could be the basis for code besides
+pvIOC. For example the equivalent of the Portable Channel Access Server provided by V3 channel access.
+This document discusses a possible generic syntax.</p>
+<p>In addition to discussing the syntax for request, this document discusses pvCopy.
+pvCopy is currently part of pvIOC.
+pvCopy creates a PVStructure that holds data for a subset of the fields in the
+top level PVStructure that belongs to a PVRecord.
+The pvIOC also has code that traps changes to fields of the PVStructure and thus the data in the PVStructure that pvCopy creates.
+The syntax for a request allows a client to specify the set of fields the client wants to access.
+A goal of this discussion is to see if it is possible to create a replacement for pvCopy that can be used by pvIOC but is also useful
+for other services.</p>
+<p>One other facility that pvIOC provides is monitor algorithms. The implementation requires the ability
+to define field specific options.</p>
+<p>The rest of this document describes the current syntax accept by createRequest and how to is used.
+The next chapter describes some requirements and then the current requesy syntax is described.</p>
+<h2>Requirements</h2>
+<p>The following is a summary of the requirements that request must satisfy for the various channel classes:</p>
+<dl>
+   <dt>channelGet</dt>
+        <dd>Must specify the set of fields to get.
+          When a channelGet is created the channelGetConnect callback is called.
+          It has  an argument that is a top level PVStructure and a bitSet that
+        shows which fields have been modified between get requests.
+       In addition pvIOC accepts an option to process the record before
+      data is transfered from the record to the PVStructure.
+      pvIOC also accepts a field specific options that allows a field in the PVStructure
+      to share raw data with the corresponding field in the PVRecord rather than holding a copy of the raw data.
+      This is important for large arrays.
+       </dd>
+   <dt>channelPut</dt>
+        <dd>Must specify the set of fields to put.
+          When a channelPut is created the channelPutConnect callback is called.
+          It has  an argument that is the top level PVStructure into which the client puts data
+          and a bitSet that shows which field have been changed by the client
+        between put requests.
+       In addition pvIOC accepts an option to process the record after
+       data is transfered from the PVStructure to the record.
+       pvIOC also accepts a field specific option to shared raw data.
+       </dd>
+   <dt>channelPutGet</dt>
+      <dd>Must specify two sets of field. One for put and one for get.
+      putGet does not use bitSets. Each putGet request transfers the entire put structure from the client
+      to the server and gets the entire get structure to return to the client.
+     In addition pvIOC accepts an option to process the record after the put but before the get.
+       pvIOC also accepts a field specific option to shared raw data.
+     </dd>
+   <dt>channelRPC</dt>
+       <dd>There is a pvRequest arguments in the createRequest but, as far as I know, no code
+      currently uses it.</dd>
+   <dt>channelArray</dt>
+      <dd>pvIOC currently expects pvRequest with a single string field name "field".
+       This specifies the desired field that must be an array field.
+      </dd>
+   <dt>Monitor</dt>
+        <dd>Must specify the set of fields to monitor.
+          When a monitor is created the monitorConnect callback is called.
+          It has  an argument that is the top level PVStructure and a bitSet that
+        shows which fields have been modified between monitor events.
+       In addition pvIOC accepts a global option that is the queue size.
+      On both client and server side monitor keeps a queue of monitor elements.
+      Each monitot element has a PVStructure and a bitSet.
+      In addition monitor must allow field specific options.
+     These specify things like monitor algorithm and if data should be shared.
+       pvIOC also accepts a field specific option to shared raw data.
+       </dd>
+</dl>
+<p>There is one additional requirement for for request:
+<ul>
+   <li>simple for common requests<br />
+     It must allows simple syntax for common request. An example is asking for value, alarm, timeStamp.
+   </li>
+</ul>
+<h2>Request syntax</h2>
+<p>The following is describes the current syntax accepted by CreateRequest.</p>
+<dl>
+   <dt>options</dt>
+     <dd>Options are specified as follows:
+<pre>
+[name=value,...]
+</pre>
+     </dd>
+   <dt>keywords</dt>
+    <dd>The following are key words:
+     <dl>
+        <dt>record</dt>
+          <dd>For "global" options, i. e., options not related tp specific fields.</dd>
+        <dt>field</dt>
+        <dt>getField</dt>
+        <dt>putField</dt>
+           <dd>Specifies a set of fields that will constitute a top level PVStructure.
+               The PVStructure that is created holds requested field <b>that exists in the top level
+               structure in the server.</b>
+               <b>field</b> is appropriate for channelGet, channelPut, and monitor.
+               <b>getField</b> and <b>putField</b> are appropriate for channelPutGet.
+               Each has the form:
+              <pre>
+keyword(fieldList)
+              </pre>
+            </dd>
+        <dt>  </dt>
+           <dd>If no keyword appears then a single fieldList is assumed.</dd>
+     </dl>
+       Multiple keywords are combined as follows:
+      <pre>
+record[...]field(...)getField(...)putField(...)
+      </pre>
+     </dd>
+     <dt>fieldList</dt>
+      <dd>A fieldlist has the form:
+      <pre>
+field,...,field
+      </pre>
+      where each <b>field</b> has the form:
+     <pre>
+fieldName
+      </pre>
+      or
+      <pre>
+fieldName[options]
+     </pre>
+     or
+     <pre>
+fieldName{fieldList}
+      </pre>
+     Note that the last form is recursive and defines structured fields.<br />
+    A fieldName is a simple fieldName or:
+     <pre>
+fieldName.fieldName...
+     </pre>
+</dl>
+
+<h2>examples</h2>
+<p>The following are example request values for <b>createRequest(String request)</b>:</p>
+<p>An empty string produces an empty request.
+pvCopy creates a copy of the complete top level PVStructure for the PVRecord.</p>
+<pre>
+   
+</pre>
+<p>The following is a request consisting of a single fieldList
+It is appropriate for "simple" records that model the standard V3 record types.</p>
+<pre>
+value,alarm,timestamp,display,control
+</pre>
+<p>The following is appropriate for a fieldList for a more complex record.:</p>
+<pre>
+alarm,timeStamp,power.value
+</pre>
+<p>The following spacifies a global option as well as a fieldlist:</p>
+<pre>
+record[process=true]field(alarm,timeStamp,value)
+</pre>
+<p>The following is a request that gets structured data, specifies a global option
+and also field specific options:</p>
+<pre>
+record[process=true]
+field(alarm,timeStamp[algorithm=onChange,causeMonitor=false],
+      power{value,alarm})
+</pre>
+<p>The following could be used to get array data without requiring a complete copy of the
+raw data in the server:</p>
+<pre>
+alarm,timeStamp,value[shareData=true]
+</pre>
+<p>The following shows how to get structured data:</p>
+<pre>
+record[process=true]
+    putField(power.value)
+    getField(alarm,timeStamp,
+         power{value,alarm},
+         current{value,alarm},
+         voltage{value,alarm})
+</pre>
+<p>The following is an even more complex request:</p>
+<pre>
+record[process=true]
+     putField(power.value)
+     getField(alarm,timeStamp,
+           power{value,alarm},
+           current{value,alarm},
+           voltage{value,alarm},
+           ps0{alarm,timeStamp,
+                 power{value,alarm},
+                 current{value,alarm},
+                 voltage{value,alarm}},
+           ps1{alarm,timeStamp,
+                 power{value,alarm},
+                 current{value,alarm},
+                 voltage{value,alarm}})
+</pre>
+<h2>Questions</h2>
+<ol>
+   <li>pvCopy<br />
+      Can pvCopy be moved for pvIOC to pvAccess?
+      If so then it can also be used by other services like a portable pvAccess server.
+   <li>syntax<br />
+    Is the syntax described above the correct syntax?
+</ol>
+
+</body>
+</html>
