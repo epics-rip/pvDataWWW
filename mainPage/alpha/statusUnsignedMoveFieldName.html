@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>Proposal for implementation of unsigned integers</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
+</head>
+
+<body>
+<h1 style="text-align: center">Status of Implement Unsigned and Move FieldName<br />
+Marty Kraimer,Matej Sekoranja<br />
+12-Apr-2012</h1>
+
+<h2>Introduction</h2>
+<p>The following is the status of implementing unsigned integers and moving fieldName from Field to Structure.
+The original proposal is in unsigned.html.
+Status is given first and then changes to the original proposal from 10-Feb-2012.</p>
+<h2>Status</h2>
+<p>pvDataJava, pvAccessJava, and pvIOCJava have been converted.
+No work has been started on the C++ code.
+The plans are to start this before the work on the Java implementation is finished.</p>
+</p>
+<p>The following work remains of the Java implementation</p>
+<dl>
+  <dt>Documentation</dt>
+    <dd>The documentation has not been updated.</dd>
+  <dt>V3 ClientFactory</dt>
+  <dd>ClientFactory does not work. It will be moved from pvIOC to pvAccess. See below.</dd>
+  <dt>Test Convert</dt>
+    <dd>The widening methods for scalars has been tested but not for arrays.
+      The scalar tests just print results but should become true regression tests.</dd>
+</dl>
+
+<h2>Implementation of Unsigned</h2>
+
+<p>The 10-Feb-2012 document described the Java changes as follows:
+Because Java does not implement unsigned integers a "best" effort is
+implemented.</p>
+<ul>
+  <li>The data implementation for scalar and array implementation of unsigned
+    will be the same as the signed implementation except for a new convenience
+    method. For example the implementation of <b>PVInt</b> will be identical to
+    <b>PVUint</b> except for a new convenience method <b>getWider</b>.</li>
+  <li>The Convert facility will perform the proper conversions between signed
+    and unsigned.</li>
+  <li>No attempt will be made to detect integer overflow and throw
+  exceptions.</li>
+</ul>
+
+<p>The widening methods are <b>not</b> implemented as part of the classes PVUByte, ... ,PVULong.</p>
+<p>The Convert facility handles widening operation for unsigned integers.
+It does not do anything for converting unsigned long (64 bit unsigned).
+For example if an unsigned long is converted to a double no check is made for integer overflow.
+This is because it requires BigInteger.</p>
+
+<h2>V3 ClientFactory</h2>
+<p>This is a facility that uses caV3 to access V3 channel. It converts the V3 data into pvData.
+Thus a V4 client receives V3 data as V4 data.</p>
+<p>This is currently implemented in pvIOVJava.
+It will be  moved to pvAccess. Thus, by defailt, pvAccess will provide two channel providers: pvAccess and caV3.
+For java the code in pvIOCJava can be moved to pvAccess with minor changes.
+For C++ it will need to be implemented.</p>
+
+<h2>C++ changes</h2>
+
+<p>The 10-Feb-2012 document stated:
+As part of the changes for unsigned support the C++ implementation will use
+<b>size_t</b> instead of <b>int</b> for everything related to size or length.
+This means that C++ on 64 bit architectures will support arrays of size greater
+than 2 gigaElements.</p>
+<p>This will be done and one additional change will be made to the C++ implementation.
+The change involves the classes for accessing array data. In particular class PVArrayData.
+It is currently defined as:</p>
+<pre>
+class PVArrayData {
+public:
+    POINTER_DEFINITIONS(PVArrayData);
+    typedef T  value_type;
+    typedef T* pointer;
+    typedef const T* const_pointer;
+    /**
+     * The data array.
+     */
+    pointer data;
+    ...
+</pre>
+<p>This will be changed to:</p>
+<pre>
+class PVArrayData {
+public:
+    POINTER_DEFINITIONS(PVArrayData);
+    typedef T  value_type;
+    typedef T* pointer;
+    typedef const T* const_pointer;
+    /**
+     * The data array.
+     */
+    std::vector&lt;T&gt; &amp; data;
+    ...
+</pre>
+<p>In addition the array definitions for BooleanArray,...,StringArray in pvTypes.h will be changed.
+For example:</p>
+<pre>
+typedef double * DoubleArray;
+becomes
+typedef std::vector&lt;double&gt;&amp; DoubleArray
+</pre>
+<p>The reason for this change is to help prevent core dumps by code that misuses arrays.
+For example assume code does the following:</p>
+<pre>
+struct myStruct{
+double *doubleArray;
+};
+
+
+...
+
+DoubleArray data;
+pvDoubleArray-&gt;get(0,len,&amp;data);
+pmyStruct.doubleArray = data.data;
+</pre>
+<p>That is the code saves the address of the double array.
+If some other code changes the capacity of the PVDoubleArray then the double array is deleted
+and the code above has a pointer to the deleted memory.
+Using vector prevents this problem.</p>
+
+</body>
+</html>

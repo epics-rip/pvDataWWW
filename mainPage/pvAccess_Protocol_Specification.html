@@ -23,25 +23,25 @@
 <h1>pvAccess Protocol Specification</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount" id="L50">EPICS v4 Working Group, Second Public Working
-Draft, 22-Feb-2012</h2>
+<h2 class="nocount" id="L50">EPICS v4 Working Group, Editors Draft towards Second Public Working
+Draft, 13-Apr-2012</h2>
 <dl>
   <dt>This version:</dt>
-    <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120222.html">pvAccess_Protocol_Specification_20120222.html</a></dd>
+    <dd>Greg's partially complete edit. Got up to Flow Control, 13-Apr-2012</dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
-  <dt>Previous version (1<sup>st</sup> Public Working Draft):</dt>
+  <dt>Previous version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20111129.html">pvAccess_Protocol_Specification_20111129.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20111129.html">pvAccess_Protocol_Specification_20111129.html</a>
+    (1<sup>st</sup> Public Working Draft)</dd>
   <dt>Editors:</dt>
     <dd>Matej Sekoranja, Cosylab</dd>
     <dd>Marty Kraimer, BNL</dd>
     <dd>Greg White, SLAC, PSI</dd>
-  <dt>Invited Expert Contributors:</dt>
-    <dd>Andrew Johnson, APS</dd>
-    <dd>Benjamin Franksen, HZB</dd>
+    <dd>Andrew Johnson, APS (Invited Expert)</dd>
+    <dd>Benjamin Franksen, HZB (Invited Expert)</dd>
+    <dd>Philip Duval, DESY (Invited Expert)</dd>
 </dl>
 <hr />
 </div>
@@ -55,21 +55,24 @@ the structured data types of the EPICS V4 "shared memory" data exchange system
 called pvData, for optimized interoperability of control system endpoints. It
 is a successor of EPICS Channel Access. </p>
 
-<p>The connection setup requirements and individual message constructs of
-pvAccess are described. It is intended that sufficient detail is given for a
-reader to create an interoperable pvAccess implementation. A reference
-implementation is being created by the EPICS V4 Working Group. </p>
+<p>The connection setup requirements and individual message constructs of pvAccess
+are described. It is intended that sufficient detail is given for a reader to create
+an interoperable pvAccess implementation. The protocol and a reference implementation
+are being created by the EPICS V4
+Working Group. </p>
 
-<p>For more information about the EPICS, please refer to the home page of the
+<p>EPICS is a computer platform for building the control systems of large scientific
+instruments. For more information about the EPICS, please refer to the home page of the
 <a href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
-Control System.</a></p>
+Control System. </a></p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 22 February 2012 version of the pvAccess Protocol Specification.
+<p>This is the 13 April 2012 version of the pvAccess Protocol Specification. This
+version is soley the 22 Feb 2012 version plus linguistic edits. 
 This version includes material and revisions from the Invited Experts above.
-This version is an editors draft towards the Second Public Working Draft. The
+This version is an Editors Draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review
 and comment. Resulting comments will drive subsequent revisions of the
 specification and the EPICS V4 Working Group's reference implementation.</p>
@@ -78,13 +81,21 @@ specification and the EPICS V4 Working Group's reference implementation.</p>
 written here. Another document will soon be written to track the status of the
 reference implementation with respect to the specification, showing what has
 yet to be implemented. </p>
-<!-- Please always include this statement of terms, unless it's really silly -->
 
+<!-- Please always include this statement of terms, unless it's really silly -->
 <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
 highlighted (through style sheets, and in uppercase in the source) are used in
 accordance with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a> [<a
 href="refs.html#ref-RFC2119">RFC2119</a>]. The term NOT REQUIRED (not defined
 in RFC 2119) indicates exemption. </p>
+
+<p>In general the text in this document is intended to be "<a
+ href="http://epics-pvdata.sourceforge.net/charter.html#glossary" >normative</a>",
+which is to say it is concise, algorithmic, and describes the protocol
+systematically. Such text is in the default font of the document. The functional
+consequences of the specification so described, although not normative, may be
+important. Such non-normative text is in <i>italics</i>.</p>
+
 <!--NewPage-->
 <!-- this is for html2ps -->
 
@@ -204,25 +215,37 @@ in RFC 2119) indicates exemption. </p>
 
 <p>pvAccess is a high-performance network communication protocol. It is
 primarily designed for efficient signal monitoring and the data requirements of
-a service oriented architecture. It is a successor of of EPICS Channel Access.
-</p>
+a service oriented architecture. </p>
 
-<p>TCP/IP is used for data transmission, UDP/IP is normally used for discovery,
+<p>pvAccess is a successor of <a href="http://www.aps.anl.gov/epics/">EPICS</a>
+Channel Access <a class="bib" href="#bib:caref">bib:caref</a>. It is the standard
+protocol of <a href="http://epics-pvdata.sourceforge.net/">EPICS Version 4</a> when
+both endpoints of a channel are EPICS V4 agents. pvAccess can also connect EPICS V3
+IOC Channel Access data to EPICS V4 user agents, using the EPICS V4 pvIOC module
+called <a
+ href="ttps://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvIOCJava%20-%20Build/javadoc/"
+ >CAV3</a>.  </p>
+
+<p>TCP/IP is used for data transmission. UDP/IP is normally used for discovery,
 although discovery over TCP/IP is also allowed. The discovery mechanism allows
-usage of other implementations (e.g. UDP/IP for data transmission). The
+the use of other implementations (e.g. UDP/IP for data transmission). The
 protocol itself supports IPv6, i.e. all addresses are IPv6 encoded. </p>
 
-<p>Port numbers 5075 (tcp connection port) and 5076 (udp broadcast port) are
-used (to be accepted by IANA). The default connection port SHOULD be used if
-free, otherwise a dynamically allocated port SHOULD be used as a fallback.
-pvAccess implementations SHOULD allow to configure the default connection port.</p>
+<p>Port numbers 5075 (tcp connection port) and 5076 (udp broadcast port) are used by
+default (to be accepted by IANA). These default connection ports SHOULD be used if
+free, otherwise a dynamically allocated port SHOULD be used as a fallback.  pvAccess
+implementations SHOULD allow alternative default connection
+ports to be configured.</p>
 
-<p>pvAccess was designed to support <a
-href="http://epics-pvdata.sourceforge.net/">pvData</a> [<a
-href="http://epics-pvdata.sourceforge.net/">pvData homepage</a>]. The protocol
+<p>pvAccess was designed to support pvData <a class="bib"
+href="#bib:pvdatarefcpp">bib:pvdatarefcpp</a>,  <a class="bib"
+href="#bib:pvdatarefjava">bib:pvdatarefjava</a>. pvData is the control data interface
+of EPICS V4 endpoints, such as user agent software and EPICS V4 IOCs. Together with pvAccess, they
+support essentially a client-server shared memory system optimized for efficiency
+(optimial zero-copy etc) and control (PV locking, alarms etc). The protocol
 aims to send the minimum number of bits necessary to inform peers of changes in
 endpoint data values subject to performance considerations. That is, it
-combines CPU and wire data size considerations to optimise overall control
+combines CPU and wire data size considerations to optimize overall control
 network throughput. pvAccess supports segmented messages and thus allows the
 sending of large amounts of data using optimal buffer sizing. The maximum
 message size is not limited with respect to the send or receive buffer sizes.
@@ -235,26 +258,28 @@ Channel Access' EPICS_CA_MAX_ARRAY_BYTES.</i></p>
     are encoded and deserialized</li>
   <li>A set of rules that determine how client and server agree on a particular
     encoding</li>
-  <li>A number of message types, that define the interchange between clients
-    and servers, together with rules which specify what message is to be sent
+  <li>A number of message types, that define the interchange between endpoints,
+    together with rules which specify what message is to be sent
     under what circumstances.</li>
 </ul>
 
 <h2 id="dataEncoding">Data Encoding</h2>
 
-<p>The goals of the pvAccess data encoding are simplicity and efficiency. In
-keeping with these goals, the encoding does not align primitive types on word
-boundaries and therefore eliminates the wasted space and additional complexity
-that alignment requires. The pvAccess data encoding simply produces a stream of
-contiguous bytes; data MUST NOT contain padding bytes and the implementation
-MUST NOT try to align data on word boundaries.<br />
+<p>The goals of the pvAccess data encoding are simplicity and efficiency. In keeping
+with these goals, the encoding does not align primitive types on word boundaries and
+therefore eliminates the wasted space and additional complexity that alignment
+requires. The pvAccess data encoding simply produces a stream of contiguous bytes; in
+general message data does not contain padding bytes and an implementation MUST NOT
+try to align data on word boundaries.</p>
+
+<p>
 However, arrays with an element type that is a number (including signed and unsigned
 integer types, and floating point types) are an exception.
 Such arrays MUST be aligned relative to the start of the message, so that the
 first element of the array (and thus all elements) have a byte offset
 (relative to the start of the message) that is divisible by the size (in
 bytes) of an element of the array. This MUST be done by inserting just enough
-bytes before the first element of the array.<br/>
+bytes before the first element of the array.
 For instance, an array of float must be 4 byte aligned, which MUST be ensured
 by inserting up to three bytes before the array.
 </p>
@@ -267,8 +292,8 @@ blocks of binary data) and in order not to require a specific byte order for
 connection-less protocols (UDP/IP). </p>
 
 <p>For clarity, this document separates user data (consisting of basic types,
-string, arrays, structures) from meta data that exists only at the protocol
-level (Status, BitSet). Meta data can also be of user data type, but not the
+string, arrays, structures) from meta data, which exists only at the protocol
+level (Status, BitSet). Meta data can be of user data type, but not the
 other way around. </p>
 
 <h3 id="dataEncoding:sizes">Sizes</h3>
@@ -282,19 +307,19 @@ always be a non-negative integer and encoded as follows: </p>
     elements</li>
   <li>If the number of elements is less than 2^31-1, then the size MUST be
     encoded as an unsigned 8-bit integer with value 255, followed by a positive
-    signed 32-bit integer indicating the number of elements.</li>
+    signed 32-bit integer indicating the number of elements</li>
   <li>If the number of elements is greater than or equal to 2^31-1, then the
     size MUST be encoded as an unsigned 8-bit integer with value 255, followed
     by a positive signed 32-bit integer with value 2^31-1, followed by a
     positive signed 64-bit integer indicating the number of elements. This
-    implies maximum size of 2^63-1.</li>
+    implies a maximum size of 2^63-1.</li>
 </ol>
 
-<p style="font-style:italic;">Using this encoding to indicate size is significantly cheaper than always
-using a 32-bit (or even 64-bit) integer to store the size. This is especially
-true when marshalling sequences of short strings; counts of up to 254 require
-only a single byte instead of four. This comes at the expense of counts greater
-than 254, which require five bytes instead of four. However, for sequences or
+<p style="font-style:italic;">Using this encoding to indicate size is significantly
+cheaper than always using a 32-bit (or even 64-bit) integer to store the size. This
+is especially true when marshalling sequences of short strings; counts of up to 254
+require only a single byte instead of four. This comes at the expense of counts
+greater than 254, which require five bytes instead of four. However, for sequences or
 strings of length greater than 254, the extra byte is insignificant. </p>
 
 <h3 id="dataEncoding:userData">User Data</h3>
@@ -303,11 +328,11 @@ strings of length greater than 254, the extra byte is insignificant. </p>
 
 <p>The basic types MUST be encoded as shown in Table 1. Signed integer types
 (byte, short, int, long) MUST be represented as two’s complement numbers.
-Floating point types (float, double) MUST use the IEEE-754 standard formats [<a
-href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE_754-1985 Wiki</a>]. </p>
+Floating point types (float, double) MUST use the IEEE-754 standard formats <a
+class="bib" href="#bib:ieee754wiki">bib:ieee754wiki</a>.</p>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Encoding for basic types.</caption>
+  <caption style="font-weight:bold; padding:1em">Encoding for basic types.</caption>
   <tbody>
     <tr>
       <th>Type</th>
@@ -377,9 +402,11 @@ specified in these sections). </p>
 <p>Strings are encoded as arrays of bytes. The actual content (the bytes in the array)
 MUST be a valid <a href="http://tools.ietf.org/html/rfc3629">UTF-8</a> encoded string.
 
-<p style="font-style:italic;">Particularly, this means that strings MUST be encoded as a size, followed by the string contents in a UTF-8 format as bytes. Size gives the number of bytes that follow it and
-not the number of UTF-8 characters. UTF-8 multi-byte characters MUST NOT be
-broken. An empty string MUST be encoded with a size of zero.</p>
+<p style="font-style:italic;">Particularly, this means that strings MUST be encoded
+as a size, followed by the string contents in a UTF-8 format as bytes. Size gives the
+number of bytes that follow it and not the number of UTF-8 characters. UTF-8
+multi-byte characters MUST NOT be broken. An empty string MUST be encoded with a size
+of zero.</p>
 
 <p style="font-style:italic;">
 Implementations that internally use a zero byte or a zero character
@@ -387,21 +414,22 @@ to indicate end-of-string SHOULD NOT include a terminating zero byte
 in the pvAccess string encoding. 'null' strings are not supported.</p>
 
 
-<p style="font-style:italic;">On the wire, pvAccess MUST transmit all strings as Unicode strings in UTF-8.
-Non-C++ bindings of the implementations SHOULD use strings in their
-language-native Unicode representation and convert automatically to and from
+<p style="font-style:italic;">On the wire, pvAccess MUST transmit all strings as
+Unicode strings in UTF-8.  Non-C++ bindings of the implementations SHOULD use strings
+in their language-native Unicode representation and convert automatically to and from
 UTF-8 for transmission, so applications can transparently use characters from
-non-English alphabets. However, for C++, how strings are represented inside a
-process depends on the platform as well as the mapping that is chosen for a
-particular string. The default mapping to is std::string. </p>
+non-English alphabets. However, for C++, how strings are represented inside a process
+depends on the platform as well as the mapping that is chosen for a particular
+string. The default mapping to is std::string. </p>
 
 <h4 id="dataEncoding:structures">Structures</h4>
 
-<p>Structures MUST be encoded by appending the data of all its fields in the
+<p>Structures MUST be encoded by appending the data of all comprising fields in the
 order in which the fields have been defined. A structure can contain a
 structure for its field.</p>
 
 <h4 id="dataEncoding:example">Encoding example</h4>
+<p>Given the following structure:</p>
 <pre>structure 
     byte[] value [1,2,3]
     structure timeStamp
@@ -413,11 +441,12 @@ structure for its field.</p>
         int status 0x22222222
         string message Allo, Allo!</pre>
 
-<p>is serialzied as (big-endian byte order): </p>
+<p>The above would be serialzied as illustrated below (when using big-endian byte order): </p>
 <pre>Hexdump [Serialized structure] size = 40
 03 01 02 03  11 22 33 44  55 66 77 88  AA BB CC DD  .... ."3D Ufw. .... 
 EE EE EE EE  11 11 11 11  22 22 22 22  0B 41 6C 6C  .... .... """" .All 
-6F 2C 20 41  6C 6C 6F 21                            o, A llo! </pre>
+6F 2C 20 41  6C 6C 6F 21                            o, A llo!
+</pre>
 
 <h3 id="dataEncoding:metaData">Meta Data</h3>
 
@@ -426,8 +455,8 @@ EE EE EE EE  11 11 11 11  22 22 22 22  0B 41 6C 6C  .... .... """" .All
 <p>BitSet is a data type that represents a finite sequence of bits.</p>
 
 <p>BitSet is encoded as a byte array. Bits are serialized in groups of eight in
-ascending order (LSB to MSB). Serialization is size optimized and REQUIRES to
-send only least possible number of bytes that encode all the bits in the
+ascending order (LSB to MSB). Serialization is size optimized to
+send only the least possible number of bytes that encode all the bits in the
 set.</p>
 
 <p>Examples of BitSet serialization: </p>
@@ -534,9 +563,9 @@ is nominally defined as: </p>
 
 <p>In practice, since the majority of Status instances would be OK with no
 message and no callTree, a special definition of Status SHOULD be used in the
-common case that all three of these conditions are met. If Status would be OK
-and no message and no callTree are to be sent, then the special type value
-<code>-1</code> is used and string fields are omitted: </p>
+common case that all three of these conditions are met; if Status is OK
+and no message and no callTree would be sent, then the special type value of
+<code>-1</code> MAY be used, and in this case the string fields are omitted: </p>
 <pre>struct StatusOK {
     byte type = -1;
 };</pre>
@@ -583,19 +612,19 @@ ONLY_ID_TYPE_CODE, the sender MUST have previously sent at least one
 FULL_WITH_ID_TYPE_CODE with the same type identifier to the same receiver. </p>
 
 <p>Since user data types can be arbitrarily complex, introspection data SHOULD
-be sent only once per type and receiver. The mapping of dynamically assigned
+be sent only once per type and receiver combination. The mapping of dynamically assigned
 type identifier (ID) to introspection data MUST be cached on the receiver side,
 and SHOULD be cached and re-used on the sender side. ID MUST be encoded as
 short and MUST be valid only within one connection. Moreover, IDs MUST be
-assigned only by the sender. The receiver MUST only keeps track of the IDs and
+assigned only by the sender. The receiver MUST keep track of the IDs and
 use them to identify deserializations. Since communication is full-duplex this
 implies there MUST be two introspection registries per connection. The sender
-MAY override previously assigned ID by simply assiging the ID to a new
+MAY override a previously assigned ID by simply assiging the ID to a new
 introspection data instance. Introspection registry size MUST be negotiated
-when connection is established. </p>
+when each connection is established. </p>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Encoding of Introspection Data (called
+  <caption style="font-weight:bold; padding:1em">Encoding of Introspection Data (called
   Field for future reference).</caption>
   <tbody>
     <tr>
@@ -634,13 +663,13 @@ when connection is established. </p>
   </tbody>
 </table>
 
-<p>An actual Field introspection description (FieldDesc) MUST be encoded as a
+<p>Each instance of a Field introspection description (FieldDesc) MUST be encoded as a
 byte that consists of 2 nibbles (4-bits). The upper nibble (Most Significant
-Bits, MSBs) is used for the type selector and flags. The lower nibble is type
-(bits 7-5) depended and used for size encoding. </p>
+Bits, MSBs) is used for the type selector and flags. The lower nibble (bits 7-5) is type
+dependent and used for size encoding. </p>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Type Encoding.</caption>
+  <caption style="font-weight:bold; padding:1em">Type Encoding.</caption>
   <tbody>
     <tr>
       <th>bit</th>
@@ -697,7 +726,7 @@ Bits, MSBs) is used for the type selector and flags. The lower nibble is type
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Integer Type Size Encoding (type =
+  <caption style="font-weight:bold; padding:1em">Integer Type Size Encoding (type =
   '0b001').</caption>
   <tbody>
     <tr>
@@ -748,7 +777,7 @@ Bits, MSBs) is used for the type selector and flags. The lower nibble is type
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Floating-Point Size Encoding (type =
+  <caption style="font-weight:bold; padding:1em">Floating-Point Size Encoding (type =
   '0b010').</caption>
   <tbody>
     <tr>
@@ -800,16 +829,16 @@ Bits, MSBs) is used for the type selector and flags. The lower nibble is type
   </tbody>
 </table>
 
-<p>For all other types bits 3-0 MUST be '0b0000'. </p>
+<p>For all other types, bits 3-0 MUST be '0b0000'. </p>
 
-<p>That byte MUST be then followed by the Field instance name encoded as a
-string. Structure and structureArray types REQUIRE more description. A
-structure REQUIRES an array of Fields (size followed by one or more Field as
-described above). StructureArray REQUIRES an introspection data of a structure
-defining an array element type.</p>
+<p>The Field Introspection description byte MUST be then followed by the Field
+instance name encoded as a string. Structure and structureArray types REQUIRE more
+description. A structure REQUIRES an array of Fields (size followed by one or more
+Field as described above). StructureArray REQUIRES an introspection data of a
+structure defining an array element type.</p>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">FieldDesc Encoding.</caption>
+  <caption style="font-weight:bold; padding:1em">FieldDesc Encoding.</caption>
   <tbody>
     <tr>
       <th>FieldDesc Encoding</th>
@@ -874,7 +903,7 @@ structure  ExampleStructure
         int status
         string message</pre>
 
-<p>The introspection description of the above structure is be encoded by
+<p>The introspection description of the above structure would be encoded by
 pvAccess as the following: </p>
 <pre>Hexdump [Serialized structure IF] size = 122
 FD 00 02 80  10 45 78 61  6D 70 6C 65  53 74 72 75  .... .Exa mple Stru 
@@ -894,31 +923,31 @@ connection between a client and server: a channel can only be created if a TCP
 connection has already been established; likewise, if the TCP connection is
 terminated, then all subordinate channels are implicitly destroyed. </p>
 
-<p>Each TCP connection has associated QoS parameters. Regardless of how many
-channels are handled by either client or server, each client and server pair
-MUST be connected with exactly one TCP connection for each QoS parameter value.
+<p>Each TCP connection has associated Quality of Service (QoS) parameters. Regardless
+of how many channels are handled by either client or server, each client and server
+pair MUST be connected with exactly one TCP connection for each QoS parameter value.
 </p>
 
 <p>When establishing a TCP connection, a simple handshake MUST be performed.
 The client opens a TCP connection to the server and waits until the Connection
 Validation message is received. The server MUST initially send a Set byte order
-control message to notify the client about byte order to be used for this TCP
+control message to notify the client about the byte order to be used for this TCP
 connection. After that the server MUST send the Connection Validation message.
-If client correctly decodes messages it responds with a Connection Validation
+If the client correctly decodes messages it MUST respond with a Connection Validation
 response message. Now the connection is verified and the client may start
 sending requests. The client SHOULD keep the connection established until the
 last active channel gets destroyed. However, to optimize resource reallocation
 it MAY delay connection destruction. </p>
 
 <p>Both parties MUST constantly monitor whether the connection is valid and not
-simply rely on TCP mechanisms. The only way to ensure this is by sending data.
-If there is no send operation called within a predetermined (15 seconds) period
-of time, an echo message MUST be sent. In case of connection failure, TCP will
-report connection loss on send. If there is no response in a predetermined
-period of time, the connection SHOULD be marked as unresponsive. Echo message
-MUST be periodically sent until response is received or connection is reported
-to be lost. If echo response is received and transport is marked as
-unresponsive, transport SHOUD be reported to be responsive. </p>
+simply rely on TCP mechanisms. pvAccess achieves this by sending some small amount of
+data with a minimum period.  If there is no send operation otherwise called within a
+predetermined period of time (15 seconds), an echo message MUST be sent. In case of
+connection failure, TCP will report connection loss on send. If there is no response
+in in predetermined period of time, the connection SHOULD be marked as
+unresponsive. Echo message MUST be periodically sent until response is received or
+the connection is reported to be lost. If echo response is received and transport is
+marked as unresponsive, transport SHOUD be reported to be responsive. </p>
 
 <div class="image" style="text-align:center">
 <img src="image/pvAccessSpec_ConnectionStates.png"
@@ -928,16 +957,17 @@ alt="Connection State Diagram" width="66%" />
 Connection State Diagram.</div>
 </div>
 
-<p>When connection is terminated all related resources MUST be freed. On server
+<p>When connection is terminated all related resources MUST be freed. On the server
 side all channels including their requests MUST be destroyed (this includes all
-<i>serverChannelID</i>s). On client side all channels and their requests MUST
+<i>serverChannelID</i>s). On the client side all channels and their requests MUST
 be put to disconnected state and searching for channels initiated.
 <i>clientChannelID</i>s and <i>requestID</i>s SHOULD be retained until channel
-or request are destroyed on client side). Once IDs are freed they MAY be
-recycled - used for other channels/requests in the future. <br />
-When disconnected client channels are found on the network and connection is
-re-established, channels are put to back to connected state and all their
-requests re-initialized; in addition, monitors are re-started. </p>
+or request are destroyed on client side. Once IDs are freed they MAY be
+recycled - used for other channels/requests in the future.</p>
+
+<p> When disconnected client channels are found on the network and connection is
+re-established, channels are put back to connected state and all their requests
+re-initialized; in addition, monitors are re-started. </p>
 
 <h2 id="channelLifecycle">Channel Life-cycle</h2>
 
@@ -955,22 +985,22 @@ being connected for the first time. Connection proccess within the client MUST
 repetedly attempt to find a server hosting the channel by
 broadcasting/multicasting channel search requests. When a server response is
 received, the client MUST connect to the server responding to the search
-request using protocol and address data from the search request response. If
-connection is already established by the client, it MUST be reused. Client API
-MAY also allow user-specified server address; in this case, searching process
-is by-passed and specified server address data directly used. </p>
+request using the protocol and address data from the search request response. If
+a connection has been already established by the client, it MUST be reused. A client API
+MAY also allow a user-specified server address; in this case, the searching process
+would be bypassed and the specified server address data used directly. </p>
 
 <p>When connection is established and verified, the channel create request
-message MUST be sent the server. When the client receives a channel create
+message MUST be sent by the server. When the client receives a channel create
 response message with success status, it MUST set the channel to CONNECTED
 state. </p>
 
-<p>Channel MUST be in CONNECTED state to be able to accept channel related
+<p>A channel MUST be in CONNECTED state to be able to accept channel related
 requests. </p>
 
 <p>When the connection is lost, the channel state MUST be set to DISCONNECTED.
-In this state client MUST start the connection process as descibed above. On
-re-connect, channel state MUST be set back to CONNECTED. </p>
+In this state, clients MUST start the connection process as descibed above. On
+reconnect, the channel's state MUST be set back to CONNECTED. </p>
 
 <p>A channel MAY be destroyed any time (in any state) and then its state MUST
 be set to DESTROYED. Once the channel is destroyed, it MUST NOT be used
@@ -987,20 +1017,20 @@ Channel Request State Diagram.</div>
 </div>
 
 <p>Channel requests (get, put, get-put, RPC, process) have a state. When
-instantiated, they MUST are in INIT state. A specific per request
+instantiated, they MUST be set to INIT state. A specific per request
 initialization message MUST be sent to the server. The request MUST NOT be used
 until successful initialization response is received from the server and put to
-READY state. If initialization fails, client MUST be notified about failure and
+READY state. If initialization fails, the client MUST be notified about failure and
 the request put to DESTROYED state. </p>
 
-<p>Actual actions, e.g. get, MAY be invoked only when a request is in READY
+<p>Actual actions, e.g. get, MAY only be invoked when a request is in READY
 state. When one action is in progress, the request is put to
 REQUEST_IN_PROGRESS state and set back to READY state when ended. This implies
 that actions MUST NOT be run in parallel. </p>
 
 <p>When connection is lost, a request MUST be put to DISCONNECTED state and
-automatically re-initialized when connection is re-established (as the request
-where newly instantiated). </p>
+automatically reinitialized when connection is reestablished (as if the request
+were newly instantiated). </p>
 
 <p>A request MAY be destroyed any time (in any state) and then its state MUST
 be set to DESTROYED. Once the request is destroyed, it MUST NOT be used
@@ -1083,7 +1113,7 @@ to be specified (or some more clever algorithm invented). </p>
 <h2 id="communicationExample">Communication Example</h2>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Communication Example.</caption>
+  <caption style="font-weight:bold; padding:1em">Communication Example.</caption>
   <tbody>
     <tr>
       <th>Server</th>
@@ -1202,7 +1232,7 @@ it were expressed by the following structure: </p>
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">pvAccess Header Members.</caption>
+  <caption style="font-weight:bold; padding:1em">pvAccess Header Members.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1234,7 +1264,7 @@ it were expressed by the following structure: </p>
 <p>All implementations MUST support all prior versions of the protocol.</p>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">pvAccess Header Flags Description.</caption>
+  <caption style="font-weight:bold; padding:1em">pvAccess Header Flags Description.</caption>
   <tbody>
     <tr>
       <th>bit</th>
@@ -1331,7 +1361,7 @@ announce new servers and server restarts. </p>
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Beacon Message Members.</caption>
+  <caption style="font-weight:bold; padding:1em">Beacon Message Members.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1438,7 +1468,7 @@ struct connectionValidationResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Connection Validation Request Message
+  <caption style="font-weight:bold; padding:1em">Connection Validation Request Message
   Members.</caption>
   <tbody>
     <tr>
@@ -1465,7 +1495,7 @@ struct connectionValidationResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Connection Validation Response Message
+  <caption style="font-weight:bold; padding:1em">Connection Validation Response Message
   Members.</caption>
   <tbody>
     <tr>
@@ -1496,7 +1526,7 @@ struct connectionValidationResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Connection QoS Parameters
+  <caption style="font-weight:bold; padding:1em">Connection QoS Parameters
   Description.</caption>
   <tbody>
     <tr>
@@ -1551,7 +1581,7 @@ struct echoResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Echo request message members.</caption>
+  <caption style="font-weight:bold; padding:1em">Echo request message members.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1565,7 +1595,7 @@ struct echoResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Echo response message members.</caption>
+  <caption style="font-weight:bold; padding:1em">Echo response message members.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1596,7 +1626,7 @@ struct searchRequest {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Search request message members.</caption>
+  <caption style="font-weight:bold; padding:1em">Search request message members.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1642,7 +1672,7 @@ below. </p>
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Search response message members.</caption>
+  <caption style="font-weight:bold; padding:1em">Search response message members.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1701,7 +1731,7 @@ struct createChannelResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Create channel request message
+  <caption style="font-weight:bold; padding:1em">Create channel request message
   members.</caption>
   <tbody>
     <tr>
@@ -1721,7 +1751,7 @@ struct createChannelResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Create channel response (per channel)
+  <caption style="font-weight:bold; padding:1em">Create channel response (per channel)
   message members.</caption>
   <tbody>
     <tr>
@@ -1775,7 +1805,7 @@ struct destroyChannelResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Destroy channel request.</caption>
+  <caption style="font-weight:bold; padding:1em">Destroy channel request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1793,7 +1823,7 @@ struct destroyChannelResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Destroy channel response.</caption>
+  <caption style="font-weight:bold; padding:1em">Destroy channel response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1844,7 +1874,7 @@ struct channelGetResponseInit {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get init request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get init request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1874,7 +1904,7 @@ struct channelGetResponseInit {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get init response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get init response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1916,7 +1946,7 @@ struct channelGetResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1938,7 +1968,7 @@ struct channelGetResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -1990,7 +2020,7 @@ struct channelPutResponseInit {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel put init request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel put init request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2020,7 +2050,7 @@ struct channelPutResponseInit {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel put init response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel put init response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2062,7 +2092,7 @@ struct channelPutResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel put request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel put request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2092,7 +2122,7 @@ struct channelPutResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel put response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel put response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2129,7 +2159,7 @@ struct channelGetPutResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get put request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get put request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2151,7 +2181,7 @@ struct channelGetPutResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get put response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get put response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2199,7 +2229,7 @@ struct channelPutGetResponseInit {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel put-get init request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel put-get init request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2229,7 +2259,7 @@ struct channelPutGetResponseInit {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel put-get init response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel put-get init response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2276,7 +2306,7 @@ struct channelPutGetResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel put-get request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel put-get request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2306,7 +2336,7 @@ struct channelPutGetResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel put-get response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel put-get response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2347,7 +2377,7 @@ struct channelGetPutResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get put request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get put request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2369,7 +2399,7 @@ struct channelGetPutResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get put response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get put response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2410,7 +2440,7 @@ struct channelGetGetResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get get request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get get request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2432,7 +2462,7 @@ struct channelGetGetResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel get get response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel get get response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2478,7 +2508,7 @@ struct channelMonitorResponseInit {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel monitor init request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel monitor init request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2508,7 +2538,7 @@ struct channelMonitorResponseInit {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel monitor init response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel monitor init response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2558,7 +2588,7 @@ monitoring and to destroy monitor request (subscription): </p>
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel monitor requests.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel monitor requests.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2589,7 +2619,7 @@ monitoring and to destroy monitor request (subscription): </p>
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel monitor response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel monitor response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2648,7 +2678,7 @@ struct channelArrayResponseInit {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel array init request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel array init request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2678,7 +2708,7 @@ struct channelArrayResponseInit {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel array init response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel array init response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2721,7 +2751,7 @@ struct channelGetArrayResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel array get request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel array get request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2753,7 +2783,7 @@ struct channelGetArrayResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel array get response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel array get response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2792,7 +2822,7 @@ struct channelPutArrayResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel array put request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel array put request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2823,7 +2853,7 @@ struct channelPutArrayResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel array put response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel array put response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2858,7 +2888,7 @@ struct channelSetLengthResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel array set length request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel array set length request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2888,7 +2918,7 @@ struct channelSetLengthResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel array set length response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel array set length response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2921,7 +2951,7 @@ struct destroyRequest {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Destroy request.</caption>
+  <caption style="font-weight:bold; padding:1em">Destroy request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2958,7 +2988,7 @@ struct channelProcessResponseInit {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel process init request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel process init request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -2988,7 +3018,7 @@ struct channelProcessResponseInit {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel process init response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel process init response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -3024,7 +3054,7 @@ struct channelProcessResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel proces request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel proces request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -3046,7 +3076,7 @@ struct channelProcessResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel process response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel process response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -3086,7 +3116,7 @@ struct channelGetFieldResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Get channel introspection data
+  <caption style="font-weight:bold; padding:1em">Get channel introspection data
   request.</caption>
   <tbody>
     <tr>
@@ -3109,7 +3139,7 @@ struct channelGetFieldResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Get channel introspection data
+  <caption style="font-weight:bold; padding:1em">Get channel introspection data
   response.</caption>
   <tbody>
     <tr>
@@ -3143,7 +3173,7 @@ request completion status. </p>
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Message response.</caption>
+  <caption style="font-weight:bold; padding:1em">Message response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -3183,7 +3213,7 @@ struct channelRPCResponseInit {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel RPC init request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel RPC init request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -3213,7 +3243,7 @@ struct channelRPCResponseInit {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel RPC init response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel RPC init response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -3253,7 +3283,7 @@ struct channelRPCResponse {
 };</pre>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel RPC request.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel RPC request.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -3283,7 +3313,7 @@ struct channelRPCResponse {
 </table>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Channel RPC response.</caption>
+  <caption style="font-weight:bold; padding:1em">Channel RPC response.</caption>
   <tbody>
     <tr>
       <th>Member</th>
@@ -3342,7 +3372,7 @@ order. <br />
 Client decoding byte order depends on payload size field value: </p>
 
 <table style="caption-side:bottom">
-  <caption style="font-weight:bold">Client Decoding</caption>
+  <caption style="font-weight:bold; padding:1em">Client Decoding</caption>
   <tbody>
     <tr>
       <th>Payload Size Field Value</th>
@@ -3390,5 +3420,24 @@ request message. </p>
   <li>access rights</li>
   <li>etc.</li>
 </ul>
+
+<h2>Bibliography</h2>
+<dd>
+  <dt id="bib:caref" class="bib">bib:caref</dt>
+  <dd>EPICS R3.14 Channel Access Reference Manual, J.O. Hill, R. Lange, 2002,
+    <a href="http://www.aps.anl.gov/epics/base/R3-14/8-docs/CAref.html" >http://www.aps.anl.gov/epics/base/R3-14/8-docs/CAref.html</a>
+    </dd>
+    <dt id="bib:pvdatarefcpp" class="bib">bib:pvdatarefcpp</dt>
+  <dd>EPICS pvDataCPP [pvData C++ Programmers Reference Manual], M. Kraimer, 2011 under
+    development,
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/raw-file/tip/documentation/pvDataCPP.html" >http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/raw-file/tip/documentation/pvDataCPP.html</a>
+    </dd>
+    <dt id="bib:pvdatarefjava" class="bib">bib:pvdatarefjava</dt>
+  <dd>EPICS pvDataJava [pvData Java Programmers Reference Manual], M. Kraimer, 2011 under
+    development,
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html" >http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html</a>    
+    </dd>
+     <dt id="bib:ieee754wiki" class="bib">bib:ieee754wiki</dt>
+       <dd>IEEE 754-2008, Wikipedia article, April 2012, <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">http://en.wikipedia.org/wiki/IEEE_754-1985</a></dd>
 </body>
 </html>
