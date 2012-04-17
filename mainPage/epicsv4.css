@@ -46,7 +46,7 @@ table { margin-left: auto; margin-right: auto }
 .diagram { text-align: center; margin: 2.5em 0 }
 
 /* Editor is deprecated, see p class ed in base.css */
-editor { font-color: red }
+.editor { font-color: red }
 
 body { 
     margin-right: 10%;
