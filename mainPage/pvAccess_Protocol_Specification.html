@@ -24,10 +24,11 @@
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
 <h2 class="nocount" id="L50">EPICS v4 Working Group, Editors Draft towards Second Public Working
-Draft, 13-Apr-2012</h2>
+Draft, 17-Apr-2012</h2>
 <dl>
   <dt>This version:</dt>
-    <dd>Greg's partially complete edit. Got up to Flow Control, 13-Apr-2012</dd>
+    <dd><a
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120417.html">pvAccess_Protocol_Specification_20120417.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -69,9 +70,9 @@ Control System. </a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 13 April 2012 version of the pvAccess Protocol Specification. This
-version is soley the 22 Feb 2012 version plus linguistic edits. 
-This version includes material and revisions from the Invited Experts above.
+<p>This is the 17 April 2012 version of the pvAccess Protocol Specification. This
+version is the 22 Feb 2012 version plus linguistic edits. 
+The 22 Feb version includes material and revisions from the Invited Experts above.
 This version is an Editors Draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review
 and comment. Resulting comments will drive subsequent revisions of the
@@ -231,8 +232,8 @@ although discovery over TCP/IP is also allowed. The discovery mechanism allows
 the use of other implementations (e.g. UDP/IP for data transmission). The
 protocol itself supports IPv6, i.e. all addresses are IPv6 encoded. </p>
 
-<p>Port numbers 5075 (tcp connection port) and 5076 (udp broadcast port) are used by
-default (to be accepted by IANA). These default connection ports SHOULD be used if
+<p>Port numbers 5075 (tcp connection port, accepted by IANA) and 5076 (udp broadcast port) are used by
+default. These default connection ports SHOULD be used if
 free, otherwise a dynamically allocated port SHOULD be used as a fallback.  pvAccess
 implementations SHOULD allow alternative default connection
 ports to be configured.</p>
@@ -831,10 +832,9 @@ dependent and used for size encoding. </p>
 
 <p>For all other types, bits 3-0 MUST be '0b0000'. </p>
 
-<p>The Field Introspection description byte MUST be then followed by the Field
-instance name encoded as a string. Structure and structureArray types REQUIRE more
-description. A structure REQUIRES an array of Fields (size followed by one or more
-Field as described above). StructureArray REQUIRES an introspection data of a
+<p>Structure and structureArray types REQUIRE more description. A
+structure REQUIRES a named array of Fields - size followed by one or more (field name, FieldDesc) pairs.
+StructureArray REQUIRES an introspection data of a
 structure defining an array element type.</p>
 
 <table style="caption-side:bottom">
@@ -846,23 +846,22 @@ structure defining an array element type.</p>
       <th>Description</th>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0bxxx0xxxx</a> + name</td>
+      <td><a style="font-family:monospace">0bxxx0xxxx</a></td>
       <td style="font-weight:bold">scalar</td>
       <td>Scalar.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0bxxx1xxxx</a> + name</td>
+      <td><a style="font-family:monospace">0bxxx1xxxx</a></td>
       <td style="font-weight:bold">scalarArray</td>
       <td>Array of scalars.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b1000xxxx</a> + name + Field[]</td>
+      <td><a style="font-family:monospace">0b1000xxxx</a> + (field name, FieldDesc)[]</td>
       <td style="font-weight:bold">structure</td>
       <td>Structure.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b1001xxxx</a> + name + Field (type
-        of structure)</td>
+      <td><a style="font-family:monospace">0b1001xxxx</a> + structure FieldDesc</td>
       <td style="font-weight:bold">structureArray</td>
       <td>Array of structures.</td>
     </tr>
@@ -874,25 +873,24 @@ structure defining an array element type.</p>
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
 <pre>
-structure  timeStamp
+structure
     long secondsPastEpoch
     int nanoSeconds
     int userTag</pre>
 
 <p>The introspection description of the above structure is be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized timeStamp structure IF] size = 55
-FD 00 01 80  09 74 69 6D  65 53 74 61  6D 70 03 23  .... .tim eSta mp.# 
-10 73 65 63  6F 6E 64 73  50 61 73 74  45 70 6F 63  .sec onds Past Epoc 
-68 22 0B 6E  61 6E 6F 53  65 63 6F 6E  64 73 22 07  h".n anoS econ ds". 
-75 73 65 72  54 61 67                              user Tag</pre>
+<pre>Hexdump [Serialized structure IF] size = 45
+FD 00 01 80  03 10 73 65  63 6F 6E 64  73 50 61 73  .... ..se cond sPas 
+74 45 70 6F  63 68 23 0B  6E 61 6E 6F  53 65 63 6F  tEpo ch#. nano Seco 
+6E 64 73 22  07 75 73 65  72 54 61 67  22          nds" .use rTag "</pre>
 
 <h5 id="dataEncoding:example2">Example #2</h5>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
 <pre>
-structure  ExampleStructure
+structure
     byte[] value
     structure  timeStamp
         long secondsPastEpoch
@@ -905,15 +903,14 @@ structure  ExampleStructure
 
 <p>The introspection description of the above structure would be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized structure IF] size = 122
-FD 00 02 80  10 45 78 61  6D 70 6C 65  53 74 72 75  .... .Exa mple Stru 
-63 74 75 72  65 03 30 05  76 61 6C 75  65 FD 00 03  ctur e.0. valu e... 
-80 09 74 69  6D 65 53 74  61 6D 70 03  23 10 73 65  ..ti meSt amp. #.se 
-63 6F 6E 64  73 50 61 73  74 45 70 6F  63 68 22 0B  cond sPas tEpo ch". 
-6E 61 6E 6F  53 65 63 6F  6E 64 73 22  07 75 73 65  nano Seco nds" .use 
-72 54 61 67  FD 00 04 80  05 61 6C 61  72 6D 03 22  rTag .... .ala rm." 
-08 73 65 76  65 72 69 74  79 22 06 73  74 61 74 75  .sev erit y".s tatu 
-73 60 07 6D  65 73 73 61  67 65                    s`.m essa ge</pre>
+<pre>Hexdump [Serialized structure IF] size = 105
+FD 00 01 80  03 05 76 61  6C 75 65 30  09 74 69 6D  .... ..va lue0 .tim 
+65 53 74 61  6D 70 FD 00  01 80 03 10  73 65 63 6F  eSta mp.. .... seco 
+6E 64 73 50  61 73 74 45  70 6F 63 68  23 0B 6E 61  ndsP astE poch #.na 
+6E 6F 53 65  63 6F 6E 64  73 22 07 75  73 65 72 54  noSe cond s".u serT 
+61 67 22 05  61 6C 61 72  6D FD 00 02  80 03 08 73  ag". alar m... ...s 
+65 76 65 72  69 74 79 22  06 73 74 61  74 75 73 22  ever ity" .sta tus" 
+07 6D 65 73  73 61 67 65  60                       .mes sage `</pre>
 
 <h2 id="connectionManagement">Connection Management</h2>
 
@@ -942,7 +939,7 @@ it MAY delay connection destruction. </p>
 <p>Both parties MUST constantly monitor whether the connection is valid and not
 simply rely on TCP mechanisms. pvAccess achieves this by sending some small amount of
 data with a minimum period.  If there is no send operation otherwise called within a
-predetermined period of time (15 seconds), an echo message MUST be sent. In case of
+predetermined period of time (SHOULD be 15 seconds), an echo message MUST be sent. In case of
 connection failure, TCP will report connection loss on send. If there is no response
 in in predetermined period of time, the connection SHOULD be marked as
 unresponsive. Echo message MUST be periodically sent until response is received or
@@ -983,7 +980,7 @@ Channel State Diagram.</div>
 set to NEVER_CONNECTED state. This indicates that the channel is currently
 being connected for the first time. Connection proccess within the client MUST
 repetedly attempt to find a server hosting the channel by
-broadcasting/multicasting channel search requests. When a server response is
+broadcasting or multicasting channel search requests. When a server response is
 received, the client MUST connect to the server responding to the search
 request using the protocol and address data from the search request response. If
 a connection has been already established by the client, it MUST be reused. A client API
@@ -1052,11 +1049,11 @@ involved - it is possible to predict congestions using the following algorithm:
     acknowledges the reception of total bytes sent</li>
   <li>the difference between total bytes sent and last acknowledged marker
     received tells how much other party receive buffers are full. This number
-    should never exceed the total sum of receive buffers.</li>
+    should never exceed the total sum of receive buffer sizes.</li>
 </ul>
 
 <p style="font-style:italic;">Flow control is needed only to optimize
-subscription messages back to the client (i.e. monitors), for other large
+subscription messages back to the client (i.e. monitors), for other
 messages TCP flow control is sufficient. <br />
 A pvAccess implementation SHOULD implement flow control such that each endpoint
 should try to send as much monitoring data as it can subject to an upper limit
@@ -1111,6 +1108,11 @@ robust algorithm is used in the reference implementation. The algorithm needs
 to be specified (or some more clever algorithm invented). </p>
 
 <h2 id="communicationExample">Communication Example</h2>
+
+<p>
+The following table illustrates messages sent between a client and a server where the client issues
+a get request on a channel.
+</p>
 
 <table style="caption-side:bottom">
   <caption style="font-weight:bold; padding:1em">Communication Example.</caption>
@@ -1261,7 +1263,10 @@ it were expressed by the following structure: </p>
   </tbody>
 </table>
 
-<p>All implementations MUST support all prior versions of the protocol.</p>
+<p>Every implementation of the protocol which purports to support this specification version of the
+protocol, MUST also support all prior specification versions of the protocol. Every implementation
+of the protocol MUST clearly indicate to which primary specification version it is
+conformant, using the version field above.</p>
 
 <table style="caption-side:bottom">
   <caption style="font-weight:bold; padding:1em">pvAccess Header Flags Description.</caption>
@@ -1336,10 +1341,10 @@ subsection describes a single message command
 <p>"request" means a message sent by a client, and "response" means it is sent
 by the server.</p>
 
-<p>In order to understand specific application messages it is strongly
-recommended to be familiar with the <a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html">pvAccess
-client interface</a>.</p>
+<p>In order to understand specific application messages it is helpful
+to be familiar with the EPICS V4 <a
+href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html">pvAccess</a>
+Programmers Reference.</p>
 
 <p>All application message MUST be send over the data transmission transport -
 TCP/IP in reference implementation - unless explicitly specified. A response
@@ -2144,7 +2149,7 @@ struct channelPutResponse {
 </table>
 
 <p>A "get-put" request retrieves remote put structure. This MAY be used by user
-applications to show data that were set last time. </p>
+applications to show data that were set last time by the application. </p>
 <pre>struct channelGetPutRequest {
     int serverChannelID;
     int requestID;
@@ -2362,7 +2367,7 @@ struct channelPutGetResponse {
 </table>
 
 <p>A "get-put" request retrieves remote put structure. This MAY be used by user
-applications to show data that were set last time. </p>
+applications to show data that were set last time by the application. </p>
 <pre>struct channelGetPutRequest {
     int serverChannelID;
     int requestID;
@@ -2659,7 +2664,7 @@ monitoring and to destroy monitor request (subscription): </p>
 <h3 id="protocolMessages:applicationMessages:channelArray">Channel array
 (0x0E)</h3>
 
-<p>A "channel array" set of messages are used to handle remote arrays. Requests
+<p>A "channel array" set of messages are used to handle remote array values. Requests
 allows you to: retrieve (get) and set (put) data from/to the array, and
 changing its length (number of valid elements in the array) and capacity. </p>
 <pre>struct channelArrayRequestInit {
