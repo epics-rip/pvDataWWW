@@ -14,7 +14,12 @@
      .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
      table { margin-left: auto; margin-right: auto }
      .diagram { text-align: center; margin: 2.5em 0 }
+p.ed.priv { display: inline }
+span.ed.priv { display: inline }
 /*]]>*/</style>
+<!-- p and span class "ed priv" is used to specify private editor class. Private -->
+<!-- editor class are not displayed when display: none. Turn them to visible with -->
+<!-- display: inline. -->
 </head>
 
 <body>
@@ -24,10 +29,11 @@
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
 <h2 class="nocount" id="L50">EPICS v4 Working Group, Editors Draft towards Second Public Working
-Draft, 13-Apr-2012</h2>
+Draft, 18-Apr-2012</h2>
 <dl>
   <dt>This version:</dt>
-    <dd>Greg's partially complete edit. Got up to Flow Control, 13-Apr-2012</dd>
+    <dd><a
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120418.html">pvAccess_Protocol_Specification_20120418.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -48,17 +54,17 @@ Draft, 13-Apr-2012</h2>
 
 <h2 class="nocount" id="abstract">Abstract</h2>
 
-<p>This document defines the EPICS V4 communication protocol called "pvAccess."
+<p>This document defines the EPICS Version 4 communication protocol called "pvAccess."
 pvAccess is a high-performance network communication protocol for signal
 monitoring and scientific data services interconnect. It is designed to support
-the structured data types of the EPICS V4 "shared memory" data exchange system
+the structured data types of the EPICS Version 4 "shared memory" data exchange system
 called pvData, for optimized interoperability of control system endpoints. It
 is a successor of EPICS Channel Access. </p>
 
 <p>The connection setup requirements and individual message constructs of pvAccess
 are described. It is intended that sufficient detail is given for a reader to create
 an interoperable pvAccess implementation. The protocol and a reference implementation
-are being created by the EPICS V4
+are being created by the EPICS Version 4
 Working Group. </p>
 
 <p>EPICS is a computer platform for building the control systems of large scientific
@@ -69,13 +75,13 @@ Control System. </a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 13 April 2012 version of the pvAccess Protocol Specification. This
-version is soley the 22 Feb 2012 version plus linguistic edits. 
+<p>This is the 18 April 2012 version of the pvAccess Protocol Specification. This
+version is solely the 22 Feb 2012 version plus linguistic edits. 
 This version includes material and revisions from the Invited Experts above.
 This version is an Editors Draft towards the Second Public Working Draft. The
 Second Public Working Draft will be intended for the EPICS community to review
 and comment. Resulting comments will drive subsequent revisions of the
-specification and the EPICS V4 Working Group's reference implementation.</p>
+specification and the EPICS Version 4 Working Group's reference implementation.</p>
 
 <p>The present implementation of pvAccess largely reflects the specification as
 written here. Another document will soon be written to track the status of the
@@ -219,7 +225,7 @@ a service oriented architecture. </p>
 
 <p>pvAccess is a successor of <a href="http://www.aps.anl.gov/epics/">EPICS</a>
 Channel Access <a class="bib" href="#bib:caref">bib:caref</a>. It is the standard
-protocol of <a href="http://epics-pvdata.sourceforge.net/">EPICS Version 4</a> when
+protocol of <a href="http://epics-pvdata.sourceforge.net/">EPICS Version 4</a> (V4) when
 both endpoints of a channel are EPICS V4 agents. pvAccess can also connect EPICS V3
 IOC Channel Access data to EPICS V4 user agents, using the EPICS V4 pvIOC module
 called <a
@@ -231,8 +237,8 @@ although discovery over TCP/IP is also allowed. The discovery mechanism allows
 the use of other implementations (e.g. UDP/IP for data transmission). The
 protocol itself supports IPv6, i.e. all addresses are IPv6 encoded. </p>
 
-<p>Port numbers 5075 (tcp connection port) and 5076 (udp broadcast port) are used by
-default (to be accepted by IANA). These default connection ports SHOULD be used if
+<p>Port numbers 5075 (tcp connection port, accepted by IANA) and 5076 (udp broadcast port) are used by
+default. These default connection ports SHOULD be used if
 free, otherwise a dynamically allocated port SHOULD be used as a fallback.  pvAccess
 implementations SHOULD allow alternative default connection
 ports to be configured.</p>
@@ -242,7 +248,7 @@ href="#bib:pvdatarefcpp">bib:pvdatarefcpp</a>,  <a class="bib"
 href="#bib:pvdatarefjava">bib:pvdatarefjava</a>. pvData is the control data interface
 of EPICS V4 endpoints, such as user agent software and EPICS V4 IOCs. Together with pvAccess, they
 support essentially a client-server shared memory system optimized for efficiency
-(optimial zero-copy etc) and control (PV locking, alarms etc). The protocol
+(optimal zero-copy etc) and control (PV locking, alarms etc). The protocol
 aims to send the minimum number of bits necessary to inform peers of changes in
 endpoint data values subject to performance considerations. That is, it
 combines CPU and wire data size considerations to optimize overall control
@@ -441,7 +447,7 @@ structure for its field.</p>
         int status 0x22222222
         string message Allo, Allo!</pre>
 
-<p>The above would be serialzied as illustrated below (when using big-endian byte order): </p>
+<p>The above would be serialized as illustrated below (when using big-endian byte order): </p>
 <pre>Hexdump [Serialized structure] size = 40
 03 01 02 03  11 22 33 44  55 66 77 88  AA BB CC DD  .... ."3D Ufw. .... 
 EE EE EE EE  11 11 11 11  22 22 22 22  0B 41 6C 6C  .... .... """" .All 
@@ -831,10 +837,9 @@ dependent and used for size encoding. </p>
 
 <p>For all other types, bits 3-0 MUST be '0b0000'. </p>
 
-<p>The Field Introspection description byte MUST be then followed by the Field
-instance name encoded as a string. Structure and structureArray types REQUIRE more
-description. A structure REQUIRES an array of Fields (size followed by one or more
-Field as described above). StructureArray REQUIRES an introspection data of a
+<p>Structure and structureArray types REQUIRE more description. A
+structure REQUIRES a named array of Fields - size followed by one or more (field name, FieldDesc) pairs.
+StructureArray REQUIRES an introspection data of a
 structure defining an array element type.</p>
 
 <table style="caption-side:bottom">
@@ -846,23 +851,22 @@ structure defining an array element type.</p>
       <th>Description</th>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0bxxx0xxxx</a> + name</td>
+      <td><a style="font-family:monospace">0bxxx0xxxx</a></td>
       <td style="font-weight:bold">scalar</td>
       <td>Scalar.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0bxxx1xxxx</a> + name</td>
+      <td><a style="font-family:monospace">0bxxx1xxxx</a></td>
       <td style="font-weight:bold">scalarArray</td>
       <td>Array of scalars.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b1000xxxx</a> + name + Field[]</td>
+      <td><a style="font-family:monospace">0b1000xxxx</a> + (field name, FieldDesc)[]</td>
       <td style="font-weight:bold">structure</td>
       <td>Structure.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b1001xxxx</a> + name + Field (type
-        of structure)</td>
+      <td><a style="font-family:monospace">0b1001xxxx</a> + structure FieldDesc</td>
       <td style="font-weight:bold">structureArray</td>
       <td>Array of structures.</td>
     </tr>
@@ -874,25 +878,24 @@ structure defining an array element type.</p>
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
 <pre>
-structure  timeStamp
+structure
     long secondsPastEpoch
     int nanoSeconds
     int userTag</pre>
 
 <p>The introspection description of the above structure is be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized timeStamp structure IF] size = 55
-FD 00 01 80  09 74 69 6D  65 53 74 61  6D 70 03 23  .... .tim eSta mp.# 
-10 73 65 63  6F 6E 64 73  50 61 73 74  45 70 6F 63  .sec onds Past Epoc 
-68 22 0B 6E  61 6E 6F 53  65 63 6F 6E  64 73 22 07  h".n anoS econ ds". 
-75 73 65 72  54 61 67                              user Tag</pre>
+<pre>Hexdump [Serialized structure IF] size = 45
+FD 00 01 80  03 10 73 65  63 6F 6E 64  73 50 61 73  .... ..se cond sPas 
+74 45 70 6F  63 68 23 0B  6E 61 6E 6F  53 65 63 6F  tEpo ch#. nano Seco 
+6E 64 73 22  07 75 73 65  72 54 61 67  22          nds" .use rTag "</pre>
 
 <h5 id="dataEncoding:example2">Example #2</h5>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
 <pre>
-structure  ExampleStructure
+structure
     byte[] value
     structure  timeStamp
         long secondsPastEpoch
@@ -905,15 +908,14 @@ structure  ExampleStructure
 
 <p>The introspection description of the above structure would be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized structure IF] size = 122
-FD 00 02 80  10 45 78 61  6D 70 6C 65  53 74 72 75  .... .Exa mple Stru 
-63 74 75 72  65 03 30 05  76 61 6C 75  65 FD 00 03  ctur e.0. valu e... 
-80 09 74 69  6D 65 53 74  61 6D 70 03  23 10 73 65  ..ti meSt amp. #.se 
-63 6F 6E 64  73 50 61 73  74 45 70 6F  63 68 22 0B  cond sPas tEpo ch". 
-6E 61 6E 6F  53 65 63 6F  6E 64 73 22  07 75 73 65  nano Seco nds" .use 
-72 54 61 67  FD 00 04 80  05 61 6C 61  72 6D 03 22  rTag .... .ala rm." 
-08 73 65 76  65 72 69 74  79 22 06 73  74 61 74 75  .sev erit y".s tatu 
-73 60 07 6D  65 73 73 61  67 65                    s`.m essa ge</pre>
+<pre>Hexdump [Serialized structure IF] size = 105
+FD 00 01 80  03 05 76 61  6C 75 65 30  09 74 69 6D  .... ..va lue0 .tim 
+65 53 74 61  6D 70 FD 00  01 80 03 10  73 65 63 6F  eSta mp.. .... seco 
+6E 64 73 50  61 73 74 45  70 6F 63 68  23 0B 6E 61  ndsP astE poch #.na 
+6E 6F 53 65  63 6F 6E 64  73 22 07 75  73 65 72 54  noSe cond s".u serT 
+61 67 22 05  61 6C 61 72  6D FD 00 02  80 03 08 73  ag". alar m... ...s 
+65 76 65 72  69 74 79 22  06 73 74 61  74 75 73 22  ever ity" .sta tus" 
+07 6D 65 73  73 61 67 65  60                       .mes sage `</pre>
 
 <h2 id="connectionManagement">Connection Management</h2>
 
@@ -942,7 +944,7 @@ it MAY delay connection destruction. </p>
 <p>Both parties MUST constantly monitor whether the connection is valid and not
 simply rely on TCP mechanisms. pvAccess achieves this by sending some small amount of
 data with a minimum period.  If there is no send operation otherwise called within a
-predetermined period of time (15 seconds), an echo message MUST be sent. In case of
+predetermined period of time (SHOULD be 15 seconds), an echo message MUST be sent. In case of
 connection failure, TCP will report connection loss on send. If there is no response
 in in predetermined period of time, the connection SHOULD be marked as
 unresponsive. Echo message MUST be periodically sent until response is received or
@@ -983,7 +985,7 @@ Channel State Diagram.</div>
 set to NEVER_CONNECTED state. This indicates that the channel is currently
 being connected for the first time. Connection proccess within the client MUST
 repetedly attempt to find a server hosting the channel by
-broadcasting/multicasting channel search requests. When a server response is
+broadcasting or multicasting channel search requests. When a server response is
 received, the client MUST connect to the server responding to the search
 request using the protocol and address data from the search request response. If
 a connection has been already established by the client, it MUST be reused. A client API
@@ -1038,79 +1040,102 @@ anymore. </p>
 
 <h2 id="flowControl">Flow Control</h2>
 
+<p>This section is <b>not</b> intended to be <a
+ href="http://epics-pvdata.sourceforge.net/charter.html#normative">normative</a>. It
+is given only to help developers write agents that implement pvAccess optimally with
+ respect to monitoring. This
+ section does 
+not describe the protocol itself.</p>
+
+<p>
+A pvAccess implementation SHOULD implement flow control such that each endpoint
+should try to send as much monitoring data as it can subject to an upper limit
+calculated with respect to the amount of the other party's free receive buffer
+size. Were this limit to be reached, monitors would start pilling up in the
+monitors' circular buffer queues. </p>
+
 <p style="font-style:italic;">Usually flow control algorithms wait for
 congestion to occur before they are triggered. They are causal. However, due to
 the isolated nature of TCP connection - there are always only two parties
 involved - it is possible to predict congestions using the following algorithm:
 </p>
 <ul style="font-style:italic;">
-  <li>both parties exchange their receive socket and local buffer sizes</li>
-  <li>periodically, i.e. every N bytes, they send a control message marking
-    total bytes sent to the other party</li>
-  <li>when the other party receives the control message it responds back with
+  <li>Both parties exchange their receive socket and local buffer sizes</li>
+  <li>Periodically, i.e. every N bytes, they send a control message marking the
+    total number of bytes sent to the other party</li>
+  <li>When the other party receives the control message it responds back with a
     complementary control message indicating the received marker value. This
     acknowledges the reception of total bytes sent</li>
-  <li>the difference between total bytes sent and last acknowledged marker
+  <li>The difference between total bytes sent and last acknowledged marker
     received tells how much other party receive buffers are full. This number
-    should never exceed the total sum of receive buffers.</li>
+    should never exceed the total sum of receive buffer sizes.</li>
 </ul>
 
 <p style="font-style:italic;">Flow control is needed only to optimize
-subscription messages back to the client (i.e. monitors), for other large
-messages TCP flow control is sufficient. <br />
+subscription messages back to the client (i.e. monitors). For other
+messages TCP flow control is sufficient. </p>
+<p style="font-style:italic;">
 A pvAccess implementation SHOULD implement flow control such that each endpoint
 should try to send as much monitoring data as it can subject to an upper limit
-calculated with respect to the amount of other party's free receive buffer
+calculated with respect to the amount of the other party's free receive buffer
 size. Were this limit to be reached, monitors would start pilling up in the
 monitors' circular buffer queues. </p>
 
 <h3 id="flowControlExample">Flow Control Example</h3>
 
 <p style="font-style:italic;">The intention of flow control is to avoid having
-the following behavior (pure TCP flow control): </p>
+the following behavior, which typically results from pure TCP flow control: </p>
 <ul style="font-style:italic;">
   <li>Let's assume the client's Rx buffers are full</li>
-  <li>The server is sending monitors until TCP detects client's Rx buffer is
+  <li>The server is sending monitors until TCP detects the client's Rx buffer is
     full</li>
-  <li>After some time the client's Rx buffer is immediately emptied (since we
-    do bulk reads from the socket - not message by message (because OS calls
-    are expensive))</li>
-  <li>Server starts sending monitors until all the buffers are full (sever will
-    fill all the buffers before client actually processed received
+  <li>After some time the client's Rx buffer is immediately emptied. This is a
+    consequence of the fact that 
+     bulk reads are made from the socket rather than reads message by message (because OS calls
+    are expensive)</li>
+  <li>Server starts sending monitors until all the buffers are full (the server will
+    fill all the buffers before the client actually processed received
   monitors!)</li>
 </ul>
 
-<p style="font-style:italic;">Such as situation as described above would result
-in monitors as below (identified by their sequential number): </p>
+<p style="font-style:italic;">Such situations as described above would result
+in monitors like the following (identified by their sequential number): </p>
 <pre>0 1 2 3 4 (buffers full) 7 8 9 10 11 12 (buffers full) 22 23 24 25 26 27 28 (buffers full)</pre>
 
 <p style="font-style:italic;">Flow control can make this better: </p>
-<pre>0 1 2 3 4 (buffers full) 7 8 (buffers full, but for a less time since server would send only as much as the client can handle) 10 11 (...) 14 15 (...) 18 19</pre>
+<pre>0 1 2 3 4 (buffers full) 7 8 (buffers still full, but for less time since the server would send only as much as the client can handle) 10 11 (...) 14 15 (...) 18 19</pre>
 
 <p style="font-style:italic;">The result is more fluid and up-to-date arrival
-of monitors (to overcome problem of having combination of slow processing and
-large buffers). </p>
+of monitors, which overcomes the combined problems of slow processing and
+large buffers. </p>
 
-<p style="font-style:italic;">Requiring a flow control (in addition to already
-existing monitor queues) adds complexity to the protocol implementation. It
-needs to be decided and evaluated if flow control SHOULD be implemented. </p>
+<p>Requiring flow control (in addition to already
+existing monitor queues) would add complexity to the protocol's implementation. It
+needs to be decided whether the above flow control should be specified as part of the
+normative specification, or only suggested non-normatively. At present, it is only suggested. </p>
 
 <h2 id="channelDiscovery">Channel Discovery</h2>
 
-<p>pvAccess uses broadcast/multicast channel discovery mechanism via UDP;
-search messages are usually sent to a broadcast addresses and servers hosting
+<p>pvAccess uses a broadcast/multicast channel discovery mechanism using UDP;
+search messages are usually sent to broadcast addresses and servers hosting
 searched channels respond with a message containing their server address and
-port.<br />
+port.
 In addition pvAccess transparently supports multicast, if an address is a
-multicast address the implementation SHOULD transparently handle it (join the
-multicast group in order to receive multicast messages).</p>
+multicast address the implementation SHOULD transparently handle it. That is, it
+should join the
+multicast group in order to receive multicast messages.</p>
 
-<p>To be specified: Proper UDP congestion control SHOULD be implemented to
-prevent flooding the network with UDP search messages. Currently a simple and
-robust algorithm is used in the reference implementation. The algorithm needs
-to be specified (or some more clever algorithm invented). </p>
+<p class="ed">To be specified: UDP congestion control should be
+added to the specification to prevent the possibility of flooding a network with UDP search messages. Currently a
+simple and robust algorithm is used in the reference implementation. The optimality
+of the algorithm should to be verified and added to this specification. </p>
 
 <h2 id="communicationExample">Communication Example</h2>
+
+<p>
+The following table illustrates messages sent between a client and a server where the client issues
+a get request on a channel.
+</p>
 
 <table style="caption-side:bottom">
   <caption style="font-weight:bold; padding:1em">Communication Example.</caption>
@@ -1211,15 +1236,20 @@ to be specified (or some more clever algorithm invented). </p>
 
 <p>The pvAccess protocol uses two protocol message types: </p>
 <ul>
-  <li>control messages (flow control, no payload)</li>
-  <li>application messages (requests and their responses).</li>
+  <li>Control messages. These include flow control and have no payload</li>
+  <li>Application messages. These are the requests and their responses.</li>
 </ul>
 
 <p>Each message consists of a message header and, optionally a message payload
-that immediately follows the header. Message MUST BE aligned on a 64-bit
+that immediately follows the header. Messages MUST BE aligned on a 64-bit
 boundary.</p>
 
-<h3 id="protocolMessages:messageHeader">Message header</h3>
+<p>Every implementation of the protocol which purports to support this specification version of the
+protocol, MUST also support all prior specification versions of the protocol. Every implementation
+of the protocol MUST clearly indicate the most recent specification version to which it is
+conformant, using the version URLs above.</p>
+
+<h3 id="protocolMessages:messageHeader">Message Header</h3>
 
 <p>Each protocol message has a fixed 8-byte header that MUST be encoded as if
 it were expressed by the following structure: </p>
@@ -1231,6 +1261,7 @@ it were expressed by the following structure: </p>
     int payloadSize;
 };</pre>
 
+<p>The semantics of these message header components are given in the following table.</p>
 <table style="caption-side:bottom">
   <caption style="font-weight:bold; padding:1em">pvAccess Header Members.</caption>
   <tbody>
@@ -1240,7 +1271,7 @@ it were expressed by the following structure: </p>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">magic</td>
-      <td>pvAccess protocol magic code, 0xCA.</td>
+      <td>pvAccess protocol magic code. This MUST always be valued 0xCA.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">version</td>
@@ -1261,7 +1292,7 @@ it were expressed by the following structure: </p>
   </tbody>
 </table>
 
-<p>All implementations MUST support all prior versions of the protocol.</p>
+
 
 <table style="caption-side:bottom">
   <caption style="font-weight:bold; padding:1em">pvAccess Header Flags Description.</caption>
@@ -1295,7 +1326,7 @@ it were expressed by the following structure: </p>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">10</td>
-      <td>Last messsage (of set of segmented messages).</td>
+      <td>Last message (of set of segmented messages).</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">11</td>
@@ -1321,11 +1352,12 @@ it were expressed by the following structure: </p>
 application message than the segmented message of the same set. Control
 messages are allowed to be in-between. </p>
 <p>
-Alignment offset MUST be preserved between segmented messages, i.e. if a last
-sent byte of a segmented message is misaligned by 6 bytes to 64-bit aligned 
-start of the message reference point then the next segmented message needs to insert
+Alignment offset MUST be preserved between segmented messages, i.e. if the last
+sent byte of a segmented message is misaligned by 6 bytes to the 64-bit aligned 
+start of the message reference point, then the next segmented message needs to insert
 6 padding bytes at the start of the next segmented message payload.
 </p>
+
 
 <h2 id="protocolMessages:applicationMessages">Application Messages</h2>
 
@@ -1333,21 +1365,33 @@ start of the message reference point then the next segmented message needs to in
 subsection describes a single message command
 (<i>pvAccessHeader.messageCommand</i>). </p>
 
-<p>"request" means a message sent by a client, and "response" means it is sent
-by the server.</p>
+<p>"request" means a message sent by a client, and "response" means a message sent
+by a server. <span class="ed priv"> Is this specifically in response to the client request? If so,
+as written "response" does not say that!</span></p>
 
-<p>In order to understand specific application messages it is strongly
-recommended to be familiar with the <a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html">pvAccess
-client interface</a>.</p>
+<p>In order to understand specific application messages it is helpful to be familiar
+with the EPICS V4 <a
+ href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html">pvAccess</a>
+Programmers Reference.</p>
 
-<p>All application message MUST be send over the data transmission transport -
-TCP/IP in reference implementation - unless explicitly specified. A response
-message MUST be sent over the same transport the request was received.</p>
+<p>Most application messages below relate to the management of process variable channels.
+A process variable, or PV, is a dynamical quantity and its
+associated local processing semantics, as understood by process control
+systems. pvAccess has been designed to specifically integrate with process control
+systems, particularly EPICS V4, to provide an efficient interconnect for systems
+involved in the exchange of PV related information. Agent systems connect to a
+process control computer (via pvAccess) hosting PVs, by opening a "Channel" to each
+PV of interest. A channel is the temporal connection between 
+pvAccess agents, with respect to one process variable. </p>
+
+<p>All application message MUST be sent over the data transmission transport unless
+explicitly specified. TCP/IP is the transport
+in the reference implementation. A response message MUST
+be sent over the same transport as that on which the request was received.</p>
 
 <h3 id="protocolMessages:applicationMessages:beacon">Beacon (0x00)</h3>
 
-<p>Servers MUST broadcast/multicast beacons over UDP. Beacons are be used to
+<p>Servers MUST broadcast or multicast beacons over UDP. Beacons are be used to
 announce new servers and server restarts. </p>
 <pre>struct beaconMessage {
     short beaconSequenceId;
@@ -1404,18 +1448,20 @@ announce new servers and server restarts. </p>
   </tbody>
 </table>
 
-<p>When each server is started it MUST start emitting beacons. Clients MUST monitor
-all the beacons. A beacon received from an as yet unknown serverAdddressIPv6:serverPort means
-new server has come online. A beacon with the same
-serverAdddressIPv6:serverPort address as one already received but different
-startupTime{Seconds,Nanos} means that a server was restarted. In both cases
-client SHOULD boost searching of not yet found channels. Client MAY disconnect
-old connection or wait until connection loss is detected (on failed Echo
+<p>When a pvAccess server is started it MUST start emitting beacons. Clients MUST monitor
+all beacons. A beacon received from an as yet unknown serverAddressIPv6 serverPort
+MUST be interpreted as indicating that
+a new server has come online. A beacon with the same
+serverAdddressIPv6:serverPort address as one already received but has different
+startupTime{Seconds,Nanos}, MUST be interpreted as indicating that the server was
+restarted. In both cases a
+client SHOULD boost searching of not yet found channels. A client MAY disconnect
+old connections or wait until connection loss is detected (on failed Echo
 message send). </p>
 
-<p>Each server implementation SHOULD emit its own beacons, e.g. if a server is
-supporting data transmission over TCP/IP and UDP/IP there SHOULD both emit
-beacons. If the implementations are tightly coupled, i.e. they have the same
+<p>Each server transport instance SHOULD emit its own beacons. For example, if a server is
+supporting data transmission over TCP/IP and UDP/IP then these SHOULD both emit
+beacons. If the instances are tightly coupled, i.e. they have the same
 lifecycle and share the same channels, then only one server MAY emit beacons.
 </p>
 
@@ -1423,9 +1469,9 @@ lifecycle and share the same channels, then only one server MAY emit beacons.
 other suitable time source before sending their first beacon.</p>
 
 <p>Due to the fact that UDP does not guarantee delivery, a server MUST send
-several beacons to notify that it is alive (15 beacons with 1Hz period). After
-longer period it MAY stop sending them, however it is recommended that is
-SHOULD do it with a low rate (one beacon per minute) to report
+several beacons to notify that it is alive (e.g. 15 beacons with 1Hz period). After a
+longer period it MAY stop sending them, however it is recommended that it
+SHOULD continue merely with a low rate (e.g. one beacon per minute) to report
 serverStatus.</p>
 
 <p>Beacons SHOULD not used to report connection-valid status. </p>
@@ -1435,7 +1481,7 @@ validation (0x01)</h3>
 
 <p>A "connection validation" message MUST be first application message sent
 from the server to a client when a TCP/IP connection is established. The
-message indicates that the server is ready to receive requests; the client MUST
+message indicates that the server is ready to receive requests. The client MUST
 NOT send any messages on the connection until it has received a connection
 validation message from the server. </p>
 
@@ -1453,7 +1499,11 @@ validation message from the server. </p>
 
 <p>The connection validation message guarantees that a server is not in the
 middle of shutting down when the server's TCP/IP stack accepts an incoming
-connection and so avoids the race condition. </p>
+connection, and so avoids the race condition. </p>
+
+<p>The connection validation request and connection validation response messages are
+defined as follows:</p>
+
 <pre>struct connectionValidationRequest {
     int serverReceiveBufferSize;
     int serverReceiveSocketBufferSize;
@@ -1560,17 +1610,20 @@ struct connectionValidationResponse {
   </tbody>
 </table>
 
-<p>Each QoS parameter value REQUIRES a separate TCP/IP connection. If the
-Low-latency priority bit is set, then the client should minimize latency; if
-the Throughput priority bit is set, the client should maximize throughput. How
-this is achieved depends on specific implementation. Compression bit enables
-compression for the connection (TBD: fast and streaming mode algorithm to be
-used). </p>
+<p>Each Quality of Service (QoS) parameter value REQUIRES a separate TCP/IP connection. If the
+Low-latency priority bit is set, this indicates clients should attempt to minimize
+latency if they have the capacity to do so. If
+the Throughput priority bit is set, this indicates a client similarly should attempt
+to maximize throughput. How
+this is achieved is implementation defined. The Compression bit enables
+compression for the connection <span class="ed priv">Which compression? From
+which support layer</span>. A matter for a future version of the specification should
+be whether a streaming mode algorithm should be specified. </p>
 
 <h3 id="protocolMessages:applicationMessages:echo">Echo (0x02)</h3>
 
 <p>An Echo diagnostic message is usually sent to check if TCP/IP connection is
-still valid. It can also be broadcasted over UDP/IP to get list of all servers
+still valid. It can also be broadcast over UDP/IP to get list of all servers
 in the subnet (note that UDP does not guarantee delivery). </p>
 <pre>struct echoRequest {
     byte[] somePayload;
@@ -1613,7 +1666,7 @@ struct echoResponse {
 (0x03)</h3>
 
 <p>A channel "search request" message SHOULD be sent over UDP/IP, however UDP
-congestion control SHOULD be implemented in this case. Server MUST accept this
+congestion control SHOULD be implemented in this case. A server MUST accept this
 message also over TCP/IP. </p>
 <pre>        
 struct searchRequest {
@@ -1707,15 +1760,19 @@ below. </p>
   </tbody>
 </table>
 
-<p>Client MUST examine the protocol member field to verify it supports exchange
+<p>A client MUST examine the protocol member field to verify it supports the given exchange
 protocol; if not, the search response is ignored. </p>
 
 <h3 id="protocolMessages:applicationMessages:createChannel">Create channel
 (0x07)</h3>
 
 <p>A channel provides a communication path beween a client and a server hosted
-process variable. A "create channel" message is sent to a server to create a
-channel. Each channel instance MUST be bound only to one connection. </p>
+"process variable." </p>
+
+<p>Each channel instance MUST be bound only to one
+connection.
+</p>
+
 <pre>struct createChannelRequest {
     struct {
         int clientChannelID;
@@ -1780,15 +1837,15 @@ struct createChannelResponse {
 <p>NOTE: A server MUST store the clientChannelID and respond back with its
 value in a destroyChannelMessage when channel destroy request is requested, see
 below. A client uses the serverChannelID value for all subsequent requests on
-the channel. Code MUST NOT make any assumptions/checks about how given IDs are
-generated. IDs MUST be unique within a connection and MAY be recycled once
+the channel. Agents SHOULD NOT make any assumptions about how given IDs are
+generated. IDs MUST be unique within a connection and MAY be recycled after a
 channel is disconnected.</p>
 
 <h3 id="protocolMessages:applicationMessages:destroyChannel">Destroy channel
 (0x08)</h3>
 
 <p>A "destroy channel" message is sent to a server to destroy a channel that
-was previously created with create channel message. </p>
+was previously created (with a create channel message). </p>
 <pre>struct destroyChannelRequest {
     struct {
         int clientChannelID;
@@ -1844,13 +1901,15 @@ struct destroyChannelResponse {
   </tbody>
 </table>
 
-<p>Server MAY break response message to several messages. If (clientChannelID,
-serverChannelID) pair does not match, server MUST respond with an error status.
+<p>If the request (clientChannelID,
+serverChannelID) pair does not match, the server MUST respond with an error
+status. The server MAY break its response into several messages. 
 </p>
 
 <p>NOTE: A server MUST send this message to a client to notify the client about
-server-side initiated channel destruction. Subsequently, a client MUST mark
-channel as disconnected and start sending search request messages for the
+server-side initiated channel destruction. Subsequently, a client MUST mark such
+channels as disconnected. If the client's interest in the process variable continues,
+it MUST start sending search request messages for the
 channel.<br />
 </p>
 
@@ -1929,7 +1988,7 @@ struct channelGetResponseInit {
   </tbody>
 </table>
 
-<p>After get request is successfully initialized, client can issue actual get
+<p>After a get request is successfully initialized, the client can issue actual get
 request(s). </p>
 <pre>struct channelGetRequest {
     int serverChannelID;
@@ -1997,8 +2056,8 @@ struct channelGetResponse {
   </tbody>
 </table>
 
-<p>NOTE: if DESTROY mask is applied, server MUST destroy request after get
-response and client MUST do the same after it receives the response. </p>
+<p>NOTE: if the DESTROY mask is applied, the server MUST destroy request after get
+response and the client MUST do the same after it receives the response. </p>
 
 <h3 id="protocolMessages:applicationMessages:channelPut">Channel put (0x0B)</h3>
 
@@ -2075,8 +2134,8 @@ struct channelPutResponseInit {
   </tbody>
 </table>
 
-<p>After put request is successfully initialized, client can issue actual put
-request(s). </p>
+<p>After a put request is successfully initialized, the client can issue actual put
+request(s) on the channel. </p>
 <pre>struct channelPutRequest {
     int serverChannelID;
     int requestID;
@@ -2143,8 +2202,8 @@ struct channelPutResponse {
   </tbody>
 </table>
 
-<p>A "get-put" request retrieves remote put structure. This MAY be used by user
-applications to show data that were set last time. </p>
+<p>A "get-put" request retrieves the remote put structure. This MAY be used by user
+applications to show data that were set last time by the application. </p>
 <pre>struct channelGetPutRequest {
     int serverChannelID;
     int requestID;
@@ -2210,8 +2269,9 @@ struct channelGetPutResponse {
 (0x0C)</h3>
 
 <p>A "channel put-get" set of messages are used to set (put) data to the
-channel and then immediately retrieve data from the channel. Channel is usually
-processed between put and get. </p>
+channel and then immediately retrieve data from the channel. Channels are usually
+"processed" or "updated" by their host between put and get, so that the get reflects
+changes in the process variable's state. </p>
 <pre>struct channelPutGetRequestInit {
     int serverChannelID;
     int requestID;
@@ -2288,8 +2348,8 @@ struct channelPutGetResponseInit {
   </tbody>
 </table>
 
-<p>After put-get request is successfully initialized, client can issue actual
-put-get request(s). </p>
+<p>After a put-get request is successfully initialized, the client can issue actual
+put-get request(s) on the channel. </p>
 <pre>struct channelPutGetRequest {
     int serverChannelID;
     int requestID;
@@ -2361,8 +2421,8 @@ struct channelPutGetResponse {
   </tbody>
 </table>
 
-<p>A "get-put" request retrieves remote put structure. This MAY be used by user
-applications to show data that were set last time. </p>
+<p>A "get-put" request retrieves the remote put structure. This MAY be used by user
+applications to show data that were set last time by the application. </p>
 <pre>struct channelGetPutRequest {
     int serverChannelID;
     int requestID;
@@ -2490,8 +2550,10 @@ struct channelGetGetResponse {
 <h3 id="protocolMessages:applicationMessages:channelMonitor">Channel monitor
 (0x0D)</h3>
 
-<p>A "channel monitor" set of messages are used to monitor data of the channel
-using subscribe mechanism. </p>
+<p>The "channel monitor" set of messages are used to by client agents to indicate
+that they wish to be asynchronously informed of changes in the state or values of the
+process variable of a
+channel. The subscribe mechanism is employed. </p>
 <pre>struct channelMonitorRequestInit {
     int serverChannelID;
     int requestID;
@@ -2563,13 +2625,14 @@ struct channelMonitorResponseInit {
   </tbody>
 </table>
 
-<p>pvRequest structure SHOULD be used to specify monitor queue size and
-algorithm (all implementation specific). </p>
+<p>The pvRequest structure SHOULD be used to specify monitor queue size and
+algorithm. How it may be used for those functions is not defined by pvAccess,
+and so would be implementation defined. </p>
 
-<p>After monitor request is successfully initialized, client can issue actual
+<p>After monitor request is successfully initialized, the client can issue actual
 monitor request(s). </p>
 
-<p>The following messages MUST be used to start (resume), stop (suspend)
+<p>The following messages MUST be used to start (resume) or stop (suspend)
 monitoring and to destroy monitor request (subscription): </p>
 <pre>struct channelStartMonitorRequest {
     int serverChannelID;
@@ -2609,7 +2672,7 @@ monitoring and to destroy monitor request (subscription): </p>
   </tbody>
 </table>
 
-<p>There is response for requests above. </p>
+<p>The response for monitor requests above has the following form: </p>
 <pre>struct channelMonitorResponse {
     int requestID;
     byte subcommand = 0x00;
@@ -2659,9 +2722,9 @@ monitoring and to destroy monitor request (subscription): </p>
 <h3 id="protocolMessages:applicationMessages:channelArray">Channel array
 (0x0E)</h3>
 
-<p>A "channel array" set of messages are used to handle remote arrays. Requests
-allows you to: retrieve (get) and set (put) data from/to the array, and
-changing its length (number of valid elements in the array) and capacity. </p>
+<p>A "channel array" set of messages are used to handle remote array values. Requests
+allow a client agent to: retrieve (get) and set (put) data from/to the array, and
+to change the array's length (number of valid elements in the array) and capacity. </p>
 <pre>struct channelArrayRequestInit {
     int serverChannelID;
     int requestID;
@@ -2733,7 +2796,7 @@ struct channelArrayResponseInit {
   </tbody>
 </table>
 
-<p>After array request is successfully initialized, client can issue actual
+<p>After an array request is successfully initialized, the client can issue actual
 array request(s). </p>
 <pre>struct channelGetArrayRequest {
     int serverChannelID;
@@ -2971,7 +3034,9 @@ struct destroyRequest {
 <h3 id="protocolMessages:applicationMessages:channelProcess">Channel process
 (0x10)</h3>
 
-<p>A "channel process" set of messages are used to trigger channel to process.
+<p>A "channel process" set of messages are used to indicate to the server that the
+computation actions associated with a 
+channel should be executed. That is in the language of EPICS, the channel should be "processed".
 </p>
 <pre>struct channelProcessRequestInit {
     int serverChannelID;
@@ -3039,8 +3104,9 @@ struct channelProcessResponseInit {
   </tbody>
 </table>
 
-<p>After process request is successfully initialized, client can issue actual
+<p>After a process request is successfully initialized, the client can issue actual
 process request(s). </p>
+
 <pre>struct channelProcessRequest {
     int serverChannelID;
     int requestID;
@@ -3100,9 +3166,9 @@ struct channelProcessResponse {
 <h3 id="protocolMessages:applicationMessages:channelGetField">Get channel type
 introspection data (0x11)</h3>
 
-<p>A "get channel type introspection data" messages is used to retrieve channel
-type introspection data, i.e. description of all channel fields and their
-types. </p>
+<p>A "get channel type introspection data" messages is used to retrieve a channel's
+type introspection data, i.e. a description of all the channel's fields and their
+data types. </p>
 <pre>struct channelGetFieldRequest {
     int serverChannelID;
     int requestID;
@@ -3163,8 +3229,8 @@ struct channelGetFieldResponse {
 
 <h3 id="protocolMessages:applicationMessages:message">Message (0x12)</h3>
 
-<p>A "message" message is used by a server to provide a client human readable
-messages regarding a specific request. This message MUST NOT be used to report
+<p>A "message" message is used by a server to provide to a client human readable
+text regarding the status of a specific request. This message MUST NOT be used to report
 request completion status. </p>
 <pre>struct message {
     int requestID;
@@ -3196,7 +3262,7 @@ request completion status. </p>
 
 <h3 id="protocolMessages:applicationMessages:channelRPC">Channel RPC (0x14)</h3>
 
-<p>A "channel RPC" set of messages are used to provide remote procedure call
+<p>The "channel RPC" set of messages are used to provide remote procedure call
 (RPC) support over pvAccess. </p>
 <pre>struct channelRPCRequestInit {
     int serverChannelID;
@@ -3264,7 +3330,7 @@ struct channelRPCResponseInit {
   </tbody>
 </table>
 
-<p>After RPC request is successfully initialized, client can issue actual RPC
+<p>After a RPC request is successfully initialized, the client can issue actual RPC
 request(s). </p>
 <pre>struct channelRPCRequest {
     int serverChannelID;
@@ -3348,28 +3414,30 @@ struct channelRPCResponse {
 subsection describes a single message command
 (<i>pvAccessHeader.messageCommand</i>). </p>
 
-<p>Control messages are messages without payload and are used internally by the
-procotol, e.g. to handle byte order, flow control. Payload size field contains
-control message specific value. </p>
+<p>Control messages have no payload and are used internally by the
+protocol, for instance to handle byte order management and flow control.</p>
+
+<p>The payload size field contains
+control message specific values. </p>
 
 <h3 id="protocolMessages:controlMessages:mark">Mark Total Byte Sent (0x00)</h3>
 
-<p>Payload size field holds the value of total bytes sent. Client should
+<p>Payload size field holds the value of total bytes sent. The client should
 respond with acknowledgment control message (0x01) as soon as possible. </p>
 
 <h3 id="protocolMessages:controlMessages:ackMark">Acknowledge Total Bytes
 Received (0x01)</h3>
 
-<p>Payload size field holds the acknowledge value of total bytes received (must
-match previously received marked value). </p>
+<p>Payload size field holds the acknowledge value of total bytes received. This must
+match the previously received marked value as described above. </p>
 
 <h3 id="protocolMessages:controlMessages:endianess">Set byte order (0x02)</h3>
 
-<p>7-th bit of header flags field indicates server's selected byte order for
-the connection via this message was received. <br />
+<p>The 7-th bit of a header flags field indicates the server's selected byte order for
+the connection on which this message was received.
 Client MUST encode all the messages sent via this connection using this byte
 order. <br />
-Client decoding byte order depends on payload size field value: </p>
+The client's decoding byte order depends on payload size field value as follows: </p>
 
 <table style="caption-side:bottom">
   <caption style="font-weight:bold; padding:1em">Client Decoding</caption>
@@ -3395,7 +3463,7 @@ Client decoding byte order depends on payload size field value: </p>
 established. For connection-less protocols this message is not sent and byte
 order is determined per message using its byte order flag. </p>
 
-<p>NOTE: this message is byte order independed. </p>
+<p>NOTE: this message is byte order independent. </p>
 
 <h3 id="protocolMessages:controlMessages:echoRequest">Echo request (0x03)</h3>
 
