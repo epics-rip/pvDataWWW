@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  <title>Proposal for implementation of unsigned integers</title>
+  <title>Proposed Changes to pvData and pvAccess</title>
   <link rel="stylesheet" type="text/css"
   href="http://epics-pvdata.sourceforge.net/base.css" />
   <link rel="stylesheet" type="text/css"
@@ -19,9 +19,24 @@
 </head>
 
 <body>
-<h1>Proposal for implementation of unsigned integers 10-Feb-2012</h1>
+<h1>Proposed Changes to pvData and pvAccess</h1>
+<p>This documenent discusses proposed changes to PVData.
+These changes also require changes to pvAccess and to the
+the pvAccess network protocol.</p>
+<dl>
+   <dt>unsigned integer</dt>
+      <dd>Unsigned integers will be supported.</dd>
+   <dt>Field</dt>
+      <dd>For introspection Field will no longer have a name.
+      Instead Structure will provide the name for each subfield.</dd>
+   <dt>shared pointer</dt>
+      <dd>In the C++ implementation pvData subfields of a top level structure
+     are exposed via raw pointers. This will be changed to expose then as shared pointers</dd>
+<dl>
 
-<h2>Introduction</h2>
+<h2>Proposal for implementation of unsigned integers 10-Feb-2012</h2>
+
+<h3>Introduction</h3>
 
 <p>The following are the changes required in pvData to support unsigned
 integers.</p>
@@ -49,7 +64,7 @@ than 2 gigaElements.</p>
 <p>pvAccess will also have to be changed to support unsigned. The protocol
 specification already allows lengths greater than 2 gigaElements.</p>
 
-<h2>Examples</h2>
+<h3>Examples</h3>
 
 <p>For C++ clients the use of the unsigned classes should be obvious because
 unsigned is fully supported. A Java client, because Java does not support
@@ -57,7 +72,7 @@ unsigned, must take care when using the unsigned interfaces. The following
 gives an example for an unsigned scalar, an unsigned array, and usage of the
 Convert facility. </p>
 
-<h3>Unsigned PVScalar</h3>
+<h4>Unsigned PVScalar</h4>
 
 <p>When a client uses one of the unsigned data interfaces, the client must be
 aware that get returns a signed not an unsigned type. For put the user must be
@@ -76,7 +91,7 @@ aware that the implementation performs no checks for unsigned.</p>
         short uxxx = pvValue.getWider();
     }</pre>
 
-<h3>Unsigned PVArray</h3>
+<h4>Unsigned PVArray</h4>
 
 <p>When a client uses one of the unsigned data interfaces, the client must be
 aware that get is returning a signed not an unsigned type. For put the user
@@ -91,7 +106,7 @@ For example:</p>
     short[] uvalue = mew Short[pvValue.getLength()];
     num = pvValue.get(0,len,uvalue,0);</pre>
 
-<h3>New Convert Features</h3>
+<h4>New Convert Features</h4>
 
 <p>The Convert Facliity has methods to handle unsigned. Any methods that
 internally performs a widening operation implements the proper semantics. For
@@ -105,7 +120,7 @@ example:</p>
 <p>If the PVField is a wider type: pvShort,
 pvUShort,pvInt,pvUUnt,pvLong,pvULONG then the upper bits are set to 0</p>
 
-<h2>PVData Meta Language</h2>
+<h3>PVData Meta Language</h3>
 
 <p>The following:</p>
 <dl>
@@ -197,9 +212,9 @@ pvUShort,pvInt,pvUUnt,pvLong,pvULONG then the upper bits are set to 0</p>
     </dd>
 </dl>
 
-<h2>Interface Definitions</h2>
+<h3>Interface Definitions</h3>
 
-<h3>Types</h3>
+<h4>Types</h4>
 
 <p>The following:</p>
 <pre>enum ScalarType {
@@ -272,11 +287,11 @@ typedef uint16 * UShortArray;
 typedef uint32 * UIntArray;
 typedef uint64 * ULongArray;</pre>
 
-<h3>Introspection Interfaces</h3>
+<h4>Introspection Interfaces</h4>
 
 <p>No changes.</p>
 
-<h3>Data Interfaces</h3>
+<h4>Data Interfaces</h4>
 
 <p>The following:</p>
 
@@ -289,7 +304,7 @@ PVShort, PVInt, PVLong, PVFloat, PVDouble, and PVString.</p>
 PVShort, PVInt, PVLong, PVUByte, PVUShort, PVUInt, PNULong, PVFloat, PVDouble,
 and PVString. </p>
 
-<h4>Java</h4>
+<h5>Java</h5>/
 
 <p>For Java the get and put methods will have the same definition for the
 unsigned type as for the signed type.</p>
@@ -323,7 +338,7 @@ public interface PVULongArray extends PVScalarArray{
      int get(int offset, int length, BigInteger[] dest, int toOffset);   
 }</pre>
 
-<h4>C++</h4>
+<h5>C++</h5>/
 
 <p>PVByte is:</p>
 <pre>class PVByte: public PVScalar {
@@ -331,11 +346,11 @@ public interface PVULongArray extends PVScalarArray{
    virtual void put(uint8 value) = 0;
 }</pre>
 
-<h3>Introspection and Data creation</h3>
+<h4>Introspection and Data creation</h4>
 
 <p>No changes.</p>
 
-<h3>pvData Conversion</h3>
+<h4>pvData Conversion</h4>
 
 <p>pvData provides a conversion utility that is defined in Java by <b>interface
 Convert</b> and in C++ by <b>class Convert</b></p>
@@ -404,7 +419,7 @@ widening operation is required the code will do the "correct" conversion, i.e.
 if an unsigned integer is converted to a wider integer (signed or unsigned)
 type high order bits will be made 0.</p>
 
-<h2>size_t instead of int for length and size</h2>
+<h3>size_t instead of int for length and size</h3>
 
 <p>Since it has already been decided that we give up on complete compatibility
 between Java an C++ there will be one additional change while implementing
@@ -417,5 +432,85 @@ arrays &gt; 2 giga elements than the array can not be shared with a Java client
 or with a 32 bit C++ client.</p>
 
 <p>Note that the pvAccess network specification already supports this.</p>
+
+<h2>Move name from Field to Structure</h2>
+<p>Currently Field and Structure are defined as follows:</p>
+<pre>
+public interface Field {
+     String getFieldName();
+     Type getType();
+     void toString(StringBuilder buf);
+     void toString(StringBuilder buf,int indentLevel);
+     String toString();
+}
+public interface Structure extends Field{
+     Field getField(String fieldName);
+     int getFieldIndex(String fieldName);
+     Field[] getFields();
+}
+</pre>
+<p>These will be changed to:</p>
+<pre>
+public interface Field {
+     Type getType();
+     void toString(StringBuilder buf);
+     void toString(StringBuilder buf,int indentLevel);
+     String toString();
+}
+public interface Structure extends Field{
+     Field getField(String fieldName);
+     int getFieldIndex(String fieldName);
+     Field[] getFields();
+     String getFieldName(int fieldIndex);
+     String[] getFieldNames();
+}
+</pre>
+<p>There will also be some changes to FieldCreate and maybe to PVDataCreate.</p>
+<p>To get some idea of how many code changes are required to make this
+change I looked for calls to getFieldName in the src tree for pvDataJava, 
+pvAccessJava, and pvIOCJava and found:</p>
+<pre>
+    pvDataJava/src 39 calls
+    pvAccessJava/src 4 calls
+    pvIOCJava/src  43 calls.
+</pre>
+<p>
+I looked at a few instances and see only minor changes in the code.
+Thus it looks like it will not be a major effort to implement the above 
+change.
+</p>
+
+<h2>Expose subfield via shared rather than raw pointers</h2>
+<p>The following only applies to the C++ implementation of pvData since the
+Java memory management system solves the problem automatically.</p>
+<p>pvDataCPP exposes data interfaces via raw pointers rather than shared pointers.
+Thanks to Matej, with help from Michael Davidsaver, pvAccess exposes all top level
+PVStructures via shared pointers (std::tr1::shared_ptr).</p>
+<p>Again thanks to Michael Davidsaver the introspection interfaces expose most
+subfield information via shared pointers. And exception is where it needs arrays.
+For example:</p>
+<pre>
+    typedef std::tr1::shared_ptr&lt;const Field&gt; FieldConstPtr;
+    typedef FieldConstPtr * FieldConstPtrArray;
+</pre>
+<p>This can lead to major problems unless code that uses pvData is carefully written.
+One particularly bad example example is data arrays. As an example consider PVDoubleArray.
+Code can get the raw data array as follows:</p>
+<pre>
+    DoubleArrayData data;
+    double *xxx = 0;
+    pvDoubleArray-&gt;get(0,len,&amp;data);
+    xxx = data.data;
+</pre>
+<p>Assume the code saves the value of xxx and uses it a later time.
+What xxx has is the address of the raw data array.
+Now assume some other code changes the capacity of the pvDoubleArray.
+When the capacity is modified a new raw data array is created and the original array
+is deleted. This the code shown above now has the address of memory that has been deleted.
+Not good.</p>
+<p>pvDataCPP will change both introspection and data so the everything is exposed
+via shared rather than raw pointers.</p>
+<p>It should be noted that this is a major change to pvDataCPP and to all
+code that uses it.</p>
 </body>
 </html>

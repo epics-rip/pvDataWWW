@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Normative Types</title>
+  <link rel="stylesheet" type="text/css"
+  href="../../base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="../../epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+/*]]>*/</style>
+</head>
+
+<body>
+
+<div class="head">
+<h1>EPICS V4 Normative Types</h1>
+
+<h2 class="nocount">EPICS V4 Normative Types, Editors' Draft, 2-Mar-2012</h2>
+<dl>
+  <dt>Latest version:</dt>
+    <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
+  <dt>This version:</dt>
+    <dd><a href="normativeTypes_2012030.html">normativeTypes_20120302.html</a></dd>
+  <dt>Previous version:</dt>
+    <dd><a
+      href="normativeTypes_20120120.html">normativeTypes_20120120.html</a></dd>
+  <dt>Editors:</dt>
+    <dd>Greg White, SLAC, PSI</dd>
+    <dd>Bob Dalesio, BNL</dd>
+    <dd>James Rowland, Diamond</dd>
+    <dd>Marty Kraimer, BNL</dd>
+</dl>
+
+
+<h2 >Specific Normative Types</h2>
+
+<h3>NTNameValue</h3
+<p>The definition of the first two fields should be changed from</p>
+<pre>
+structure NTNameValue
+   string            name
+   <span class="nterm">scalar_t[]</span>        value   <span class="opt">
+</pre>
+<p>To:</p>
+<pre>
+structure NTNameValue
+   string[]          name
+   <span class="nterm">scalar_t[]</span>        value   <span class="opt">
+</pre>
+
+
+<h3>NT3dTable</h3>
+
+<p>NT3dTable is the EPICS V4 Normative Type for "2-d" tabular datasets.
+An Nt3dTable is like a NTTable except that a row,column element can be a structure of scalar arrays instead of a scalar.
+</p>
+
+<p>An NT3dTable is made up of a number of arrays, each array being of a scalar or structure type. Each array
+can be thought of as a column. Each <em>i</em>th array member makes up one row, or n-tuple.
+If it is structure then the structure is turn holds a set of scalar array fields.
+</p>
+
+<p>Use case examples: A set of V3 channels where each V3 channel can have a different V3 scalar or array data type.
+See the masarService for an example.
+</p>
+<p>The definition of a structure for a row,column that is a structure must be of the form:</p>
+<pre>
+structure ntArrayElement
+  {<span class="nterm">scalar_t</span>[] <span class="user">scalar_tValue</span>}<sub>0+</sub>    // 0 or more scalar array type instances
+</pre>
+<p>where:</p>
+<p>Each field is scalar_t array. In a particular instance any array can have zero length but all arrays that do not have zero length
+must have the same length.
+An example is:</p>
+<pre>
+structure arrayValue
+    string[] stringValue
+    double[] doubleValue
+    int[]    intValue
+</pre>
+<p>Some example instances are:</p>
+<pre>
+structure arrayValue
+    string[] stringValue []   
+    double[] doubleValue [1.0,2.0,3.0]   
+    int[]    intValue    [] 
+
+struvcture arrayValue
+    string[] stringValue ["xxx","a string","another string","yyy"]
+    double[] doubleValue []
+    int[]    intValue    [] 
+</pre>
+<p>The definition of NT3dTable is:</p>
+<pre>
+structure NT3dTable
+  string[]    labels          // Very short text describing each field below, i.e. column labels
+  boolean[]   isArray;        // Specifies if the row,column is a scalar or an array of scalars
+  {<span class="nterm">scalar_t</span>[] <span class="user">colname</span>}<sub>0+</sub>    // 0 or more scalar array type instances, the scalar array columns.
+  {<span class="nterm">arrayValue_t</span>[] <span class="user">colname</span>}<sub>0+</sub>    // 0 or more arrayValue array type instances, the structure array columns
+  string      descriptor    : opt
+</pre>
+
+<p>where:</p>
+<dl>
+  <dt>labels</dt>
+    <dd>The table column headings of each column, each heading given as one element
+      of the array of strings. The order of labels matches the order of the
+      <span class="nterm">scalar_t</span>[]  and <span class="nterm">arrayValue_t</span>[] data.
+    </dd>
+  <dt>isArray</dt>
+    <dd>Determines if the data for the corresponding row is a scalar or an array.</dd>
+</dl>
+
+<h4>Interpretation</h4>
+
+<p>This represents a  three dimensional table. It is like an NTTable except that each
+column can optionaly hold an array of structures where the structure is a set of scalar array fields.</p>
+
+
+</body>
+</html>

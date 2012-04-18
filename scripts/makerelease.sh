@@ -1,6 +1,6 @@
 #!/bin/bash
 USER=jrowlandls
-TAG=marchtest
+TAG=1.0.1-BETA
 OUT="EPICSv4-$TAG"
 TARFILE="$OUT.tar.gz"
 mkdir -p $OUT
