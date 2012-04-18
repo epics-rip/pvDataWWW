@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<htm lang="en">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html;" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Normative Types</title>
+  <link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"   href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+
+  <!-- Styles:
+   Special css styles used in this document goes here in the head. That is, extra stuff to that in base.css,
+   epicsv4.css or epicsv4web.css. Eg:
+
+   opt - Markup for standard optional fields of Normative Types
+   nterm - Non-terminal symbol, in the grammar of Normative types
+   term - Terminal symbol in the grammar of Normative Types
+   user - A replacement string in the grammar of Normative Types.
+  -->
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }            
+     span.nterm { font-style:italic }    
+     span.term { font-family:courier }   
+     span.user { font-family:courier }   
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+  /*]]>*/</style>
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+
+</head>
+		
+<body>
+
+  <div class="head">
+    <h1>EPICS V4 Template Document</h1>
+
+      <h2 class="nocount">EPICS V4 Template Document, Editors' Draft, 12-Apr-2012</h2>
+      <dl>
+	<dt>Latest version:</dt>
+	  <!-- Name and refer to the latest, usually just the tail part of the file -->
+	  <dd><a href="epicsv4_document.html">epicsv4_document.html</a></dd>
+	<dt>This version:</dt>
+	  <!-- Name and refer to an explicitly dated copy, not the latest. This may
+	       be a link into hgweb with a particular changeset id -->
+	  <dd><a href="epicsv4_document_20120412.html">epicsv4_document_20120412.html</a></dd>
+	<dt>Previous version:</dt>
+	  <dd>No previous version yet</dd>
+	<dt>Editors:</dt> <!-- List of editors and invited experts (in parentheses) -->
+	  <dd>William Shakespeare, Diamond</dd>
+	  <dd>William Tell, PSI</dd>
+	  <dd>Charlie Sheen, Warner Brothers (Invited Expert)</dd>
+      </dl>
+
+      <!-- Abstract is REQUIRED -->
+      <h2 class="nocount">Abstract</h2>
+
+      <!-- The first para MUST be very short and summarize to someone who does NOT -->
+      <!-- know what EPICS is, what the document refers to. Avoid technical
+      language. -->
+      <p>This document gives a template for EPICS V4 html documents.</p>
+
+      <p>The types described here are approximately equivalent to EPICS V3 "DBR
+      types", though Normative Types extend the concept to structured
+      data. Additionally, these types may be used to define pvIOC records, or may be
+      used purely for data exchange though the dynamic data exchange interfaces
+      offered by pvAccess and pvData.</p>
+
+      <p>The function of each Normative Types is described, and their type data
+      structures are defined.</p>
+
+      <!-- last para of Abstract is boilerplate reference to EPICS -->
+      <p>For more information about EPICS, please refer to the home page of the <a
+       href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
+      Control System</a>.</p>
+
+      <!-- Status of this Document is REQUIRED -->
+      <h2 class="nocount">Status of this Document</h2>
+      <!-- Statement about why this version exists -->
+
+      <!-- First para MUST give the date of the version and summarize what
+      distinguishes this version from previous -->
+      <p>This is the 12 April 2012 version of the Normative Types document.  This
+      version reverts NTNamedValue to a congruent array system, rather than one in
+      which the value is itself an array type; NTMatrix is max 2-dimentional, and
+      much text has been added to describe alarms, display and control standard
+      optional fields.</p>
+
+      <!-- Second para MUST describe and shortcommings or known incompletenesses of
+      this version --> 
+      <p>A continuing notable absence from this document is how Normative Types
+      should identify themselves as such. At present, the name of the structure which
+      encapsulates the type conforming to a Normative Type, may be named with the
+      name of the type. For instance, a structure that should be interpreted as a
+      NTTable, should be named "NTTable." But whether this shall be the standard for
+      self-identity is not yet decided.</p>
+
+      <!-- If this document is a Normative Track document, third para MUST say what
+      kind of draft this version is -->
+      <p> This version is an editors draft towards the First Public Working
+      Draft. The First Public Working Draft will be intended for the EPICS community
+      to review and comment. Resulting comments will drive subsequent revisions of
+      the Normative Types specification and the EPICS V4 Working Group's reference
+      implementations of software that helps create, populate and exchange Normative
+      Type PVData.  </p>
+
+      <!-- After 3rd para give other stuff -->
+      <p> Comments are welcome, though bear in mind this is a pre-public release
+      version. </p>
+
+      <!-- Last para MUST include bibliography of terms used, eg the following -->
+      <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
+      highlighted (through style sheets, and in uppercase in the source) are used in
+      accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
+      2119) indicates exemption. </p>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+<div id="contents" class="contents">	  
+<hr />
+
+<h2>Introduction</h2>
+
+  <p>All EPICS V4 documents SHOULD have an introduction. Refer to bibliographic
+  references with the "a" tag "bib" class, eg this is a reference to the EPICS PVData
+  Java bibliographic reference <a class="bib" href="#bib:pvdata">bib:pvdata</a>.
+  </p>
+  
+<!-- SHOULD have a bibliography. -->
+<h2>Bibliography</h2>
+<dl>
+  <dt class="bib" id="bib:epicsv4home">bib:epicsv4home</dt>
+  <dd><a href="http://epics-pvdata.sourceforge.net/">EPICS V4 Homepage</a>, EPICS V4
+    Working Group, Sep 2011 and after, http://epics-pvdata.sourceforge.net/</dd>
+  <dt class="bib" id="bib:pvdata">bib:pvdata</dt>
+    <dd><a
+      href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html">EPICS
+      pvDataJava</a>, Marty Kraimer, BNL, Latest Version, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html
+    </dd>
+  <dt class="bib" id="bib:epicsrecref">bib:epicsrecref</dt>
+  <dd><a
+    href="http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html">EPICS
+    Reference Manual</a>, Philip Stanley, Janet Anderson, Marty Kraimer, APS, http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html</dd>
+</dl>
+
+</div> <!-- contents -->
+
+<hr />
+<address>Contact author: William Shakespeare, Diamond</address>
+<!-- hhmts start -->Last modified: Thu Apr 12 14:43:30 CEST 2012 <!-- hhmts end -->
+</body>
+</html>
