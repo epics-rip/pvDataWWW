@@ -5,31 +5,19 @@
 
   <meta http-equiv="Content-Type" content="text/html;" />
   <meta name="keywords" content="EPICS, EPICSv4" />
-  <title>EPICS V4 Normative Types</title>
+  <title>EPICS V4 Document Template</title>
   <link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/base.css" />
   <link rel="stylesheet" type="text/css"   href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
 
   <!-- Styles:
-   Special css styles used in this document goes here in the head. That is, extra stuff to that in base.css,
-   epicsv4.css or epicsv4web.css. Eg:
+   Special css styles used in this document goes here in the head. That is, extra
+   stuff to that in base.css, epicsv4.css or epicsv4web.css. Eg:
 
    opt - Markup for standard optional fields of Normative Types
-   nterm - Non-terminal symbol, in the grammar of Normative types
-   term - Terminal symbol in the grammar of Normative Types
-   user - A replacement string in the grammar of Normative Types.
   -->
   <style type="text/css">
   /*<![CDATA[*/
-     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
-     table { margin-left: auto; margin-right: auto }
-     .diagram { text-align: center; margin: 2.5em 0 }
      span.opt { color: grey }            
-     span.nterm { font-style:italic }    
-     span.term { font-family:courier }   
-     span.user { font-family:courier }   
-     span.user:before { content:"<" }
-     span.user:after { content:">" }
-     .nonnorm { font-style:italic }
   /*]]>*/</style>
 
   <!-- Script that generates the Table of Contents -->
@@ -65,16 +53,11 @@
       <!-- The first para MUST be very short and summarize to someone who does NOT -->
       <!-- know what EPICS is, what the document refers to. Avoid technical
       language. -->
-      <p>This document gives a template for EPICS V4 html documents.</p>
+      <p>This document gives a template for EPICS V4 html documents. The first
+      sentence or paragraph of the Abstract must summarize the subject succinctly.</p>
 
-      <p>The types described here are approximately equivalent to EPICS V3 "DBR
-      types", though Normative Types extend the concept to structured
-      data. Additionally, these types may be used to define pvIOC records, or may be
-      used purely for data exchange though the dynamic data exchange interfaces
-      offered by pvAccess and pvData.</p>
-
-      <p>The function of each Normative Types is described, and their type data
-      structures are defined.</p>
+      <p>Two or three paragraphs are required; the abstract should <em>not</em> just
+      be a single sentence.</p>
 
       <!-- last para of Abstract is boilerplate reference to EPICS -->
       <p>For more information about EPICS, please refer to the home page of the <a
@@ -87,11 +70,13 @@
 
       <!-- First para MUST give the date of the version and summarize what
       distinguishes this version from previous -->
-      <p>This is the 12 April 2012 version of the Normative Types document.  This
+      <p>This is the 12 April 2012 version of the Template document.  For
+      instance, if the document were the one about Normative Types, this section
+      might say, "this 
       version reverts NTNamedValue to a congruent array system, rather than one in
       which the value is itself an array type; NTMatrix is max 2-dimentional, and
       much text has been added to describe alarms, display and control standard
-      optional fields.</p>
+      optional fields."</p>
 
       <!-- Second para MUST describe and shortcommings or known incompletenesses of
       this version --> 
@@ -159,6 +144,6 @@
 
 <hr />
 <address>Contact author: William Shakespeare, Diamond</address>
-<!-- hhmts start -->Last modified: Thu Apr 12 14:43:30 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Apr 24 22:54:03 CEST 2012 <!-- hhmts end -->
 </body>
 </html>
