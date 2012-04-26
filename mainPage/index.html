@@ -27,7 +27,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Thu Apr  5 15:28:46 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Thu Apr 26 02:42:51 CEST 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -218,7 +218,10 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 
        <p> EPICS Version 4 (V4) brings support for managed distributed data
 acquisition, service oriented architecture, and complex data structures to
-EPICS. </p>
+EPICS. In an EPICS installation it is expected that control and module support would
+       be done with EPICS V3 IOCs, while middle layer and SOA operations would be done with
+       EPICS V4. V4 includes support for protocol
+       interoperability with V3. In short, EPICS V4 includes EPICS V3. </p>
 
        <p> EPICS V4 is composed of a number of core standards and APIs, reference
 implementations of those standards in C++ and Java, plus associated other components
@@ -267,16 +270,19 @@ of work in early 2012. </p>
 help on how an interested engineer might want to use it now.</p> <p><strong>Last
 updated 03-Mar-2012:</strong></p>
 
-<p> <strong>Since 20-Dec-2011 EPICS V4 has been in beta</strong>. The core standards of
-EPICS V4, and their implementations, are complete with respect to the January 2012
-milestones. The beta is useable for distributed high level data services. The first production 
-service is being deployed at PSI, and the underlying data tools are in production at Diamond.</p>
+<p>Since 20-Dec-2011 EPICS V4 has been in beta. The core standards of
+EPICS V4, and their implementations, are complete with respect to the <a href="http://epics-pvdata.sourceforge.net/charter.html#milestones" >January 2012
+milestones</a>. The beta is useable for distributed high level data services.</p>
+
+<p>Initial production level services based on EPICS V4 have been deployed at PSI and
+Diamond. <a href="http://epics-pvdata.sourceforge.net/exampleinstall.txt" >A summary of the installation architecture used by PSI for EPICS V4 based services
+implemented in Java</a>, has been published as a pattern for new adopters.</p>
+
 
 <p>Present work is in adding unsigned integer support, improving programmer ease of
-use, and the pvAccess and Normative Type specifications. The specification of
-pvAccess has been approaching Second Public Working Draft. Presently it is being
-expert reviewed prior to announcement. The definitions of the interoperable data
-types, "Normative Types" is approaching First Public Working Draft.</p>
+use, and the pvAccess and Normative Type specifications. The <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html" >specification of
+pvAccess</a> has just been expert reviewed and is now being published at Second Public Working Draft. <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html" >The definitions of the interoperable data
+types</a>, "Normative Types" is approaching First Public Working Draft.</p>
 
 <p>In acute summary, support for managed distributed data acquisition is quite far
 along and can be used now. This includes acquisition from EPICS V3 PVs via EPICS V4

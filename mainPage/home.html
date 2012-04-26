@@ -25,7 +25,7 @@
 
 <!-- Very top date banner -->
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Wed Apr 11 19:29:56 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Apr 25 18:27:28 PDT 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -86,32 +86,49 @@ name of the sourceforge project.
 <h2 id="status">Working Group Activities</h2>
 
 <h3 id="presentwork">Present Work</h3>
-<p>As of <strong>Status 20-December-2011</strong>, work completed on BETA 1.0
-release! Work is now back concentrating on
+<p>As of <strong>Status 19-Apr-2012</strong>. Work is now concentrating on
 simplifying EPICS V4 for the user programmer, regularizing APIs, and interoperable
-types. Getting
-ready for<a href="charter.html#milestones" > March 2012 Milestone</a>. Specifically,
-present activities include:</p>
+types. Specifically:</p>
 <ol>
-  <li>Review and commencement of ezpva and "gather" (Marty)</li>
-  <li>ezpva rename. Question of whether to rename, and if so to do it. Depends on whether
-  ezpva will include async acquisition</li>
-  <li>Implementation of ezpva specification (Marty, Matej)</li>
-  <li>NT type definitions specifications (Bob, Greg)</li>
-  <li>NT type id definition (requires lead)</li>
-  <li>NT type implementations (Marty)</li>
-  <li>Formalize decisions about encode NTTable; in CORBA Any style, or as variant union</li>
-  <li>Unsigned Int handling. Document, republish to observers, and implement</li>
-  <li>Comments on pvAccess specification. Integration of remarks from Michael and
-  others. Edits for lingo. (Matej, Marty, Greg).</li>
-  <li>Example and tests of use of pvAccess for async 'monitoring'. (Paul Gibbons,
-  Marty, Bob). Outcome should be 1) example code in pvData, 2) Text for a getting
-  started document</li>
-  <li>Twiss model service design (Guobao, Greg)</li>
-  <li>Model simulation service (aka "Online Calculator") design (Guobao, Greg)</li>
-  <li>Logging and setpoint save tool, design and implementation (Guobao, Marty)</li>
-  <li>Formalize and publish, code, and documentation standards (Matej, Greg)</li>
-  <li>Deploying rdbService at PSI (Greg)</li>
+  <li>The <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html" >pvAccess Protocol Specification</a> is being published at Second Public Working
+  Draft after successful expert review. It appears to be ready for independent
+  implementation</li>
+  <li>Work to allow V4-V3 interoperability without modification to V3 IOCs, is in
+  final stages</li> 
+  <li>A setpoint save and restore tool (server and client) have been completed (BNL)</li>
+  <li>A production level relation database service has been deployed (PSI) (based on the
+  <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService"
+  >rdbService example</a>)</li>
+  <li>An EPICS V4 based EPICS Archiver service and client have been developed. This
+  allows easy (command line) access to archive data
+  (Diamond).</li>
+  <li>
+  A <a href="http://epics-pvdata.sourceforge.net/exampleinstall.txt" >nominal architecture for production level EPICS V4 institutional installation,</a>
+  has been developed and implemented at PSI, and published as a guide for other institutions</li> 
+  <li><a href="http://epics-pvdata.sourceforge.net/alpha/unsigned.html" >Direct support for unsigned integer data type</a>, has recently been completed for
+  Java bindings, and is being worked on for C++ bindings of EPICS V4</li>
+  <li>Improvements are being made to the primary client-server data acquisition API to
+  make it more efficient and intuitive (moving Field name from a property of the
+  Field to a property of the field's parent, brings it in line with existing
+  introspection API norms</li>  
+  <li>An easy to use API, <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaJava/raw-file/tip/easyPVA/documentation/easyPVA.html" >EasyPVA</a>, is at alpha and being reviewed</li>
+  <li>"Gather Service," a service platform for helping a programmer to acquire data from many V3 PVs in
+  a service, and supply them as a single record to a V4 client, is at alpha and being
+  tested</li>
+  <li>A BPM orbit service, based on Gather, is being developed (PSI)</li>
+  <li>"<a href="alpha/normativeTypes/normativeTypes.html" >Normative Types</a>", a normative document which defines interoperable application level data
+  types, is approaching
+  First Public Working Draft. Requires expert review first. The way these types
+  self-identify is being worked on </li>
+  <li>Work is just beginning on a general purpose EPICS V4 Directory Service
+  (HZB)</li>
+  <li>A general purpose command line tool, "eget" is being developed</li>
+  <li>Downloaders are beginning to compile and install EPICS V4 IOC on VxWorks,
+  Windows and RTEMS. It now compiles in VxWorks 6.0, while v5 is in work in
+  progress. EPICS V4 has recently been compiled in MS Windows, and being tested
+  now</li>
+  <li>An accelerator model service is about to be started</li>
 </ol>
 <a href="activities_archive.html">Archive of previous activities.</a>
 
@@ -267,7 +284,7 @@ href="http://www.timeanddate.com/worldclock/meetingdetails.html?year=2011&month=
   <li>Berlin (Germany - Berlin)	Wednesdays, 16:00:00 local time</li>
 </ul>
 <p>Since the US and Europe switch observance at different times, there is a shaky
-week each November and March where things get outa wack.</p>
+week each November and March where things get outa whack.</p>
 <p>Meetings from 9-Nov-2011 are held in Skype, using a group conversation initiated
 by a chair.</p>
 <p>You will need:</p>
