@@ -27,7 +27,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Thu May  3 16:58:14 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Thu May  3 17:38:04 CEST 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -271,8 +271,10 @@ their APIs, and record processing, is provided by the Version 4 module called
 CAV3. This module can be used server or client side. For the use case class of V4
 clients using V3 IOC channels, pvAccess provides two mechanisms. Firstly, pvAccess user
 agents can be configured to use <em>unmodified</em> Version 3 IOCs through the "CAV3"
-provider of pvAccess. Secondly, they may be configured to use Channel Access as the
-data provider, called through the pvAccess API. For V3 clients calling V4 IOCs, CAV3
+provider of pvAccess in which case Channel Access is the wire protocol, called
+through the
+pvAccess API. Secondly, they can be confirgured to use modified V3 IOCs where the
+pvAccess wire protocol connects to CAV3 server side on a V3 IOC module. For V3 clients calling V4 IOCs, CAV3
 used server side in a V4 IOC allows a V3 Channel Access client access to data classes
 that are possible under channel access (ie simple type and waveform only).</p>
 
@@ -283,7 +285,7 @@ that are possible under channel access (ie simple type and waveform only).</p>
   CAV3 module of V4.
   </caption>
   <tr>
-    <td><img align="center" src="image/V3V4interop.png"
+    <td align="center"><img src="image/V3V4interop.png"
       alt="EPICS V3/V4 interoperation diagram"/>
     </td>
   </tr>
