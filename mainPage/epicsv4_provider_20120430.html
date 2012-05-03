@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<htm lang="en">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html;" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Channel Provider Proposal</title>
+  <link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"   href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+
+  <!-- Styles:
+   Special css styles used in this document goes here in the head. That is, extra
+   stuff to that in base.css, epicsv4.css or epicsv4web.css. Eg:
+
+   opt - Markup for standard optional fields of Normative Types
+  -->
+  <style type="text/css">
+  /*<![CDATA[*/
+     span.opt { color: grey }            
+  /*]]>*/</style>
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+
+</head>
+		
+<body>
+
+  <div class="head">
+    <h1>EPICS V4 Channel Provider Proposal</h1>
+
+      <h2 class="nocount">EPICS V4 Channel Provider Proposal, Editor's Draft, 30-Apr-2012</h2>
+      <dl>
+	<dt>Latest version:</dt>
+	  <!-- Name and refer to the latest, usually just the tail part of the file -->
+	  <dd><a href="epicsv4_provider.html">epicsv4_document.html</a></dd>
+	<dt>This version:</dt>
+	  <!-- Name and refer to an explicitly dated copy, not the latest. This may
+	       be a link into hgweb with a particular changeset id -->
+	  <dd><a href="epicsv4_provider_20120430.html">epicsv4_document_20120430.html</a></dd>
+	<dt>Previous version:</dt>
+	  <dd>No previous version yet</dd>
+	<dt>Editor:</dt> <!-- List of editors and invited experts (in parentheses) -->
+	  <dd>Dave Hickin, Diamond</dd>
+      </dl>
+
+      <!-- Abstract is REQUIRED -->
+      <h2 class="nocount">Abstract</h2>
+
+      <!-- The first para MUST be very short and summarize to someone who does NOT -->
+      <!-- know what EPICS is, what the document refers to. Avoid technical
+      language. -->
+      <p> In EPICS 4, a client must supply a channel provider when connecting
+          to data identified by a channel name. </p>
+
+      <p> The client will know the list of providers which are available for it to use,
+          but will not know which provider it should use for a given channel name.
+          In some cases more than one provider could be used. </p>
+
+      <p> This document describes how a client determines which provider is used
+          for a given channel name. </p>
+
+      <!-- last para of Abstract is boilerplate reference to EPICS -->
+      <p>For more information about EPICS, please refer to the home page of the <a
+       href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
+      Control System</a>.</p>
+
+      <!-- Status of this Document is REQUIRED -->
+      <h2 class="nocount">Status of this Document</h2>
+      <!-- Statement about why this version exists -->
+
+      <!-- First para MUST give the date of the version and summarize what
+      distinguishes this version from previous -->
+      <p>This is the 30 April 2012 version of the EPICS 4 Channel Provider document.
+         This is the first draft of the document</p>
+
+      <!-- Second para MUST describe and shortcommings or known incompletenesses of
+      this version --> 
+      <p>This is a first draft and has not received any comments/feedback
+         It does not clearly state what behaviour is mandatory, what is recommended
+         and what is optional. In particular, for a given implementation
+         <ol>
+             <li> Which methods, if any, for determining the provider must be
+                  implemented? </li>
+             <li> Must an implementation permit the application layer to
+                  create a channel by both specifying and not specifying the
+                  method to be used to determine the provider? </li>
+             <li> In the reference implementation the default behaviour when no method
+                  of determining the provider is suplied will be pvAccess if there has
+                  been no configuration of the client or site-level configuration.
+                  Should this be mandated in other implementations, or should an
+                  implementer be allowed there own default? </li>
+         </ol>
+      </p>
+
+      <!-- If this document is a Normative Track document, third para MUST say what
+      kind of draft this version is -->
+      <p> This version is an editor's draft towards the First Public Working
+      Draft. The First Public Working Draft will be intended for the EPICS community
+      to review and comment. Resulting comments will drive subsequent revisions of
+      the Normative Types specification and the EPICS V4 Working Group's reference
+      implementations of software that helps create, populate and exchange Normative
+      Type PVData.  </p>
+
+      <!-- After 3rd para give other stuff -->
+      <p> Comments are welcome, though bear in mind this is a pre-public release
+      version. </p>
+
+      <!-- Last para MUST include bibliography of terms used, eg the following -->
+      <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
+      highlighted (through style sheets, and in uppercase in the source) are used in
+      accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
+      2119) indicates exemption. </p>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+<div id="contents" class="contents">	  
+<hr />
+
+<h2>Introduction</h2>
+
+  <p> EPICS 4 pvData provides structured data types <a class="bib" href="#bib:pvdata">bib:pvdata</a>.
+      A client can connect to data identified by a channel name
+      and once connected to perform operations which access the data (get, put, rpc, etc.).
+      A channel which connects to the data is created by a channel provider.
+      The pvAccess channel provider provides access for pvData using the
+      pvAccess protocol <a class="bib" href="#bib:pvdata">bib:pvaccess</a>.
+      The caV3 provider provides access using the EPICS base CAV3.
+      Other providers are possible, e.g. TINI or TANGO.</p>
+
+  <p> In order to connect to data identified by a channel name an channel access client must
+      know which provider to use. The client knows the list of providers available to it,
+      however it does not know which provider to use for a given channel name. A client may
+      broadcast on multiple provider ports to establish which provider to use, however multiple
+      replies may be received, with each reply implying a different provider. Specifically,
+      this will happen when a channel is hosted by an V3 IOC that has both a V3 and V4 server
+      on it. In this case responses may be received on both the pvAccess and V3 channel
+      access ports.</p>
+
+<h2>How to determine the provider</h2>
+ 
+  <p> A number of methods exist for determinining which provider to use to connect to a channel.
+  <ol type='a'>
+     <li> Connect using a specified provider.</li>
+     <li> A name resolution request [UDP broadcast] is made on multiple provider ports. More than
+          one reply may be received where each implies a different provider. The client would then
+          connect on the provider which answered first. Other alternatives are possible, for example
+          connecting to the first reply unless a preferred provider replies within a given time.</li>
+     <li> The client gets the provider from the directory service before connecting to the channel
+          using the provider given.</li>
+     <li> Other methods are possible, e.g. use of prefixes to determine the provider.</li>
+  </ol>
+  </p>
+
+  <p> The client application layer can:
+  <ol type='1'>
+     <li> Specify one of the methods above for determining the provider. In particular it may
+          request connection using a specified provider.</li>
+     <li> Connect to a channel without specifying the provider or the method of determing the
+          provider. The choice of method is determined in the client in a layer below the
+          application layer.</li>
+  </ol>
+  </p>
+ 
+  </p> In case 2 the choice of method is the determined in the library functions called by
+       the client application by configuration using environmental variables or other
+       similar mechanism.</p>
+  </p> The default configuration is pvAccess, but sites/installations can choose
+        their own default behaviour or it can be set on a per client basis.</p>
+
+<!-- SHOULD have a bibliography. -->
+<h2>Bibliography</h2>
+<dl>
+  <dt class="bib" id="bib:epicsv4home">bib:epicsv4home</dt>
+  <dd><a href="http://epics-pvdata.sourceforge.net/">EPICS V4 Homepage</a>, EPICS V4
+    Working Group, Sep 2011 and after, http://epics-pvdata.sourceforge.net/</dd>
+  <dt class="bib" id="bib:pvdata">bib:pvdata</dt>
+    <dd><a
+      href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html">EPICS
+      pvDataJava</a>, Marty Kraimer, BNL, Latest Version, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html
+    </dd>
+  <dt class="bib" id="bib:pvdata">bib:pvaccess</dt>
+    <dd><a
+      href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html">EPICS
+      pvAccessJava</a>, Marty Kraimer, BNL, Latest Version, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html
+    </dd>
+  <dt class="bib" id="bib:epicsrecref">bib:epicsrecref</dt>
+  <dd><a
+    href="http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html">EPICS
+    Reference Manual</a>, Philip Stanley, Janet Anderson, Marty Kraimer, APS, http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html</dd>
+</dl>
+
+</div> <!-- contents -->
+
+<hr />
+<address>Contact author: Dave Hickin, Diamond</address>
+<!-- hhmts start -->Last modified: Mon Apr 30 22:54:03 CEST 2012 <!-- hhmts end -->
+</body>
+</html>
