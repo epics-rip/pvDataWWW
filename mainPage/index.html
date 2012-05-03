@@ -27,7 +27,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Wed May  2 14:50:22 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Thu May  3 16:58:14 CEST 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -264,6 +264,31 @@ of work in early 2012. </p>
 <p>There are also "extensions" of EPICS V4 being developed, see <a
  href="#nonnormative">Tools, Accessories and other Associated Work</a> below</p>
 
+<h2>V3/V4 Interoperation</h2>
+<p>Version 3 of EPICS uses a communications protocol named "Channel Access". Version
+4 uses a new protocol called "pvAccess". Interoperability between the two protocols,
+their APIs, and record processing, is provided by the Version 4 module called
+CAV3. This module can be used server or client side. For the use case class of V4
+clients using V3 IOC channels, pvAccess provides two mechanisms. Firstly, pvAccess user
+agents can be configured to use <em>unmodified</em> Version 3 IOCs through the "CAV3"
+provider of pvAccess. Secondly, they may be configured to use Channel Access as the
+data provider, called through the pvAccess API. For V3 clients calling V4 IOCs, CAV3
+used server side in a V4 IOC allows a V3 Channel Access client access to data classes
+that are possible under channel access (ie simple type and waveform only).</p>
+
+<table id="interopdiag"  width="100%" style="border-width:0px">
+  <caption style="text-align:center;font-size:70%;font-style:italic"
+  align="bottom">Interoperation of EPICS Versions 3 and 4 communications
+  protocols, "Channel Access" and "pvAccess" respectively, is provided by the
+  CAV3 module of V4.
+  </caption>
+  <tr>
+    <td><img align="center" src="image/V3V4interop.png"
+      alt="EPICS V3/V4 interoperation diagram"/>
+    </td>
+  </tr>
+</table>
+      
 <h2 id="summarystatus">Summary Status</h2>
 
 <p>This section is a very short summary of the status of EPICS V4 overall, and gives

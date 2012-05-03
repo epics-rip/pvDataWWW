@@ -1,0 +1,30 @@
+
+This file gives the Mac Omnigraffle File->Export parameters used to create the 
+pngs of the EV4 logo from EV4logo.graffle.
+
+Greg White, 03-May-2012. Copyright, SLAC, PSI
+-------------------------------------------------------------
+
+EV4logo_blue_sanstext_lg.png
+   Export Area: Region
+     X: 0            Y: 0
+     Width: 4.7 cm   Height: 4.7 cm
+   Scale 100%
+   Bitmap Resolution: 72 dots per inch
+
+
+EV4logo_blue_sanstext_med.png
+   Export Area: Region
+     X: 0            Y: 0
+     Width: 4.7 cm   Height: 4.7 cm
+   Scale 60%
+   Bitmap Resolution: 72 dots per inch
+
+
+EV4logo_blue_sanstext_sm.png
+   Export Area: Region
+     X: 0            Y: 0
+     Width: 4.7 cm   Height: 4.7 cm
+   Scale 40%
+   Bitmap Resolution: 72 dots per inch
+
