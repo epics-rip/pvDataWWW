@@ -27,14 +27,15 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Thu May  3 17:38:04 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Fri May  4 18:53:22 CEST 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
     <td style="padding:4px">
       <table id="logo" style="border-width:0px" class="image">
 	<caption
-	style="text-align:center;letter-spacing:1.0em;font-size:70%;font-weight:lighter;margin-left:1.0em"
+	style="text-align:center;letter-spacing:1.0em;font-size:70%;
+	    font-weight:lighter;margin-left:1.0em;white-space:nowrap"
 	align="top">EPICS V4
 	</caption>
 	<tr>
@@ -264,32 +265,7 @@ of work in early 2012. </p>
 <p>There are also "extensions" of EPICS V4 being developed, see <a
  href="#nonnormative">Tools, Accessories and other Associated Work</a> below</p>
 
-<h2>V3/V4 Interoperation</h2>
-<p>Version 3 of EPICS uses a communications protocol named "Channel Access". Version
-4 uses a new protocol called "pvAccess". Interoperability between the two protocols,
-their APIs, and record processing, is provided by the Version 4 module called
-CAV3. This module can be used server or client side. For the use case class of V4
-clients using V3 IOC channels, pvAccess provides two mechanisms. Firstly, pvAccess user
-agents can be configured to use <em>unmodified</em> Version 3 IOCs through the "CAV3"
-provider of pvAccess in which case Channel Access is the wire protocol, called
-through the
-pvAccess API. Secondly, they can be confirgured to use modified V3 IOCs where the
-pvAccess wire protocol connects to CAV3 server side on a V3 IOC module. For V3 clients calling V4 IOCs, CAV3
-used server side in a V4 IOC allows a V3 Channel Access client access to data classes
-that are possible under channel access (ie simple type and waveform only).</p>
 
-<table id="interopdiag"  width="100%" style="border-width:0px">
-  <caption style="text-align:center;font-size:70%;font-style:italic"
-  align="bottom">Interoperation of EPICS Versions 3 and 4 communications
-  protocols, "Channel Access" and "pvAccess" respectively, is provided by the
-  CAV3 module of V4.
-  </caption>
-  <tr>
-    <td align="center"><img src="image/V3V4interop.png"
-      alt="EPICS V3/V4 interoperation diagram"/>
-    </td>
-  </tr>
-</table>
       
 <h2 id="summarystatus">Summary Status</h2>
 
@@ -323,6 +299,133 @@ controls. This is because we are adding to EPICS first, then will re-implement t
 exiting excellent functionality in EPICS version 3. See below for a complete
 breakdown.
 </p>
+
+<h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
+
+<p>This section outlines how one might use EPICS V4 right now, given its present
+status</p>
+
+<p>EPICS V4 includes EPICS V3. It is expected that, for a significant period of time,
+an institutional <strong>user of EPICS Version 4 would use it in parallel with the
+EPICS version 3</strong> distribution. In particular, EPICS Version 3 would continue
+to be the basis of controls. In its present state, EPICS Version 4 concentrates on so
+called "high level" software services. It provides a platform for fast Service
+Oriented Architecture and distributed message passing. Its programming model is
+optimized for efficient distributed synchronous or asynchronous processes
+commincating by essentiall a shared-memory system based on data introspection.  </p>
+
+<p>In a hybrid environment, EPICS V4 is at BETA for use for managed distributed data
+acquisitions. See the <a
+ href="http://epics-pvdata.sourceforge.net/doc/pvServiceJava/gather.html">Gather
+service framework</a>. This is a server side software framework that uses the new
+facilities of EPICS V4 to help a user define, save, and execute, a named coordinated
+acquisition of many V3 PVs. The Gather service framework is alpha stage software;
+it's complete, but not yet field tested. Contact Marty Kramer or Guobao Shen at
+BNL. See also <a href="http://pvmanager.sourceforge.net/">pvManager</a>, which is a
+client side tool for making acquisitions of a large number of PVs
+efficiently. pvManager is mature enough for use now, contact Gabriele Carassi at
+BNL. Also </p>
+
+<p> Although record processing is presently part of EPICS V4, it is not mature enough
+to supplant EPICS V3 record processing and device support for controls.  This is
+expected to be undertaken in the next year. Contact Bob Dalesio (BNL), Marty Kramer
+(BNL) or Matej Sekornaja (COSYLAB) for more details and estimates. However, note that
+EPICS V4 clients can interface to EPICS V3 IOC record processing via pvAccess through
+use of the pvAccess Server (PAS). See worked example in <a
+ href="gettingStarted.html">Getting Started with EPICS V4.</a> </p>
+
+<h3>Present Deployments</h3>
+<p>EPICS V4 is also being used now developing beamline image data acquisition and
+storage, using the facilities of pvData for structured data. Contact James Roland at
+DIAMOND. It will shortly also be deployed at PSI for back end SQL database access. </p>
+
+<h2>V3/V4 Interoperation</h2>
+
+<p>Version 3 of EPICS uses a communications protocol named "Channel Access". Version
+4 uses a new protocol called "pvAccess". Interoperability between the two protocols,
+their APIs, and record processing, is provided by the Version 4 module called
+CAV3. This module can be used server or client side.</p>
+
+<p>For the use case class of V3 clients calling V4 IOCs, CAV3
+used server side in a V4 IOC allows a V3 Channel Access client access to data classes
+that are possible under channel access (ie simple type and waveform only).</p>
+
+<p> For the use case class of V4 clients using V3 IOC channels, pvAccess provides two
+mechanisms. Firstly, pvAccess user agents can be configured to use
+<em>unmodified</em> Version 3 IOCs through the "CAV3" provider of pvAccess in which
+case Channel Access is the wire protocol, called through the pvAccess API (however,
+this is new and has not yet been documented). Secondly, pvAccess user agents may
+confirgured to use modified V3 IOCs where the pvAccess wire protocol connects to CAV3
+server side on a V3 IOC module. The caV3 server side support (the second option
+above) is part of <a href="#pvioc" >pvIOC</a>, see in particular the description of
+<a
+ href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/pvIOCCPP.html#L402"
+>V3Channel</a>, which is the embedded V3 ioc server side support that provides access
+of V3 record data to pvAccess network clients.</p>
+
+<table id="interopdiag"  width="100%" style="border-width:0px">
+  <caption style="text-align:center;font-size:70%;font-style:italic"
+  align="bottom">Interoperation of EPICS Versions 3 and 4 communications
+  protocols, "Channel Access" and "pvAccess" respectively, is provided by the
+  CAV3 module of V4.
+  </caption>
+  <tr>
+    <td align="center"><img src="image/V3V4interop.png"
+      alt="EPICS V3/V4 interoperation diagram"/>
+    </td>
+  </tr>
+</table>
+
+<p>A full description and EPICS V4 users guide to V3/V4 interoperability, is being
+prepared (see <a href="charter.html#deliverables" >Charter deliverable 10</a>). In the
+meantime, see the talk <a href="talks/2012/V3V4Interoperatibility.ppt" >V3/V4
+Interoperability</a>, Marty Kraimer, EPICS Collaboration 2012 spring meeting, (SLAC),
+PPT.  </p>
+
+<h2>Performance</h2>
+
+<p>Very preliminary performance graphs for pvAccess floating point acquisitions are
+given below, together with comparable Channel Access acquisition. The setup is C++
+clients and servers, of the Beta 1.0.1 release (as on the downloads page), 2 MacBook
+Pros (~2GHz Intel Core Duo-s, 4GB memory) with a 1 GBit Ethernet point-to-point
+connection. The acquisition is a GET operation, on a double array value (DBR_DOUBLE
+and pvAccess equivalent), varying in both cases the value array size. Note that in
+addition to raw network encoding and deserializing performance, in a real world
+implementation pvAccess could achieve much higher apparent performance since it
+additionally has the capability to transfer only actually changed structure field values. </p>
+
+<table id="perf1chan"  width="100%" style="border-width:0px">
+  <caption style="text-align:center;font-size:70%;font-style:italic;margin:1em 6em
+  0em 6em" align="bottom">
+  pvAccess and Channel Access comparative performance (Number of
+  channel value get operations per second), where only one channel's value is got 
+  in each get operation, as a function of array size of the
+  channel. The graph shows that roughly speaking, pvAccess does better than Channel
+  Access with increasing channel value array size.   
+  </caption>
+  <tr>
+    <td align="center"><img src="image/perf/pvAccessPerf_1ChanOfDiffSizes_gets_per_s.png"
+      alt="EPICS V4 pvAccess performance diagram"/>
+    </td>
+  </tr>
+</table>
+
+<table id="perf1000chan"  width="100%" style="border-width:0px;margin:2em 0em 0em 0em">
+  <caption style="text-align:center;font-size:70%;font-style:italic;margin:1em 6em
+  0em 6em" align="bottom">
+  pvAccess and Channel Access comparative performance (Number of
+  channel value get operations per second), where 1000 channels values' are got 
+  in each get operation, as a function of array size of the
+  channel. The graph shows that roughly speaking, Channel
+  Access does better than pvAccess with small messages, whereas pvAccess does better
+  than CA for large array sizes.  
+  </caption>
+   <tr>
+    <td align="center"><img src="image/perf/pvAccessPerf_1000Chan_vs_ChanSize.png"
+      alt="EPICS V3/V4 interoperation diagram"/>
+    </td>
+  </tr>
+</table>
 
 <h2 id="lit">Software Specifications and Implementations</h2>
 <p>EPICS V4 is a body of core specifications, reference implementations, and some
@@ -558,48 +661,7 @@ the time of writing).</p>
  <dd><strong>Contact:</strong>Guobao Shen (BNL)</dd>
 </dl>
 
-<h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
 
-<p>This section outlines how one might use EPICS V4 right now, given its present
-status</p>
-
-<p>It is expected that, for a significant period of time, an
-institutional <strong>user of EPICS Version 4 would use it in parallel with EPICS
-version 3</strong>. In particular, EPICS Version 3 would continue to be the basis of
-controls. In its present state, EPICS Version 4 concentrates on so called "high
-level" software services. It provides a framework for fast distributed message
-passing. This is like remote procedure calls, but with a programming model optimized
-for efficient distributed synchronous or asynchronous processes.
-</p>
-<p>In a hybrid environment, EPICS V4 is at BETA for use for managed distributed data
-acquisitions. See <a href="http://pvmanager.sourceforge.net/">pvManager</a>, which is
-a client side tool for making acquisitions of a large number of PVs
-efficiently. pvManager is mature enough for use now, contact Gabriele Carassi at
-BNL. Also see
-the <a href="http://epics-pvdata.sourceforge.net/doc/pvServiceJava/gather.html">Gather
-service framework</a>. This is a server side software framework that uses the new
-facilities of EPICS V4 for services, to help a user define, save, and execute, a
-named coordinated acquisition of many PVs. The Gather service framework is alpha
-stage software; it's complete, but not yet field tested. Contact Marty Kramer or
-Guobao Shen at BNL.
-</p>
-<p>
-Although record processing is presently part of EPICS V4, it is not mature enough to
-supplant EPICS V3 record processing and device support for controls.  This is
-expected in about 1 year. Contact Marty Kramer or Matej Sekornaja at COSYLAB for more
-details and estimates. Hoever, note that EPICS V4 clients can interface to EPICS V3
-IOC record processing via pvAccess through use of the pvAccess Server (PAS). See
-worked example in <a href="gettingStarted.html">Getting Started with EPICS V4.</a> 
-</p>
-<p>Support for essentially Remote Procedure Calls (RPC) through EPICS V4, is in
-pvIOC. So if you have a need for host
-level services, it is worth looking there now. You will find complete example Services in
-exampleJava, including a complete production ready SQL database access service.
-</p>
-<h3>Present Deployments</h3>
-<p>EPICS V4 is also being used now developing beamline image data acquisition and
-storage, using the facilities of pvData for structured data. Contact James Roland at
-DIAMOND. It will shortly also be deployed at PSI for back end SQL database access. </p>
 
 <h2 id="softwaredevel">Software Development</h2>
 <p>See the <a href="development.html">EPICS V4 Development page</a> for complete
