@@ -27,7 +27,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Fri May  4 18:53:22 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue May 22 15:58:28 CEST 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -97,15 +97,14 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	  <li><a 
 	  href="#whatdoesitbring">What is Version 4?</a></li>
 	  <li><a 
-	  href="#nutshell">In a nutshell</a></li>
+	  href="#nutshell">In a Nutshell</a></li>
 	  <li><a 
 	  href="#summarystatus">Status Summary</a></li>
+	  <li><a href="#interop" >V3/V4 Interoperation</a></li>
+	  <li><a href="#perf" >Performance</a></li>
 	  <li><a 
-	  href="#softwaredevel">Development Summary </a></li>
-	  <li><a 
-	  href="#literature">Documentation</a></li>
-	  <li><a 
-	  href="#talks">Talks</a></li>
+	  href="#softwaredevel">Development Summary</a></li>
+	  
 	</ul>
       </ul>
 
@@ -249,7 +248,8 @@ public process.  </p>
 
        <p>In EPICS V3 and before, an IOC (Input/Output Controller) is a network node
 that controls and/or monitors a collection of devices. An IOC contains a memory
-resident real time database. The real time database has a set of "smart" records.</p>
+resident real time database. The real time database has a set of "smart" records,
+which are interconnected in a<a href="http://en.wikipedia.org/wiki/Dataflow" > Data Flow</a> pattern.</p>
 
        <p>In EPICS V4, <a href="#pvioc">pvIOC</a> is the implementation of an EPICS
 IOC. A pvIOC is similar to an EPICS Version 3 IOC (at least the 3.13 and 3.14
@@ -339,7 +339,7 @@ use of the pvAccess Server (PAS). See worked example in <a
 storage, using the facilities of pvData for structured data. Contact James Roland at
 DIAMOND. It will shortly also be deployed at PSI for back end SQL database access. </p>
 
-<h2>V3/V4 Interoperation</h2>
+<h2 id="interop">V3/V4 Interoperation</h2>
 
 <p>Version 3 of EPICS uses a communications protocol named "Channel Access". Version
 4 uses a new protocol called "pvAccess". Interoperability between the two protocols,
@@ -382,7 +382,7 @@ meantime, see the talk <a href="talks/2012/V3V4Interoperatibility.ppt" >V3/V4
 Interoperability</a>, Marty Kraimer, EPICS Collaboration 2012 spring meeting, (SLAC),
 PPT.  </p>
 
-<h2>Performance</h2>
+<h2 id="perf">Performance</h2>
 
 <p>Very preliminary performance graphs for pvAccess floating point acquisitions are
 given below, together with comparable Channel Access acquisition. The setup is C++
