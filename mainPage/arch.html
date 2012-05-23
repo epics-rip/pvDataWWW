@@ -32,6 +32,7 @@ such things as interoperation with EPICS V3, services for aggregating the data o
 many Input Output Controllers, connection to online data sources such as databases,
 and facilities for building Service Oriented Architectures.  
 </p>
+</div>
 
 <h2 id="Table">Table of Contents</h2>
 
@@ -87,7 +88,12 @@ response that indicates that processing has completed but carries no
 payload.</p>
 
 <p>EPICSv4 supports Java, C++ and Python clients and servers on Windows,
-Linux and OSX. <!-- check this! -->
+Linux and OSX. vxWorks portability is being tested.
+<!-- check this! --> 
+</p>
+
+<p>
+The <a href="http://epics-pvdata.sourceforge.net/gettingStarted.html">Getting Started</a> page describes the build system.
 </p>
 
 <h2 id="Overview">Overview of EPICSv4</h2>
@@ -187,6 +193,11 @@ within a facility, to use their own network protocol and data model.
 The RPC server does not contain an EPICSv4 database, the developer implements
 the processing in C++, Java or Python code.</p>
 
+<p>
+The <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld">helloWorld</a>
+example is located in the exampleJava project, currently it is not possible to write an RPC server in Java without the IOC database but this will be added.
+</p>
+
 <p><img src="archfiles/arch_hello.png" alt="hello world diagram" /> </p>
 
 <h3 id="Process">Process Control / SCADA</h3>
@@ -214,9 +225,6 @@ library for EPICSv3 and EPICSv4 that performs rate reduction and averaging on
 data streams. This abstration layer makes writing robuts clients easier,
 especially GUIs. <img src="archfiles/arch_pvmanager.png"
 alt="pvmanager diagram" /> 
-
-<div class="editme">
-Gabriele put some information in here. </div>
 
 <h3 id="Client">Operator Interfaces (OPI)</h3>
 The proposed client tool for OPI is <a
@@ -252,16 +260,18 @@ but until it has been used by real applications it is not clear what to do.</p>
 <p>The current sources are avaliable via the following mercurial repositories:</p>
 <dl>
    <dt>Java</dt>
-    <dd>epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceJava</dd>
+   <dd>epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceJava</dd>
+   <dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava">hg web</a></dd>
    <dt>C++ and Python</dt>
-    <dd>epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceCPP</dd>
+   <dd>epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceCPP</dd>
+   <dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceCPP">hg web</a></dd>
 </dl>
 <p>The latest documentation is:</p>
 <dl>
    <dt>Java</dt>
     <dd><a
- href=
-"http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/raw-file/tip/src/org/epics/pvService/gather/package.html"
+href=
+"http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/raw-file/tip/test/org/epics/pvservice/gather/example/package.html"
 >gather Java</a></dd>
 
    <dt>C++</dt>
@@ -276,6 +286,8 @@ but until it has been used by real applications it is not clear what to do.</p>
 >gather Python</a></dd>
 </dl>
 
+<p>The MASR service contains its own gather implementation, see the code <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/masarService/file/tip/cpp/src/client/gatherV3Data">here</a> 
+that will soon be merged with the other gather libraries.</p>
 
 <h3 id="Model">Model Service</h3>
 The Model Service returns information from the machine model, such as the
@@ -290,6 +302,12 @@ tables. The RDB Service provides a database-independent way to perform canned
 queries over EPICSv4. The mapping from a query name to an SQL query string
 can be stored in the Directory Service (discussed later) or in the RDB
 itself.</p>
+
+<p>
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService">rdbService</a> is 
+located in the exampleJava project.
+</p>
+
 <img src="archfiles/arch_rdb.png" alt="rdb service diagram" /> 
 
 <h3 id="Name">Name Resolution Server</h3>
@@ -311,8 +329,13 @@ Process data setpoints must be saved to permanent storage and restored to
 reset the facility to a known working state. MASAR is the EPICSv4 Save and
 Restore tool. It combines RPC, Service Aggregation (Gather), and RDB access.
 An RPC client initiates the save or restore request, the MASAR server Gathers
-the process variables and stores them in the RDB. <img
-src="archfiles/arch_masr.png" alt="masr diagram" /> 
+the process variables and stores them in the RDB. 
+
+<p><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/masarService">
+MASR Project Reposotory</a></p>
+
+<img src="archfiles/arch_masr.png" alt="masr diagram" /> 
+
 
 <h3 id="Time-Serie">Time-Series Database</h3>
 EPICS archivers are a familiy of time-series databases. The EPICS Channel
@@ -323,6 +346,9 @@ statistics (mean/min/max) into a table structure. This replaces the XMLRPC
 interface distributed with the EPICS Channel Archiver. <img
 src="archfiles/arch_archiver.png" alt="archiver diagram" /> 
 
+<p><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/tip/ChannelArchiverService">ChannelArchiverService Project Repository (decimation is not supported yet)</a>
+</p>
+
 <h3 id="Data">Data Acquisition</h3>
 X-Ray detectors produce image frames annotated with experimental metadata. 10
 Gigabit Ethernet is increasingly used to transport these images from the
@@ -331,6 +357,9 @@ or distributed file systems such as NFS or Lustre, or custom TCP protocols.
 Each custom TCP protocol must deal with connection handing, error handing and
 serialization. Data is stored in HDF5 files. pvAcces provides an efficient
 TCP transport for structured image types in conjunction with areaDetector.
+
+<p>Contact <a href="mailto:ulrich.pedersen@diamond.ac.uk">Ulrich Pedersen at Diamond</a> for more information about acqusition to HDF5 over 10gbE </p>
+
 <img src="archfiles/arch_detector.png" alt="detector diagram" /> 
 
 <h3 id="Service1">Service Oriented Architectures (SOA) and Directory
@@ -359,8 +388,5 @@ href="http://aps.anl.gov/epics/irmis/index.php">IRMIS</a> database is also
 under development but using IRMIS is not mandated. <img
 src="archfiles/arch_ds.png" alt="directory services diagram" /> </p>
 
-<div class="editme">
-Ralph put some information in here </div>
-</div>
 </body>
 </html>
