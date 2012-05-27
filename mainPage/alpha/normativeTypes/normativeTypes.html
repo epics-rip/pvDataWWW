@@ -11,11 +11,13 @@
   <link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
 
-  <!-- Styles:
+  <!-- Styles comments:
    opt - Markup for standard optional fields of Normative Types
    nterm - Non-terminal symbol, in the grammar of Normative types
    term - Terminal symbol in the grammar of Normative Types
-   user - A replacement string in the grammar of Normative Types.
+   user - A replacement string in the grammar of Normative Types,
+          ie user programmer supplies value.
+   ed   - Comments included by the editor of this document.
   -->
   <style type="text/css">
   /*<![CDATA[*/
@@ -45,7 +47,7 @@
   <div class="head">
     <h1>EPICS V4 Normative Types</h1>
 
-      <h2 class="nocount">EPICS V4 Normative Types, Editors' Draft, 18-Apr-2012</h2>
+      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 18-Apr-2012</h2>
       <dl>
 	<dt>Latest version:</dt>
 	  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
@@ -88,18 +90,21 @@
       April 2012, <a
        href="normativeTypes_20120412.html">normativeTypes_20120412.html</a>; that
       version reverts NTNamedValue to a congruent array system, rather than one in
-      which the value is itself an array type; NTMatrix is max 2-dimentional, and
+      which the value is itself an array type; NTMatrix is max 2-dimensional, and
       much text has been added to describe alarms, display and control standard
       optional fields.</p>
 
-      <p>A continuing notable absence from this document is how Normative Types
-      should identify themselves as such. At present, the name of the structure which
-      encapsulates the type conforming to a Normative Type, may be named with the
-      name of the type. For instance, a structure that should be interpreted as a
-      NTTable, should be named "NTTable." But whether this shall be the standard for
-      self-identity is not yet decided.</p>
+      <p class="ed">TODO: Update
+      dates. Each optional field of each Normative type, where the option field is
+      not in the Standard Optional Fields (as so whose semantics are deliberately not
+      defined), must be defined within the normative type. Ie, find all display and
+      control, and define what they mean. </p>
+      
+      <p>See <a href="#appendix_a:_possible_future_additions_to_this_specification">
+      Appendix A</a> for items that may be added to future revisions of this
+      specification. </p>
 
-      <p> This version is an editors draft towards the First Public Working
+      <p> This version is an Editors Draft towards the First Public Working
       Draft. The First Public Working Draft will be intended for the EPICS community
       to review and comment. Resulting comments will drive subsequent revisions of
       the Normative Types specification and the EPICS V4 Working Group's reference
@@ -117,7 +122,7 @@
 </div> <!-- head -->
 
 <div id="toc">
-  <h2 class="nocount">Table of Contents</h2>
+  <h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
 </div>
 
 <div id="contents" class="contents">	  
@@ -653,15 +658,57 @@ class="nterm">control_t</span> above.</p>
 
 
 
-<h2>Normative Type Standard Optional Fields</h2>
+<h2>Normative Type Meta Data</h2>
 
+<p>Meta data are included in runtime instances of Normative Types. The meta data
+includes to which Normative Type the structure instance conforms, version
+information, and other data to aid efficient processing, diagnostics and
+displays.</p>
 
-<p>Since a primary reason for Normative Types is to interoperably pass data between EPICS V4
-agents, particularly where the receiver may be generic code that takes action on the data alone
-with
-no context (think caget), some support for optional meta data are included.</p>
+<h3>Self Identification</h3>
 
-<p>There is no required interpretation of these fields, and therefore their meaning
+<p>Each runtime instance of a normative type MUST include exactly one structure type Field,
+named _META, defined below, that says to which Normative Type the instance conforms,
+together with other descriptive data about the instance. Agents can use this meta
+data to check the received type was as expected. </p>
+
+<p><span class="nterm">meta_t</span> describes a structure, named _META, whose fields define meta
+data of the Normative Type instance in which the _META was included. </p>
+
+<pre><span class="nterm">meta_t</span> :=
+
+structure _META
+        boolean <span class="user">NTName</span>    
+        boolean hasAlarm
+        boolean hasDescriptor
+        boolean hasTimeStamp</pre>
+
+<p>where:</p>
+<dl>
+  <dt><span class="user">NTName</span></dt>
+    <dd>Is the name of the Normative Type in section 5 below. That is, the name of
+      the first field of _META MUST be a boolean, and its field name MUST be the name
+      of the normative type to which the structure containing _META conforms. NOTE
+      that the value of the boolean so named, is not important. </dd>
+  <dt>hasDescriptor</dt>
+    <dd>A boolean value that describes whether the Normative Type instance contains a
+      descriptor field. </dd>
+  <dt>hasAlarmM</dt>
+    <dd>A boolean value that describes whether the Normative Type instance contains an
+      alarm field. </dd>
+  <dt>hasTimeStamp</dt>
+    <dd>A boolean value that describes whether the Normative Type instance contains a
+      timeStamp field. </dd>
+</dl>
+<p><span
+      class="nonnorm">The reason for the somewhat curious identification mechanism
+      is so that the Normative Type of a structure can be communicated in the
+introspection data, and so need not be exchanged with every instance exchange.</span></p>
+
+<h3>Standard optional meta data fields</h3>
+
+<p>One instance of each of the following fields may be included in a Normative Type
+instance structure. There is no required interpretation of these fields, and therefore their meaning
 is not further described in the Normative Type definitions below.</p>
 
 <p>An object of Normative Type may optionally include a field
@@ -766,14 +813,12 @@ of possible values each described by an n-tuple).</p>
     <dd>
 
       <span class="term">dim</span> indicates the dimensions of the matrix. If <span
-      class="term">dim</span> is not present in an instance of NTMatrix, then that
-      NTMatrix MUST be interpreted as describing a vector. If <span
       class="term">dim</span> is not present, <span class="term">value</span> MUST be
-      interpreted as a vector of length equal to the number of elements of <span
+      interpreted as a vector, of length equal to the number of elements of <span
       class="term">value</span>. If <span class="term">dim</span> is present, then it
       must have 1 or 2 elements; its one element value or both elements values MUST
       be > 0, and the number of elements in <span class="term">value</span> MUST be
-      the product of the elements of <span class="term">dim</span>. If <span
+      equal to the product of the elements of <span class="term">dim</span>. If <span
       class="term">dim</span> is present and contains a single element, then the
       NTMatrix MUST be interpreted as describing a vector. A <span
       class="term">dim</span> of 2 elements describes a matrix, where the first
@@ -1131,7 +1176,7 @@ combines, several measurements, or observations. An NTAggregate would give a sim
 summary statistic <a class="bib" href="#bib:agg">bib:agg</a> about the central
 tendency and dispersion of a set of data points.</p>
 
-<p>Use cases: for instance, an NTAggreagte could be used to summarize the value of one
+<p>Use cases: for instance, an NTAggregate could be used to summarize the value of one
 beam position offset reading over some number of pulses (N). It also includes the
 time range of the sampled points, so it could be used for time domain rebasing. For
 instance, an FPGA sending data at 10KHz, and you want to display its output,
@@ -1328,12 +1373,74 @@ NDAttrSourceEPICSPV  /** Attribute is obtained from an EPICS PV */
 </dl>
 
 
+<h2>Appendix A: Possible Future Additions to this Specification</h2>
 
-<h2>Non-Normative Types</h2>
-<p>Users and developers using EPICS V4 are free to define their own special
-purpose types on top of PVStructure (or the other PV Types) but should note
-that only the Normative Types defined here (NT*) above, are intended to be
-understood by all general purpose EPICS V4 services and clients. </p>
+<p>The following types may be added to this specification, following further
+refinement and according to feedback to this draft. Comments welcome on these
+definitions or alternatives.</p>
+
+<h3>anydata_t</h3>
+<p>anydata_t describes a pvData structure that contains an array of elements, each of
+which may be a scalar array or structure array. Such structures would then be able to
+transport an essentially unlimited variety of data. However, the use of anydata_t in a
+Normative Type's specification would considerably complicate agent implementations
+that may receive instances of those Normative Types.</p>
+
+<pre>
+<span class="nterm">anydata_t :=</span>
+structure 
+  {  scalar_t[] <name> | structure_t[] <name> }1+  
+</pre>
+
+<h3>NTAny</h3>
+
+<p><span class="term">NTAny</span> would be a Normative Type for interoperation of
+essentially data structure, plus description, alarm and timeStamp.</p>
+
+<pre>
+structure NTAny  
+  string      description      : opt
+  time_t      timeStamp     : opt
+  alarm_t     alarm         : opt
+  string[]    label         : opt
+  <span class="nterm">anydata_t</span> value
+</pre>
+
+<h3>NTSnapShot</h3>
+
+<p><span class="term">NTSnapshot</span> would be the Normative Type for
+interoperation of EPICS V4 snapshot and configuration services, such as MASAR, with
+their clients.</p>
+
+<pre>
+structure NTSnapshotData             // snapshot data [that may inc waveform ]
+   time_t timeStamp                  // time of snapshot
+    <span class="nterm">time_t</span>      timeStamp   :opt
+    <span class="nterm">alarm_t</span>     alarm       :opt
+   string[] channelNames
+   alarm_t[] alarms                  // Alarm of each data value
+   anydata_t value
+</pre>
+<p class="ed">Maybe rather than anydata_t here, we should say any Normative Type
+instance? That would usefully constrain the potential types agents must
+implement. </p>
+
+<h3>NTArchive</h3>
+
+<p><span class="term">NTArchive</span> would be the Normative Type for
+interoperation of EPICS V4 capable archive services, with
+their clients.</p>
+
+<pre>
+structure NTArchivedata
+   string channelName                 // EPICS channel name
+   time_t[] timeStamps                // Timestamps of each sample
+   alarm_t[] alarms                
+   anydata_t value                    
+</pre>
+<p class="ed">Maybe rather than anydata_t here, we should say any Normative Type
+instance? That would usefully constrain the potential types agents must
+implement. </p>
 
 <h2>Bibliography</h2>
 <dl>
@@ -1358,6 +1465,7 @@ understood by all general purpose EPICS V4 services and clients. </p>
     rdbService, example EPICS V4 service, <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService</a>
   </dd>
 </dl>
+
 
 </div>
 
