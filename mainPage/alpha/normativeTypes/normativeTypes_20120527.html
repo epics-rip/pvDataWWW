@@ -2,187 +2,150 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
 <head>
+
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <meta name="keywords" content="EPICS, EPICSv4" />
   <title>EPICS V4 Normative Types</title>
-  <link rel="stylesheet" type="text/css"
-  href="../../base.css" />
-  <link rel="stylesheet" type="text/css"
-  href="../../epicsv4.css" />
+  <link rel="stylesheet" type="text/css" href="../../base.css" />
+  <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
+
+  <!-- Styles comments:
+   opt - Markup for standard optional fields of Normative Types
+   nterm - Non-terminal symbol, in the grammar of Normative types
+   term - Terminal symbol in the grammar of Normative Types
+   user - A replacement string in the grammar of Normative Types,
+          ie user programmer supplies value.
+   ed   - Comments included by the editor of this document.
+  -->
   <style type="text/css">
-/*<![CDATA[*/
+  /*<![CDATA[*/
      .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
      table { margin-left: auto; margin-right: auto }
      .diagram { text-align: center; margin: 2.5em 0 }
      span.opt { color: grey }            
-                                         
      span.nterm { font-style:italic }    
-     span.term { font-family:courier }   // A terminal in the grammar of Normative
-                                         // Type descriptions
-     span.user { font-family:courier }   // A user defined symbol, that is a symbol
-                                         // replacement in the grammar of Normative Types
+     span.term { font-family:courier }   
+     span.user { font-family:courier }   
      span.user:before { content:"<" }
      span.user:after { content:">" }
-/*]]>*/</style>
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
 
-<!--
-The following Javascript Table of Contents generator has been shamelessly
-purloined from the following blog:
-http://blog.magnetiq.com/post/497600148/automatic-table-of-contents-generation
-Minor change to the script found there: .* was added to
-the regex that matches h tags, so it matches not just say <h2> but <h2 
-class="nocount"> etc. 
--->
-<script type="text/javascript">
-window.onload = function () {
-        var toc = "";
-        var level = 0;
-
-	document.getElementById("contents").innerHTML =
-		document.getElementById("contents").innerHTML.replace(
-			/<h([\d]).*>([^<]+)<\/h([\d])>/gi,
-			function (str, openLevel, titleText, closeLevel) {
-				if (openLevel != closeLevel) {
-					return str;
-				}
-
-				if (openLevel > level) {
-					toc += (new Array(openLevel - level + 1))
-                                               .join("<ol>");
-				} else if (openLevel < level) {
-					toc += (new Array(level - openLevel + 1))
-                                               .join("</ol>");
-				}
-
-				level = parseInt(openLevel);
-
-				var anchor = titleText.replace(/ /g, "_");
-				toc += "<li><a href=\"#" + anchor + "\">"
-                                       + titleText + "</a></li>";
-
-				return "<h" + openLevel + "><a name=\"" + anchor
-                                       + "\">" + titleText + "</a></h" + closeLevel
-                                       + ">";
-			}
-		);
-
-	if (level) {
-		toc += (new Array(level + 1)).join("</ol>");
-	}
-
-	document.getElementById("toc").innerHTML += toc;
-};
-</script>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="../../script/tocgen.js"></script>
 
 </head>
 		
 <body>
 
-<div class="head">
-<h1>EPICS V4 Normative Types</h1>
+  <div class="head">
+    <h1>EPICS V4 Normative Types</h1>
 
-<h2 class="nocount" id="L51">EPICS V4 Normative Types, Editors' Draft, 2-Mar-2012</h2>
-<dl>
-  <dt>Latest version:</dt>
-    <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
-  <dt>This version:</dt>
-    <dd><a href="normativeTypes_2012030.html">normativeTypes_20120302.html</a></dd>
-  <dt>Previous version:</dt>
-    <dd><a
-      href="normativeTypes_20120120.html">normativeTypes_20120120.html</a></dd>
-  <dt>Editors:</dt>
-    <dd>Greg White, SLAC, PSI</dd>
-    <dd>Bob Dalesio, BNL</dd>
-    <dd>James Rowland, Diamond</dd>
-    <dd>Marty Kraimer, BNL</dd>
-</dl>
+      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 27-May-2012</h2>
+      <dl>
+	<dt>Latest version:</dt>
+	  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
+	<dt>This version:</dt>
+	  <dd><a href="normativeTypes_20120527.html">normativeTypes_20120527.html</a></dd>
+	<dt>Previous version:</dt>
+	  <dd><a href="normativeTypes_20120418.html">normativeTypes_20120418.html</a></dd>
+	<dt>Editors:</dt>
+	  <dd>Greg White, SLAC, PSI</dd>
+	  <dd>Bob Dalesio, BNL</dd>
+	  <dd>James Rowland, Diamond</dd>
+	  <dd>Marty Kraimer, BNL</dd>
+	  <dd>Mark Rivers, APS (Invited Expert)</dd>
+      </dl>
+
+      <h2 class="nocount">Abstract</h2>
+
+      <p>This document defines a standard set of data types and data structures, to
+      aid interoperability of peers at the application level of an EPICS V4 network.</p>
+
+      <p>The types described here are approximately equivalent to EPICS V3 "DBR
+      types", though Normative Types extend the concept to structured
+      data. Additionally, these types may be used to define pvIOC records, or may be
+      used purely for data exchange though the dynamic data exchange interfaces
+      offered by pvAccess and pvData.</p>
+
+      <p>The function of each Normative Types is described, and their type data
+      structures are defined.</p>
+
+      <p>For more information about EPICS, please refer to the home page of the <a
+       href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
+      Control System</a>.</p>
 
 
-<h2 class="nocount" id="L84">Abstract</h2>
+      <h2 class="nocount">Status of this Document</h2>
+      <!-- Statement about why this version exists -->
 
-<p>This document defines a standard set of data types and data structures, to aid
-interoperability of peers at the application level of an EPICS V4 network.</p>
+      <p>This is the 27 May 2012 version of the Normative Types document. This
+      version adds meta data and self identification, and Appendix of items likely
+      to be added in future drafts.</p>
 
-<p>The 
-types described here are approximately equivalent to EPICS V3 "DBR types", though Normative
-Types extend the concept to structured data. Additionally, these types may be
-used to define pvIOC records, or may be used purely for data exchange though
-the dynamic data exchange interfaces offered by pvAccess and pvData.</p>
+      <p class="ed">TODO: Add version number in meta. Each optional field of each
+      Normative type, where the option field is not in the Standard Optional Fields
+      (as so whose semantics are deliberately not defined), must be defined within
+      the normative type. Ie, find all display and control, and define what they
+      mean. </p>
+      
+      <p>See <a href="#appendix_a:_possible_future_additions_to_this_specification">
+      Appendix A</a> for items that may be added to future revisions of this
+      specification. </p>
 
-<p>The function of each Normative Types is described, and their type data structures are
-defined.</p>
+      <p> This version is an Editors Draft towards the First Public Working
+      Draft. The First Public Working Draft will be intended for the EPICS community
+      to review and comment. Resulting comments will drive subsequent revisions of
+      the Normative Types specification and the EPICS V4 Working Group's reference
+      implementations of software that helps create, populate and exchange Normative
+      Type PVData.  </p>
 
-<p>For more information about EPICS, please refer to the home page of the <a
-href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
-Control System.</a></p>
+      <p> Comments are welcome, though bear in mind this is a pre-public release
+      version. </p>
 
+      <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
+      highlighted (through style sheets, and in uppercase in the source) are used in
+      accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
+      2119) indicates exemption. </p>
 
-<h2 class="nocount" id="L96">Status of this Document</h2>
-<!-- Statement about why this version exists -->
-
-<p>This is the 2nd March 2012 version of the Normative Types document.
-This version includes major changes to the type description formalism used,
-renames a number of Normative Types descriptions, introduces NTVariantArray, and
-changes the definition of most types. In short, a major revision.</p>
-
-<p>A notable absence from this document is how Normative Types should identify
-themselves as such. At present, the name of the structure which encapsulates the
-type conforming to a Normative Type, may be named with the name of the type. For
-instance, a structure that should be interpreted as a NTTable, should be named
-"NTTable." But
-whether this shall be the standard for self-identity is not yet decided.</p>
-<p>
-This version is an editors draft towards the First Public Working Draft. The First
-Public Working Draft will be intended for the EPICS community to review and
-comment. Resulting comments will drive subsequent revisions of the Normative Types
-specification and the EPICS V4 Working Group's reference implementations of
-software that helps create, populate and exchange Normative Type PVData.
-</p>
-
-<p> Comments are welcome, though bear in mind this is a pre-public release
-version. 
-</p>
-
-<p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
-highlighted (through style sheets, and in uppercase in the source) are used in
-accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
-2119) indicates exemption. </p>
-
-</div>
+</div> <!-- head -->
 
 <div id="toc">
-  <h2 class="nocount">Table of Contents</h2>
+  <h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
 </div>
 
-<hr/>
-<div id="contents">
-	  
-<h2 id="L124">Introduction</h2>
+<div id="contents" class="contents">	  
+<hr />
+<h2 id="introduction">Introduction</h2>
 
-<p>The Normative Types described in this document are intended to be a set of data
-types, including structured data types, that are suitable to be used as the
-application level data package of a significant portion of data exchanges. In
+<p>The Normative Types described in this document are a set of software designs for high
+  level <a href="http://en.wikipedia.org/wiki/Data_type#Composite_types" >composite data
+types</a> suitable for the application level data exchange between EPICS V4 network endpoints. In
 particular, they are intended for use in online scientific instrument
-operations. Since EPICS V4 makes it possible to exchange an infinite variety of
-structured data types between EPICS V4 peers, the intention is that by conforming
-only to Normative Types, a peer can ensure that any Normative Type conforming client
-will be able to understand the data transmitted to it, and be able to take processing
-steps appropriate to that data. </p>
+operations. The intention is that where the endpoints in an EPICS V4 network all use only 
+Normative Types, each peer in the network should be able to understand all the data
+transmitted to it, at least syntactically, and be able to take processing
+steps appropriate to that data.</p>
 
-<p>The EPICS version 4 module PVData <a href="#bib:pvdata">[bib:pvdata]</a> supplies
+<p>The EPICS version 4 module PVData <a class="bib" href="#bib:pvdata">bib:pvdata</a> supplies
 a typing mechanism and object management API for efficiently defining, creating,
-accessing and updating memory resident structured data. EPICS V4 module PVAccess <a
- href="#bib:pvaccess">[bib:pvaccess]</a> supports the efficient exchange of pvData
+accessing and updating memory resident structured data. EPICS V4 module PVAccess <a class="bib"
+ href="#bib:pvaccess">bib:pvaccess</a> supports the efficient exchange of PVData
 defined data between EPICS V4 network peers. EPICS V4 Normative Types, defines some
-general purpose data types, that build on the pvData. These are designed to be
+general purpose data types, that build on the PVData. These are designed to be
 generally applicable to controls and the application level of scientific
 instruments. </p>
 
-<p>The simplest example is the Normative Type "NTScalar". When a client receives a pvData datum which identifies itself as being
-of type NTScalar, the client will know to expect the scalar's value will be
-accompanied by an indication of alarm severity and a timestamp (see example
-below).</p>
+<p>The simplest example is the Normative Type "NTScalar". When a client receives a
+PVData datum which identifies itself as being of type NTScalar, the client will know
+to expect the scalar's value will be accompanied by an indication of alarm severity
+and a timestamp (see example below).</p>
 
 <p>An example of a simple normative type is the NTScalar:</p>
 <pre>structure NTScalar
@@ -192,7 +155,7 @@ below).</p>
 </pre>
 <p>
 
-A more complex example; if a client receives a pvData datum which identifies itself as being
+A more complex example; if a client receives a PVData datum which identifies itself as being
 of type NTTable, this document specifies that it should expect the datum to contain 0 or more
 arrays of different types. The definition of NTTable below will say that the client
 should interpret the arrays as the columns of a table,
@@ -218,15 +181,12 @@ agent that is doing the sending.</p>
 <h2 id="metalang">Description of Normative Types</h2>
 
 <p>All the EPICS V4 Normative Types are defined as particular structure instance
-definitions of a pvData Structure. Put simply, Normative Types are pvData structures,
-specifically "top level structures" <span class="ed">Needs reference, I couldn't find
-a definition - Marty!</span>. This is true even of the Normative Types describing
+definitions of a PVData <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#L184" >structure</a>. This is true even of the Normative Types describing
 simple values like a single int, since a given Normative Type defined datum may
 include alarm or timestamp. Hence, all Normative Types are structures. The fields of
 a given Ntype then, can be ascertained at runtime by the <a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
->pvData Field introspection interface</a> <a class="bib" href="#bib:pvdata"
->bib:pvdata</a>.</p>
+ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485">
+pvData Field introspection interface</a> <a class="bib" href="#bib:pvdata">bib:pvdata</a>.</p>
 
 
 <p><span style="font-weight:bold;">Definition</span>: Normative Type</p>
@@ -278,12 +238,12 @@ field may be optional, and may be described along with a comment:</p>
 <pre>structure <span class="term">NTname</span>
    { ( <span class="nterm">ntfield</span> fieldName [:opt] [// comment text] ) }<sub>1+</sub>
 </pre>
-where: 
+<p>where:</p> 
 <dl>
   <dt><span class="term">NTname</span></dt>
     <dd>The name of the Normative Type</dd>
   <dt><span class="nterm">ntfield</span></dt>
-    <dd>One of the valid <a href="#L177">Normative Type Fields</a> as defined below</dd>
+    <dd>One of the valid <a href="#normative_type_fields">Normative Type Fields</a> as defined below</dd>
   <dt>fieldName</dt>
     <dd>The identifier of the field. Where the field is a terminal in the grammar
    (ie, does not have  &lt;&gt; around its name) then the fieldName is a PVData Field
@@ -296,7 +256,7 @@ where:
 </dl>
 
 
-<h2  id="L177">Normative Type Fields</h2>
+<h2>Normative Type Fields</h2>
 
 <p>This section defines the fields that may appear in a Normative Type's
 definition.</p>
@@ -315,22 +275,22 @@ one of the following: </p>
 | <span class="nterm">time_t[]</span>        // an array of points in time
 | <span class="nterm">alarm_t</span>         // a summary diagnostic of a control system event
 | <span class="nterm">alarm_t[]</span>       // an array of summary diagnostics
-| <span class="nterm">alarmLimit_t</span>    // value thresholds for a control system diagnostic report
-| <span class="nterm">alarmLimit_t[]</span>  // an array of threshold values
+| <span class="nterm">alarmlimit_t</span>    // value thresholds for a control system diagnostic report
+| <span class="nterm">alarmlimit_t[]</span>  // an array of threshold values
 | <span class="nterm">display_t</span>       // meta data of displayed data
 | <span class="nterm">display_t[]</span>     // an array of display mata data
-| <span class="nterm">control_t</span>       // <span class="ed">No idea</span>
-| <span class="nterm">control_t[]</span>     // <span class="ed">No idea</span>
+| <span class="nterm">control_t</span>       // control setpoint range boundaries 
+| <span class="nterm">control_t[]</span>     // an array of control setpoint range boundaries 
 </pre>
 
-<h3 id="L241">Simple Normative Type Fields - scalar types</h3>
+<h3>Simple Normative Type Fields - scalar types</h3>
 
 <p>Note that of all the Normative Type fields only <span class="nterm">scalar_t</span> is of simple type,
 that is, having a single or array value. All the others are represented by a
 structure (see <a href="#structuredNormativeFields">Structure Normative
 Fields</a> below). </p>
 
-<h4 id="L248">scalar_t</h4>
+<h4>scalar_t</h4>
 
 <p>The field is a scalar value. Scalar fields would be implemented with PVData field
   Type <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485" >"scalar"</a>:</p>
@@ -347,7 +307,7 @@ Fields</a> below). </p>
 |  string   // UTF-8 *
 </pre>
 
-<h4 id="L263">scalar_t[]</h4>
+<h4>scalar_t[]</h4>
 
 <p>The field is an array of scalars. Scalar array fields would be implemented with PVData field
   Type <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485" >"scalarArray"</a>:</p>
@@ -375,7 +335,7 @@ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documenta
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
 >"structureArray"</a>.</p>
 
-<h4 id="L273">enum_t</h4>
+<h4>enum_t</h4>
 
 <p>An <span class="nterm">enum_t[]</span> describes an enumeration. The field is a
   structure describing a value drawn from a given set of valid values also given. It
@@ -386,7 +346,7 @@ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documenta
 <pre>
 <span class="nterm">enum_t</span> :=
 
-structure <span class="user">aname</span> 
+structure enum 
     int index
     string[] choices
 </pre>
@@ -403,12 +363,6 @@ structure <span class="user">aname</span>
       of the enumeration.</dd>
 </dl>
 
-<p class="ed">In the version of this doc I started from, the structure name of an
-enum was defined to anyName, but that's not true of the other Ntype fields - they all
-must be named by their field type. Would have thought unless we invent a system for
-self id of Ntype fields, an enum field must also self identify by being called an
-"enum"?</p>
-
 <h4>enum_t[]</h4>
 
 <p>An <span class="nterm">enum_t[]</span> describes an array of enumerations. The
@@ -419,7 +373,7 @@ self id of Ntype fields, an enum field must also self identify by being called a
   class="nterm">enum_t</span> above.</p>
 
 
-<h4 id="L295">time_t</h4>
+<h4>time_t</h4>
 
 <p>A <span class="nterm">time_t</span> describes a defined point in time. The field is a structure describing a time relative to
 midnight on January 1st, 1970 UTC. It is implemented as a pvData field of Type
@@ -444,6 +398,10 @@ structure timeStamp
       used by EPICS V4 agents in a user defined way</dd>
 </dl>
 
+<p>Interpretation: The point in time being identified by a <span
+class="nterm">time_t</span>, is given by Jan 1, 1970 00:00:00 UTC plus some
+nanoseconds given by its <span class="term">secsPastEpoch</span>
+times 10<sup>9</sup> plus its <span class="term">nanoseconds</span>.</p>
 
 <p>pvData provides two helper classes for a timeStamp structure: timeStamp, and
 PVTimeStamp.</p>
@@ -458,11 +416,16 @@ PVTimeStamp.</p>
  class="nterm">time_t</span> above.</p>
 
 
-<h4 id="L324">alarm_t</h4>
+<h4>alarm_t</h4>
 
-<p>An <span class="nterm">alarm_t</span> is a <span class="ed">What precisely? I have no
-idea. Marty or someone who can express what an alarm is functionally has to write
-this. Must include what severity and status actually are. </span>.  The field is a
+<p>An <span class="nterm">alarm_t</span> describes a diagnostic of the value of a
+control system process variable. It indicates essentially whether the associated value is good or
+bad, and whether agent systems should alert people to the status of the
+process.</p>
+
+<p> Processes in EPICS V3 and V4 IOCs include extensive support for evaluating
+alarm conditions. The definition of the fields in an <span class="term">alarm</span>
+are given in <a class="bib" href="#bib:epicsrecref">bib:epicsrecref</a>.  The field is a
 structure describing an alarm. It is implemented as a PVData field of Type
 <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
@@ -481,16 +444,20 @@ structure alarm
 <dl>
   <dt>severity</dt>
       <dd>severity is defined as an int (not an <span class="nterm">enum_t</span>), but
-      MUST be functionally interpreted as the enumeration {NONE, MINOR, MAJOR,
-      INVALID, UNDEFINED }</dd>
+      MUST be functionally interpreted as the enumeration
+	{noAlarm, minorAlarm, majorAlarm, invalidAlarm, undefinedAlarm } indexed from
+	noAlarm=0</dd>
   <dt>status</dt>
       <dd>status is defined as an int (not an <span class="nterm">enum_t</span>), but
-      MUST be functionally interpreted as the enumeration {NONE, DEVICE, DRIVER,
-      RECORD, DB, CONF, UNDEFINED, CLIENT } </dd>
+      MUST be functionally interpreted as the enumeration {noStatus, deviceStatus,
+	driverStatus, recordStatus,
+    dbStatus, confStatus, undefinedStatus, clientStatus } indexed from noStatus=0.</dd>
   <dt>message</dt>
     <dd>A message string.</dd>
 </dl>
 
+<p>Interpretation MUST be as with V3 IOC record processing, as described in the <a
+class="bib" href="#bib:epicsrecref">epicsrecref</a>.</p>
 <p>pvData provides two helper classes for an alarm structure: alarm, and
 PVAlarm.</p>
 
@@ -504,74 +471,100 @@ PVData field of Type <a
 class="nterm">alarm_t</span> above.</p>
 
 
-<h4 id="L348">alarmLimit_t</h4>
+<h4>alarmlimit_t</h4>
 
-<p>An <span class="nterm">alarmLimit_t</span> is a structure that describes a
-diagnostic of the present value of the Normative Type instance in which it is
-used. The diagnostic is defined by two numerical
-intervals, given by their low and high limits. <span
-class="nterm">alarmLimit_t</span> is implemented as a PVData field of Type <a
+
+<p>An <span class="nterm">alarmlimit_t</span> is a structure that gives the numeric
+  intervals to be used for the high and low limit ranges of an associated limit type
+  alarm. The specific instance of the alarm to which the alarmlimit refers, is not
+  specified in the alarmlimit structure, it may be any EPICS alarm.  
+<span
+class="nterm">alarmlimit_t</span> is implemented as a PVData field of Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structure"</a> with the following form: </p>
 
 
-<pre><span class="nterm">alarmLimit_t</span> :=
+<pre><span class="nterm">alarmlimit_t</span> :=
 
-structure alarmLimit
-    double highAlarm
-    double highWarning
-    double lowWarning
-    double lowAlarm
+structure alarmlimit
+    double highalarm
+    double highwarning
+    double lowwarning
+    double lowalarm
  </pre>
 
 <p>where:</p>
 <dl>
-  <dt>alarmLimit</dt>
-    <dd>The structure must have the name "alarmLimit".</dd>
-  <dt>highAlarm</dt>
-    <dd>The value field is &gt;= this value. <span class="ed">Needs work</span></dd>
-  <dt>highWarning</dt>
-    <dd>The value field is &gt;= this value. <span class="ed">Needs work</span></dd>
-  <dt>lowWarning</dt>
-    <dd>The value field is &lt;= this value. <span class="ed">Needs work</span></dd>
-  <dt>lowAlarm</dt>
-    <dd>The value field is &lt;= this value. <span class="ed">Needs work</span></dd>
+  <dt>alarmlimit</dt>
+    <dd>The structure must have the name "alarmlimit".</dd>
+  <dt>highalarm</dt>
+    <dd>Upper bound of allowed operating range of the value to which the alarmlimit refers</dd>
+  <dt>highwarning</dt>
+    <dd>Upper bound of normal operating range of the value to which the alarmlimit refers</dd>
+  <dt>lowwarning</dt>
+    <dd>Lower bound of normal operating range of the value to which the alarmlimit refers</dd>
+  <dt>lowalarm</dt>
+    <dd>Lower bound of allowed operating range of the value to which the alarmlimit refers.</dd>
 </dl>
 
-<p>The interpretation is that where the Normative Type instance's value is:
+<p>The interpretation is that where the Normative Type instance's value field is:
 <ul>
-  <li> inside the (lowWarning,highWarning) interval, the value is in its normal operating range</li>
-  <li> outside the (lowAlarm,highAlarm) interval, the value is outside its allowed
- operating range</li>
-  <li> neither inside the (lowWarning,highWarning) nor outside the
- (lowAlarm,highAlarm) then the value is outside its normal operating range but is still inside its allowed
- range.</li>
+
+  <li> outside the closed interval [lowwarning,highwarning] the value SHOULD be
+  considered out of its <em>normal</em> operating range</li>
+
+  <li> outside the closed interval [lowalarm,highalarm], the value SHOULD be
+  considered out of its <em>allowed</em> operating range</li>
+
+ <li> neither inside (lowwarning,highwarning) nor outside [lowalarm,highalarm] then
+ the value SHOULD be considered out of its normal operating range but is still inside
+ its allowed range.</li>
+
 </ul>
+
 <p>Since the above conditions do not at all form a three valued function over all
-possible values of the limits, the invariant <em>lowAlarm <= lowWarning <= highWarning <= highAlarm</em>
-SHOULD be observed.</p>
+possible values of the limits, the invariant <em>lowalarm <= lowwarning <=
+highwarning <= highalarm</em> SHOULD be observed when setting the those thresholds.</p>
 
+<p>Code in both V3 IOC record support and in V4 IOC  
+raises alarms based on how the alarm limits are valued according to the following
+algorithm:</p>
+<pre>
+If the value is >= highalarm then a major alarm is raised
+else if value>=highwarning then a minor alarm is raised
+else if value<= lowalarm then a major alarm is issued
+else if value<=lowwarning then a minor alarm is raised
+else do not raise an alarm.
+</pre>
 
-<p>Where an <span class="nterm">alarmLimit_t</span> structure instance is present
+<p>Where an <span class="nterm">alarmlimit_t</span> structure instance is present
 in a Normative Type structure, it MUST be interpreted as referring to that
 Normative Type's field named "value". Therefore it is only used in Normative Types
 that have a single numeric "value" field.</p>
 
-<h4>alarmLimit_t[]</h4>
+<h4>alarmlimit_t[]</h4>
 
-<p>An alarmLimit_t[] is an array of alarm limit conditions. The field is an array of
+<p>An alarmlimit_t[] is an array of alarm limit conditions. The field is an array of
 structures each describing an alarm limit. It is implemented as a PVData field of
 Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structureArray"</a> each element of which with the form of <span
-class="nterm">alarmLimit_t</span> above.</p>
+class="nterm">alarmlimit_t</span> above.</p>
 
 
-<h4 id="L380">display_t</h4>
+<h4>display_t</h4>
 
-<p>A <span class="nterm">display_t</span> is a <span class="ed">What precisely? I have no idea. Marty or someone who can express what a
-display is functionally has to write this. </span>.
-The field is a structure describing an alarm condition. It is implemented as a PVData field of Type
+<p>A <span class="nterm">display_t</span> is a structure that describes some typical attributes of
+a numerical value that are of interest when displaying the value on a computer screen
+or similar medium. The <span class="term">units</span> field SHOULD contain a string representation of the
+physical units for the value, if any. The <span class="term">description</span> field SHOULD contain a
+short (one-line) description of what the value represents, such as can be
+used as a label in a display. The fields <span class="term">lowlimit</span>
+and <span class="term">highlimit</span> represent the
+range in between which the value should be presented as adjustable.
+</p>
+<p>
+The field is a structure describing a <span class="nterm">display_t</span>. It is implemented as a PVData field of Type
 <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
 >"structure"</a> with the following form: </p>
@@ -579,8 +572,8 @@ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documenta
 <pre><span class="nterm">display_t</span> :=
 
 structure display
-    double limitlow
-    double limithigh
+    double lowlimit
+    double highlimit
     string description
     string format
     string units
@@ -590,14 +583,16 @@ structure display
 <dl>
   <dt>display</dt>
     <dd>The structure must have the name "display". </dd>
-  <dt>limitlow</dt>
-    <dd>The low limit for the value field. <span class="ed">Needs work</span></dd>
-      <dt>limithigh</dt>
-    <dd>The limit limit for the value field. <span class="ed">Needs work</span></dd>
+  <dt>lowlimit</dt>
+    <dd>The lower bound of range within which the value must be set, to be presented to a user </dd>
+      <dt>highlimit</dt>
+    <dd>The upper bound of range within which the value must be set, to be presented to a user </dd>
   <dt>description</dt>
-    <dd>A description for the value field.</dd>
+    <dd>A textual summary of the variable that the value quantifies</dd>
   <dt>format</dt>
-    <dd>A format for converting the value field to a string.</dd>
+    <dd>A format for converting the value field to a string <span class="ed">Needs
+      work: What is display.format? What's it for and what are examples? If it's a sprintf pattern, which syntax must
+it conform to - C or Java? </span></dd>
   <dt>units</dt>
     <dd>The units for the value field.</dd>
 </dl>
@@ -610,16 +605,22 @@ that have a single numeric "value" field.</p>
 <h4>display_t[]</h4>
 
 <p>A display_t[] is an array of <span class="nterm">display_t</span>. The field is an array of
-structures each describing a <span class="ed">What precisely?</span>. It is implemented as a PVData field of
+structures each describing the display media oriented metadata of some corresponding
+process variable value, as described by <span class="nterm">display_t</span> above. It is implemented as a PVData field of
 Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structureArray"</a> each element of which with the form of <span
 class="nterm">display_t</span> above.</p>
 
 
-<h4 id="L412">control_t</h4>
-<p>An <span class="nterm">control_t</span> is a <span class="ed">What precisely? I have no
-idea. </span>. It is implemented as a PVData field of
+<h4>control_t</h4>
+<p>An <span class="nterm">control_t</span> is a structure that describes a range,
+given by the interval
+(limitlow,limithigh), within which it is expected some control software or hardware
+shall bind the control PV to which this Normative Type
+instance's value field refers.</p>
+<p>
+The field is a structure describing a <span class="nterm">control_t</span>. It is implemented as a PVData field of
 Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structure"</a> with the following form: </p>
@@ -627,26 +628,24 @@ Type <a
 <pre><span class="nterm">control_t</span> :=
 
 structure control
-        double limitlow
-        double limithigh</pre>
+        double lowlimit
+        double highlimit</pre>
 
 <p>where:</p>
 <dl>
   <dt>control</dt>
     <dd>The structure must have the name "control"
       array.</dd>
-  <dt>limitlow</dt>
-    <dd>The control low limit for the value field. <span class="ed">Whatever that
-      means</span></dd>
-      <dt>limithigh</dt>
-    <dd>The control high limit for the value field. <span class="ed">Whatever that
-      means</span></dd>
+  <dt>lowlimit</dt>
+    <dd>The control low limit for the value field</dd>
+      <dt>highlimit</dt>
+    <dd>The control high limit for the value field.</dd>
 </dl>
 
 <h4>control_t[]</h4>
 
 <p>A control_t[] is an array of <span class="nterm">control_t</span>. The field is an
-array of structures each describing a <span class="ed">What precisely?</span>. It is
+array of structures each describing the setpoint range interval of some process variable. It is
 implemented as a PVData field of Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structureArray"</a> each element of which with the form of <span
@@ -654,16 +653,57 @@ class="nterm">control_t</span> above.</p>
 
 
 
-<h2  id="L507">Normative Type Standard Optional
-Fields</h2>
+<h2>Normative Type Meta Data</h2>
 
+<p>Meta data are included in runtime instances of Normative Types. The meta data
+includes to which Normative Type the structure instance conforms, version
+information, and other data to aid efficient processing, diagnostics and
+displays.</p>
 
-<p>Since a primary reason for Normative Types is to interoperably pass data between EPICS V4
-agents, particularly where the receiver may be generic code that takes action on the data alone
-with
-no context (think caget), some support for optional meta data are included.</p>
+<h3>Self Identification</h3>
 
-<p>There is no required interpretation of these fields, and therefore their meaning
+<p>Each runtime instance of a normative type MUST include exactly one structure type Field,
+named _META, defined below, that says to which Normative Type the instance conforms,
+together with other descriptive data about the instance. Agents can use this meta
+data to check the received type was as expected. </p>
+
+<p><span class="nterm">meta_t</span> describes a structure, named _META, whose fields define meta
+data of the Normative Type instance in which the _META was included. </p>
+
+<pre><span class="nterm">meta_t</span> :=
+
+structure _META
+        boolean <span class="user">NTName</span>    
+        boolean hasAlarm
+        boolean hasDescriptor
+        boolean hasTimeStamp</pre>
+
+<p>where:</p>
+<dl>
+  <dt><span class="user">NTName</span></dt>
+    <dd>Is the name of the Normative Type in section 5 below. That is, the name of
+      the first field of _META MUST be a boolean, and its field name MUST be the name
+      of the normative type to which the structure containing _META conforms. NOTE
+      that the value of the boolean so named, is not important. </dd>
+  <dt>hasDescriptor</dt>
+    <dd>A boolean value that describes whether the Normative Type instance contains a
+      descriptor field. </dd>
+  <dt>hasAlarmM</dt>
+    <dd>A boolean value that describes whether the Normative Type instance contains an
+      alarm field. </dd>
+  <dt>hasTimeStamp</dt>
+    <dd>A boolean value that describes whether the Normative Type instance contains a
+      timeStamp field. </dd>
+</dl>
+<p><span
+      class="nonnorm">The reason for the somewhat curious identification mechanism
+      is so that the Normative Type of a structure can be communicated in the
+introspection data, and so need not be exchanged with every instance exchange.</span></p>
+
+<h3>Standard optional meta data fields</h3>
+
+<p>One instance of each of the following fields may be included in a Normative Type
+instance structure. There is no required interpretation of these fields, and therefore their meaning
 is not further described in the Normative Type definitions below.</p>
 
 <p>An object of Normative Type may optionally include a field
@@ -686,14 +726,14 @@ field. </p>
 </pre>
 
 
-<h2  id="L525">General Normative Types</h2>
+<h2>General Normative Types</h2>
 
 <p>The General Normative Types are for encapsulating data of any kind of
 application or use case. Compare to <a href="#specificnormativetypes ">Specific
 Normative Types</a> defined later in this document, and which are oriented to
 particular use cases.</p>
 
-<h3 id="L534">NTScalar</h3>
+<h3>NTScalar</h3>
 
 <p>NTScalar is an EPICS V4 Normative Type that describes a single scalar value plus metadata:</p>
 <pre>structure  NTScalar
@@ -712,7 +752,7 @@ particular use cases.</p>
       "value" and can be of any simple scalar type as defined above.</dd>
 </dl>
 
-<h3 id="L578">NTEnum</h3>
+<h3>NTEnum</h3>
 
 <p>NTEnum is an EPICS V4 Normative Type that describes an enumeration (a closed set
 of possible values each described by an n-tuple).</p>
@@ -734,8 +774,7 @@ of possible values each described by an n-tuple).</p>
   <dt>longdescriptions</dt>
     <dd>Text which may be used to add context and information for each choice, such
       as may be used in displays. If given, longdescriptions MUST be an array of
-      strings of length equal to the same instance's <span
-      class="term">values.choices</span> field. Each 
+      strings of length equal to <span class="term">values.choices</span>. Each 
       element of the array SHOULD describe the ordinally corresponding
       <span class="term">values.choices</span> element. For instance, if the NTEnum's <span class="term">value.index</span> is valued 1,
       and longdescriptions is given, then longdescriptions[1] MUST contain a string meaningfully
@@ -743,14 +782,14 @@ of possible values each described by an n-tuple).</p>
     </dd>
  </dl>
 
-<h3 id="L612">NTMatrix</h3>
+<h3>NTMatrix</h3>
 
-<p>NTMatrix is an EPICS V4 Normative Type used to define an N-dimensional matrix of
- some numeric scalar type.</p>
+<p>NTMatrix is an EPICS V4 Normative Type used to define a matrix, specifically a
+ 2-dimensional array of real numbers.</p>
  
 <pre>structure NTMatrix
-    (boolean [] | byte[] | short[] | int[] | long[] | float[] | double[])  value
-    int[]       dim         :opt<span class="opt">
+    double[]  value
+    int[2]       dim         :opt<span class="opt">
     string      descriptor  :opt
     <span class="nterm">time_t</span>      timeStamp   :opt
     <span class="nterm">alarm_t</span>     alarm       :opt
@@ -762,24 +801,27 @@ of possible values each described by an n-tuple).</p>
 <dl>
   
   <dt>value</dt>
-    <dd>The numerical data comprising the matrix. The value is given as a single array.</dd>
+    <dd>The numerical data comprising the matrix. The value is given as a single
+    array of doubles.</dd>
     
   <dt>dim</dt>
     <dd>
 
-      <span class="term">dim</span> indicates the dimensions of the data in the value
-      array field. The number of elements in <span class="term">value</span> MUST be
-      the product of the elements of dim. If <span class="term">dim</span> is not
-      present in an instance of NTMatrix, then that NTMatrix MUST be interpreted as
-      describing a vector. If <span class="term">dim</span> is present, then all of
-      its values MUST be > 0. If <span class="term">dim</span> is present and
-      contains a single element, then the NTMatrix MUST be interpreted as describing
-      a vector. A <span class="term">dim</span> of 2 elements describes a matrix,
-      where the first element of <span class="term">dim</span> gives the number of
-      rows, and the second element of <span class="term">dim</span> gives the number
-      columns. If <span class="term">dim</span> is present and contains 2 elements,
-      of which the first is unity, and the second is not (therefore must be >1) then
-      the NTMatrix MUST be interpreted as describing a row vector. If <span
+      <span class="term">dim</span> indicates the dimensions of the matrix. If <span
+      class="term">dim</span> is not present, <span class="term">value</span> MUST be
+      interpreted as a vector, of length equal to the number of elements of <span
+      class="term">value</span>. If <span class="term">dim</span> is present, then it
+      must have 1 or 2 elements; its one element value or both elements values MUST
+      be > 0, and the number of elements in <span class="term">value</span> MUST be
+      equal to the product of the elements of <span class="term">dim</span>. If <span
+      class="term">dim</span> is present and contains a single element, then the
+      NTMatrix MUST be interpreted as describing a vector. A <span
+      class="term">dim</span> of 2 elements describes a matrix, where the first
+      element of <span class="term">dim</span> gives the number of rows, and the
+      second element of <span class="term">dim</span> gives the number columns. If
+      <span class="term">dim</span> is present and contains 2 elements, of which the
+      first is unity, and the second is not (therefore must be >1) then the NTMatrix
+      MUST be interpreted as describing a row vector. If <span
       class="term">dim</span> is present as contains 2 elements, of which the second
       is unity, and the first is not (therefore must be >1) then the NTMatrix MUST be
       interpreted as describing a column vector.
@@ -790,19 +832,17 @@ of possible values each described by an n-tuple).</p>
 <p>User agents that print or otherwise render an NTMarix SHOULD print row vector,
 column vector, and non-vector matrices appropriately.</p>
 
-<p class="ed">Do we need a specification of the memory layout of the value field?
-Such a spec would only be useful if we enable programmers to manipulate references to
-the in memory data (which is I think the point of pvData), so I would guess yes. In
-that case, do we have to say <code>value</code> MUST be laid out in memory in
-row-major order (ie C like) or column-major (Fortran, Matlab). Answer to this depends
-on whether Ntypes may be conformantly used other than in interoperations (ie, for
-processing too). If the normative spec says that it covers only interop, then it has
-no business telling a user how to represent their data prior to packaging. But if an
-instance of an NTMatrix defined structure may be used in processing, then its
-memory layout must be predictable.</p>
+<p class="nonnorm">Presently, Normative Types are intended only to specify
+interoperable data types of PVAccess data exchanges of PVData. As such, all data
+manipulation of the values in a PVData datum are through the methods of
+PVStructure. Since Normative Types do not specify agent implementation details, the
+layout of an NTMatrix's value array data in memory is not defined, and should not be
+expected to be reliably dependent on the language interface. For instance, expecting
+row-major order in memory when using the C binding, or column-major at other times
+(Fortran, Matlab), would not be sensible.</p>
       
 
-<h3 id="ntvariantarray">NTVariantArray</h3>
+<h3>NTVariantArray</h3>
 
 <p>NTVariantArray is an EPICS V4 Normative Type to define a single structure which
 contains an number of arrays, each of different type, but where the value of the
@@ -858,11 +898,97 @@ than that presently selected by <code>dataType</code> MAY be populated; in this 
       class="term">dataType</span>is that one which defines the NTVariantArray's value.</dd>
 </dl>
 
-<p class="ed">Note that NTVariantArray is the only Ntype that does not have a field
-named "value", and therefore marks an exception to a rule that would otherwise be useful for
-trivial Ntype deserializers. Should we change "dataType" to be named "value"?</p>
+<h3>NTNameValue</h3>
 
-<h2  id="L658">Specific Normative Types</h2>
+<p>NTNameValue is an EPICS V4 Normative Type that describes a system of name and
+scalar values. </p>
+
+
+<p> For the related problem of expressing a key-value system where each value may be
+array valued, see <a href="#ntvariantarray">NTVariantArray</a> or <A href="#nttable">NTTable</a>.</p>
+
+<p>Use cases: In a school, a single NTNamedValue might describe the grades from a
+ number of classes for for one student. </p>
+
+<pre>structure NTNameValue
+   string[]          name
+   <span class="nterm">scalar_t[]</span>        value   <span class="opt">
+   string            descriptor :opt
+   <span class="nterm">time_t</span>            timeStamp  :opt
+   <span class="nterm">alarm_t</span>           alarm      :opt</span>
+</pre>
+
+<p>where:</p>
+<dl>
+  <dt>name</dt>
+    <dd>The keys associated with the  <span class="term">value</span> field. Each
+      element of <span class="term">name</span>  identifies the
+      same indexed element of the <span class="term">value</span> field, using a string label. </dd>
+  <dt>value</dt>
+    <dd>The data values, each element of which is associated with the correspondingly
+      indexed element of the  <span class="term">name</span> field.</dd>
+</dl>
+
+<p>Each name (or "key") in the array of names, MUST be interpreted as being associated with its same
+indexed element of the <span class="term">value</span> array. </p>
+
+
+<h3>NTTable</h3>
+
+<p>NTTable is the EPICS V4 Normative Type for "2-d" tabular datasets.</p>
+
+<p>An NTTable is made up of a number of arrays, each array being of a scalar type. Each array
+can be thought of as a column. Each <em>i</em>th array member makes up one row, or n-tuple.</p>
+
+<p>Use case examples: a table of twiss paramaters of all
+lattice elements in an accelerator section. Another example, where the columns
+might vary call-to-call would be that of an EPICS V4 SQL database service. In that example
+one NTTable returned by the service would contain all the tabular results of a SQL SELECT,
+essentially a recoded JDBC or ODBC ResultSet - see the <a class="bib"
+href="#bib:rdbservice">rdbservice</a>.
+</p>
+
+<pre>structure NTTable
+  string[]    labels          // Very short text describing each field below, i.e. column labels
+  {<span class="nterm">scalar_t</span>[] <span class="user">colname</span>}<sub>0+</sub>    // 0 or more scalar array type instances, the columns.<span class="opt">
+  string      descriptor    : opt
+  <span class="nterm">alarm_t</span>     alarm         : opt
+  <span class="nterm">time_t</span> timeStamp          : opt</span>
+</pre>
+
+<p>where:</p>
+<dl>
+  <dt>labels</dt>
+    <dd>The table column headings of each column, each heading given as one element
+      of the array of strings. The order of labels matches the order of the
+      <span class="nterm">scalar_t</span>[] data.
+    </dd>
+</dl>
+
+<h4>Interpretation</h4>
+
+<p>This represents a table. The number of "columns" is equal to the number of fields
+which follows field "labels." Each <span class="user">colname</span>[] field has the
+data for its "column."  The value of each element of <span class="term">labels</span>
+SHOULD be used as a column heading for the corresponding <span
+class="user">colname</span> field.</p>
+
+<p>Note that the above description is given in terms of a table and its columns,
+but there is nothing specifically columnar about how this data may be rendered. A
+user may choose to print the fields row wise. For instance, if there are many fields,
+but each has only length 1 or 2. E.g., if you wanted to give all the scalar data related
+to one device, then you might use an NTTable rendered in such a way. Note that one column
+of a table would also be easily described by NTNameValue.
+</p>
+
+<h4>Validation</h4>
+
+<p>The number of <span class="nterm">scalar_t</span> fields and the length of labels MUST be the same. All
+<span class="nterm">scalar_t</span> fields MUST have the same length, being the number of "rows" in the
+table.</p>
+
+
+<h2>Specific Normative Types</h2>
 
 
 <p>The "specific normative types" below are types oriented towards application level
@@ -876,42 +1002,8 @@ currently defined types are each described in a section below.</p>
   <li>Frequencies MUST be in Hz.</li>
 </ul>
 
-<h3 id="L676">NTNameValue</h3>
 
-<p>NTNameValue is an EPICS V4 Normative Type that describes a single name (or "key")
-string and associated array of scalar value. </p>
-
-<p>Where the datum to be expressed is just a single scalar, the <span
-class="term">value</span> array would simply have a length of one. Since one
-NTNameValue expresses a single name and value, it is expected that arrays of
-NTNameValue objects would commonly be used. For the related problem of expressing two
-congruent arrays, one of keys and one of scalar values, see NTTable. </p>
-
-<p>Use cases: In a school, a single NTNamedValue might describe one grade for one
-student (the value array has a single element), or a number of grades for one student
-(the value array has a number of elements). An array of NTNamedVales 
-could describe a grade or grades for the students in a class. In a particle accelerator, an
-array of NTNamedValues could summarise all of the important properties of a control
-system device, by property name and (possibly array) property value. </p>
-
-<pre>structure NTNameValue
-   string            name        
-   <span class="nterm">scalar_t[]</span>        value   <span class="opt">
-   string            descriptor :opt
-   <span class="nterm">time_t</span>            timeStamp  :opt
-   <span class="nterm">alarm_t</span>           alarm      :opt</span>
-</pre>
-
-<p>where:</p>
-<dl>
-  <dt>name</dt>
-    <dd>The key associated with the value field. This key would be used to identify
-      the value in collections of NTNameValues</dd>
-  <dt>value</dt>
-    <dd>The datum identified by the name field.</dd>
-</dl>
-
-<h3 id="L715">NTMultichannelArray</h3>
+<h3>NTMultichannelArray</h3>
 
 <p>MultichannelArray is an EPICS V4 Normative Type that aggregates an array of scalar
 values from different EPICS Process Variable (PV) channel sources, into a single variable. </p>
@@ -943,10 +1035,7 @@ quadrupoles' desired field values. </p>
 	  class="term">deltaTimes</span> field
 	</dd>
   <dt>severities</dt>
-    <dd>The EPICS alarm severity associated with each value. If this field is present
-      and the <span class="term">alarm</span> field is also present, then the maximum
-      severity in the <span class="term">severities</span> field MAY be used
-      as the value of the alarm field <span class="ed">Deliberately not MUST, but I dunno</span>.</dd>
+    <dd>The EPICS alarm severity associated with each value</dd>
   <dt>positions</dt>
     <dd>A location (such as Z or S position) or cardinal value associated with each
       element of the <span class="term">value</span> array  </dd>
@@ -954,13 +1043,18 @@ quadrupoles' desired field values. </p>
     <dd>The difference in seconds between the time that each corresponding element of the
       <span class="term">value</span> array was read, and the
       timeStamp field.</dd>
+  <dt>alarm<dt>
+    <dd>The alarm of the NTMultiChannelArray as a whole. The association of the
+      values in the severities field and the alarm field is not defined since the alarm
+      field refers explicitly to the value field and so not necessarily to the
+      severities field (although those are likely to be related through record processing).</dd>
 </dl>
 
 <p>The above descriptions of the optional fields, pertain in particular to when a
 NTMultichannelArray expresses measured values, but a NTMultichannelArray can be used
 to express desired values or setpoint values too.</p>
 
-<h3 id="L764">NTTimeDomainArray</h3>
+<h3>NTTimeDomainArray</h3>
 
 <p>NTTimeDomainArray is an EPICS V4 Normative Type that expresses an array of values
 from a single signal, where there has been a constant time between each sample; for
@@ -969,15 +1063,18 @@ instance from a PV that has been sampled at a given single frequency. </p>
 <p>The data in a NTTimeDomainArray show how the associated signal changes over
 time. <span class="ed">Should the name of the PV be included?</span></p>
 
-<p class="ed">Need use cases. Also, is this definition realistic? Seems to me you'd
-also want to have an indication of the sampling time error. That is, if the deltaTime
-was .5, that would be an ideal, and you'd want also to record what was an estimate of
-when the corresponding sample was really taken, with reference to that notional
-deltaTime. Need an expert.</p>
+<p class="ed priv">Need use cases. Also, is this definition realistic? Seems to me
+you'd also want to have an indication of the sampling time error for reliable
+autocorrelation. That is, if the deltaTime was .5, that would indicate that the
+nominal, or expected, time between samples was .5 seconds, but you'd want also to
+record an estimate of the time variance over which samples were really taken. If
+that's too great, any autocorrelation is surely unreliable. Need an
+expert.</p>
 
 <pre>structure NTTimeDomainArray 
   (boolean [] | byte[] | short[] | int[] | long[] | float[] | double[])  value
-  double      deltaTime             // Time in seconds between each sample<span class="opt">
+  double      deltatime             // Time in seconds between each sample
+  <span class="nterm">time_t</span>      basetime              // Absolute time of first sample<span class="opt">
   string      descriptor    :opt
   <span class="nterm">alarm_t</span>     alarm         :opt
   <span class="nterm">time_t</span>      timeStamp     :opt</span>
@@ -985,20 +1082,22 @@ deltaTime. Need an expert.</p>
 
 <p>where:</p>
 <dl>
-  <dt>deltaTime</dt>
+  <dt>deltatime</dt>
     <dd>The constant time in seconds between each sample</dd>
+  <dt>basetime</dt>
+    <dd>The absolute time (UTC) at which the first sample was recorded</dd>
   <dt>value</dt>
     <dd>An array of numeric scalars, where each element gives the value of one sample</dd>
 </dl>
 <p class="ed">Need to include units?</p>
 
-<h3 id="L803">NTFrequencyDomainArray</h3>
+<h3>NTFrequencyDomainArray</h3>
 
 <p>NTFrequencyDomainArray is the EPICS V4 Normative Type for expressing the values of
 a signal with respect to frequency.</p>
 
 <p class="ed">Needs an expert to check this. Our proto from PSI meeting defined two
-numbers firstFrequency and deltaFrequency as a single numbers, but surely they must
+numbers firstFrequency and deltaFrequency as single numbers, but surely they must
 be an array of frequencies? Changed it to array, with 0 index being base freq. Maybe
 harmonics should be given as deltas to the base. So we need to be more specific about
 whether harmonics' frequencies are absolute or relative to frequencies[0].</p>
@@ -1024,7 +1123,7 @@ whether harmonics' frequencies are absolute or relative to frequencies[0].</p>
 </dl>
 <p class="ed">Need to include units?</p>
 
-<h3 id="L845">NTHistogram</h3>
+<h3>NTHistogram</h3>
 
 <p>NTHistogram is the EPICS V4 Normative Type used to encode the data and
 representation of a (1 dimensional) histogram. Specifically, it encapsulates frequency
@@ -1034,8 +1133,8 @@ data (e.g. land masses of different listed countries) see NTMatrix or NTTable.
 </p>
 
 <pre>structure NTHistogram
-  double []   ranges        // The start and end points of each bin 
-  long []     counts        // The frequency count, or value of each bin<span class="opt">
+  double []  ranges                     // The start and end points of each bin 
+  (short[] | int[] | long[])  counts    // The frequency count, or value of each bin<span class="opt">
   string      descriptor    :opt
   <span class="nterm">alarm_t</span>     alarm         :opt
   <span class="nterm">time_t</span>      timeStamp     :opt</span>
@@ -1065,14 +1164,14 @@ scale), would be communicated using a range array of decades (1.0E01,
 <p>The array length of <code>range</code> MUST be the array length of counts + 1. </p>
 
 
-<h3 id="L852">NTAggregate</h3>
+<h3>NTAggregate</h3>
 
 <p>NTAggregate is the EPICS V4 Normative Type to compactly convey data which
 combines, several measurements, or observations. An NTAggregate would give a simple
 summary statistic <a class="bib" href="#bib:agg">bib:agg</a> about the central
 tendency and dispersion of a set of data points.</p>
 
-<p>Use cases: for instance, an NTAggreagte could be used to summarize the value of one
+<p>Use cases: for instance, an NTAggregate could be used to summarize the value of one
 beam position offset reading over some number of pulses (N). It also includes the
 time range of the sampled points, so it could be used for time domain rebasing. For
 instance, an FPGA sending data at 10KHz, and you want to display its output,
@@ -1135,7 +1234,7 @@ arithmetic mean of the observation data being summarized by this NTAggregate.</p
 service agents to compute the value of the <code>sd</code> field, is not defined.</p>
 
 
-<h3 id="L902">NTImage</h3>
+<h3>NTImage</h3>
 <p>NTImage is the EPICS V4 Normative Type to express image data, particularly camera
 images. One NTImage gives one frame.</p>
 
@@ -1268,69 +1367,77 @@ NDAttrSourceEPICSPV  /** Attribute is obtained from an EPICS PV */
     <dd>The "table" for each attribute. Defined by an array of NTVariantArray.  </dd>
 </dl>
 
-<h3 id="L1049">NTTable</h3>
 
-<p>NTTable is the EPICS V4 Normative Type for "2-d" tabular datasets.</p>
+<h2>Appendix A: Possible Future Additions to this Specification</h2>
 
-<p>An NTTable is made up of a number of arrays, each array being of a scalar type. Each array
-can be thought of as a column. Each <em>i</em>th array member makes up one row, or n-tuple.</p>
+<p>The following types may be added to this specification, following further
+refinement and according to feedback to this draft. Comments welcome on these
+definitions or alternatives.</p>
 
-<p>Use case examples: a table of twiss paramaters of all
-lattice elements in an accelerator section. Another example, where the columns
-might vary call-to-call would be that of an EPICS V4 SQL database service. In that example
-one NTTable returned by the service would contain all the tabular results of a SQL SELECT,
-essentially a recoded JDBC or ODBC ResultSet - see the <a class="bib"
-href="#bib:rdbService">rdbService</a>.
-</p>
+<h3>anydata_t</h3>
+<p>anydata_t describes a pvData structure that contains an array of elements, each of
+which may be a scalar array or structure array. Such structures would then be able to
+transport an essentially unlimited variety of data. However, the use of anydata_t in a
+Normative Type's specification would considerably complicate agent implementations
+that may receive instances of those Normative Types.</p>
 
-<pre>structure NTTable
-  string[]    labels          // Very short text describing each field below, i.e. column labels
-  {<span class="nterm">scalar_t</span>[] <span class="user">colname</span>}<sub>0+</sub>    // 0 or more scalar array type instances, the columns.<span class="opt">
-  string      descriptor    : opt
-  <span class="nterm">alarm_t</span>     alarm         : opt
-  <span class="nterm">time_t</span> timeStamp          : opt</span>
+<pre>
+<span class="nterm">anydata_t :=</span>
+structure 
+  {  scalar_t[] <name> | structure_t[] <name> }1+  
 </pre>
 
-<p>where:</p>
-<dl>
-  <dt>labels</dt>
-    <dd>The table column headings of each column, each heading given as one element
-      of the array of strings. The order of labels matches the order of the
-      <span class="nterm">scalar_t</span>[] data.
-    </dd>
-</dl>
+<h3>NTAny</h3>
 
-<h4>Interpretation</h4>
+<p><span class="term">NTAny</span> would be a Normative Type for interoperation of
+essentially data structure, plus description, alarm and timeStamp.</p>
 
-<p>This represents a table. The number of "columns" is equal to the number of fields
-which follows field "labels." Each <span class="user">colname</span>[] field has the
-data for its "column."  The value of each element of <span class="term">labels</span>
-SHOULD be used as a column heading for the corresponding <span
-class="user">colname</span> field.</p>
+<pre>
+structure NTAny  
+  string      description      : opt
+  time_t      timeStamp     : opt
+  alarm_t     alarm         : opt
+  string[]    label         : opt
+  <span class="nterm">anydata_t</span> value
+</pre>
 
-<p>Note that the above description is given in terms of a table and its columns,
-but there is nothing specifically columnar about how this data may be rendered. A
-user may choose to print the fields row wise. For instance, if there are many fields,
-but each has only length 1 or 2. E.g., if you wanted to give all the scalar data related
-to one device, then you might use an NTTable rendered in such a way. Note that one column
-of a table would also be easily described by NTNameValue.
-</p>
+<h3>NTSnapShot</h3>
 
-<h4>Validation</h4>
+<p><span class="term">NTSnapshot</span> would be the Normative Type for
+interoperation of EPICS V4 snapshot and configuration services, such as MASAR, with
+their clients.</p>
 
-<p>The number of <span class="nterm">scalar_t</span> fields and the length of labels MUST be the same. All
-<span class="nterm">scalar_t</span> fields MUST have the same length, being the number of "rows" in the
-table.</p>
+<pre>
+structure NTSnapshotData             // snapshot data [that may inc waveform ]
+   time_t timeStamp                  // time of snapshot
+    <span class="nterm">time_t</span>      timeStamp   :opt
+    <span class="nterm">alarm_t</span>     alarm       :opt
+   string[] channelNames
+   alarm_t[] alarms                  // Alarm of each data value
+   anydata_t value
+</pre>
+<p class="ed">Maybe rather than anydata_t here, we should say any Normative Type
+instance? That would usefully constrain the potential types agents must
+implement. </p>
 
+<h3>NTArchive</h3>
 
+<p><span class="term">NTArchive</span> would be the Normative Type for
+interoperation of EPICS V4 capable archive services, with
+their clients.</p>
 
-<h2 id="L1074">Non-Normative Types</h2>
-<p>Users and developers using EPICS V4 are free to define their own special
-purpose types on top of PVStructure (or the other PV Types) but should note
-that only the Normative Types defined here (NT*) above, are intended to be
-understood by all general purpose EPICS V4 services and clients. </p>
+<pre>
+structure NTArchivedata
+   string channelName                 // EPICS channel name
+   time_t[] timeStamps                // Timestamps of each sample
+   alarm_t[] alarms                
+   anydata_t value                    
+</pre>
+<p class="ed">Maybe rather than anydata_t here, we should say any Normative Type
+instance? That would usefully constrain the potential types agents must
+implement. </p>
 
-<h2 id="bib">Bibliography</h2>
+<h2>Bibliography</h2>
 <dl>
   <dt id="bib:pvdata">[bib:pvdata]</dt>
     <dd><a href="http://epics-pvdata.sourceforge.net/development.html#pvdata">EPICS
@@ -1340,15 +1447,20 @@ understood by all general purpose EPICS V4 services and clients. </p>
   <dd><a href="http://epics-pvdata.sourceforge.net/development.html#pvaccess">EPICS
     V4 Developer's page, pvAccess section</a>
   </dd>
+  <dt id="bib:epicsrecref">[bib:epicsrecref]</dt>
+  <dd><a
+    href="http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html">EPICS
+    Reference Manual</a>, Philip Stanley, Janet Anderson, Marty Kraimer, APS, http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html</dd>
   <dt class="bib" id="bib:agg">bib:agg</dt>
   <dd>Aggregate data, Wikipedia article, <a
     href="http://en.wikipedia.org/wiki/Aggregate_data">http://en.wikipedia.org/wiki/Aggregate_data</a>
   </dd>
-  <dt class="bib" id="bib:rdbservice">bib:rdbrdbservice</dt>
+  <dt class="bib" id="bib:rdbservice">bib:rdbservice</dt>
   <dd>
     rdbService, example EPICS V4 service, <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService</a>
   </dd>
 </dl>
+
 
 </div>
 
