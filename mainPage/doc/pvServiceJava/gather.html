@@ -195,7 +195,7 @@ private static int numberArrayRecords = 3;
 
 public static void main(String[] args) {
     
-    org.epics.ca.ClientFactory.start();
+    org.epics.pvaccess.ClientFactory.start();
     Requester requester = new RequesterImpl();
     CreateGather create = CreateGatherFactory.create(serverName, requester);
     Status status = create.connect();

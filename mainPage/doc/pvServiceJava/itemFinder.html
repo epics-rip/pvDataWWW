@@ -53,7 +53,7 @@ class ChannelProperty {
 
         public static void main(String[] args) {
                 // must start PVAccess
-                org.epics.ca.ClientFactory.start();
+                org.epics.pvaccess.ClientFactory.start();
                 Client client = new Client();
                 if(!client.connect()) System.exit(1);
                 String search = "Name=SR:*&amp;element=BPM&amp;family=Y";
@@ -69,7 +69,7 @@ class ChannelProperty {
                 }
                 client.destroy();
                 System.out.println("all done");
-                org.epics.ca.ClientFactory.stop();
+                org.epics.pvaccess.ClientFactory.stop();
                 System.exit(0);
         }
 
