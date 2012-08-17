@@ -200,7 +200,7 @@ following method:</p>
 <hr />
 
 <p>The service is implemented via the following interfaces and factory:</p>
-<pre>//RPCServer defined in org.epics.ca.server.impl.local
+<pre>//RPCServer defined in org.epics.pvaccess.server.impl.local
 public interface RPCServer {
     void destroy();
     Status initialize(
@@ -254,7 +254,7 @@ methods:</p>
 the record.factory field of the PVRecord. It has the following method:</p>
 <dl>
   <dt>create</dt>
-    <dd>Called by org.epics.ca.server.impl.local.ChannelServerFactory when the
+    <dd>Called by org.epics.pvaccess.server.impl.local.ChannelServerFactory when the
       PVRecord for the service is initialized.</dd>
 </dl>
 <hr />

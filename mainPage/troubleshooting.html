@@ -44,9 +44,9 @@ resolve their own bugs.</p>
   
   <li> You see the following at the server side console:
   <pre>
-Nov 11, 2011 6:01:21 PM org.epics.ca.server.impl.remote.tcp.BlockingTCPAcceptor initialise
+Nov 11, 2011 6:01:21 PM org.epics.pvaccess.server.impl.remote.tcp.BlockingTCPAcceptor initialise
 INFO: Configured TCP port 5066 is unavailable, trying to assign it dynamically.
-Nov 11, 2011 6:01:21 PM org.epics.ca.server.impl.remote.tcp.BlockingTCPAcceptor initialise
+Nov 11, 2011 6:01:21 PM org.epics.pvaccess.server.impl.remote.tcp.BlockingTCPAcceptor initialise
 INFO: Using dynamically assigned TCP port 51659.
 </pre>
 CHECK: Whether you have an instance of the same server running elsewhere.
@@ -129,7 +129,7 @@ the package name. Yours probably will.
 
 In bad cases followed by:
 
-Feb 21, 2012 3:52:43 PM org.epics.ca.impl.remote.tcp.BlockingTCPTransport processSendQueue
+Feb 21, 2012 3:52:43 PM org.epics.pvaccess.impl.remote.tcp.BlockingTCPTransport processSendQueue
 WARNING: Exception caught in thread processing send requests.
 java.lang.IllegalStateException: not queueElement returned by last call to getUsed
 at org.epics.pvData.misc.QueueCreate$QueueImpl.releaseUsed(QueueCreate.java:93)
