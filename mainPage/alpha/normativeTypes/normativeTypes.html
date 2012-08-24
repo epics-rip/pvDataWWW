@@ -47,7 +47,7 @@
   <div class="head">
     <h1>EPICS V4 Normative Types</h1>
 
-      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 27-May-2012</h2>
+      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, Transitive post 27-May-2012</h2>
       <dl>
 	<dt>Latest version:</dt>
 	  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
@@ -85,6 +85,10 @@
       <h2 class="nocount">Status of this Document</h2>
       <!-- Statement about why this version exists -->
 
+      <p class="ed">This a Transitive Edit - a temporary version following a dated draft,
+      but before the next dated draft. Contents may be inconsistent or may not
+      reflect the present intention of the Editors or Working Group.</p>
+      
       <p>This is the 27 May 2012 version of the Normative Types document. This
       version adds meta data and self identification, and Appendix of items likely
       to be added in future drafts.</p>
@@ -145,19 +149,24 @@ general purpose data types, that build on the PVData. These are designed to be
 generally applicable to controls and the application level of scientific
 instruments. </p>
 
-<p>The simplest example is the Normative Type "NTScalar". When a client receives a
+<p>A simple example is the Normative Type "NTScalar". When a client receives a
 PVData datum which identifies itself as being of type NTScalar, the client will know
-to expect the scalar's value will be accompanied by an indication of alarm severity
-and a timestamp (see example below).</p>
+to expect the scalar's value may be accompanied up to 5 additional fields; a
+  description of the quality in question, timeStamp, an indication of alarm severity,
+  fields that help in how to display the value, and data about its operating limits. 
+(see example below).</p>
 
 <p>An example of a simple normative type is the NTScalar:</p>
-<pre>structure NTScalar
-  <span class="nterm">time_t</span>     timeStamp
-  <span class="nterm">alarm_t</span>    alarm
-  double     value
+  <pre>structure  NTScalar
+    <span class="nterm">scalar_t</span>    value<span class="opt">
+    string      descriptor  :opt 
+    <span class="nterm">time_t</span>      timeStamp   :opt
+    <span class="nterm">alarm_t</span>     alarm       :opt
+    <span class="nterm">display_t</span>   display     :opt
+    <span class="nterm">control_t</span>   control     :opt</span>
 </pre>
-<p>
 
+<p>
 A more complex example; if a client receives a PVData datum which identifies itself as being
 of type NTTable, this document specifies that it should expect the datum to contain 0 or more
 arrays of different types. The definition of NTTable below will say that the client
@@ -449,18 +458,22 @@ structure alarm
       <dd>severity is defined as an int (not an <span class="nterm">enum_t</span>), but
       MUST be functionally interpreted as the enumeration
 	{noAlarm, minorAlarm, majorAlarm, invalidAlarm, undefinedAlarm } indexed from
-	noAlarm=0</dd>
+	noAlarm=0  <a
+class="bib" href="#bib:epicsrecref">bib:epicsrecref</a></dd>
   <dt>status</dt>
       <dd>status is defined as an int (not an <span class="nterm">enum_t</span>), but
       MUST be functionally interpreted as the enumeration {noStatus, deviceStatus,
 	driverStatus, recordStatus,
-    dbStatus, confStatus, undefinedStatus, clientStatus } indexed from noStatus=0.</dd>
+    dbStatus, confStatus, undefinedStatus, clientStatus } indexed from noStatus=0
+	 <a
+class="bib" href="#bib:epicsrecref">bib:epicsrecref</a>.</dd>
   <dt>message</dt>
     <dd>A message string.</dd>
 </dl>
 
-<p>Interpretation MUST be as with V3 IOC record processing, as described in the <a
-class="bib" href="#bib:epicsrecref">epicsrecref</a>.</p>
+<p>Interpretation MUST be as with V3 IOC record processing, as described in the EPICS
+Reference Manual <a
+class="bib" href="#bib:epicsrecref">bib:epicsrecref</a>.</p>
 <p>pvData provides two helper classes for an alarm structure: alarm, and
 PVAlarm.</p>
 
@@ -705,10 +718,13 @@ introspection data, and so need not be exchanged with every instance exchange.</
 
 <h3>Standard optional meta data fields</h3>
 
-<p>One instance of each of the following fields may be included in a Normative Type
-instance structure. There is no required interpretation of these fields, and therefore their meaning
-is not further described in the Normative Type definitions below.</p>
+<p>All of the Normative Types defined below, optionally include a descriptor, alarm
+and timeStamp field. There is no required interpretation of these fields, and
+therefore their meaning is not further described in the Normative Type
+definitions. Additionally, Normative Types may have other optional fields, as
+defined individually below.</p>
 
+<h4>Optional Descriptor field</h4>
 <p>An object of Normative Type may optionally include a field
 named "descriptor" and of type string, to be used to give identity, name, or sense
 information. For instance, it may be valued with the name of a device associated with control data, or
@@ -717,11 +733,13 @@ the run number of a table of model data.</p>
 string descriptor  :opt     // Contextual information 
 </pre>
 
+<h4>Optional alarm field</h4>
 <p>An object of Normative Type may optionally include an alarm field. </p>
 <pre>
 <span class="nterm">alarm_t</span> alarm      :opt     // Control system event summary
 </pre>
 
+<h4>Optional timeStamp field</h4>
 <p>An object of Normative Type may optionally include a timeStamp
 field. </p>
 <pre>
