@@ -131,21 +131,21 @@
 <hr />
 <h2 id="introduction">Introduction</h2>
 
-<p>The Normative Types described in this document are a set of software designs for high
-  level <a href="http://en.wikipedia.org/wiki/Data_type#Composite_types" >composite data
-types</a> suitable for the application level data exchange between EPICS V4 network endpoints. In
-particular, they are intended for use in online scientific instrument
-operations. The intention is that where the endpoints in an EPICS V4 network all use only 
-Normative Types, each peer in the network should be able to understand all the data
-transmitted to it, at least syntactically, and be able to take processing
-steps appropriate to that data.</p>
+<p>The Normative Types described in this document are a set of software designs for
+  high level <a href="http://en.wikipedia.org/wiki/Data_type#Composite_types"
+   >composite data types</a> suitable for the application level data exchange between
+  EPICS V4 network endpoints. In particular, they are intended for use in online
+  scientific data services. The intention is that where the endpoints in an EPICS V4
+  network use only Normative Types, each peer in the network should be able to
+  understand all the data transmitted to it, at least syntactically, and be able to
+  take processing steps appropriate to that data.</p>
 
 <p>The EPICS version 4 module PVData <a class="bib" href="#bib:pvdata">bib:pvdata</a> supplies
 a typing mechanism and object management API for efficiently defining, creating,
 accessing and updating memory resident structured data. EPICS V4 module PVAccess <a class="bib"
  href="#bib:pvaccess">bib:pvaccess</a> supports the efficient exchange of PVData
 defined data between EPICS V4 network peers. EPICS V4 Normative Types, defines some
-general purpose data types, that build on the PVData. These are designed to be
+general purpose data types, that build on PVData. These are designed to be
 generally applicable to controls and the application level of scientific
 instruments. </p>
 

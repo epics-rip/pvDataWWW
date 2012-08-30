@@ -3,21 +3,29 @@
 <head>
 <title>Activities of the EPICS V4 Working Group</title>
 <meta name="keywords" content="EPICS, EPICS v4" />
-<link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" />
-<link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="epicsv4web.css" />
 <style type="text/css">
 /*<![CDATA[*/
      .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
      table { margin-left: auto; margin-right: auto }
      .diagram { text-align: center; margin: 2.5em 0 }
-     body { margin-right: 10% }
+   @media print {
+     body {  margin: 3em 4em 2em 4em;
+             font-size: smaller
+     }
+   }
+   @media screen {
+     body { margin: 1em 5em 2em 5em }
+   }
+
 /*]]>*/
 </style>
 </head>
 
 <body>
 <h1>Activities of the EPICS V4 Working Group</h1>
-<p>Activities of the EPICS Version 4 WG by, archived by month.</p>
+<p>Archive of Activities of the EPICS Version 4 WG.</p>
 
 <h2>7-Nov-2011 to 20-Dec-2011</h2>
 <p>Concentrating on
@@ -76,6 +84,49 @@ useful for BPM orbit, or linac energy management services. </li>
 <li>Fully implementing the
 the <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess
 specification</a> working draft.</li>
+</ol>
+
+<h2>Nov-2011 to May 2012</h2>
+<ol>
+  <li>The <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html" >pvAccess Protocol Specification</a> is being published at Second Public Working
+  Draft after successful expert review. It appears to be ready for independent
+  implementation</li>
+  <li>Work to allow V4-V3 interoperability without modification to V3 IOCs, is in
+  final stages</li> 
+  <li>A setpoint save and restore tool (server and client) have been completed (BNL)</li>
+  <li>A production level relation database service has been deployed (PSI) (based on the
+  <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService"
+  >rdbService example</a>)</li>
+  <li>An EPICS V4 based EPICS Archiver service and client have been developed. This
+  allows easy (command line) access to archive data
+  (Diamond).</li>
+  <li>
+  A <a href="http://epics-pvdata.sourceforge.net/exampleinstall.txt" >nominal architecture for production level EPICS V4 institutional installation,</a>
+  has been developed and implemented at PSI, and published as a guide for other institutions</li> 
+  <li><a href="http://epics-pvdata.sourceforge.net/alpha/unsigned.html" >Direct support for unsigned integer data type</a>, has recently been completed for
+  Java bindings, and is being worked on for C++ bindings of EPICS V4</li>
+  <li>Improvements are being made to the primary client-server data acquisition API to
+  make it more efficient and intuitive (moving Field name from a property of the
+  Field to a property of the field's parent, brings it in line with existing
+  introspection API norms</li>  
+  <li>An easy to use API, <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaJava/raw-file/tip/easyPVA/documentation/easyPVA.html" >EasyPVA</a>, is at alpha and being reviewed</li>
+  <li>"Gather Service," a service platform for helping a programmer to acquire data from many V3 PVs in
+  a service, and supply them as a single record to a V4 client, is at alpha and being
+  tested</li>
+  <li>A BPM orbit service, based on Gather, is being developed (PSI)</li>
+  <li>"<a href="alpha/normativeTypes/normativeTypes.html" >Normative Types</a>", a normative document which defines interoperable application level data
+  types, is approaching
+  First Public Working Draft. Requires expert review first. The way these types
+  self-identify is being worked on </li>
+  <li>Work is just beginning on a general purpose EPICS V4 Directory Service
+  (HZB)</li>
+  <li>A general purpose command line tool, "eget" is being developed</li>
+  <li>Downloaders are beginning to compile and install EPICS V4 IOC on VxWorks,
+  Windows and RTEMS. It now compiles in VxWorks 6.0, while v5 is in work in
+  progress. EPICS V4 has recently been compiled in MS Windows, and being tested
+  now</li>
+  <li>An accelerator model service is about to be started</li>
 </ol>
 <hr>
 
