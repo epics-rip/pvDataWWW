@@ -16,6 +16,8 @@
 h2 { page-break-before : always; }
 /*]]>*/
 </style>
+<!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
 </head>
 
 <div class="head">
@@ -62,6 +64,13 @@ which
 points to existing pv* documentation. 
 </p>
 
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+<div id="contents" class="contents">	  
+<hr />
 <h2>Introduction</h2>
 
 <p>EPICS V4 is implemented in C++ and Java. Its APIs are in C++ and Java mainly,
@@ -100,6 +109,9 @@ see the homepage, and the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/
    <TR><TD>pvIOC</TD><TD><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/" >pvIOCJava</a></TD><TD>pvIOC-1.0-SNAPSHOT.jar</TD><TD><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/" >pvIOCCPP</a></TD>
  </TR>
 </table>
+<p>The dependency hierarchy is: pvData is independent. pvAccess depends only on
+  pvData. pvIOC depends on both of the above. Builds in which only one of these is
+  built, must of course take this interdependeny into account.</p>
 <p><i>The version number and designation may change as versions are released. At the
   time BETA 1.0 release, these were pvData-1.0-BETA.jar etc.</i></p>
 
@@ -1004,10 +1016,11 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
   <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html#L143">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html</a>
   </dd>  
+</div>
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Thu Apr  5 16:18:15 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Thu Aug 30 14:21:38 CEST 2012 <!-- hhmts end -->
 
 </body>
 </html>
