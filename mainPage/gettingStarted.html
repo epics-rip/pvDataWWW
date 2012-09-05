@@ -307,28 +307,32 @@ with Maven, would be applicable if you are a Java developer and wish either to
 contribute to EPICS V4, or like to use a command line for your Java builds, or
 both. </p>
 
-<p>All 3 of the normative EPICS V4 projects (pvData, pvIOC, pvAccess) are each in distinct mercurial
-repositories in the SourceForge project epics-pvdata. There are separate
-Mercurial repos for each of the C++ and Java implementations of each normative
-project [<a href="#EPICSV4repos" >EPICSV4repos</a>]. They can all be checked out via the Mercurial unix shell command hg, or using a
-Mercurial GUI client suitable for your platform.</p>
+<p>All 3 of the normative EPICS V4 projects (pvData, pvIOC, pvAccess) are each in
+distinct mercurial repositories in the SourceForge project epics-pvdata. There are
+separate Mercurial repos for each of the C++ and Java implementations of each
+normative project [<a href="#EPICSV4repos" >EPICSV4repos</a>]. They can all be
+checked out via the Mercurial unix shell command hg, or using a Mercurial GUI client
+suitable for your platform.</p>
 
 <p>The procedure defined below will help you download the source for the pv*
 modules above, plus the caj/jca jars, and build pv* jars.</p>
 
 <h4 id="prerequisites">Prerequisites</h4>
 
-<p>You must have a Mercurial client, commonly "mvn" on the command line (it comes for
-free with Mac OS, or <a href="http://jasonfharris.com/machg/">MacHg for Mac OS X is a
-nice GUI</a>). Mercurial must be able to download from the
-"epics-pvdata" sourceForge project. That means you either are going to use the HTTP URI syntax or the
-SSH URI syntax, as understood by Mercurial. HTTP may not work for you! (see below) and if you're going to use
-the SSH mechanism, you will have to register with sourceForge.</p>
+<p>You must have Maven and Mercuarial clients installed. Mercurial, commonly "hg" on
+the command line comes for free with Mac OS (or <a
+ href="http://jasonfharris.com/machg/">MacHg for Mac OS X is a nice
+GUI</a>). Mercurial must be able to download from the "epics-pvdata" sourceForge
+project. That means you either are going to use the HTTP URI syntax or the SSH URI
+syntax, as understood by Mercurial. </p>
 
-<p>Download from the Mercurial repositories can be done anonymously (HTTP), or
-using a sourceForge account (SSH).</p>
+<p>Download from the Mercurial repositories can be done anonymously (using the HTTP
+method), or using a sourceForge account (which uses the SSH method). <em>The HTTP
+method may not work from your institution (see below) and if you're going to use the
+SSH mechanism, you will have to register with sourceForge.</em></p>
 
-<p>The anonymous checkout is using the http URI below. Note that we have seen
+<p>Anonymous checkout (which uses the HTTP method - if it works for you) is 
+via the URI below. Note that we have seen
 that some people get a "cannot connect" timeout using this method, while the
 identical command works for other people. It's probably related to the common
 practice of blocking port 8000 on the client side, which is done by many
@@ -1020,7 +1024,7 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Thu Aug 30 14:21:38 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Thu Aug 30 14:59:04 CEST 2012 <!-- hhmts end -->
 
 </body>
 </html>
