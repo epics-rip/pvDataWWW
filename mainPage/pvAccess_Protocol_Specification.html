@@ -849,7 +849,7 @@ dependent and used for size encoding. </p>
 <p>For all other types, bits 3-0 MUST be '0b0000'. </p>
 
 <p>Structure and structureArray types REQUIRE more description. A
-structure REQUIRES a named array of Fields - size followed by one or more (field name, FieldDesc) pairs.
+structure REQUIRES its identification (ID) string and a named array of Fields - size followed by one or more (field name, FieldDesc) pairs.
 StructureArray REQUIRES an introspection data of a
 structure defining an array element type.</p>
 
@@ -872,7 +872,7 @@ structure defining an array element type.</p>
       <td>Array of scalars.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b1000xxxx</a> + (field name, FieldDesc)[]</td>
+      <td><a style="font-family:monospace">0b1000xxxx</a> + ID + (field name, FieldDesc)[]</td>
       <td style="font-weight:bold">structure</td>
       <td>Structure.</td>
     </tr>
@@ -889,44 +889,47 @@ structure defining an array element type.</p>
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
 <pre>
-structure
+timeStamp_t
     long secondsPastEpoch
     int nanoSeconds
     int userTag</pre>
 
 <p>The introspection description of the above structure is be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized structure IF] size = 45
-FD 00 01 80  03 10 73 65  63 6F 6E 64  73 50 61 73  .... ..se cond sPas 
-74 45 70 6F  63 68 23 0B  6E 61 6E 6F  53 65 63 6F  tEpo ch#. nano Seco 
-6E 64 73 22  07 75 73 65  72 54 61 67  22          nds" .use rTag "</pre>
+<pre>Hexdump [Serialized structure IF] size = 57
+FD 00 01 80  0B 74 69 6D  65 53 74 61  6D 70 5F 74  .... .tim eSta mp_t 
+03 10 73 65  63 6F 6E 64  73 50 61 73  74 45 70 6F  ..se cond sPas tEpo 
+63 68 23 0B  6E 61 6E 6F  53 65 63 6F  6E 64 73 22  ch#. nano Seco nds" 
+07 75 73 65  72 54 61 67  22                       .use rTag "</pre>
 
 <h5 id="dataEncoding:example2">Example #2</h5>
 
 <p>Given the following structure, as may be expressed by a pvData Structure:
 </p>
 <pre>
-structure
+exampleStructure
     byte[] value
-    structure  timeStamp
+    timeStamp_t timeStamp
         long secondsPastEpoch
         int nanoSeconds
         int userTag
-    structure  alarm
+    alarm_t alarm
         int severity
         int status
         string message</pre>
 
 <p>The introspection description of the above structure would be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized structure IF] size = 105
-FD 00 01 80  03 05 76 61  6C 75 65 30  09 74 69 6D  .... ..va lue0 .tim 
-65 53 74 61  6D 70 FD 00  01 80 03 10  73 65 63 6F  eSta mp.. .... seco 
-6E 64 73 50  61 73 74 45  70 6F 63 68  23 0B 6E 61  ndsP astE poch #.na 
-6E 6F 53 65  63 6F 6E 64  73 22 07 75  73 65 72 54  noSe cond s".u serT 
-61 67 22 05  61 6C 61 72  6D FD 00 02  80 03 08 73  ag". alar m... ...s 
-65 76 65 72  69 74 79 22  06 73 74 61  74 75 73 22  ever ity" .sta tus" 
-07 6D 65 73  73 61 67 65  60                       .mes sage `</pre>
+<pre>Hexdump [Serialized structure IF] size = 142
+FD 00 01 80  10 65 78 61  6D 70 6C 65  53 74 72 75  .... .exa mple Stru 
+63 74 75 72  65 03 05 76  61 6C 75 65  30 09 74 69  ctur e..v alue 0.ti 
+6D 65 53 74  61 6D 70 FD  00 01 80 0B  74 69 6D 65  meSt amp. .... time 
+53 74 61 6D  70 5F 74 03  10 73 65 63  6F 6E 64 73  Stam p_t. .sec onds 
+50 61 73 74  45 70 6F 63  68 23 0B 6E  61 6E 6F 53  Past Epoc h#.n anoS 
+65 63 6F 6E  64 73 22 07  75 73 65 72  54 61 67 22  econ ds". user Tag" 
+05 61 6C 61  72 6D FD 00  02 80 07 61  6C 61 72 6D  .ala rm.. ...a larm 
+5F 74 03 08  73 65 76 65  72 69 74 79  22 06 73 74  _t.. seve rity ".st 
+61 74 75 73  22 07 6D 65  73 73 61 67  65 60       atus ".me ssag e`</pre>
 
 <h2 id="connectionManagement">Connection Management</h2>
 
