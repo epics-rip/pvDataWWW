@@ -9,7 +9,7 @@
 <link rel="stylesheet" type="text/css" href="base.css" />
 <link rel="stylesheet" type="text/css" href="epicsv4.css" />
 
-<title>Getting Started with EPICS V4</title>
+<title>Troubleshooting Epics V4 data level interactions</title>
 
 <style type="text/css">
 /*<![CDATA[*/
@@ -22,27 +22,30 @@
 <div class="head">
 <h1>TROUBLESHOOTING EPICS V4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
-<h2 class="nocount">Troubleshooting EPICS V4 Systems</h2>
+<h2 class="nocount">Troubleshooting EPICS V4 Data Interactions</h2>
 
 <h2 class="nocount" id="abstract">Abstract</h2>
 <p>This document helps programmers using EPICS V4, to debug issues in their software,
 by listing potential user issues and their resolutions. This is not a buglist for
-EPICS V4 itself, it's a guide to help programmers who are using EPICS V4 find and
-resolve their own bugs.</p>
+EPICS V4 itself, it's a guide to help programmers who are new to using EPICS V4 find and
+resolve their own bugs. </p>
   
 <h2 class="nocount" id="abstract">Status of this document</h2>
   <p>This document is intended to be <a
   href="charter.html#informative">informative</a> only. It will be updated on a best effort
-  basis by the EPICS V4 working group.
+  basis by the EPICS V4 working group. At present it is heavily oriented towards
+  service interactions, because of the primary author's interest. Users of EPICS V4
+  should feel free to add to this document.
   </p>
-<!-- hhmts start -->Last modified: Wed Feb 22 15:55:49 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Sep 12 15:30:16 CEST 2012 <!-- hhmts end -->
 </div> <!-- Header material -->
 
 <hr>
 <h2 class="nocount"> Issues and Potential Resolutions</h2>
-<ol>
+<dl>
   
-  <li> You see the following at the server side console:
+  <dt> You see the following at the server side console:</dt>
+  <dd>
   <pre>
 Nov 11, 2011 6:01:21 PM org.epics.pvaccess.server.impl.remote.tcp.BlockingTCPAcceptor initialise
 INFO: Configured TCP port 5066 is unavailable, trying to assign it dynamically.
@@ -50,19 +53,20 @@ Nov 11, 2011 6:01:21 PM org.epics.pvaccess.server.impl.remote.tcp.BlockingTCPAcc
 INFO: Using dynamically assigned TCP port 51659.
 </pre>
 CHECK: Whether you have an instance of the same server running elsewhere.
-  </li>
+  </dd>
   
-  <li>
-  You see the following at the server side console:
+  <dt>
+  You see the following at the server side console:</dt>
+  <dd>
   <pre>
 IOCXMLReader.convert terminating with IOException: /Users/greg/Development/epicsV4/workspace_hg/exampleJava/helloWorld/helloService.xml (No such file or directory)
 </pre>
   
   CHECK: Path to the xml file specifying the server may be wrong, check the
-  <code>-record</code> argument in your IOC server startup.  
-  </li>
-
-  <li>The client can't connect to the server, eg:
+  <code>-record</code> argument in your IOC server startup.
+    </dd>
+  <dt>The client can't connect to the server</dt>
+  <dd>Example:
   <pre>
 Exception in thread "main" java.lang.RuntimeException: connect error channel destroyed
         at helloWorld.HelloClient$Client.connectResult(HelloClient.java:115)
@@ -121,7 +125,9 @@ Note that our examples for Java tend to be in the default Java package, so the e
 the package name. Yours probably will.    
 </li>
 </ol>
-<li>ISSUE: You see client side messages like:
+
+<dt>ISSUE: You see client side messages like:</dt>
+<dd>
 <pre style="font-size:smaller">warning PVRecord.registerListener called but listener
   org.epics.ioc.pvCopy.PVCopyImpl$ThePVCopyImpl$CopyMonitor@d0e999 already
   registered
@@ -164,8 +170,33 @@ for(int m=0;m<20;m++)
 }
 
 </pre>
-</li>
-</ol>
+</dd>
+<dt>The data object returned by an RPC request, is null</dt>
+<dd>
+<p>
+On the RPC server, check that all of the names used to access fields in the
+introspection interface, match the actual field names. If any one of the field names
+used in a PVStructure.get*Field("&lt;name&gt;") does not match the field name used in
+the FeildCreate.createStructure(), then the server side will appear to work, but
+won't
+successfully construct the Structure at all. That will leave the client side with a
+null structure. Example:
+<pre style="font-size:smaller">
+Server side:
+private final static Structure resultStructure = fieldCreate.createStructure( "uri:ev4:nt/2012:NTScalar", 
+					new String[] { "value", "descriptor" },
+					new Field[] { fieldCreate.createScalar(ScalarType.pvDouble),
+							      fieldCreate.createScalar(ScalarType.pvString)
+} );
+...
+PVStructure result = PVDataFactory.getPVDataCreate().createPVStructure(resultStructure);
+			result.getDoubleField("value").put(a + b);
+			result.getStringField("description").put("The sum of arguments a and b");
+</pre>
+<p>descriptor != description, which will cause all server side processing to quietly fail.</p>
+</p>
+</dd>
+</dl>
 
 
 <address></address>
