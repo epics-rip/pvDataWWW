@@ -47,7 +47,7 @@
   <div class="head">
     <h1>EPICS V4 Normative Types</h1>
 
-      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, Transitive post 27-May-2012</h2>
+      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, Transitive following 27-May-2012</h2>
       <dl>
 	<dt>Latest version:</dt>
 	  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
@@ -65,21 +65,22 @@
 
       <h2 class="nocount">Abstract</h2>
 
-      <p>This document defines a standard set of data types and data structures, to
+      <p>This document defines a set of  standard data types and data structures, to
       aid interoperability of peers at the application level of an EPICS V4 network.</p>
 
-      <p>The types described here are approximately equivalent to EPICS V3 "DBR
-      types", though Normative Types extend the concept to structured
+      <p>The data types described here are approximately equivalent to EPICS V3
+      Database Request types (commonly known as "DBR"
+      types), athough Normative Types extend the concept to structured
       data. Additionally, these types may be used to define pvIOC records, or may be
       used purely for data exchange though the dynamic data exchange interfaces
       offered by pvAccess and pvData.</p>
 
-      <p>The function of each Normative Types is described, and their type data
-      structures are defined.</p>
+      <p>The abstract type definition and function of each Normative Type is described.</p>
 
       <p>For more information about EPICS, please refer to the home page of the <a
        href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
-      Control System</a>.</p>
+      Control System</a>, and to the homepage of <a
+       href="http://epics-pvdata.sourceforge.net" >EPICS Version 4</a>.</p>
 
 
       <h2 class="nocount">Status of this Document</h2>
@@ -123,8 +124,8 @@
 
 </div> <!-- head -->
 
-<div id="toc">
-  <h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+<div id="toc" class="toc">
+  <h2 class="nocount">Table of Contents</h2>
 </div>
 
 <div id="contents" class="contents">	  
@@ -146,12 +147,15 @@ accessing and updating memory resident structured data. EPICS V4 module PVAccess
  href="#bib:pvaccess">bib:pvaccess</a> supports the efficient exchange of PVData
 defined data between EPICS V4 network peers. EPICS V4 Normative Types, defines some
 general purpose data types, that build on PVData. These are designed to be
-generally applicable to controls and the application level of scientific
+generally applicable to the process control, and the software applications level, of scientific
 instruments. </p>
 
-<p>A simple example is the Normative Type "NTScalar". When a client receives a
+<p>A simple example of a normative type described in this document, is the one for
+  exchanging any single scalar value, such as one floating point number, one integer or
+  one string. That normative type is named "NTScalar". When a client receives a
 PVData datum which identifies itself as being of type NTScalar, the client will know
-to expect the scalar's value may be accompanied up to 5 additional fields; a
+to expect that the structure which carries the NTScalar will include the scalar
+  value in question (along with its type), and that value may accompanied up to 5 additional fields; a
   description of the quality in question, timeStamp, an indication of alarm severity,
   fields that help in how to display the value, and data about its operating limits. 
 (see example below).</p>
@@ -167,11 +171,13 @@ to expect the scalar's value may be accompanied up to 5 additional fields; a
 </pre>
 
 <p>
-A more complex example; if a client receives a PVData datum which identifies itself as being
+<span class="ed">TODO: return to this after NTTable is defined. A more complex example is NTTable. If a client receives a PVData datum which identifies itself as being
 of type NTTable, this document specifies that it should expect the datum to contain 0 or more
-arrays of different types. The definition of NTTable below will say that the client
+arrays of potentially different types. The description of NTTable in this document will say that the client
 should interpret the arrays as the columns of a table,
-and should render appropriately as a table, with rows being the same numbered elements of
+and should render such a datum appropriately as a table, with row
+elements being taken from the
+same numbered elements of
 each array. 
 </p>
 <pre>structure NTTable
@@ -181,6 +187,84 @@ each array.
   <span class="nterm">alarm_t</span>     alarm         : opt
   <span class="nterm">time_t</span> timeStamp          : opt</span>
 </pre>
+</span>
+
+
+
+
+<h2 id="metalang">Description of Normative Types</h2>
+
+<p>All the EPICS V4 Normative Types are defined as particular structure instance
+definitions of a pvData <a
+ href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#L184"
+ >structure</a>. This is true even of the Normative Types describing simple values
+like a single int, since a given Normative Type defined datum may include alarm or
+timestamp. Since all Normative Types are pvData structures, the fields of any given
+Ntype datum can be ascertained at runtime by the <a
+ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485">
+pvData Field introspection interface</a> <a class="bib"
+href="#bib:pvdata">bib:pvdata</a>.</p>
+
+
+<p><span style="font-weight:bold;">Definition</span>: Normative Type</p>
+<p>The Normative Types definitions in this document each have the following general form:</p>
+<ol>
+  <li>They are defined as structures, composed of fields</li>
+  <li>They usually have one primary field called "value", which encodes the most
+  important data of the type</li>
+  <li>They are composed of required fields, and optional fields. The required fields
+  come first,
+  the optional fields follow</li>
+  <li>The order of fields matters. Although the Normative Types pvData binding allows
+  for access though an introspection API, senders must encode the fields in the order
+  described in this document</li>
+</ol>
+
+<h3>Normative Type instance self identification</h3>
+
+<p>Normative Type instances identify themselves as such by including a string in a
+  well known part of the instance (defined below), that encodes the Normative
+  Type to which they conform. This string has the syntax
+  <em>&lt;namespace-name&gt;:&lt;normative-type-name&gt;</em>. There are two parts to
+  this type identifier:</p>
+
+<dl>
+  <dt>Namespace name</dt>
+  <dd>A string which precisely distinguishes the name and version of the Normative Types definition
+  document (this document) which was used to define the normative type. 
+  Normative Types defined here prior to the first "<a
+  href="http://epics-pvdata.sourceforge.net/epicsv4process.html#normative_document_development_and_publication_process"
+  >recommendation</a>" level publication of this
+  document (that is, including all Public Working Drafts of this document,
+  shall be considered in the namespace identified by the URI below:
+    <pre id="ntnamespacename_pwd">
+    uri:ev4:nt/2012/pwd
+    </pre>
+ </dd>
+ <dt>Type name<dt>
+   <dd>The name of the Normative Type to which they conform, as it appears in this
+  document.</dd>
+  </dl>
+
+<p>In the EPICS v4 pvData/pvAccess binding, the structure identification
+string of pvData stuctures is used to communicate that a given pvData datum is
+intended to conform to a Normative Type. Every pvData datum which is intended to
+  conform to a normative type, MUST identify the normative type to which it conforms
+  by setting its id field to the string value
+  <em>&lt;namespace-name&gt;:&lt;normative-type-name&gt;</em>.
+  Every EPICS V4 agent which is encoding or decoding pvData data that is described by
+  normative types, SHOULD examine the id field to establish
+  the normative type to which the data conforms.</p>
+
+<pre style="font-size:smaller">
+  FieldCreate fieldCreate = FieldFactory.getFieldCreate();
+  Structure resultStructure = fieldCreate.createStructure( "uri:ev4:nt/2012/pwd:NTScalar", 
+					new String[] { "value", "descriptor" },
+					new Field[] { fieldCreate.createScalar(ScalarType.pvDouble),
+							      fieldCreate.createScalar(ScalarType.pvString) } );
+</pre>  
+
+<h3>Linguistic conventions used in this document</h3>
 
 <p>A Normative Type can be used both for sending data from client to service
 and from service to client. In this document we refer generally to an
@@ -189,32 +273,7 @@ the user's end, we call it the <em>user agent</em>. <em>Client</em> and
 <em>server</em> refer to the directionality of the transaction, server being the
 agent that is doing the sending.</p>
 
-
-<h2 id="metalang">Description of Normative Types</h2>
-
-<p>All the EPICS V4 Normative Types are defined as particular structure instance
-definitions of a PVData <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#L184" >structure</a>. This is true even of the Normative Types describing
-simple values like a single int, since a given Normative Type defined datum may
-include alarm or timestamp. Hence, all Normative Types are structures. The fields of
-a given Ntype then, can be ascertained at runtime by the <a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485">
-pvData Field introspection interface</a> <a class="bib" href="#bib:pvdata">bib:pvdata</a>.</p>
-
-
-<p><span style="font-weight:bold;">Definition</span>: Normative Type</p>
-<p>The Normative Types defined in this document each have the following general form:</p>
-<ol>
-  <li>Is defined as a structure and implemented specifically as a pvData Structure</li>
-  <li>The pvData structure instance self-identifies as a Normative Type of one
-  of the kinds below. At the time of writing, the fieldName of the Structure itself
-  is used as the mechanism by which the instance self-identifies as a datum of Normative
-  Type, but this may change in future revisions of this specification</li>
-  <li>The fields of the Structure are all from the set of<a href="#L177"> Normative
-  Type Fields</a> below</li>
-  <li>There are 1 or more fields of the structure</li>
-</ol>
-
-<h3>Syntax and Grammar Conventions</h3>
+<p>The word "Ntype" is used as a short form of "Normative Type".</p>
 
 <p>The Normative Type data descriptions are given with the syntactic
 conventions and grammar given below. This is a hybrid of the <a
@@ -1471,7 +1530,12 @@ implement. </p>
   <dt id="bib:epicsrecref">[bib:epicsrecref]</dt>
   <dd><a
     href="http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html">EPICS
-    Reference Manual</a>, Philip Stanley, Janet Anderson, Marty Kraimer, APS, http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html</dd>
+    Reference Manual</a>, Philip Stanley, Janet Anderson, Marty Kraimer, APS,
+    http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html</dd>
+  <dt id="bib:epicsappdev">[bib:epicsappdev]</dt>
+      <dd><a hreh="http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/AppDevGuide/3.12BookFiles/AppDevGuide.book.html">EPICS
+Input / Output Controller (IOC) Application Developer's Guide</a> Marty Kraimer, APS,
+	1994, http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/AppDevGuide/3.12BookFiles/AppDevGuide.book.html</dd>
   <dt class="bib" id="bib:agg">bib:agg</dt>
   <dd>Aggregate data, Wikipedia article, <a
     href="http://en.wikipedia.org/wiki/Aggregate_data">http://en.wikipedia.org/wiki/Aggregate_data</a>
