@@ -5,9 +5,13 @@ gettingStarted.html etc.
  
 ---------------------------------------------------------------------------------------
 Auth: Greg White, greg@slac.stanford.edu.
-Mod:  21-Feb-2012, Greg White, greg@slac.stanford.edu, added page break control.
+Mod:  17-Sep-2012, Greg White. Added toc. Added page-break-before to (non nocount) h2.
+                   So, Abstract and Status will be on frnt page, all other sections
+                   will be started on a new page in printouts. 
       11-Apr-2012, Greg White, added div.contents, to fix bug in Chrome support
-                   for class="nocount".  
+                   for class="nocount". 
+      21-Feb-2012, Greg White, greg@slac.stanford.edu, added page break control.
+       
 ======================================================================================*/
 
 /* Support for headers. Assume h1 is the title, so doesn't have a counter. Put counters
@@ -18,6 +22,7 @@ Mod:  21-Feb-2012, Greg White, greg@slac.stanford.edu, added page break control.
    Table of Contents) 
 */
 body { counter-reset: h2; }
+div.toc { page-break-before: always }
 div.contents { counter-reset: h2 }  
 h2.nocount:before { content: "" }
 h2.nocount {
@@ -31,6 +36,7 @@ h2:before {
       page-break-before: always;
 }
 h2 {
+      page-break-before: always;
       counter-increment: h2;
       counter-reset: h3;
 }
