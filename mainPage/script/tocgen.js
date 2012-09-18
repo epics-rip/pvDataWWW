@@ -1,8 +1,8 @@
 /*===============================================================
 tocgen.js defines a Table of Contents generator for HTML markup.
  
-This has been shamelessly purloined from the following the 
-blog [1] and all quodos and prizes should go to that author:
+This has been shamelessly purloined from a public 
+blog [1] and all quodos and prizes should go to that author.
 
 Minor changes from  to the script found at [1]: 
    i) .* was added to the regex that matches h tags, so it matches 
@@ -23,6 +23,8 @@ Usage:
   <div id="contents" class="contents">
     ...
   </div>
+* Optional, include the epicsv4.css stylesheet for toc markup, eg
+ <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
 
   NOTE 1. that everything inside the div contents will be simply numbered in the TOC
   as a result of the TOC being a <ol>, so if you additionally use the class="nocount" 
