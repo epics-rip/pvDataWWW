@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- -----------------------------------------------------------
+Auth:  Greg White, SLAC,PSI. Nov-2011.
+Vers:  19-Sep-2012, Greg White, SLAC,PSI.
+       Changed NTTable substruct from named "columns" to named "value" to keep
+       consistency of primary field.
+Todo:  * Make the primary field named "value" in all NT.
+       * Name all arrays with plural "s", and all single valued with no s. 
+============================================================= -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
@@ -49,7 +57,7 @@
   <div class="head">
     <h1>EPICS V4 Normative Types</h1>
 
-      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 18-Sep-2012</h2>
+      <h2 class="nocount">EPICS V4 Normative Types, Transitive Editors Draft, post 18-Sep-2012</h2>
       <dl>
 	<dt id="latestversion">Latest version:</dt>
 	  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
@@ -91,7 +99,9 @@
 
       <h2 class="nocount">Status of this Document</h2>
       <!-- Statement about why this version exists -->
-      
+      <p class="ed">This is a Transitive version following the 18-Sep-2012 draft. Text
+      here may be inconsistent or not in keeping with the present plans of the
+      Working Group.</p>
       <p>This is the 18 Sep 2012 version of the Normative Types document. This
       version revises meta data and self identification. It adds an appendix of
       the Normative Type Identifiers. The Appendix of items likely
@@ -191,8 +201,10 @@ elements being taken from the same numbered elements of each array.  </p>
 
 <pre>structure NTTable
   string[]    labels           // Very short text describing each field below, i.e. column labels
-  structure columns
-     {<span class="nterm">scalar_t</span>[] <span class="user">colname</span>}<sub>0+</sub>  // 0 or more scalar array type instances, the columns.<span class="opt">
+  structure value
+     {<span class="nterm">scalar_t</span>[] <span
+  class="user">colname</span>}<sub>0+</sub>  // 0 or more scalar array type
+  instances, the column values.<span class="opt">
   string      descriptor    : opt
   <span class="nterm">alarm_t</span>     alarm         : opt
   <span class="nterm">time_t</span> timeStamp          : opt</span>
@@ -1024,9 +1036,10 @@ href="#bib:rdbservice">rdbservice</a>.
 </p>
 
 <pre>structure NTTable
-  string[]    labels           // Very short text describing each field below, i.e. column labels
-  structure columns
-     {<span class="nterm">scalar_t</span>[] <span class="user">colname</span>}<sub>0+</sub>  // 0 or more scalar array type instances, the columns.<span class="opt">
+  string[]  labels             // Very short text describing each field below, i.e. column labels
+  structure value
+     {<span class="nterm">scalar_t</span>[] <span
+  class="user">colname</span>}<sub>0+</sub>  // 0 or more scalar array instances, the column values.<span class="opt">
   string      descriptor    : opt
   <span class="nterm">alarm_t</span>     alarm         : opt
   <span class="nterm">time_t</span> timeStamp          : opt</span>
@@ -1039,9 +1052,12 @@ href="#bib:rdbservice">rdbservice</a>.
       of the array of strings. The order of labels MUST match the intended order of the
       <span class="nterm">scalar_t[]</span> data
     </dd>
-    <dt>columns</dt>
-    <dd>The data of the table are encoded in a structure named "columns" (that is,
-    the pvData binding, whose field name is "columns").</dd>
+    <dt>value</dt>
+    <dd>The data of the table are encoded in a structure named "value" (that is,
+    the pvData binding, whose field name is "value"). We call the columnar data Field
+    "value" (rather than for instance "columndata") so that the primary field of the
+      type is named the same for all normative types, and so to help general purpose clients
+      identify the primary field.</dd>
 </dl>
 
 <h4>Interpretation</h4>
@@ -1063,10 +1079,11 @@ of a table would also be easily described by NTNameValue.
 
 <h4>Validation</h4>
 
-<p>The number of <span class="nterm">scalar_t[]</span> fields in the columns
+<p>The number of <span class="nterm">scalar_t[]</span> fields in the value
 structure, and the length of <span class="term">labels</span> MUST be the same. All
-<span class="nterm">scalar_t[]</span> fields in the columns structure, MUST have the
-same length, being the number of "rows" in the table.</p>
+<span class="nterm">scalar_t[]</span> fields in the <span class="term">value</span> structure, MUST have the
+same length, being the number of "rows" in the table. No array field within the
+<span class="term">value</span> structure may itelf be named "value".</p>
 
 
 <h2>Specific Normative Types</h2>
