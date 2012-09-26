@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;" />
+  <meta name="keywords" content="EPICS, EPICS V4, EPICS URI" />
+  <title>EPICS URI Proposal</title>
+  <link rel="stylesheet" type="text/css" 
+	href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css" 
+	href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+
+  <!-- Styles:
+   Special css styles used in this document goes here in the head. That is, extra
+   stuff to that in base.css, epicsv4.css or epicsv4web.css. Eg:
+
+   opt - Markup for standard optional fields of Normative Types
+  -->
+  <style type="text/css">
+  /*<![CDATA[*/
+     span.opt { color: grey }            
+  /*]]>*/</style>
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" 
+	src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+</head>
+		
+<body>
+
+  <div class="head">
+
+    <h1>EPICS URI Proposal</h1>
+
+      <h2 class="nocount">EPICS URI Proposal, Editors' Draft, 26-Sep-2012</h2>
+      <dl>
+	<dt>Latest version:</dt>
+	  <!-- Name and refer to the latest, usually just the tail part of the file -->
+	  <dd><a href="EPICS_URI_proposal.html">EPICS_URI_proposal.html</a></dd>
+	<dt>This version:</dt>
+	  <dd><a href="EPICS_URI_proposal_20120926.html">EPICS_URI_proposal_20120926.html</a></dd>
+	<dt>Previous version:</dt>
+	  <dd>No previous version yet</dd>
+	<dt>Editors:</dt> <!-- List of editors and invited experts (in parentheses) -->
+	  <dd>Greg White, SLAC/PSI</dd>
+      </dl>
+    
+  <h2 class="nocount">Abstract</h2>
+
+<p>The following outlines an EPICS V4 URI syntax. The syntax includes support for requests for Channel values subject to arguments (as implemented by ChannelRPC). The URI syntax is then used to define a new Normative Type, NTURI, that encodes the same information as the EPICS V4 URI. In this way, the service API is defined as a case of the EPICS V4 API, and both by reference to the IETF standard for accessing resources. Example EPICS V4 URIs are given, and example Java source for constructing an NTURI. </p>
+
+      <h2 class="nocount">Status of this Document</h2>
+
+<p>This is a proposal document for a feature addition to a normative work of the EPICS V4 working group.</p>
+
+<p>This is the 1st draft of this proposal.</p>
+</div>
+
+      <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
+      highlighted (through style sheets, and in uppercase in the source) are used in
+      accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
+      2119) indicates exemption. </p>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<div id="contents" class="contents">	  
+<hr />
+<h2>Introduction</h2>
+
+<p>As we've known for a year, we need a standard for the API of EPICS V4 services. </p>
+
+<p>With that, Matej and Anton can write general purpose clients, since they'll know how to express a, possibly parameterized, request for data from a PV.   I'd like to have a clear association of the resource identification standard URI (IETF RFC 2396) [1] to how EPICS V4 identifies acquirable data in an EPICS network.</p>
+
+<p>That is, when we ask an EPICS V4 agent for data, it should be that what you ask (the PV name and associated parameters) should map to URI semantics (see note 1).</p>
+
+<p>A URI for EPICS V4 should encompasses all channels types, not just RPC channels. Also, by "EPICS V4" I mean to include EPICS V3. The URI standard [1], allows latitude to define a URI's semantics according to the scheme (the part before the "://". </p>
+
+<p>Therefore, below I propose a pvaccess schema URI mapping. Then, given the mapping, describe a new normative type "NTURI" that encodes such a URI. </p>
+
+<p>Additionally, I include a CA schema for illustration, but just for the basics of getting a PV value by name. Gurus invited to make that better.</p>
+
+<h2> URI suitability for expressing EPICS Channel requests</h2>
+<p>Looking at the IETF standard (TBL's from 1998!) section 3 gives the syntactic components. The mapping to EPICS V4 RPC agent requests seems uncomplicated. But it does mean we have to agree on where in the syntax to put EPICS V4 channel request parts. Also the scope of the "authority" and "path" parts probably need a normative decision with respect to EPICS V3. Note that there is some latitude in [1], "The URI syntax does not require that the scheme-specific-part have any general structure or set of semantics which is common among all URI."</p>
+
+<p>Generic URI Syntax for representing hierarchical relations [1, part 3]:</p>
+
+<pre> &lt;scheme&gt;://&lt;authority&gt;[&lt;path&gt;][?&lt;query&gt;]</pre>
+
+<p>In conformance with [1], the path part and query part of an EPICS URI are optional.   Proposed Part Assignment for EPICS URI</p>
+
+<h2> URI Part EPICS V4 Semantics</h2>
+<p>Proposed URI part semantics for EPICS:</p>
+<pre> scheme    = {pva|ca}  
+ authority = Channel name.  So the authority MUST be given. 
+             The channel may or may not be an RPC channel  
+ path      = Entity required from RPC channel. If path is given then 
+             the authority part MUST give a ChannelRPC channel name 
+ query     = Arguments to an RPC channel, such as the starttime of 
+             an archive data request.
+</pre>
+<p>            
+When pvdata request [2] syntax is clarified, the query may also be used to encode the pvData request string.</p>
+
+<h3>URI Path parameters</h3>
+
+<p>In [1] a URI "path" part itself includes an optional facility for encoding "params" [1, section 3.3]. Params in a URI path do <em>not</em> necessarily have assigned value (although you can use the "=" character in a path param, so a pvaccess URI processor could be written to interpret URI path params as having assigned value, I suggest we don't use that latitude). URI path params are more like properties of the preceding path, e.g. the archived history of a quad's B field. Or modelling properties like R-matrix, or Twiss.</p>
+
+<pre> path param = facet of interest of the PV (optional). E.g. "quad34:bdes;history"
+</pre>
+
+<p>In example 7 below, "history" is given as a path parm. Other params that may be understood by an archive service might be "smoothed", in which the median filter or moving average is returned, or simply "average".</p>
+
+<h3>URI reference fragments</h3>
+<p>URI fragments are the things after a "#". For instance we use them on our web site to give links to parts of documents, eg http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html#flowControl.</p>
+
+<p>The URI spec [1, section 4.1] say URI fragments are intended for isolating "partial views" of the data. </p>
+
+<p>So, they're a good fit for specifying the EPICS V4 pvdata request options [2].</p>
+
+<pre> fragment = pv field request</pre>
+
+<p> For example <code>powersupply#field(alarm,timeStamp,power.value)</code>   There is a possible issue with this use of fragments, see Scope and Limitations #2 below.  </p>
+
+<h3>URI with respect to channel put</h3>
+
+<p>All examples below are of a "get", none of put or monitor. That's ok, URIs identify a resource, they're agnostic to whether the identification is for put, get or monitor of data. </p>
+
+<p>Still, we want sometimes to put values, and sometimes they're complex or long values (e.g. uploading new gradient setpoints for all magnets in an accelerator section). How that going to be done?</p>
+
+<p>When you upload complex data to a web service through HTTP PUT, the URI doesn't encode the data. It rather refers to the data, typically encoded in XML in an XMLHttpRequest object, which is uploaded on a different port. </p>
+
+<p>Rather than "send out of band" like XmlHttpRequest, NTURI could be defined to include the facility to encode any data, but optionally so. Arbitrary pvData Fields may be added to an NTURI instance at runtime. The interpretation of these is entirely up to the service endpoint. </p>
+
+<p>However, the string form of an NTURI, like <code>pva://rdbservice/swissfel/in/quads</code>, should not attempt to "serialize" those optional fields. Similarly, pvput is not to be expected to accept such arbitrary fields on the command line. Note, the difference between pvput and pvget is fungible for ChannelRPC, since the URI is identifying a resource, and may be carrying update data. </p>
+
+<h2>Examples</h2>
+
+<p>1. pvaccess of V3 channel by V3channel, not giving field </p>
+
+<p> pva://quad34:bdes</p>
+
+<p>2. pvaccess of V3 channel by V3channel, giving field</p>
+
+<p> pva://quad34:bdes.val</p>
+
+<p>3. ca of V3 channel</p>
+
+<p> ca://quad34:bdes</p>
+
+<p>4. ca of V3 channel, giving field</p>
+
+<p> ca://quad34:bdes.lolo</p>
+
+<p>5. pvaccess of V4 channel</p>
+
+<p> pva://quad34:bdes</p>
+
+<p>6. pvaccess of ChannelRPC channel, giving no arguments</p>
+
+<p> Example below is asking a relational db service to get the (table)   resulting from the SQL query named "swissfel/in/quads"   (Swissfel injector quadrupoles). The relational Db service would know  how to translate "swissfel/in/quads" into the appropriate SQL. RdbService  presently can do that.</p>
+
+<p> pva://rdbservice/swissfel/in/quads</p>
+
+<p> where:  "rdbservice" = ChannelRPC channel name = URI authority.  "/swissfel/in/quads" = URI path    7. pvaccess of ChannelRPC channel, giving arguments</p>
+
+<p> Example below is asking for the archived history of a quad's B   field setpoint, from a start time to an end time.</p>
+
+<p> pva://archiveservice/quad34:bdes;history?starttime=2011-09-16T02.12.55&endtime=2011-09-16T10.01.03 </p>
+
+<p> We can't use ":" in URI queries because ":" is a reserved character  [1, section 3.4], so "." is used in this example.</p>
+
+<h2>NTURI</h2>
+
+<p>The new Normative type, called NTURI (uri:ev4:nt/2012/pwd:NTURI), can encode the above URI syntax. </p>
+
+<p>Additionally, through the optional field-types and field-values, it can encode 'any' data. So NTURI can encode both a reference to a resource, and data for the resource. This is proposed to be the way complex data is sent to a service.</p>
+
+<pre>structure NTURI  
+   string authority   
+   string path opt  
+   string fragment opt  
+   string scheme opt  
+   structure query opt  
+      string[] &lt;argument-names&gt;  
+      scalar_t[] &lt;argument-values&gt;  
+   {&lt;field-type&gt; &lt;field-name&gt;}0+
+</pre>
+
+<h2>Example implementation</h2> 
+<p>The following gives an example client of creating a NTURI instance for a channelRPC acquisition for example 7 above:</p>
+
+<pre style="font-size:smaller"> 
+
+  // Create an NTURI Introspection interface for a ChannelRPC request to
+  // to a notional archive service, taking 2 arguments, start time and end time.
+  //
+  private final static FieldCreate fieldCreate = FieldFactory.getFieldCreate();
+  private final static Structure queryStructure = fieldCreate.createStructure(
+     new String[] {"starttime", "endtime"},
+     new Field[] { fieldCreate.createScalar(ScalarType.pvString),
+                 fieldCreate.createScalar(ScalarType.pvString)});
+  private final static Structure uriStructure =
+     fieldCreate.createStructure(
+       "uri:ev4:nt/2012/pwd:NTURI",
+       new String[] { "authority", "path", "query" },
+       new Field[]  {fieldCreate.createScalar(ScalarType.pvString),
+                     fieldCreate.createScalar(ScalarType.pvString),
+                     queryStructure } );
+
+	
+  public static void main(String[] args) throws Throwable 
+  {
+      EasyPVA easyPVA = EasyPVAFactory.get();
+
+      // Create the data interface and put the request for archive data into it.
+      // 
+      PVStructure request = PVDataFactory.getPVDataCreate().
+         createPVStructure(uriStructure);
+      request.getStringField("authority").put("miniArchiveServiceToDemoServiceInterface");
+		request.getStringField("path").put("quad45:bdes;history");
+      request.getStructureField("query").getStringField("starttime").put("2011-09-16 T02.12.55");
+      request.getStructureField("query").getStringField("endtime").put("2011-09-16 T10.01.03");
+		
+      // Issue the ChannelRPC request using EasyPVA
+      //
+      PVStructure result =  
+         easyPVA.createChannel("miniArchiveServiceToDemoServiceInterface").
+         createRPC().request(request);
+
+      // Print the outgoing NTURI and the returned results
+      //
+      System.out.println("The URI request structure:\n" + request +
+                         "\n\nResulted in:\n" + result);
+
+  }
+</pre>
+
+<p> Running this against a suitable server would result in:</p>
+
+<pre style="font-size:smaller">
+The URI request structure:
+uri:ev4:nt/2012/pwd:NTURI 
+    string authority miniArchiveServiceToDemoServiceInterface
+    string path quad45:bdes;history
+    structure query
+        string starttime 2011-09-16 02:12:55
+        string endtime 2011-09-16 10:01:03
+
+Resulted in:
+uri:ev4:nt/2012/pwd:NTTable 
+    string[] labels [sampled time,sampled value]
+    structure values
+        string[] times [Fri Sep 16 02:12:56 CEST 2011,Fri Sep 16 04:34:03 CEST 2011,Fri Sep 16 06:08:41 CEST 2011,Fri Sep 16 08:34:42 CEST 2011,Fri Sep 16 10:01:02 CEST 2011]
+        double[] readings [42.2,2.76,45.3,85.3245,35.234]
+</pre>
+
+<h2> Scope and Limitations</h2>
+
+<ol>
+<li>Only respect absoluteURIs.
+
+<p>Let's not try to specify syntax or semantics for EPICS V4 relativeURIs. That is, we should NOT normatively specify the EPICS URI such that "pva://swissfel/gun-to-artemis/magnets/xcors/../:bdes" should be interpreted to mean the "bdes of all the magnets in the gun-to-artemis section of swissfel." AbsoluteURI is enough for us.</p>
+</li>
+
+<li>Limitation of using URI fragments to encode field requests
+
+<p>Formally, a URI "fragment" is an identifier of a part of the resource *that is isolated by the agent after it has retrieved the resource*. I propose we contravene the spec in that regard. However, there is a possible downside. Imagine a EPICS V4 web service that can get EPICS data over pvaccess in the usual way. A HTTP client like your browser talks to the EPICS web service. You'd want the URI semantics used by the HTTP communication, from your browser to the web service, to be exactly the same as the URI pvaccess scheme semantics. And they could be, except for fragments. Because fragments are intended to be processed client side, the specification of the EPICS record field request probably would never go over the wire. The EPICS V4 web service would probably never see the field request. Still, I think that's ok. The suitability of URI fragments for "partial data" specifications outweighs the incompatibility for web services.  </p>
+</li>
+</ol>
+
+<h2>Notes, Assumptions, Assertions</h2> 
+
+<ol>
+<li>The URI syntax is less important, though if the semantics match, clearly there must also be some syntactic match. (hm, is that true? Maybe Godel would say "Not necessarily so" - I'm sure Ben will correct me.)</li>
+
+<li>The generic URI syntax includes facilities for encoding explicit hierarchy, but does not preclude a flat value space. We should design a for *potentially* hierarchical value space. That is, we should use and assign EPICS semantics to facilities of the URI syntax for hierarchy, not ignore them.</li>
+
+<li>*Marty*, I tried to integrate "request" into the URI, but I came up against a number of things:  i. Wasn't clear to me if requests only pertain to monitors. The documentation I found in pvData is was only under Monitor Request Options [2].  ii. I think I see mistakes in the documentation, and I can't work around them because the formalizm is not complete. The documentation doesn't distinguish literals from non-literals or terminals from non-terminals. And the examples appear to contradict the syntax given in terms of plurality and optionality.
+
+<p>If we can fix these issues, or I see I was mistaken, I can integrate it in the URI. However, one thing I notice straight alway, is you use "," in the syntax, which is a reserved character in the URI query syntax, though not in URI fragment syntax.</p>
+</ol>
+
+<h2> References</h2>
+<dl>
+<dt>[1] Uniform Resource Identifiers (URI): Generic Syntax</dt>
+<dd>http://www.ietf.org/rfc/rfc2396.txt</dd> 
+<dt>[2] PvDataJava, section "monitor request options"</dt>
+<dd>http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#monitor_request_options</dd>
+</dl>
+
+</div> <!-- contents -->
+
+<hr />
+<address>Contact author: Greg White, PSI/SLAC</address>
+<!-- hhmts start -->Last modified: Tue Apr 24 22:54:03 CEST 2012 <!-- hhmts end -->
+</body>
+</html>
