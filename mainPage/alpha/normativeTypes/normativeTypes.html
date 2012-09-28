@@ -3,7 +3,9 @@
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!-- -----------------------------------------------------------
 Auth:  Greg White, SLAC,PSI. Nov-2011.
-Vers:  19-Sep-2012, Greg White, SLAC,PSI.
+Vers:  27-Sep-2012, Greg White, SLAC,PSI
+       Added NTContunuum
+       19-Sep-2012, Greg White, SLAC,PSI.
        Changed NTTable substruct from named "columns" to named "value" to keep
        consistency of primary field.
 Todo:  * Make the primary field named "value" in all NT.
@@ -57,14 +59,14 @@ Todo:  * Make the primary field named "value" in all NT.
   <div class="head">
     <h1>EPICS V4 Normative Types</h1>
 
-      <h2 class="nocount">EPICS V4 Normative Types, Transitive Editors Draft, post 18-Sep-2012</h2>
+      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 27-Sep-2012</h2>
       <dl>
 	<dt id="latestversion">Latest version:</dt>
 	  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
 	<dt id="thisversion">This version:</dt>
-	<dd><a href="normativeTypes_20120918.html">normativeTypes_20120918.html</a></dd>
+	  <dd><a href="normativeTypes_20120927.html">normativeTypes_20120927.html</a></dd>
 	<dt>Previous version:</dt>
-	  <dd><a href="normativeTypes_20120527.html">normativeTypes_20120527.html</a></dd>
+	<dd><a href="normativeTypes_20120918.html">normativeTypes_20120918.html</a></dd>
 	<dt>Editors:</dt>
 	  <dd>Greg White, SLAC, PSI</dd>
 	  <dd>Bob Dalesio, BNL</dd>
@@ -102,16 +104,11 @@ Todo:  * Make the primary field named "value" in all NT.
       <p class="ed">This is a Transitive version following the 18-Sep-2012 draft. Text
       here may be inconsistent or not in keeping with the present plans of the
       Working Group.</p>
-      <p>This is the 18 Sep 2012 version of the Normative Types document. This
-      version revises meta data and self identification. It adds an appendix of
-      the Normative Type Identifiers. The Appendix of items likely
-      to be added in future drafts is not changed, and this draft does not include
-      further work to include those or prune them out.</p>
+      <p>This is the 27 Sep 2012 version of the Normative Types document. This
+      version adds NTContiuum.</p>
 
       <p class="ed">TODO: Add
-      MultiChannelVariantArray. Remove time and freq NTs. Add NTContnuum to
-      appendix. Add Appendix for formal names. Add example encoding. Add namespace to
-      appendix. Each optional field of each
+      MultiChannelVariantArray. Add example encoding. Each optional field of each
       Normative type, where the option field is not in the Standard Optional Fields
       (so whose semantics are deliberately not defined), must be defined within
       the normative type. Ie, find all display and control, and define what they
@@ -1152,74 +1149,39 @@ quadrupoles' desired field values. </p>
 NTMultichannelArray expresses measured values, but a NTMultichannelArray can be used
 to express desired values or setpoint values too.</p>
 
-<h3>NTTimeDomainArray</h3>
+<h3>NTContinuum</h3>
 
-<p>NTTimeDomainArray is an EPICS V4 Normative Type that expresses an array of values
-from a single signal, where there has been a constant time between each sample; for
-instance from a PV that has been sampled at a given single frequency. </p>
-
-<p>The data in a NTTimeDomainArray show how the associated signal changes over
-time. <span class="ed">Should the name of the PV be included?</span></p>
-
-<p class="ed priv">Need use cases. Also, is this definition realistic? Seems to me
-you'd also want to have an indication of the sampling time error for reliable
-autocorrelation. That is, if the deltaTime was .5, that would indicate that the
-nominal, or expected, time between samples was .5 seconds, but you'd want also to
-record an estimate of the time variance over which samples were really taken. If
-that's too great, any autocorrelation is surely unreliable. Need an
-expert.</p>
-
-<pre>structure NTTimeDomainArray 
-  (boolean [] | byte[] | short[] | int[] | long[] | float[] | double[])  value
-  double      deltatime             // Time in seconds between each sample
-  <span class="nterm">time_t</span>      basetime              // Absolute time of first sample<span class="opt">
+<p>NTContinuum is the  EPICS V4 Normative Type used to express a sequence of point
+  values in time or frequency domain.  Each point has N values (N>=1) 
+and an additional value which describes the index of the list.  The 
+additional value is carried in the 'base' field.  The 'value' field 
+carries the values which make up the point in index order.</p>
+<p>
+An additional 'units' field gives a units string for the N values and 
+the additional value.
+</p>
+<pre>
+structure NTcontinuum
+  double[] base
+  double[] value
+  string[] units<span class="opt">
   string      descriptor    :opt
   <span class="nterm">alarm_t</span>     alarm         :opt
   <span class="nterm">time_t</span>      timeStamp     :opt</span>
 </pre>
-
-<p>where:</p>
-<dl>
-  <dt>deltatime</dt>
-    <dd>The constant time in seconds between each sample</dd>
-  <dt>basetime</dt>
-    <dd>The absolute time (UTC) at which the first sample was recorded</dd>
-  <dt>value</dt>
-    <dd>An array of numeric scalars, where each element gives the value of one sample</dd>
-</dl>
-<p class="ed">Need to include units?</p>
-
-<h3>NTFrequencyDomainArray</h3>
-
-<p>NTFrequencyDomainArray is the EPICS V4 Normative Type for expressing the values of
-a signal with respect to frequency.</p>
-
-<p class="ed">Needs an expert to check this. Our proto from PSI meeting defined two
-numbers firstFrequency and deltaFrequency as single numbers, but surely they must
-be an array of frequencies? Changed it to array, with 0 index being base freq. Maybe
-harmonics should be given as deltas to the base. So we need to be more specific about
-whether harmonics' frequencies are absolute or relative to frequencies[0].</p>
-
-<pre>structure NTFrequencyDomainArray
-  (boolean [] | byte[] | short[] | int[] | long[] | float[] | double[])  value
-  double[] frequencies                // frequencies[0] = base, [>0] = harmonics<span class="opt">
-  string      descriptor      :opt
-  <span class="nterm">alarm_t</span>     alarm           :opt
-  <span class="nterm">time_t</span>      timeStamp       :opt</span>
-</pre>
-
-<p>where:</p>
-<dl>
-  <dt>value</dt>
-    <dd>The signal amplitudes at each corresponding frequency (as given by like
-    numbered indexes of the <span class="term">frequencies</span> field. <span class="ed">Needs expert check</span></dd> 
-  <dt>frequencies</dt>
-    <dd>The signal's component frequencies in Hz. The first element MUST be the base
-      component's frequency. Subsequent elements MUST be the frequency of each
-      harmonic. <span class="ed">Needs expert check. eg, what order must the harmonics
-      be given in, freq or power, and should they be absolute or delta from the base?</span></dd>
-</dl>
-<p class="ed">Need to include units?</p>
+<p>
+The number of values in a point must be derived as:</p>
+<dfn>
+Nvals = len(value)/len(base)</dfn>
+<p>
+And the following invariant must be preserved:</p>
+<dfn>
+len(units)-1 == Nvals</dfn>
+<p>
+The order of the point (A, B, C) for indices 1, 2, 3 the order of the 
+'value' array is:</p>
+<samp>
+[A1, B1, C1, A2, B2, C2, A3, B3, C3] </samp>
 
 <h3>NTHistogram</h3>
 
