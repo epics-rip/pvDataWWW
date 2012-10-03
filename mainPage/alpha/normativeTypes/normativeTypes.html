@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- -----------------------------------------------------------
+<!--
 Auth:  Greg White, SLAC,PSI. Nov-2011.
 Vers:  27-Sep-2012, Greg White, SLAC,PSI
        Added NTContunuum
@@ -10,7 +10,8 @@ Vers:  27-Sep-2012, Greg White, SLAC,PSI
        consistency of primary field.
 Todo:  * Make the primary field named "value" in all NT.
        * Name all arrays with plural "s", and all single valued with no s. 
-============================================================= -->
+============================================================= 
+-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
@@ -555,16 +556,20 @@ structure alarmlimit
   <dt>alarmlimit</dt>
     <dd>The structure must have the name "alarmlimit".</dd>
   <dt>highalarm</dt>
-    <dd>Upper bound of allowed operating range of the value to which the alarmlimit refers</dd>
+    <dd>Upper bound of allowed operating range of the value to which the alarmlimit
+    refers</dd>
   <dt>highwarning</dt>
-    <dd>Upper bound of normal operating range of the value to which the alarmlimit refers</dd>
+    <dd>Upper bound of normal operating range of the value to which the alarmlimit
+    refers</dd>
   <dt>lowwarning</dt>
-    <dd>Lower bound of normal operating range of the value to which the alarmlimit refers</dd>
+    <dd>Lower bound of normal operating range of the value to which the alarmlimit
+    refers</dd>
   <dt>lowalarm</dt>
-    <dd>Lower bound of allowed operating range of the value to which the alarmlimit refers.</dd>
+    <dd>Lower bound of allowed operating range of the value to which the alarmlimit
+    refers.</dd>
 </dl>
 
-<p>The interpretation is that where the Normative Type instance's value field is:
+<p>The interpretation is that where the Normative Type instance's value field is:</p>
 <ul>
 
   <li> outside the closed interval [lowwarning,highwarning] the value SHOULD be
@@ -580,8 +585,8 @@ structure alarmlimit
 </ul>
 
 <p>Since the above conditions do not at all form a three valued function over all
-possible values of the limits, the invariant <em>lowalarm <= lowwarning <=
-highwarning <= highalarm</em> SHOULD be observed when setting the those thresholds.</p>
+possible values of the limits, the invariant <em>lowalarm &le; lowwarning &le;
+highwarning &le; highalarm</em> SHOULD be observed when setting the those thresholds.</p>
 
 <p>Code in both V3 IOC record support and in V4 IOC  
 raises alarms based on how the alarm limits are valued according to the following
@@ -1718,7 +1723,7 @@ used for a different collection of types or Type Names, as this document matures
     Reference Manual</a>, Philip Stanley, Janet Anderson, Marty Kraimer, APS,
     http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-1.html</dd>
   <dt id="bib:epicsappdev">[bib:epicsappdev]</dt>
-      <dd><a hreh="http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/AppDevGuide/3.12BookFiles/AppDevGuide.book.html">EPICS
+      <dd><a href="http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/AppDevGuide/3.12BookFiles/AppDevGuide.book.html">EPICS
 Input / Output Controller (IOC) Application Developer's Guide</a> Marty Kraimer, APS,
 	1994, http://www.aps.anl.gov/epics/EpicsDocumentation/AppDevManuals/AppDevGuide/3.12BookFiles/AppDevGuide.book.html</dd>
   <dt class="bib" id="bib:agg">bib:agg</dt>
