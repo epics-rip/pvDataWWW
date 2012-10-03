@@ -799,7 +799,7 @@ each datum conforms.</p>
   fields it should find for that type, using the type's introspection
   interface.  </p>
 
-<p>The following code snippets give an example of the use of a
+<p>The following Java code snippets give an example of the use of a
   pvData structure of Normative Type<a href="#ntscalar"> NTScalar</a>, as defined
   below. in this example we show code as may be included in a trivial "multiplier"
   service, and a client of the multiplier service.</p>
@@ -852,9 +852,10 @@ primary value:</p>
   more complete receiver example for the NTScalar sent above. This code might be in
   the client side of the Multiplier service.</p>
 
-<p class="caption">Example of a receiver of an NTScalar. The example checks that the returned
-  pvData datum was an instance of an NTScalar, extract the required value field, and then, if
-  it's present, extracts the optional "descriptor" field.</p>
+<p class="caption">Example of a receiver of an NTScalar. The example checks that the
+returned pvData datum was an instance of an NTScalar, extracts the required value
+field, and then, if it's present, extracts the optional "descriptor" field.</p>
+
 <pre style="font-size:smaller">
    // Call the multiplier service sending the request in a structure 
    PVStructure result = easyPVA.createChannel("multiplierService").createRPC().request(request);
