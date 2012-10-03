@@ -76,6 +76,9 @@ span.ed { color:red }
 span.ed:before { content:"[" }
 span.ed:after { content:"]" }
 
+/* Caption paragraphs, as used to caption pre etc */
+p.caption { font-size:smaller;font-style:italic;margin-left:2em;margin-right:2em }
+
 /* "bib" class of <a> tags is used for constructing a link to the 
 bibliography, in [ link ]. And bib class of dt puts [ ] around text of the definition 
 list item used to mark up the bibliography */
