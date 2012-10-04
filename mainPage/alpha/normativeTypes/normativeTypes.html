@@ -3,13 +3,15 @@
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
 Auth:  Greg White, SLAC,PSI. Nov-2011.
-Vers:  27-Sep-2012, Greg White, SLAC,PSI
+Vers:  04-Oct-2012,  Greg White, SLAC,PSI
+       Made the primary field named "value" in all NT (aggregate, histogram).
+       27-Sep-2012, Greg White, SLAC,PSI
        Added NTContunuum
        19-Sep-2012, Greg White, SLAC,PSI.
        Changed NTTable substruct from named "columns" to named "value" to keep
        consistency of primary field.
-Todo:  * Make the primary field named "value" in all NT.
-       * Name all arrays with plural "s", and all single valued with no s. 
+Todo: Add multichannelvariantarray. Add uri. Check order of fields.
+       
 ============================================================= 
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -61,7 +63,7 @@ Todo:  * Make the primary field named "value" in all NT.
   <div class="head">
     <h1>EPICS V4 Normative Types</h1>
 
-      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 3-Oct-2012</h2>
+      <h2 class="nocount">EPICS V4 Normative Types, Transitive Editors Draft, 3-Oct-2012</h2>
       <dl>
 	<dt id="latestversion">Latest version:</dt>
 	  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
@@ -352,10 +354,14 @@ Fields</a> below). </p>
 <span class="nterm">scalar_t</span> :=
 
    boolean  // true or false 
-|  byte     // 8 bit signed integer 
-|  short    // 16 bit signed integer 
-|  int      // 32 bit signed integer 
-|  long     // 64 bit signed integer 
+|  byte     // 8 bit signed integer
+|  ubyte    // 8 bit unsiged integer  
+|  short    // 16 bit signed integer
+|  ushort   // 16 bit unsigned integer 
+|  int      // 32 bit signed integer
+|  uint     // 32 bit unsigned integer
+|  long     // 64 bit signed integer
+|  ulong    // 64 bit unsigned integer
 |  float    // single precision IEEE 754 
 |  double   // double precision IEEE 754
 |  string   // UTF-8 *
@@ -371,9 +377,13 @@ Fields</a> below). </p>
 
    boolean[]  // array of true or false
 |  byte[]     // array of 8 bit signed integer
+|  ubyte[]    // array of 8 bit unsiged integer
 |  short[]    // array of 16 bit signed integer
+|  ushort[]   // array of 16 bit unsigned integer
 |  int[]      // array of 32 bit signed integer
+|  uint[]     // array of 32 bit unsigned integer
 |  long[]     // array of 64 bit signed integer
+|  ulong[]    // array of 64 bit unsigned integer
 |  float[]    // array of single precision IEEE 754
 |  double[]   // array of double precision IEEE 754
 |  string[]   // array of UTF-8 *</pre>
@@ -939,7 +949,7 @@ particular use cases.</p>
 
 <h3>NTScalar</h3>
 
-<p>NTScalar is an EPICS V4 Normative Type that describes a single scalar value plus metadata:</p>
+<p>NTScalar is the EPICS V4 Normative Type that describes a single scalar value plus metadata:</p>
 <pre>structure  NTScalar
     <span class="nterm">scalar_t</span>    value<span class="opt">
     string      descriptor  :opt 
@@ -954,6 +964,26 @@ particular use cases.</p>
   <dt>value</dt>
     <dd>The primary data carried by the NTScalar object. The field must be named
       "value" and can be of any simple scalar type as defined above.</dd>
+</dl>
+
+<h3>NTScalarArray</h3>
+
+<p>NTScalarArray is the EPICS V4 Normative Type that describes an array of values,
+plus metadata. All the elements of the array of the same scalar type. </p>
+<pre>structure  NTScalar
+    <span class="nterm">scalar_t[]</span>  value<span class="opt">
+    string      descriptor  :opt 
+    <span class="nterm">time_t</span>      timeStamp   :opt
+    <span class="nterm">alarm_t</span>     alarm       :opt
+    <span class="nterm">display_t</span>   display     :opt
+    <span class="nterm">control_t</span>   control     :opt</span>
+</pre>
+
+<p>where:</p>
+<dl>
+  <dt>value</dt>
+    <dd>The primary data carried by the NTScalarArray object. The field must be named
+      "value" and can be of any scalar array type as defined above.</dd>
 </dl>
 
 <h3>NTEnum</h3>
@@ -1072,7 +1102,7 @@ than that presently selected by <code>dataType</code> MAY be populated; in this 
     float [] floatValue           // Defines the NTVariantArray's value if dataType == 5
     double [] doubleValue         // Defines the NTVariantArray's value if dataType == 6
     string [] stringValue         // Defines the NTVariantArray's value if dataType == 7
-    <span class="nterm">timestamp_t[]</span> timeStampValue  // Defines the NTVariantArray's value if dataType == 8
+    <span class="nterm">time_t[]</span> timeStampValue       // Defines the NTVariantArray's value if dataType == 8
     <span class="nterm">alarm_t</span> [] alarmValue         // Defines the NTVariantArray's value if dataType == 9<span class="opt">
     string      descriptor  :opt
     <span class="nterm">time_t</span>      timeStamp   :opt
@@ -1315,7 +1345,7 @@ data (e.g. land masses of different listed countries) see NTMatrix or NTTable.
 
 <pre>structure NTHistogram
   double []  ranges                     // The start and end points of each bin 
-  (short[] | int[] | long[])  counts    // The frequency count, or value of each bin<span class="opt">
+  (short[] | int[] | long[])  value     // The frequency count, or otherwise value, of each bin<span class="opt">
   string      descriptor    :opt
   <span class="nterm">alarm_t</span>     alarm         :opt
   <span class="nterm">time_t</span>      timeStamp     :opt</span>
@@ -1327,13 +1357,13 @@ data (e.g. land masses of different listed countries) see NTMatrix or NTTable.
 representation of some underlying observations. It does not convey the values of each
 of the observations themselves.</p>
 
-<p>The number of bins is given by the length of the  <span class="term">counts</span> array.
+<p>The number of bins is given by the length of the  <span class="term">value</span> array.
  <span class="term">ranges</span> indicates the low value and high value of each bin. The range for
-<i>bin(i)</i> is given by <i>range(i)</i> to <i>range(i+1)</i>. Specifically, since
+<i>bin(i)</i> is given by <i>ranges(i)</i> to <i>ranges(i+1)</i>. Specifically, since
 we want end points of both the first bin and last bin included, all bin intervals
 except the last one, MUST be <i>right half
-open</i>; from that bin's low value <i>range(i)</i> (included) to that bin's high
-value <i>range(i+1)</i> (excluded). The last bin MUST be fully <i>open</i> (low and
+open</i>; from that bin's low value <i>ranges(i)</i> (included) to that bin's high
+value <i>ranges(i+1)</i> (excluded). The last bin MUST be fully <i>open</i> (low and
 high value included).</p>
 
 <p>A log plot histogram (in which the independent variable x is binned on a log
@@ -1342,13 +1372,13 @@ scale), would be communicated using a range array of decades (1.0E01,
 </p>
 
 <h4>Validation</h4>
-<p>The array length of <code>range</code> MUST be the array length of counts + 1. </p>
+<p>The array length of <span class="term">range</span> MUST be the array length of <span class="term">value</span> + 1. </p>
 
 
 <h3>NTAggregate</h3>
 
 <p>NTAggregate is the EPICS V4 Normative Type to compactly convey data which
-combines, several measurements, or observations. An NTAggregate would give a simple
+combines several measurements or observation. NTAggregate gives simple
 summary statistic <a class="bib" href="#bib:agg">bib:agg</a> about the central
 tendency and dispersion of a set of data points.</p>
 
@@ -1359,14 +1389,17 @@ instance, an FPGA sending data at 10KHz, and you want to display its output,
 but you don't want to display at the native rate.  Also, it could be used for
 transmitting or storing compressed archive data.</p>
 
-<p>NTAggregate doesn't cover the shape of a distribution so it only reasonably helps you do
-symmetrical distributions (no skewness or kurtosis), and it doesn't include any help
-for indicating the extent of dependency on another variable (correlation). </p>
+<p>NTAggregate doesn't cover the shape of a distribution so it only reasonably helps
+you do symmetrical distributions (no skewness or kurtosis), and it doesn't include
+any help for indicating the extent of dependency on another variable
+(correlation). </p>
 
 <pre>structure NTAggregate
-  double      mean                 // Average value of observations         
-  double      sd                   // Standard Deviation of observations, or RMS about the mean
+  double      value                // The center point of the observations,
+                                   // nominally the mean.         
   long        N                    // Number of observations
+  double      dispersion      opt  // Dispersion of observations;
+                                   // nominally the Standard Deviation or RMS
   double      first           opt  // Initial observation value 
   <span class="nterm">time_t</span>      firstTimeStamp  opt  // Time of initial observation
   double      last            opt  // Final observation value
@@ -1380,6 +1413,17 @@ for indicating the extent of dependency on another variable (correlation). </p>
 
 <p>Where:</p>
 <dl>
+  <dt>value</dt>
+   <dd>The summary statistic of the set of observations conveyed by this
+     NTAggregate. For instance their arithemtic mean.</dd>
+  <dt>N</dt>
+   <dd>The number of observations summarized by this NTAggregate.</dd>
+  <dt>dispersion</dt>
+   <dd>The extent to which the observations are centered around the <span
+     class="term">value</span>. For instance, if the
+     <span class="term">value</span> contains a mean, then the dispersion may be the
+     variance or the standard deviation. The <span class="term">descriptor</span>
+     should indicate which.</dd>
   <dt>first</dt>
   <dd>The value of the temporally first observation conveyed by this NTAggregate </dd>
   <dt>firstTimeStamp</dt>
@@ -1392,14 +1436,6 @@ for indicating the extent of dependency on another variable (correlation). </p>
     <dd>The numerically largest value in the set of observations conveyed by this NTAggregate</dd>
   <dt>min</dt>
     <dd>The numerically smallest value in the set of observations conveyed by this NTAggregate</dd>
-  <dt>mean</dt>
-   <dd>The mean value of the set of observations conveyed by this NTAggregate. The
-     Arithmetic mean SHOULD be used.</dd>
-  <dt>sd</dt>
-   <dd>The standard deviation of the set of observations conveyed by this
-     NTAggregate. RMS about the mean. </dd>
-  <dt>N</dt>
-   <dd>The number of observations represented by the data in this NTAggregate.</dd>
 </dl>
 
 <h4>Interpretation</h4>
@@ -1409,10 +1445,16 @@ firstTimeStamp and lastTimeStamp are given, then the N observations MUST have be
 over the period of time specified. If first, last, max or min are given, they MUST refer
 to the actual values of the N observations being summarized.  
 </p>
-<p>The <code>mean</code> field value computed by server agents SHOULD be the
-arithmetic mean of the observation data being summarized by this NTAggregate.</p>
-<p>Which estimator of the standard deviation [1/N or 1/(N-1)] is to be used by
-service agents to compute the value of the <code>sd</code> field, is not defined.</p>
+
+<p>The <span class="term">value</span> field value computed by server agents may be
+the arithmetic mean of the observation data being summarized by this NTAggregate, but
+NTAggregate does not normatively define that. Other measures of mean (geometric,
+harmonic) may be assigned. Indeed other measures of central tendency may be used. The
+interpretation to give an instance of an NTAggregate SHOULD be conveyed in the <span
+class="term">descriptor</span>. </p>
+
+<p>Where dispersion is a measure of the standard deviation, which estimator of the
+standard deviation [1/N or 1/(N-1)] was used, is also not defined normatively.</p>
 
 
 <h3>NTImage</h3>
