@@ -758,11 +758,11 @@ displays.</p>
 <p>The normative list of the Normative Type Identifiers corresponding to <a
     href="#thisversion" >this draft</a> of the EPICS V4 Normative Types specification
    document (this document), is given in <a href="#normative_ntype_list">Appendix
-   A</a>.</p>
+   B</a>.</p>
 
 <p>As an example, one of the simplest normative types is <a href="#ntscalar">
   NTScalar</a>. It has formal Type Name "NTScalar"
-  (see <a href="#normative_ntype_list">Appendix A</a>). Therefore, the Normative Type
+  (see <a href="#normative_ntype_list">Appendix B</a>). Therefore, the Normative Type
   Identifier for an NTScalar,
   is <span class="literal">uri:ev4:nt/2012/pwd:NTScalar</span>.</p>
 
@@ -793,8 +793,8 @@ each datum conforms.</p>
   <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#introspection_interfaces">introspection
   interface</a>, in which data types are defined, and
   the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#data_interfaces">data
-  interface</a>, in which instance data are created and populated. The introspection interface can
-  be used to examine an instance, to see what fields it posses. Getting and
+  interface</a>, in which instance variables are created and populated. The introspection interface can
+  be used to examine an existing instance, to see what fields it posses. Getting and
   setting values, is done through the data interface. As a programmer, you
   have to define both parts, the introspection interface of your type, and its data
   interface. Both the data and the introspction interfaces are exchanged by
@@ -810,14 +810,15 @@ each datum conforms.</p>
   service, and a client of the multiplier service.</p>
 
 <h5>Sender</h5>
-<p>The sender typically first creates an introspection definition, using the pvData introspection interfaces (Field,
-  Structure etc). It then creates an instance of the type and populates it with the
-  pvData data interfaces (PVFeild, PVstructure etc).</p>
 
-<p class="caption">Example of creating the introspection interface of an NTScalar, as may be
-  done on a server that will be returning one. In this
-  example, only one of the optional fields of NTScalar, named "descriptor" is included, along
-  with the requred field named "value".</p>
+<p>The sender typically first creates an introspection definition, using the pvData
+introspection interfaces (Field, Structure etc). It then creates an instance of the
+type and populates it with the pvData data interfaces (PVFeild, PVstructure etc).</p>
+
+<p class="caption">Example of creating the introspection interface of an NTScalar, as
+  may be done on a server that will be returning one. In this example, only one of
+  the optional fields of NTScalar, named "descriptor" is included, along with the
+  requred field named "value".</p>
 
 <pre style="font-size:smaller">
    // Create the data type definition, using the pvData introspection interface (Structure etc).
