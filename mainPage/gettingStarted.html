@@ -575,15 +575,15 @@ back to an EPICS V4 client. rdbService illustrates:</P>
 <p>This section is on software development, with and of, the C++ implementation of
 EPICS V4. For Java development, see above. </p>
 
-<p class="editor">[Check this, may want to say it's on acq and build, then split into
-Timo's example and channelRPC example] This section guides you through the process of acquiring the source, building,
+<p>This section guides you through the process of acquiring the source, building,
 and running an EPICS V3 IOC with a pvAccess server included. That is, you can use EPICS V4 client tools to
 access the PVs. </p>
 
-<p> The example EPICS V4 IOC <span class="editor">included in the Ev4 download</span>
+<p> The example EPICS V4 IOC included in the <a
+ href="http://sourceforge.net/projects/epics-pvdata/files/" >EPICS V4 download</a>
 includes a number of channels of different types: scalar/array/enum/calc etc, and
 data types: byte/short/longout/float for scalars, CHAR/SHORT/LONG/FLOAT/DOUBLE for
-arrays, plus string arrays. A channel list is attached below. You can load your own
+arrays, plus string arrays. <a href="#recordlist" >A channel list is attached below.</a> You can load your own
 channels by adding db or template/substitution files and modifying the startup
 commands accordingly in your st.cmd file.  </p>
 
@@ -601,15 +601,15 @@ although the following instructions do not assume this knowledge.
 <p>
 You will <a href="#prerequisites">need the Mercurial client tools, as described above</a>.</p>
 
-<p><em>You will also need an installed version of EPICS V3, >= 3.14.12</em>. See <a href="#appendix:a">Appendix
+<p><em>You will also need an installed version of EPICS V3, >= 3.14.12</em>. See <a href="#appendix_a:_building_epics_v3_base">Appendix
 A</a> for an example of building a local EPICS base, 3.14.12.2 (on a Mac OS X running 10.7.2).</p>
 
-<p>
-Decide where you want to place your code. If you have not already done so <a href="#createlocalrepo" >create the
-Mercurial repo home directory there</a>. Go to that directory and check out the
-3 core EPICS V4 modules source code with a Mercurial clone [again this example shows using the SSH
-URL in this example, you may use an HTTP URL instead, see Java example above for more]:
-</p>
+<p> Decide where you want to place your code. If you have not already done so <a
+ href="#create_your_local_mercurial_" >create the Mercurial repo home directory
+there</a>. Go to that directory and check out the 3 core EPICS V4 modules source code
+with a Mercurial clone [again this example shows using the SSH URL in this example,
+you may use an HTTP URL instead, see Java example above for more]: </p>
+
 <pre>
 [from ev4hg/ directory in this example, created above]
 % hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
@@ -625,10 +625,10 @@ following order: first pvDataCPP, pvAccessCPP, and finally pvIOCCPP</b>, as deta
 </p>
 
 <ol>
-  <li><p>Build pvData. <code>cd pvDataCPP</code>, and create a
-  <code>configure/RELEASE.local</code> file. That file is included from
-  configure/RELEASE with the line <code>-include
-  $(TOP)/configure/RELEASE.local</code>.) In RELEASE.local
+  <li><p>Build pvData. <kbd>cd pvDataCPP</kbd>, and create a
+  <kbd>configure/RELEASE.local</kbd> file. That file is included from
+  configure/RELEASE with the line <kbd>-include
+  $(TOP)/configure/RELEASE.local</kbd>.) In RELEASE.local
   set EPICS_BASE to point to your EPICS release:
   <pre>
 % cd configure/
@@ -638,26 +638,25 @@ EPICS_BASE=${HOME}/Development/epicsV3/base-3.14.12.2
 %
 </pre>
   
-</p>
-<p>If you downloaded the
- tarball from the Sourceforge page instead of cloning from Mercurial, you can
- use the RELEASE.local.example in the root directory, but drop the PVACCESS 
-and PVDATA definitions in that file. They will create conflicts and the build will fail.
-</p>
-<p>
-Be sure that you have at least the
-release 3.14.12. Trying to build with an earlier one is basically a waste of time.
+<p>If you downloaded the tarball from the Sourceforge page instead of cloning from
+ Mercurial, you can use the RELEASE.local.example in the root directory, but drop the
+ PVACCESS and PVDATA definitions in that file. They will create conflicts and the
+ build will fail.  </p>
 
-You may also need to edit the CONFIG_SITE file to include a line that defines <code> CROSS_COMPILER_TARGET_ARCHS </code>
-to be an empty string, if you have troubles building it for other than the host architecture. At the time of writing, building for vxWorks had problems.
-</p>
-  <pre>
-[from the top level directory of pvDataCPP, issue make]
-% make
-</pre>
-<p>pvData should then build without errors. You get a heap of warnings but they can be
-  ignored.</p>
- </li>
+<p> Be sure that you have at least the release 3.14.12. Trying to build with an
+earlier one is basically a waste of time.  </p>
+
+</p> You may also need to edit the CONFIG_SITE file to include a line that defines
+<code> CROSS_COMPILER_TARGET_ARCHS </code> to be an empty string, if you have
+troubles building it for other than the host architecture. At the time of writing,
+building for vxWorks is being developed.  </p>
+
+<pre> [from the top level directory of
+pvDataCPP, issue make] % make </pre>
+
+<p>pvData should then build without errors. You get a heap of warnings but they can
+be ignored.</p>
+  </li>
  
  <li>Build pvAccess. Again, <code>cd pvAccessCPP</code>, and create the
 <code>pvAccess/configure/RELEASE.local</code> file.
@@ -853,8 +852,10 @@ RCV_BUFFER_SIZE : 16384
 IGNORE_ADDR_LIST:
 STATE : INITIALIZED
 epics>
+</pre>
 
-(out of the box) record list:
+<p id="recordlist" class="caption">The "out of the box" record list:</p>
+<pre>
 epics> dbl
 double01
 double02
@@ -971,15 +972,44 @@ is built. </p>
     % cd base-3.14.12.2/
     % make
 </pre>
+<p>See below for help with Mac build in Mac OS 10.8 (Mountain Lion) is you have
+  issues with make, compiling or linking.</p>
 
-<p>The above was sufficient for the author's Mac [running Mac OS X 10.7.3] - the
-automatic environment variable setting support from perl all worked perfectly. </p>
 
-<h2 class="nocount" id="appendix:b">Appendix B: envPaths Example from Mac OS X build</h2>
+<h2 class="nocount" id="appendix:b">Appendix B: Help with Mac OS X build</h2>
+
+<p id="lionhelp">The EPICS base build ran perfectly on the author's Mac running Mac
+  OS X 10.7.3. However, for Mac OS 10.8 (Mountain Lion), there were 2
+  issues. Firstly, it seems make is no longer distributed and installed by default in
+  10.8. One can however choose to install the Mac OS command line tools,
+  see <a href="http://stackoverflow.com/questions/11494522/installing-make-on-mac/11494872#11494872"
+  >this comment on Stackoverflow.com</a> for help.</p>
+
+<p>Additionally, there seem to be a change in the compiler support of Mac OS 10.8,
+  causing an error such as the following at link time: </p>
+
+<pre>
+ld: library not found for -lgcc
+</pre>
+
+<p>Try adding the line following line to your
+  configure/os/CONFIG_SITE.Common.darwin-x86 file [Thanks to Andrew Johnson for this
+  help]:</p>
+
+<pre>
+GNU = NO
+</pre>
+or this line if that 
+doesn't work:
+<pre>
+GNU_LDLIBS_YES = 
+</pre>
+
+
 <p>Following the builds of pvDataCPP, pvAccessCPP and pvIOCCPP detailed above, the
-envPaths
-file used to run the V3 Channel test example, pvIOCCPP/iocBoot/testV3Channel, was as
-follows:</p>
+envPaths file used to run the V3 Channel test example,
+pvIOCCPP/iocBoot/testV3Channel, was as follows:</p>
+
 <pre>
 % cat envPaths 
 epicsEnvSet("ARCH","darwin-x86")
@@ -1024,7 +1054,7 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Thu Aug 30 14:59:04 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Oct 10 18:00:59 CEST 2012 <!-- hhmts end -->
 
 </body>
 </html>
