@@ -77,6 +77,12 @@ pre
 	font-family: "Courier", fixed;
 }
 
+/* Set kbd to same as pre */
+kbd { font-family: "Courier", fixed }
+code { font-family: "Courier", fixed }
+samp { font-family: "Courier", fixed }
+
+
 /* Tables, from http://www.w3.org/2005/09/table.css*/
 table
 {
