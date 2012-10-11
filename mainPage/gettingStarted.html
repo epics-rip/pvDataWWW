@@ -602,7 +602,9 @@ although the following instructions do not assume this knowledge.
 You will <a href="#prerequisites">need the Mercurial client tools, as described above</a>.</p>
 
 <p><em>You will also need an installed version of EPICS V3, >= 3.14.12</em>. See <a href="#appendix_a:_building_epics_v3_base">Appendix
-A</a> for an example of building a local EPICS base, 3.14.12.2 (on a Mac OS X running 10.7.2).</p>
+A</a> for an example of building a local EPICS base, 3.14.12.2. For specific help for
+building on a Mac, see also <a
+href="#appendix_b:_help_with_mac_os_x_build" >Appendix B: Help with Mac OS X build</a>.</p>
 
 <p> Decide where you want to place your code. If you have not already done so <a
  href="#create_your_local_mercurial_" >create the Mercurial repo home directory
@@ -715,11 +717,13 @@ available through pvAccess to EPICS V4 pvAccess clients. </p>
 
  <ol>
    <li>   
-   The pvIOCCPP build (assuming it was successful) has created a ready-to-run example. The source code for it is in the directory <code> pvIOCCPP/testApp/testV3Channel</code>.
-   The build also created a boot directory in the pvIOCCPP root, named iocBoot/testV3Channel.
-   <code>cd</code> to that directory.</li>
-<li>Create a file named <code>envPaths</code>. This file contains a number of epicsEnvSet commands
-to set the correct paths. For Linux it might be like this:</li>
+   The pvIOCCPP build (assuming it was successful) has created a ready-to-run example. The source code for it is in the directory <samp> pvIOCCPP/testApp/testV3Channel</samp>.
+   The build also created a boot directory in the pvIOCCPP root, named <samp>iocBoot/testV3Channel</samp>.
+   <kbd>cd</kbd> to that directory.</li>
+<li>Create or modify a file named <code>envPaths</code>. This file contains a number of epicsEnvSet commands
+to set the correct paths. For example, For Linux it might be like the following. For
+   the Mac OS example consistent with the build examples above, see <a
+href="#appendix_b:_help_with_mac_os_x_build" >Help with Mac OS X build</a>:</li>
 <pre>
 epicsEnvSet("ARCH","linux-x86")
 epicsEnvSet("IOC","testV3Channel")
@@ -728,7 +732,7 @@ epicsEnvSet("EPICS_BASE","/usr/local/epics/base-3.14.12")
 epicsEnvSet("PVDATA","$(TOP)/../pvDataCPP")
 epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 </pre>
-<p>See <a href="#appendix:b" >Appendix B</a> for how it looked on the Mac after the C++ build examples above.</p>
+
 <li>From the iocBoot/testV3Channel directory you can start the test ioc (on the host, as a "soft" IOC):
 <pre>
 % ../../bin/&ltarch&gt/example st.cmd
@@ -1054,7 +1058,7 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Wed Oct 10 18:00:59 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Thu Oct 11 12:31:42 CEST 2012 <!-- hhmts end -->
 
 </body>
 </html>
