@@ -27,7 +27,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Thu Sep 13 14:38:38 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Oct 24 14:53:25 PDT 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -283,34 +283,24 @@ of work in early 2012. </p>
 
 <p>This section is a very short summary of the status of EPICS V4 overall, and gives
 help on how an interested engineer might want to use it now.</p> <p><strong>Last
-updated 03-Mar-2012:</strong></p>
+updated Oct-2012:</strong></p>
 
-<p>Since 20-Dec-2011 EPICS V4 has been in beta. The core standards of
-EPICS V4, and their implementations, are complete with respect to the <a href="http://epics-pvdata.sourceforge.net/charter.html#milestones" >January 2012
-milestones</a>. The beta is useable for distributed high level data services.</p>
+<p>EPICS V4 has been in beta since December 2011. The core standards of EPICS V4, and their implementations, are complete with respect to the <a href="http://epics-pvdata.sourceforge.net/charter.html#milestones">January 2012 charter milestones</a>.
 
-<p>Initial production level services based on EPICS V4 have been deployed at PSI and
-Diamond. <a href="http://epics-pvdata.sourceforge.net/exampleinstall.txt" >A summary of the installation architecture used by PSI for EPICS V4 based services
-implemented in Java</a>, has been published as a pattern for new adopters.</p>
+<p>The beta 1 is useable for testing the technology for distributed high level data services.</p>
 
+<p>Beta 2 is now being developed and will be released shortly. Beta 2 improves the data model for describing complex data, improves the IOC side framework for interfacing V4 systems to EPICS V3 records, provides command line get, set and monitor commands, and a greatly simplified framework for high performance Remote Procedure Call (RPC) style servers. </p>
+  
+<p>Initial production level services based on EPICS V4 have been deployed at BNL, PSI, and Diamond. A summary of the installation architecture used by PSI for EPICS V4 based services implemented in Java, has been published as a pattern for new adopters.</p>
 
-<p>Present work is in adding unsigned integer support, improving programmer ease of
-use, and the pvAccess and Normative Type specifications. The <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html" >specification of
-pvAccess</a> has just been expert reviewed and is now being published at Second Public Working Draft. <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html" >The definitions of the interoperable data
-types</a>, "Normative Types" is approaching First Public Working Draft.</p>
+<p>Recent work added unsigned integer support, improving programmer ease of use, and the pvAccess and Normative Type specifications. The specification of pvAccess has just been expert reviewed and is now being published at Second Public Working Draft. The definitions of the interoperable data types, "Normative Types" is approaching First Public Working Draft.</p>
 
-<p>In acute summary, support for managed distributed data acquisition is quite far
-along and can be used now. This includes acquisition from EPICS V3 PVs via EPICS V4
-tools or components. The basis for services and "RPC in EPICS" is complete, and there
-are example services in Java and C++. Largely documentation is up to date with
-respect to implemented code. </p>
+<p>In acute summary, support for managed distributed data acquisition is quite far along and can be used now. This includes acquisition from EPICS V3 PVs via EPICS V4 tools or components. The basis for services and "RPC in EPICS" is complete, and there are example services in Java and C++. Largely documentation is up to date with respect to implemented code.</p>
 
-<p>The primary area in which EPICS V4 is not yet ready for
-use is that part which is the core value of the EPICS V3 IOC, record processing for
-controls. This is because we are adding to EPICS first, then will re-implement the
-exiting excellent functionality in EPICS version 3. See below for a complete
-breakdown.
-</p>
+<p>The primary area in which EPICS V4 is not yet ready for use is that part which is the core value of the EPICS V3 IOC, record processing for controls. This is because we are adding to EPICS first, then will re-implement the exiting excellent functionality in EPICS version 3. See below for a complete breakdown.</p>
+
+<p>The next year will concentrate on V3 - V4 interoperability and interface, and work to support high performance V3 IOC data acquisition through V4 services, such as accessing NDArray data through a V4 Normative Type and sequential monitors. Additionally, the V4 IOC will be designed. The charter to cover work over the next year is now being developed. Comments on what should be included are welcome. </p>
+
 
 <h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
 
@@ -324,7 +314,7 @@ to be the basis of controls. In its present state, EPICS Version 4 concentrates 
 called "high level" software services. It provides a platform for fast Service
 Oriented Architecture and distributed message passing. Its programming model is
 optimized for efficient distributed synchronous or asynchronous processes
-commincating by essentiall a shared-memory system based on data introspection.  </p>
+communicating by essential a shared-memory system based on data introspection.  </p>
 
 <p>In a hybrid environment, EPICS V4 is at BETA for use for managed distributed data
 acquisitions. See the <a
@@ -367,12 +357,12 @@ mechanisms. Firstly, pvAccess user agents can be configured to use
 <em>unmodified</em> Version 3 IOCs through the "CAV3" provider of pvAccess in which
 case Channel Access is the wire protocol, called through the pvAccess API (however,
 this is new and has not yet been documented). Secondly, pvAccess user agents may
-confirgured to use modified V3 IOCs where the pvAccess wire protocol connects to CAV3
+configured to use modified V3 IOCs where the pvAccess wire protocol connects to CAV3
 server side on a V3 IOC module. The caV3 server side support (the second option
 above) is part of <a href="#pvioc" >pvIOC</a>, see in particular the description of
 <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/pvIOCCPP.html#L402"
->V3Channel</a>, which is the embedded V3 ioc server side support that provides access
+>V3Channel</a>, which is the embedded V3 IOC server side support that provides access
 of V3 record data to pvAccess network clients.</p>
 
 <table id="interopdiag"  width="100%" style="border-width:0px">
