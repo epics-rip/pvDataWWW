@@ -47,22 +47,24 @@ gettingStarted_20120403.html</a>
 </div> <!-- Header material -->
 
 <h2 class="nocount" id="abstract">Abstract</h2>
+
 <p>This document describes how to start to develop software using the EPICS V4
 toolkit. It's a step by step guide to downloading the appropriate EPICS V4 products
 and associated software, and to using them to create programs. Presently, the
-  document concentrates on developing middleware EPICS data services, in java, and on
-  interfacing to EPICS V3 control data, in C++. Programming illustrations are included.</p>
+document concentrates on developing middleware EPICS data services, in java, and on
+interfacing to EPICS V3 control data, in C++. Programming illustrations are
+included.</p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
 
-<p>This is the 29-Oct-2012 version of the Getting Started with EPICS V4. This
-version includes more help on building the C++ pv modules, building from the tips,
-  and some help on development in Mac OS. This version
-is up to date with respect to the BETA 1.0 release, including the 1.0.1-BETA Java tar 
-file, and also with development from the Mercurial tips.</p>
+<p>This is the 29-Oct-2012 version of the Getting Started with EPICS V4. This version
+includes more help on building the C++ pv modules, building from the tips, and some
+help on development in Mac OS. This version is up to date with respect to the BETA
+1.0 release, including the 1.0.1-BETA Java tar file, and also with development from
+the Mercurial tips.</p>
 
 <p>The next version should include: section after step-by-step like "going further"
-which points to existing pv* documentation.
+which points to existing documentation of the EPICS V4 core modules.
 </p>
 
 <div id="toc">
@@ -75,8 +77,8 @@ which points to existing pv* documentation.
 <h2>Introduction</h2>
 
 <p>EPICS V4 is implemented in C++ and Java. Its APIs are in C++ and Java mainly,
-though wrappers are being produced for Python and Matlab. However, this document covers only
-development in Java and C++.</p>
+though wrappers are being produced for Python and Matlab. However, this document
+covers only development in Java and C++.</p>
 
 <p>See also the <a href="troubleshooting.html">Troubleshooting EPICS V4</a>
 cheatsheet, which lists very first steps in finding and resolving problems with EPICS
@@ -84,18 +86,24 @@ V4 connections.</p>
 
 <h3>The Code Modules that Comprise EPICS V4</h3>
 
-<p>At minimum EPICS V4 is comprised of 3 "core" modules, pvIOC, pvData, and
-pvAccess. You need all 3. The
-specifications for the function of these is (or is being) defined as <a
- href="http://epics-pvdata.sourceforge.net/charter.html#normative" >normative
-documents</a> of the EPICS V4 working group, and available from the homepage <a
- href="http://epics-pvdata.sourceforge.net/index.html"> the EPICS V4
+<p>EPICS V4 is comprised of 3 "core" modules: pvIOC, pvData, and
+pvAccess. You need all 3. The specifications for the function of these are (or are
+presently being) defined
+as <a href="http://epics-pvdata.sourceforge.net/charter.html#normative" >normative
+documents</a> of the EPICS V4 working group, and available from the
+homepage <a href="http://epics-pvdata.sourceforge.net/index.html"> the EPICS V4
 homepage</a>. There are Java and C++ implementations of each of these 3. The source
 code of each can be acquired from Mercurial. To use them, you can download and build
 them from the source, as described below. For java, you may alternatively just
 download the Jars. This document deals with acquiring and using these 3 core modules.
 However, there are many more pieces of software in the EPICS V4 "ecosphere", please
-see the homepage, and the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/">EPICS V4 Mercurial web site</a>.</p>
+see the homepage, and
+the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/">EPICS V4
+Mercurial web site</a>.</p>
+
+<p> Also, the levels of maturity and completeness of the core modules, is different
+with respect to their C++ and Java implementations. That will be important when you
+go further than this Getting Started guide. </p>
 
 <table id="table1">
   <caption>Table 1: The core modules of EPICS V4</caption>
@@ -135,17 +143,18 @@ and pvIOC, you will need at least these 3. The sections below will guide you
 through<a href="#getjars"> acquiring them from Jars</a> or<a href="#sourcedownload">
 building from the source</a>.</p>
 
-<p>Additionally, if you want to link EPICS V4 to EPICS V3
-control data, 2 more files, jca*.jar and caj*.jar are necessary. Specifically, the
-  pvAccess server (part of pvAccess above) allows an existing
-EPICS V3 Channel Access client to access a pvIOC database. The client allows the pvIOC to
-communicate with an EPICS V3 server, i.e. a pvIOC database can have links to records
-in a V3 IOC database. To use this, pvIOC, and hence server executables running on it,
-  will require jca and caj. These are available from the EPICS V4 download site <a
-href="http://sourceforge.net/projects/epics-pvdata/files/">
-http://sourceforge.net/projects/epics-pvdata/files/</a>
-  or from their reference sources. When we say "EPICS V3" in general we mean EPICS 3.14.
+<p>Additionally, if you want to link EPICS V4 to EPICS V3 control data, 2 more files,
+jca*.jar and caj*.jar are necessary. Specifically, the pvAccess server (part of
+pvAccess above) allows an existing EPICS V3 Channel Access client to access a pvIOC
+database. The client allows the pvIOC to communicate with an EPICS V3 server, i.e. a
+pvIOC database can have links to records in a V3 IOC database. To use this, pvIOC,
+and hence server executables running on it, will require jca and caj. These are
+available from the EPICS V4 download
+site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
+http://sourceforge.net/projects/epics-pvdata/files/</a> or from their reference
+sources. When we say "EPICS V3" in general we mean EPICS 3.14.
 </p>
+
 <table id="table2">
   <caption>Table 2: Optional components for EPICS V4 - EPICS V3 interoperability</caption>
   <tr><th>Prerequisite</th><th>Reference site</th><th>jar file</th>
@@ -169,9 +178,10 @@ Each of these will be described below.
 </p>
 
 <h3 id="getjars">Getting EPICS V4 Java Implementation from the tar of the Jar Files</h3>
+
 <p>The simplest way to acquire EPICS V4's java implementation is to download the tar
-file of the jars and necessary XML files, from the EPICS V4 sourceforge download site, 
-<a
+file of the jars and necessary XML files, from the EPICS V4 sourceforge download
+site, <a
 href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.net/projects/epics-pvdata/files/</a>
 <a href="#downloadsite">[downloadsite]</a>. See in particular the README file at the
 site. </p>
@@ -288,6 +298,7 @@ of file-not-found).
 cd to exampleJava/src/helloWorld/
 % ./helloServerRunner
 </pre>
+
 <em>Tip: If you get a ClassNotFound, you can diagnose your runtime
 environment's CLASSPATH by sourcing  helloWorld_setup.bash and then running a
 command like <code>printenv CLASSPATH | tr : '\n' | xargs -I{} ls {}</code></em>
@@ -298,8 +309,8 @@ command like <code>printenv CLASSPATH | tr : '\n' | xargs -I{} ls {}</code></em>
 server process, send the argument, receive a greeting for that argument, and print it: 
 <pre>
 cd to exampleJava/src/helloWorld/, then
-% ./helloClientRunner Martha
-Hello Martha
+% ./helloClientRunner Stefania
+Hello Stefania
 </pre>
 </li>
 </ol>
@@ -318,14 +329,14 @@ normative project [<a href="#EPICSV4repos" >EPICSV4repos</a>]. They can all be
 checked out via the Mercurial unix shell command hg, or using a Mercurial GUI client
 suitable for your platform.</p>
 
-<p>The procedure defined below will help you download the source for the pv*
-modules above, plus the caj/jca jars, and build pv* jars.</p>
+<p>The procedure defined below will help you download the source for the pv core modules
+above, plus the caj/jca jars, and build pv core jars.</p>
 
 <h4 id="prerequisites">Prerequisites</h4>
 
 <p>You must have Maven and Mercurial clients installed. Mercurial, commonly "hg" on
-the command line comes for free with Mac OS (or <a
- href="http://jasonfharris.com/machg/">MacHg for Mac OS X is a nice
+the command line comes for free with Mac OS
+(or <a href="http://jasonfharris.com/machg/">MacHg for Mac OS X is a nice
 GUI</a>). Mercurial must be able to download from the "epics-pvdata" sourceForge
 project. That means you either are going to use the HTTP URI syntax or the SSH URI
 syntax, as understood by Mercurial. </p>
@@ -335,13 +346,12 @@ method), or using a sourceForge account (which uses the SSH method). <em>The HTT
 method may not work from your institution (see below) and if you're going to use the
 SSH mechanism, you will have to register with sourceForge.</em></p>
 
-<p>Anonymous checkout (which uses the HTTP method - if it works for you) is 
-via the URI below. Note that we have seen
-that some people get a "cannot connect" timeout using this method, while the
-identical command works for other people. It's probably related to the common
-practice of blocking port 8000 on the client side, which is done by many
-institutions for security reasons. Below is an example of how to check out the
-pvDataJava Mercurial repository, using the hg unix command via anonymous
+<p>Anonymous checkout (which uses the HTTP method - if it works for you) is via the
+URI below. Note that we have seen that some people get a "cannot connect" timeout
+using this method, while the identical command works for other people. It's probably
+related to the common practice of blocking port 8000 on the client side, which is
+done by many institutions for security reasons. Below is an example of how to check
+out the pvDataJava Mercurial repository, using the hg unix command via anonymous
 access:</p>
 
 <pre>% hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataJava
@@ -380,9 +390,9 @@ in particular [<a href="#hgrepoinit">hg repo init</a>].</p>
 
 <h4 id="javadownload">Download minimum EPICSv4 Java implementation repos from epics-pvdata into local repos</h4>
 
-<p>To download the source using Mercurial, use an "hg clone" executed
-while in the directory you created and in which you executed the "hg init", i.e. "ev4hg" in
-the example above. You will need at least the 4 core "normative" module Java
+<p>To download the source using Mercurial, use an "hg clone" executed while in the
+directory you created and in which you executed the "hg init", i.e. "ev4hg" in the
+example above. You will need at least the 4 core "normative" module Java
 implementations, as above. The "common" repo is useful too, for setup files etc:</p>
 
 <pre>
@@ -526,11 +536,10 @@ write code that compiles and executes against the jar files above.</p>
 <h4 id="javaexamples">Java Examples</h4>
 
 <p>For Java client and server examples, at the time of writing, see the source code
-
-in the examplesJava module. You can find this on the epics-pvdata web site  [<a
-href="#ev4examples">ev4examples</a>]. At the time of writing, examplesJava contains
-2 examples, both of RPC style servers (that is, pass arguments to EPICS V4 server, get data back
-dependent on the arguments).</p>
+in the examplesJava module. You can find this on the epics-pvdata web site
+[<a href="#ev4examples">ev4examples</a>]. At the time of writing, examplesJava
+contains 2 examples, both of RPC style servers (that is, pass arguments to EPICS V4
+server, get data back dependent on the arguments).</p>
 
 <dl>
   <dt>helloWorld</dt>
