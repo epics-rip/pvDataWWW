@@ -105,6 +105,21 @@ Mercurial web site</a>.</p>
 with respect to their C++ and Java implementations. That will be important when you
 go further than this Getting Started guide. </p>
 
+<h3>Interoperation with EPICS V3</h3>
+
+<p>If you want to link EPICS V4 to EPICS V3 records, 2 more files, jca*.jar and
+caj*.jar are necessary. There are a number of modes of such interoperation. Firstly, an embedded channel access client inside the
+pvAccess server, allows the pvIOC to communicate with an EPICS V3 server, i.e. a
+pvIOC database can access records in a V3 IOC database. Secondly, the pvAccess
+client can be configured to use the Channel Access protocol of V3 when accessing V3
+channels. Thirdly, the pvAccess server (part of pvAccess above) allows an existing
+EPICS V3 Channel Access client to access a pvIOC database. These interoperability
+functions require JCA and CAJ <a class="bib" href="#bib:jca">jcaandcaj</a>. These are
+available from the EPICS V4 download
+site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
+http://sourceforge.net/projects/epics-pvdata/files/</a> or from their reference
+sources. When we say "EPICS V3" in general we mean EPICS 3.14.  </p>
+
 <table id="table1">
   <caption>Table 1: The core modules of EPICS V4</caption>
   <tr>
@@ -143,17 +158,6 @@ and pvIOC, you will need at least these 3. The sections below will guide you
 through<a href="#getjars"> acquiring them from Jars</a> or<a href="#sourcedownload">
 building from the source</a>.</p>
 
-<p>Additionally, if you want to link EPICS V4 to EPICS V3 control data, 2 more files,
-jca*.jar and caj*.jar are necessary. Specifically, the pvAccess server (part of
-pvAccess above) allows an existing EPICS V3 Channel Access client to access a pvIOC
-database. The client allows the pvIOC to communicate with an EPICS V3 server, i.e. a
-pvIOC database can have links to records in a V3 IOC database. To use this, pvIOC,
-and hence server executables running on it, will require jca and caj. These are
-available from the EPICS V4 download
-site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
-http://sourceforge.net/projects/epics-pvdata/files/</a> or from their reference
-sources. When we say "EPICS V3" in general we mean EPICS 3.14.
-</p>
 
 <table id="table2">
   <caption>Table 2: Optional components for EPICS V4 - EPICS V3 interoperability</caption>
@@ -1062,16 +1066,20 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/" >
     http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/</a>
   </dd>
-<dt id="bib:pvIOCCPP">[bib:pvIOCCPP]</dt>
+<dt id="bib:pvIOCCPP">[pvIOCCPP]</dt>
   <dd>Getting Started with the C++ implementation of pvIOC, 
   <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html#L143">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html</a>
-  </dd>  
+  </dd>
+  <dt id="bib:jca">[jcaandcaj]</dt>
+  <dd>JCA and CAJ, Sourceforge, Matej Sekoranja,  
+    <a href="http://epics-jca.sourceforge.net">http://epics-jca.sourceforge.net</a>
+    </dd>
 </div>
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI</address>
-<!-- hhmts start -->Last modified: Thu Oct 11 12:31:42 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Oct 30 14:07:14 CET 2012 <!-- hhmts end -->
 
 </body>
 </html>
