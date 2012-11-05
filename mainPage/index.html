@@ -27,7 +27,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Wed Oct 24 14:53:25 PDT 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Nov  5 18:33:49 CET 2012 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -111,12 +111,11 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	  <li><a 
 	  href="#nutshell">In a Nutshell</a></li>
 	  <li><a 
-	  href="#summarystatus">Status Summary</a></li>
+	  href="informative/epicsV3epicsV4Overview.html">V3/V4 Overview</a></li>
 	  <li><a href="#interop" >V3/V4 Interoperation</a></li>
 	  <li><a href="#perf" >Performance</a></li>
-	  <li><a 
-	  href="#softwaredevel">Development Summary</a></li>
-	  
+	  <li><a href="#summarystatus">Status Summary</a></li>
+	  <li><a href="#softwaredevel">Development Summary</a></li>
 	</ul>
       </ul>
 
@@ -287,68 +286,6 @@ provides a brief overview of EPICS version 3
  href="#nonnormative">Tools, Accessories and other Associated Work</a> below</p>
 
 
-      
-<h2 id="summarystatus">Summary Status</h2>
-
-<p>This section is a very short summary of the status of EPICS V4 overall, and gives
-help on how an interested engineer might want to use it now.</p> <p><strong>Last
-updated Oct-2012:</strong></p>
-
-<p>EPICS V4 has been in beta since December 2011. The core standards of EPICS V4, and their implementations, are complete with respect to the <a href="http://epics-pvdata.sourceforge.net/charter.html#milestones">January 2012 charter milestones</a>.
-
-<p>The beta 1 is useable for testing the technology for distributed high level data services.</p>
-
-<p>Beta 2 is now being developed and will be released shortly. Beta 2 improves the data model for describing complex data, improves the IOC side framework for interfacing V4 systems to EPICS V3 records, provides command line get, set and monitor commands, and a greatly simplified framework for high performance Remote Procedure Call (RPC) style servers. </p>
-  
-<p>Initial production level services based on EPICS V4 have been deployed at BNL, PSI, and Diamond. A summary of the installation architecture used by PSI for EPICS V4 based services implemented in Java, has been published as a pattern for new adopters.</p>
-
-<p>Recent work added unsigned integer support, improving programmer ease of use, and the pvAccess and Normative Type specifications. The specification of pvAccess has just been expert reviewed and is now being published at Second Public Working Draft. The definitions of the interoperable data types, "Normative Types" is approaching First Public Working Draft.</p>
-
-<p>In acute summary, support for managed distributed data acquisition is quite far along and can be used now. This includes acquisition from EPICS V3 PVs via EPICS V4 tools or components. The basis for services and "RPC in EPICS" is complete, and there are example services in Java and C++. Largely documentation is up to date with respect to implemented code.</p>
-
-<p>The primary area in which EPICS V4 is not yet ready for use is that part which is the core value of the EPICS V3 IOC, record processing for controls. This is because we are adding to EPICS first, then will re-implement the exiting excellent functionality in EPICS version 3. See below for a complete breakdown.</p>
-
-<p>The next year will concentrate on V3 - V4 interoperability and interface, and work to support high performance V3 IOC data acquisition through V4 services, such as accessing NDArray data through a V4 Normative Type and sequential monitors. Additionally, the V4 IOC will be designed. The charter to cover work over the next year is now being developed. Comments on what should be included are welcome. </p>
-
-
-<h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
-
-<p>This section outlines how one might use EPICS V4 right now, given its present
-status</p>
-
-<p>EPICS V4 includes EPICS V3. It is expected that, for a significant period of time,
-an institutional <strong>user of EPICS Version 4 would use it in parallel with the
-EPICS version 3</strong> distribution. In particular, EPICS Version 3 would continue
-to be the basis of controls. In its present state, EPICS Version 4 concentrates on so
-called "high level" software services. It provides a platform for fast Service
-Oriented Architecture and distributed message passing. Its programming model is
-optimized for efficient distributed synchronous or asynchronous processes
-communicating by essential a shared-memory system based on data introspection.  </p>
-
-<p>In a hybrid environment, EPICS V4 is at BETA for use for managed distributed data
-acquisitions. See the <a
- href="http://epics-pvdata.sourceforge.net/doc/pvServiceJava/gather.html">Gather
-service framework</a>. This is a server side software framework that uses the new
-facilities of EPICS V4 to help a user define, save, and execute, a named coordinated
-acquisition of many V3 PVs. The Gather service framework is alpha stage software;
-it's complete, but not yet field tested. Contact Marty Kramer or Guobao Shen at
-BNL. See also <a href="http://pvmanager.sourceforge.net/">pvManager</a>, which is a
-client side tool for making acquisitions of a large number of PVs
-efficiently. pvManager is mature enough for use now, contact Gabriele Carassi at
-BNL. Also </p>
-
-<p> Although record processing is presently part of EPICS V4, it is not mature enough
-to supplant EPICS V3 record processing and device support for controls.  This is
-expected to be undertaken in the next year. Contact Bob Dalesio (BNL), Marty Kramer
-(BNL) or Matej Sekornaja (COSYLAB) for more details and estimates. However, note that
-EPICS V4 clients can interface to EPICS V3 IOC record processing via pvAccess through
-use of the pvAccess Server (PAS). See worked example in <a
- href="gettingStarted.html">Getting Started with EPICS V4.</a> </p>
-
-<h3>Present Deployments</h3>
-<p>EPICS V4 is also being used now developing beamline image data acquisition and
-storage, using the facilities of pvData for structured data. Contact James Roland at
-DIAMOND. It will shortly also be deployed at PSI for back end SQL database access. </p>
 
 <h2 id="interop">V3/V4 Interoperation</h2>
 
@@ -437,6 +374,96 @@ additionally has the capability to transfer only actually changed structure fiel
     </td>
   </tr>
 </table>
+
+      
+<h2 id="summarystatus">Summary Status</h2>
+
+<p>This section is a very short summary of the status of EPICS V4 overall, and gives
+help on how an interested engineer might want to use it now.</p> <p><strong>Last
+updated Oct-2012:</strong></p>
+
+<p>EPICS V4 has been in beta since December 2011. The core standards of EPICS V4, and
+their implementations, are complete with respect to the <a
+ href="http://epics-pvdata.sourceforge.net/charter.html#milestones">January 2012
+charter milestones</a>.
+
+<p>The beta 1 is useable for testing the technology for distributed high level data
+services.</p>
+
+<p>Beta 2 is now being developed and will be released shortly. Beta 2 improves the
+data model for describing complex data, improves the IOC side framework for
+interfacing V4 systems to EPICS V3 records, provides command line get, set and
+monitor commands, and a greatly simplified framework for high performance Remote
+Procedure Call (RPC) style servers. </p>
+  
+<p>Initial production level services based on EPICS V4 have been deployed at BNL,
+PSI, and Diamond. A summary of the installation architecture used by PSI for EPICS V4
+based services implemented in Java, has been published as a pattern for new
+adopters.</p>
+
+<p>Recent work added unsigned integer support, improving programmer ease of use, and
+the pvAccess and Normative Type specifications. The specification of pvAccess has
+just been expert reviewed and is now being published at Second Public Working
+Draft. The definitions of the interoperable data types, "Normative Types" is
+approaching First Public Working Draft.</p>
+
+<p>In acute summary, support for managed distributed data acquisition is quite far
+along and can be used now. This includes acquisition from EPICS V3 PVs via EPICS V4
+tools or components. The basis for services and "RPC in EPICS" is complete, and there
+are example services in Java and C++. Largely documentation is up to date with
+respect to implemented code.</p>
+
+<p>The primary area in which EPICS V4 is not yet ready for use is that part which is
+the core value of the EPICS V3 IOC, record processing for controls. This is because
+we are adding to EPICS first, then will re-implement the exiting excellent
+functionality in EPICS version 3. See below for a complete breakdown.</p>
+
+<p>The next year will concentrate on V3 - V4 interoperability and interface, and work
+to support high performance V3 IOC data acquisition through V4 services, such as
+accessing NDArray data through a V4 Normative Type and sequential
+monitors. Additionally, the V4 IOC will be designed. The charter to cover work over
+the next year is now being developed. Comments on what should be included are
+welcome. </p>
+
+
+<h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
+
+<p>This section outlines how one might use EPICS V4 right now, given its present
+status</p>
+
+<p>EPICS V4 includes EPICS V3. It is expected that, for a significant period of time,
+an institutional <strong>user of EPICS Version 4 would use it in parallel with the
+EPICS version 3</strong> distribution. In particular, EPICS Version 3 would continue
+to be the basis of controls. In its present state, EPICS Version 4 concentrates on so
+called "high level" software services. It provides a platform for fast Service
+Oriented Architecture and distributed message passing. Its programming model is
+optimized for efficient distributed synchronous or asynchronous processes
+communicating by essential a shared-memory system based on data introspection.  </p>
+
+<p>In a hybrid environment, EPICS V4 is at BETA for use for managed distributed data
+acquisitions. See the <a
+ href="http://epics-pvdata.sourceforge.net/doc/pvServiceJava/gather.html">Gather
+service framework</a>. This is a server side software framework that uses the new
+facilities of EPICS V4 to help a user define, save, and execute, a named coordinated
+acquisition of many V3 PVs. The Gather service framework is alpha stage software;
+it's complete, but not yet field tested. Contact Marty Kramer or Guobao Shen at
+BNL. See also <a href="http://pvmanager.sourceforge.net/">pvManager</a>, which is a
+client side tool for making acquisitions of a large number of PVs
+efficiently. pvManager is mature enough for use now, contact Gabriele Carassi at
+BNL. Also </p>
+
+<p> Although record processing is presently part of EPICS V4, it is not mature enough
+to supplant EPICS V3 record processing and device support for controls.  This is
+expected to be undertaken in the next year. Contact Bob Dalesio (BNL), Marty Kramer
+(BNL) or Matej Sekornaja (COSYLAB) for more details and estimates. However, note that
+EPICS V4 clients can interface to EPICS V3 IOC record processing via pvAccess through
+use of the pvAccess Server (PAS). See worked example in <a
+ href="gettingStarted.html">Getting Started with EPICS V4.</a> </p>
+
+<h3>Present Deployments</h3>
+<p>EPICS V4 is also being used now developing beamline image data acquisition and
+storage, using the facilities of pvData for structured data. Contact James Roland at
+DIAMOND. It will shortly also be deployed at PSI for back end SQL database access. </p>
 
 <h2 id="lit">Software Specifications and Implementations</h2>
 <p>EPICS V4 is a body of core specifications, reference implementations, and some
