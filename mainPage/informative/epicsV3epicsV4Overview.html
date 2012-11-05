@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>Overview of EPICS Version 3 and EPICS Version 4</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+ </script>
+</head>
+
+<body>
+
+<div class="head">
+<h1>Overview of EPICS version 3 and EPICS version 4</h1>
+<dl>
+  <dt>Editors:</dt>
+    <dd>Marty Kraimer, BNL</dd>
+</dl>
+
+  <p class="copyright">This product is made available subject to acceptance of the <a
+href="http://epics-pvdata.sourceforge.net/LICENSE.html">EPICS open source
+license.</a></p>
+<hr />
+</div>
+
+<h2 class="nocount">Abstract</h2>
+
+<p>This document provides a brief overview of EPICS version 3,
+EPICS version 4, and interoperability between them.<p>
+
+<p>The overview of EPICS version 3 discusses only EPICS Base,
+which is the core EPICS software described in detail in the following link.</p>
+<dl>
+   <dt><a href="http://www.aps.anl.gov/epics">EPICS</a><dt>
+    <dd> is a set of Open Source
+software tools, libraries and applications developed collaboratively and used
+worldwide to create distributed soft real-time control systems for scientific
+instruments such as a particle accelerators, telescopes and other large
+scientific experiments. </dd>
+</dl>
+
+
+<p>EPICS version 4 is a set of related products in the EPICS
+V4 control system programming environment:</p>
+<dl>
+  <dt><a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html">pvData</a></dt>
+    <dd>pvData (Process Variable Data) defines and implements an efficent way
+      to store, access, and communicate memory resident structured data</dd>
+  <dt><a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html">pvAccess</a></dt>
+    <dd>pvAccess is a software library for high speed controls network communications,
+      optimized for pvData</dd>
+  <dt><a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/raw-file/tip/documentation/pvIOCJava.html">pvIOC</a></dt>
+    <dd>pvIOC is a software framework for building network accessable "smart" real time
+      databases, suitable for interfacing devices in a distributed control system,
+      that can exchange pvData over pvAccess.
+    </dd>
+  <dt><a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvServiceJava/raw-file/tip/documentation/pvAccessJava.html">pvService</a></dt>
+    <dd>A middle layer for implementing efficient data services.</dd>
+</dl>
+
+<p>Each of these products has a Java and a C++ implementation.</p>
+
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+<div id="contents" class="contents">
+
+<h2>Definitions</h2>
+<p>This section defines the terminology used in this document.</p>
+<h3>EPICS Version 3</h3>
+<dl>
+   <dt>EPICS Base</dt>
+      <dd>The main core of EPICS, comprising the build system and tools, common and OS-interface libraries,
+       Channel Access client and server libraries, static and run-time database access routines,
+        the database processing code, and standard record, device and driver support.
+      EPICS base existed since 1991 and gone through many releases.
+     This document discusses the 3.14 releases.
+   </dd>
+   <dt>CAV3</dt>
+      <dd>This is the Channel Access component of EPICS Base.</dd>
+   <dt>iocCore</dt>
+      <dd>The following components of EPICS Base: static and run-time database access routines,
+        the database processing code, and standard record, device and driver support.</dd>
+   <dt>V3IOC</dt>
+      <dd>What EPICS Version 3 calls an IOC.
+      EPICS uses Client/Server and Publish/Subscribe techniques to communicate between the various computers.
+      Most servers (called Input/Output Controllers or IOCs) perform real-world I/O and local control tasks,
+      and publish this information to clients using the Channel Access (CA) network protocol.</dd>
+   <dt>V3Record</dt>
+      <dd>A memory resident record as defined by EPICS Base.</dd>
+</dl>
+<h3>EPICS Version 4</h3>
+<dl>
+  <dt>pvData</dt>
+    <dd>The definition of data.</dd>
+  <dt>pvAccess</dt>
+    <dd>Network support for pvData.</dd>
+  <dt>pvIoc</dt>
+     <dd>Like V3IOC except the database is composed of pvRecords.</dd>
+  <dt>pvRecord</dt>
+      <dd>A memory resident record which has data defined as pvData,</dd>
+</dl>
+
+<h2>Introduction</h2>
+
+<p>Both iocCore and pvIOC are based on the concept of a database
+of memory resident "smart" records.
+A record is called smart because code is attached to the record
+and is triggered by asking the record to process.</p>
+<p>CAV3 (channel access version 3), which is a component of iocCore,
+provides network access to iocCore records.
+pvAccess provides network access to pvIOC records.
+Both access a record via the channelName which is just 
+the name of the record and optionally the name of a field in the record.
+The record name must be unique within the local area network.</p>
+<p>This document provides an overview of:</p>
+<dl>
+   <dt>Channel Access<dt>
+     <dd>Overview of the code that provides network access to data.</dd>
+   <dt>Record and Record Processing</dt>
+     <dd>Overview of how data in a record is structured and an overview of what happens
+     when a record is processed.</dd>
+</dt>
+<p>Each of these is discused first for iocCore and then for pvAccess/pvIOC.</p>
+<p>Before starting the discussion it is important to state that the C++ version of pvIOC is not
+complete.</p>
+<h2>pvIOCCPP is not complete</h2>
+<p>There are both Java and C++ implementations of pvData, pvAccess, and pvIOC.
+The Java and C++ implementations of both pvData and pvAccess are complete.
+Java provides a complete implementation of pvIOC.
+The C++ implementation is only beginning. The last section briefly describes the current implementation.<p>
+<h2>Channel Access</h2>
+<h3>CAV3</h3>
+<p>For CAV3 a channelName consists of a "recordName.fieldName"
+The default fieldName is "VAL".
+The field data has one of the following types:</p>
+<dl>
+  <dt>scalar</dt>
+    <dd>This is one of:
+       <dl>
+          <dt>integer</dt>
+            <dd>Signed 8, 16, and 32 bit integers.</dd>
+          <dt>IEEE floating point</dt>
+             <dd>Single and Double precision</dd>
+          <dt>string</dt>
+             <dd>A 40 character C style string</dd>
+       </dl>
+     </dd>
+  <dt>array</dt>
+     <dd>An array of one of the scalar types.
+       An array has fixed capacity but the length can vary.</dd>
+  <dt>enumerated</dt>
+     <dd>An index + a set of up to 16 26 character C style strings.</dd>
+</dl>
+<p>In addition a field can have some set of the following properties.</p>
+<dl>
+    <dt>alarm</dt>
+       <dd>status and severity where each is a 16 bit signed integer.
+        There is a header file and code for manipulating alarms.</dd>
+    <dt>timeStamp</dt>
+      <dd>An unsigned 32 bit integer that is the number of seconds since 1990
+       and an unsigned 32 bit integer that is nano seconds within the second.
+        There is a header file and code for manipulating timeStamps.</dd>
+    <dt>display</dt>
+      <dd>display limits,precision, alarm limits, and units.</dd>
+    <dt>control</dt>
+       <dd>control limits</dd>
+</dl>
+<p>CAV3 provides I/O  functions that falls into the following classes:</p>
+<dl>
+   <dt>get</dt>
+      <dd>The client specifies the data type desired plus a set of property data.
+        A fixed set of structures are defined for the property data.
+        The IOC converts between the data type of the IOC record field and what
+        the client requests.</dd>
+   <dt>put</dt>
+      <dd>The client specifies the data type desired.</dd>
+   <dt>monitor</dt>
+      <dd>The client specifies the data type desired plus a set of property data.</dd>
+</dl>
+<p>CAV3 provides no way for the client to influence record processing.
+Puts can cause processing but database access decides if a put causes a
+record to process.</p>
+<h3>pvAccess</h3>
+<p>For pvAccess a channelName consists of just the recordName.
+How the client specifies what data and options are desired are discussed below.
+For now just realize that each data item passed between client and server
+is a via an identical top level pvStructure on each side.</p>
+<p>A brief description of a pvStructure is that it is a structure that has
+a set of PVFields where each field has one of the following types:</p>
+<dl>
+  <dt>scalar</dt>
+    <dd>This is one of:
+       <dl>
+          <dt>boolean</dt>
+            <dd><b>true</b> or <b>false</b></dd>
+          <dt>integer</dt>
+            <dd>Signed and unsigned 8, 16, 32 and 64 bit integers.</dd>
+          <dt>IEEE floating point</dt>
+             <dd>Single and Double precision</dd>
+          <dt>string</dt>
+             <dd>In Java a Java String. In C++ a std::string.</dd>
+       </dl>
+     </dd>
+  <dt>array</dt>
+     <dd>An array of one of the scalar types. Both the capacity and length
+       can vary</dd>
+  <dt>structure</dt>
+     <dd>A substructure.</dd>
+  <dt>structureArray</dt>
+     <dd>An array of PVStructures where each element has the same introspection
+      interface.</dd>
+</dl>
+<p>Although pvAccess itself does not get involved,
+pvData defines a set of "standard" PVStructures and assocated code
+called properties.</p>
+<p><b>Note: </b> pvData and pvAccess are not directly involved with normative types (NT).
+They merely make it possible to create NT structures.</p>
+<p>The currently defined property structures are:</p>
+<dl>
+    <dt>enumerated</dt>
+      <dd>A structure that has two fields: an integer index,
+      and an array of strings named choices.</dd>
+    <dt>alarm</dt>
+       <dd>A structure that has fields status and severity
+         where each is a 16 bit signed integer. In addition there is a string field
+         named message.
+        There are interface definitions and code for manipulating alarms.</dd>
+    <dt>timeStamp</dt>
+      <dd>An signed 64 bit integer that is the number of seconds since 1970
+       and a signed 32 bit integer that is nano seconds within the second.
+        There are interface definitions and code for manipulating alarms.</dd>
+    <dt>display</dt>
+      <dd>display limits, description, format, and units.</dd>
+    <dt>valueAlarm</dt>
+      <dd>If the value field is type numeric then a structure with fields
+         alarm limits, active, hystersis.
+       If the value field is an enumerated structure then
+      a structure with fields active, changeStateSeverity, and stateSeverity.
+      The stateSeverity is an integer array. </dd>
+    <dt>control</dt>
+       <dd>control limits</dd>
+</dl>
+<p>pvAccess provides the following:</p>
+<dl>
+   <dt>channelProcess</dt>
+     <dd>Ask for a record to process without any data transfer between client
+      and server.</dd>
+   <dt>channelGet</dt>
+     <dd>Transfer data from server to client.
+     The data is transfered between identical top
+     level structures, which are created when the channelGet is created.
+     Only data that has changed since the last get is tranfered.</dd>
+   <dt>channelPut</dt>
+     <dd>Transfer data from server to client.
+     The data is transfered between identical top
+     level structures, which are created when the channelPut is created.
+     Only data that has changed since the last put is tranfered.</dd>
+   <dt>channelPutGet</dt>
+     <dd>This is a put followed by a get. Different structures are involved with
+     put and get but again the structures at each end are created when the
+     channelPutGet is created.
+     Only data that has changed since the last putGet is tranfered.</dd>
+   <dt>channelArray</dt>
+      <dd>This supported put and get of  subarray.
+         The offset and lengthi are specified.</dd>
+   <dt>channelRPC</dt>
+      <dd>This is a put followed by get. No structures are created when the
+      channelRPC is created. The structures for each request can be completely
+      different than the previous request.</dd>
+   <dt>monitor</dt>
+      <dd>Ask to receive data from the server everytime the data changes
+      subject to some algorithm. Each side can create a queue of structures for the
+      data. Only data which changes is transfered. The client is notified of
+      queue overflows.</dd>
+</dl>
+<p>When a client connects to a record the client receives an interface Channel.
+The interface has a create method for each of the above,
+i.e. createChannelProcess, etc.
+Each of these create methods has an argument "PVStructure pvRequest".
+The pvRequest structure is passed from the client to the server.
+pvAccess itself does not care what is in pvRequest; it is just a top level pvStructure.
+But a set of conventions exist for communication with a PVIOC.
+A pvAccess server should follow the same conventions unless it has special
+requirements.</p>
+<p>There is a "convenience" service that, given a string, creates a pvRequest.
+A simple example is:</p>
+<pre>
+pvRequest = createRequest("field(alarm,timeStamp,value)");
+</pre>
+<p>The details are provided in pvAccessJava.html.
+The brief description is that the pvRequest allows the client to specify the following:</p>
+<dl>
+  <dt>Data Desired</dt>
+    <dd>The client can select an arbitary subset of the fields in the pvIOC record.
+     This applies to channelGet, channelPut, and channelMonitor.
+     For channelPutGet the client can separately specify the put and get structures.
+    </dd>
+  <dt>Record Options</dt>
+    <dd>An example is:
+<pre>
+pvRequest = createRequest("record[process=true]field(alarm,timeStamp,value)");
+</pre>
+      This asks that the record be processed.
+      There are two standard record options:
+      <dl>
+        <dt>process</dt>
+         <dd>This can have the value <b>true</b> or <b>false</b>.
+          This option applies to channelGet, channelPut, and channelPutGet.
+          The default is <b>false</b> for get and <b>true</b> for channelPut
+          and channelPutGet. For channelRPC there is no process option since proccess is implied.
+         </dd>
+        <dt>queueSize</dt>
+          <dd>This is for monitor.</dd>
+      </dl>
+    </dd>
+   <dt>Field Options</dt>
+     <dd>Options can also be specified for individual fields.
+       A standard option for scalar array fields is <b>shareData</b>.
+       Monitor accepts options for monitor algorithms.</dd>
+</dl>
+
+<h2>Record and Record Processing</h2>
+<h3>V3IOC record data</h3>
+<p>A record is a flat structure, i.e.
+it is a structure that has a set of fields each of which has a name.
+Each field is one of the following types:</p>
+<pre>
+DBF_STRING,
+DBF_CHAR,
+DBF_UCHAR,
+DBF_SHORT,
+DBF_USHORT,
+DBF_LONG,
+DBF_ULONG,
+DBF_FLOAT,
+DBF_DOUBLE,
+DBF_ENUM,
+DBF_MENU,
+DBF_DEVICE,
+DBF_INLINK,
+DBF_OUTLINK,
+DBF_FWDLINK,
+DBF_NOACCESS
+</pre>
+<p><b>DBF_CHAR</b>, ... ,<b>DBF_DOUBLE</b> are the numeric types.
+The other types are:</p>
+<dl>
+   <dt>DBF_STRING</dt>
+     <dd>This is a string field. A string field has a capacity
+        determined when by how the field is created.
+       The actual data is a C char array.
+       It can have any size which can be determined via facilities
+       provided by dbAccess.</dd>
+   <dt>DBF_ENUM</dt>
+      <dd>This is a for the <b>VAL</b> field.
+        The field is an unsigned 16 bit integer.
+       The Record Support Entry Table (rset discussed below) provides
+       a method <b>get_enum_strs</b> which provides the set of choices.
+       The bi, bo, mbbi, mbbo, etc record types inplement the choices
+       via a separate DBF_STRING field for each choice.
+      A client can only change a choice by knowing details about the
+      record type.
+      </dd>
+   <dt>DBF_MENU</dt>
+      <dd>The V3 database supports this type. It makes the data available to
+      clients as a enumerated value. The choices are immutable.</dd>
+   <dt>DBF_DEVICE</dt>
+      <dd>This is the type for field DTYP,
+       which is a field common to all record types.
+       It specifies what type of device support is attached
+       to the record. It is also made available to clients as
+       an enumerated value. The choices are determined when the record
+       instance is created and can not be changed dynamically.</dd>
+   <dt>DBF_INLINK</dt>
+   <dt>DBF_OUTLINK</dt>
+      <dd>These are string fields used by device support.
+       The format is determined by the device support.
+      Some types of device support can be changed dynamically
+      but the client must know the syntax</dd>
+   <dt>DBF_FWDLINK</dt>
+      <dd>This is a string field that can hold the name of another record.
+     If configured then when the record holding the link is processed
+     the linked record is also processed.</dd>
+   <dt>DBF_NOACCESS</dt>
+      <dd>This is a field that hold private data that can not be accesed
+       from outside the record.</dd>
+</dl>
+
+<h3>V3IOC record processing</h3>
+<p>A record instance has a record type.
+Each record type has a fixed set of fields. Each has a common set of 43 fields
+and a set of record type specific fields. For example ai adds 39 fields
+and mbbi adds 65 fields. Most of these fields are not of interest to clients.
+The field of most interest is VAL. Many other fields are <b>properties</b>
+of the value field. Normally client code does not directly access property fields
+but gets their values via chnnelAccess.
+Many fields are private and can not be accessed via channelAccess.</p>
+<p>EPICS base provides a set of record types, e. g. ai, ao, bi, bo, etc.
+It also provides facilities for defining additional record types.
+Each record type has associated code that is accessed via a rset (Record
+Support Entry Table):</p>
+<pre>
+typedef struct rset {   /* record support entry table */
+        long            number;         /*number of support routines    */
+        RECSUPFUN       report;         /*print report                  */
+        RECSUPFUN       init;           /*init support                  */
+        RECSUPFUN       init_record;    /*init record                   */
+        RECSUPFUN       process;        /*process record                */
+        RECSUPFUN       special;        /*special processing            */
+        RECSUPFUN       get_value;      /*get value field               */
+        RECSUPFUN       cvt_dbaddr;     /*cvt  dbAddr                   */
+        RECSUPFUN       get_array_info;
+        RECSUPFUN       put_array_info;
+        RECSUPFUN       get_units;
+        RECSUPFUN       get_precision;
+        RECSUPFUN       get_enum_str;   /*get string from enum item*/
+        RECSUPFUN       get_enum_strs;  /*get all enum strings          */
+        RECSUPFUN       put_enum_str;   /*put string from enum item*/
+        RECSUPFUN       get_graphic_double;
+        RECSUPFUN       get_control_double;
+        RECSUPFUN       get_alarm_double;
+}rset;
+</pre>
+<p>
+These method are called by dbAccess, which is major component of iocCore.
+Method <b>process</b> is called to process the record.
+The details are determined by the record suport.
+The methods <b>get_value</b>, ... ,<b>get_alarm_double</b> are all related
+to the field named <b>VAL</b>.
+<b>get_array_info</b> and <b>put_array_info</b> apply if the value field
+is an array. <b>get_enum_str</b> ,..., <b>put_enum_str</b> apply if value
+is an enumerated field.
+The other <b>get_xxx</b> methods get properties of the value field.</p>
+<p>Three fields from dbCommon releted to record processing are
+<b>SCAN</b>,<b>FLNK</b>, and <b>DTYP</b>.
+Many record types have either a field <b>INPUT</b> or <b>OUTPUT</b>.
+<dl>
+   <dt>SCAN</dt>
+     <dd>This is a menu field that determines what causes the record to process.
+      A record can be processed periodically or by two different interrupt
+     mechanism. A record can also be declared passive, which means
+     that it is only processed when a client or a link from another record
+     asks that the record be processed. A field can have an attribute
+     of process passive. When a client issues a put to the field and SCAN
+     is passive then the record is processed.</dd>
+   <dt>FLNK</dt>
+      <dd>This is a forward link. The link can either be a dblink or a calink.
+         For a dblink the linked record will be part of the same scan set
+        as the record containing the FLNK. The concept of scan set is 
+        discussed below. This field is handled by dbAccess rather than the
+        record support.</p>
+   <dt>DTYP</dt>
+      <dd>A record type can have associated device support.
+       Device support is called by record support via a dset (device support
+      entry table. The device support can be anything that implements
+      the dset. Often the device support accesses hardware. A common example
+      is support that communicates with the asynDriver facility.
+      But iocCore provides support for links the other records (dblink)
+      and to CAV3 channels (calink). Like FLINK the dblink record will be
+      in the same lock set.</dd>
+   <dt>INPUT</dt>
+   <dt>OUTPUT</dt>
+     <dd>If the record type has an INPUT field then, by definition,
+     it is an input record, i. e. it gets data from somewhere else.
+     Similarly if it has an OUTPUT field it is an output record.
+     In either case this field is a string field that has configuration
+     information for the device support. The format is determined by
+     the device support.</dd>
+</dl>
+<p>Because processing a record can cause linked records to also be processed,
+the concept of scan set exists.
+Before a record is processed a function <b>dbScanLock</b> is called and when
+it completes processing <b>dbScanUnlock</b> is called.
+All records linked together directly or indirectly are placed in the same lock set.
+When dbScanLock is called the entire set, not just the specified record, is locked.
+This prevents two different tasks from simultaneously modifying records in the same lock set.
+</p>
+<p>Device support can be either synchronous or asynchronous.
+A synchronous record is a record where device support can complete without
+wait for I/O. Asynchronous support is support that needs to wait.
+Asynchonous processing consists of two two phases: process start
+and process completion.
+Between the two phases the record is unlocked.</p>
+
+<h3>pvIOC record data</h3>
+<p><b>NOTE:</b> currently record and record processing is only
+implemented by pvIOCJava.</p>
+<p>A PVRecord has a top level PVStructure.
+Thus the data layout is just PVData.
+As mentioned above pvData defines standard structures and support for
+enumerated, alarm, timeStamp, display, control, and valueAlarm.
+</p>
+
+<h3>pvIOC record processing</h3>
+<p>pvIOC has the the same processing features as V3IOC.
+The main difference are:</p>
+<dl>
+   <dt>locking</dt>
+     <dd>The record is locked. There is the ability to
+     lock one other record but no concept of scan sets.
+     The concept of synchronous and asynchronous does exists.</dd>
+   <dt>support</dt>
+     <dd>No concept of record types, record support, and device support exists.
+     Instead support can optionally be attached to any field.
+     Support must implement the methods defined by interface <b>Support</b>
+     When support is initialized it looks, starting with the field to
+     which it is attached, for fields that it requires.
+     Several basic support modules are provided by pvIOC.
+     Amoung these is <b>Generic</b>. It is normally attached to the
+     top level structure. It looks in the immediate substructure for
+     each field that have attached support and calls it's support methods</dd>
+   <dt>support configuration</dt>
+     <dd>Configuration is done via PVData fields</dd>
+</dl>
+<p>The interface for support is:</p>
+<pre>
+interface Support {
+    void initialize();
+    void start(AfterStart afterStart);
+    void stop();
+    void uninitialize();
+    void process(SupportProcessRequester supportProcessRequester);
+}
+</pre>
+<p>Although record types do not exist there are standards for field layout
+so that the equivalent of the V3IOC ai, ao, etc records can be created.</p>
+<p>Support is provided that implements database and channelAccess links.</p>
+
+<h2>CAV3/V3Record &lt;==&gt; pvAccess/pvIOC</h2>
+<p>The status of interoperability between V3 and pvIOC/pvAccess is:</p>
+<dl>
+   <dt>pvAccessJava</dt>
+      <dd>A pvAccess can comunicate with a channel via either CAV3 of pvAccess.
+       In either case the data appears to the client as pvData.</dd>
+   <dt>pvIOCJava</dt>
+     <dd>This provides a CAV3 server. This allows a CAV3 client to access fields of a PVRecord.</dd>
+   <dt>pvAccessCPP</dt>
+     <dd>Currenly has no support for CAV3.</dd>
+   <dt>pcIOCCPP</dt>
+     <dd>v3Channel is a pvAccess server for accessing V3 records.</dd>
+</dl>
+<p>From the point of view of a pvAccess client.</p>
+<dl>
+  <dt>Java Client</dt>
+    <dd>Has access to a channel using either the CAV3 or pvAccess network protocal.
+      Thus it has access to PVRecords on a pvIOCJava and to V3 records on any V3 IOC.
+    It also has access to multiChannal data that resides in a pvIOCCPP.
+    </dd>
+  <dt>C++ client</dt>
+    <dd>Has access to a channel only via pvAccess protocal.
+      Thus it has access to PVRecords on a pvIOCJava and 
+     has access to V3 data only if the V3IOC has the v3Channel server running.
+    It also has access to multiChannal data that resides in a pvIOCCPP.</dd>
+</dl>
+<p>A CAV3 client has access to a channel that is a PVRecord only if the record
+is on a pvIOCJava.</p>
+
+<h2>Status of pvIOCCPP</h2>
+<p>pvIOCCPP is the C++ implementation of pvIOC.
+<p>As of the beta 2 release of EPICS V4 the only complete feature provided
+by pvIOCCPP so <b>v3Channel</b> , which provides pvAccess for V3 records.</p>
+<p>This allows a pvAccess client access to a V3Record with out using CAV3.</p>
+
+</div>
+</body>
+</html>
