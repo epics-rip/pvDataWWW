@@ -1,0 +1,89 @@
+
+2011-2012 Charter
+INCOMPLETE ACTIVITIES (not including AIs)
+==========================================
+The following are ongoing activities and those required by the 2011-2012 charter,
+which are incomplete.
+ 
+CORE
+----
+1. Directory Service - not finished - no user guide documentation (RL)
+
+2. easyPVA - not finished, & cpp & java not equally implemented (MK)
+
+3. gather - finished? I don't think it's used anywhere. What is the state of the
+   gather example? No bpm service. (MK)
+
+4. v3channel - finished? Not verified, not properly documented. I think this can't be
+   said to be finished until it is documented as part of a serious v3-v4 interop
+   doc. (MK)
+
+5. v3-v4 interop user guide. Not started. We have just a kinda description from Marty
+   about the difference between processing in the two of them. Nothing concrete you
+   can give an engineer that says "this is a guide to the interoperation of EPICS V3
+   and V4" (DH)
+
+6. vxWorks port - not finished. Beta 2 not started. How should this fit into plan to
+   remove database from pvIOC? My feeling is the objective should be a very clean and
+   small extract of the present pvIOC should be ported to vxWorks. Possibly only
+   formally port v3channel, and formally descope pvIOC from EPICS V4?! (DZ)
+
+7. Performance measurements - not finished. Transferred to new project for micro benchmarking  (MS)
+
+8. ArchiveService. Code complete - but no user guide (DH)
+
+9. exampleJava. Not finished. Needs regularization of serviceAPI and release (GW)
+
+10. Create and release announce beta 2. Depends on 9. (GW)
+
+11. Normative Types. Not finished. Waiting for comments from Michael prior to 1PWD (MD, GW)
+
+12. Javadoc and Doxygen incomplete. Needs much better completeness. Needs to conform
+    to much stricter code documentation standards w.r.t. careful use of tense and
+    specificity (MK, MS, GW, DH to do Doxygen for CPP modules?)
+
+13. Code comments in pv core modules (MK, MS)
+
+14. Remove ALL warnings from all compiles of pv core code, java and c++. We have 100s
+(MK, MS)
+
+15. Documentation. 
+    
+    a. pvData and pvIOC documents need significant editing to improve readability. Eg,
+    define and provide references for "top level structure", "introspection
+    interface", "channel", "record" etc. Must much better distinguish references to
+    V3 items and disambiguate such terms, e.g. use of the term "channel access"
+    sometimes to refer to the generic control protocol, and sometimes to refer to
+    "Jeff Hill's" Channel Access. Make use of uppercase, quotes, italics
+    consistently. (MK).
+
+    b. Need a table on the homepage showing the completion status of each thing we're doing. 
+
+
+DATA, APPLICATIONS AND CLIENTS
+------------------------------
+
+1. Model service. Not finished. Needs connection to SwissFEL injector, track extant
+   machine, GUI.
+ 
+2. Unit Conversion - Guobao, Nikolay, Paul Chu 
+
+3. Orbit Server – Timo
+
+
+PERIPHERY ACTIVITIES 
+====================
+The following are known activities we're tracking but are not in the scope of EPICS
+V4.
+
+1. ctqtDM
+
+2. pyQt apps   - Lingyun Yang, Guobao
+
+3 PVManager connection to PVAccess – Matej Sekoranja      
+
+4. OLog connection – Kunal Shroff 
+
+5. "ArchiveAppliance" expand for V4 types. Work demoed by Murali. 
+ 
+
