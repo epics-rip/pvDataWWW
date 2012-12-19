@@ -1,5 +1,13 @@
 
-2011-2012 Charter
+STATUS AND ACTIVITIES
+Last update 18-Dec-2012. 
+
+Status of this document. Presently the document lists mainly incomplete activities
+that are part of the 2011-2012 charter, rather than new activities related to
+pvDatabase, big data etc. In a future draft this document will attempt to list all
+activities, their status, and the status of the software themselves.
+
+
 INCOMPLETE ACTIVITIES (not including AIs)
 ==========================================
 The following are ongoing activities and those required by the 2011-2012 charter,
@@ -45,7 +53,7 @@ CORE
 13. Code comments in pv core modules (MK, MS)
 
 14. Remove ALL warnings from all compiles of pv core code, java and c++. We have 100s
-(MK, MS)
+    (MK, MS)
 
 15. Documentation. 
     
@@ -64,11 +72,14 @@ DATA, APPLICATIONS AND CLIENTS
 ------------------------------
 
 1. Model service. Not finished. Needs connection to SwissFEL injector, track extant
-   machine, GUI.
+   machine, GUI. GW
  
-2. Unit Conversion - Guobao, Nikolay, Paul Chu 
+2. Unit Conversion - GS, NM, Paul Chu 
 
-3. Orbit Server – Timo
+3. Orbit Server – TK
+
+4. Test Image service. Intended to help provide test data for development and tuning
+   the V4 IOC (2012-13 charter). Started Nov/2012. DH
 
 
 PERIPHERY ACTIVITIES 
