@@ -65,8 +65,22 @@ CORE
     "Jeff Hill's" Channel Access. Make use of uppercase, quotes, italics
     consistently. (MK).
 
-    b. Need a table on the homepage showing the completion status of each thing we're doing. 
+    b. Need a table on the homepage showing the completion status of each thing we're
+    doing. (GW)
 
+16. eget/pvget. 
+
+    a. Add demo of acquisition of unsigned (byte for simplicity) from V3
+    channel. (MS)
+    b. Add full support of NTURI. (MS) 
+       i.    Basic regular broadcast acquisition, eg eget pva:///quad45:bdes
+       ii.   Registry based name acquisition, eg eget pva://psihost.psi.ch/quad45:bdes
+       iii.  Service support; ie, use of query part of NTURI. Eg
+             eget pva:///testNTMatrix?columns=3&rows=5 to do equivalent of 
+             eget -a columns=3 -a rows=5 -s testNTMatrix
+    c. Add mechanism at pvAccess API client side for a client user to choose the
+       so-called "provider" of the data, presently planned to be either pvaccess, or
+       ca. (MS) 
 
 DATA, APPLICATIONS AND CLIENTS
 ------------------------------
@@ -87,14 +101,30 @@ PERIPHERY ACTIVITIES
 The following are known activities we're tracking but are not in the scope of EPICS
 V4.
 
-1. ctqtDM
+1. caQtDM. caQtDM is a "synoptic display manager" being used for generating the
+   controls UI "screens" for PSI SLS and SwissFEL. Anton Mezger, [1]
 
-2. pyQt apps   - Lingyun Yang, Guobao
+2. pyQt apps   - Lingyun Yang, GS
 
-3 PVManager connection to PVAccess – Matej Sekoranja      
+3 PVManager connection to PVAccess. Matej Sekoranja is implementing the vtype "type
+  adapter" that will enable one to connect EPICS V4 Normative Types to pvManager
+  displays.
 
 4. OLog connection – Kunal Shroff 
 
 5. "ArchiveAppliance" expand for V4 types. Work demoed by Murali. 
- 
 
+
+OUT OF SCOPE BUT WE'D LOVE IF SOMEONE DID
+=========================================
+1. Write a pva scheme plugin for a web browser, so one could do pva scheme
+   acquisitions directly from a web browser. egs pva:///quad45:bdes,
+   pva:///testNTMatrix?columns=3&rows=5.
+
+2. HDF5 serialization of pvData Structures, so one could write EPICS V4 data directly
+   to an HDF5 filesystem without intermediate layers. 
+
+
+References
+==========
+[1] caQtDM, http://epics.web.psi.ch/software/caqtdm/
