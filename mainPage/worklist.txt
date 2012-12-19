@@ -17,7 +17,8 @@ CORE
 ----
 1. Directory Service - not finished - no user guide documentation (RL)
 
-2. easyPVA - not finished, & cpp & java not equally implemented (MK)
+2. easyPVA - not finished, & cpp & java not equally implemented (MS)
+   Estimate: java 1 wk, cpp 3 wks. MK thinks more.
 
 3. gather - finished? I don't think it's used anywhere. What is the state of the
    gather example? No bpm service. (MK)
