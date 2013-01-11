@@ -49,12 +49,8 @@ cd ..
 # setup scripts in particular.
 # For XMLs:
 hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCJava
-# For XMLs:
-hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvServiceJava
 # For source of examples:
 hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/exampleJava
-## For common_setup.bash script:
-# hg clone -r $TAG ssh://$USER@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/common
 
 # For README. Note, no tag is used for pvDataWWW. We assume the README and other web files
 # may change following a tagged release, even though they refer to a tagged release.
