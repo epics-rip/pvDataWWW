@@ -1,6 +1,6 @@
 
 STATUS AND ACTIVITIES
-Last update 18-Dec-2012. 
+Last update 9-Jan-2013. 
 
 Status of this document. Presently the document lists mainly incomplete activities
 that are part of the 2011-2012 charter, rather than new activities related to
@@ -82,6 +82,15 @@ CORE
     c. Add mechanism at pvAccess API client side for a client user to choose the
        so-called "provider" of the data, presently planned to be either pvaccess, or
        ca. (MS) 
+
+17. ChannelRPC should be made "asynchronous", or "multithreaded" (what CORBA call
+    threaded).That is, more than one client may access at a time.
+ 
+
+PROPOSED NEW ACTIVITIES
+-----------------------
+1. Rewrite the C++ implementation of PVValueArray as a C++ STL container,
+rather than as now emulating the Java implementation, at least for large arrays.
 
 DATA, APPLICATIONS AND CLIENTS
 ------------------------------

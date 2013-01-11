@@ -3,12 +3,13 @@ EPICS V4 README
 This README file describes the download files available for EPICS V4.
 
 
-Status: This is the 08-Feb-2012 version of the README, and pertains to the
-1.0-BETA release of EPICS V4 (including 1.0.1-BETA). 
+Status: This is the 11-Jan-2013 version of the README, and pertains to the
+2.0-BETA release of EPICS V4. 
 
 Author: 28-Nov-2011 Greg White (gregory.white @ psi.ch) for EPICS 
 V4 team [1]
 Mod:
+     11-Jan-2013, Greg White, edited for BETA 2.
      13-Mar-2012, Jams Rowland, Added C++ release "Marchtest" for internal review only.
      20-Dec-2011, Greg White, for 1.0-BETA, Java and C++.
      11-Jan-2012, Greg White, for EPICSv4-Java-1.0-BETA.tar.gz
@@ -23,10 +24,11 @@ EPICS version 4.
 
 SUMMARY
 -------
-The latest tagged release of both C++ and Java implementations of EPICS V4 are in 1.0.1-BETA/
+The latest tagged release of both C++ and Java implementations of EPICS V4 are in 
+directories and tags named 2.0-BETA.
 
-The C++ implementation of EPICS V4 is in 1.0.1-BETA/EPICSv4-1.0.1-BETA.tar.gz
-The Java implementation of EPICS V4 is in 1.0.1-BETA/EPICSv4-Java-1.0-1-BETA.tar.gz
+The C++ implementation of EPICS V4 is in 2.0-BETA/EPICSv4-2.0-BETA.tar.gz
+The Java implementation of EPICS V4 is in 2.0-BETA/EPICSv4-Java-2.0-BETA.tar.gz
 "Marchtest" for internal review only.
 
 See the document "Getting Started with EPICS V4," 
@@ -34,36 +36,45 @@ http://epics-pvdata.sourceforge.net/gettingStarted.html
 
 FILES FOR EPICS V4 C++ IMPLEMENTATION 
 -------------------------------------
-The file EPICSv4-1.0.1-BETA.tar.gz includes all (and only) the C++
+The file EPICSv4-2.0-BETA.tar.gz includes all (and only) the C++
 implementation of EPICS V4, plus a make system based on EPICS V3's
-makefiles. This is available under folder 1.0.1-BETA/. Build instructions
+makefiles. This is available under folder 2.0-BETA/. Build instructions
 and example usage are given in [16].
 
 
 MINIMUM FILES FOR EPICS V4 JAVA IMPLEMENTATION 
 ----------------------------------------------
-The file EPICSv4-Java-1.0.1-BETA.tar.gz includes all (and only) the Java
+The file EPICSv4-Java-2.0-BETA.tar.gz includes all (and only) the Java
 implementation of EPICS V4. On Unix systems, the tar file might be 
 unpacked with the command:
-  % tar xvfz EPICSv4-Java-1.0.1-BETA.tar.gz
+  % tar xvfz EPICSv4-Java-2.0-BETA.tar.gz
 
 Specifically the tar includes the following JAR files, plus the source 
 for some examples (in examplesJava/) plus necessary XML files and scripts.
 
-pvAccess-1.0.1-BETA.jar *    The EPICS V4 "wire protocol" [6] [7]
-pvData-1.0.1-BETA.jar *      The EPICS V4 support for high 
+pvAccess-2.0-BETA.jar *    The EPICS V4 "wire protocol" [6] [7]
+pvData-2.0-BETA.jar *      The EPICS V4 support for high 
                                performance data interchange [8]
-pvIOC-1.0.1-BETA.jar *       The EPICS V4 Input/Output Processor 
+pvIOC-2.0-BETA.jar *       The EPICS V4 Input/Output Processor 
                                (IOC). I.e. the server side [9] 
-pvService-1.0.1-BETA.jar *   RPC support.
+exampleJava/               Examples of use of EPICS V4 Remote Procedure Calling
+                           (a PV that takes arguments). 
+
+Note that, for the beta 2 distribution, pvService is not longer distributed
+and is deprecated. It is not included in the beta 2 jars or tar file.
 
 (*) The specific version number may change following modification of
-this README. It was last updated when the 1.0-BETA was released.
+this README. 
 
 See instructions in "Getting Started with EPICS V4" [16]. This 
 includes both how to build the Java distribution from sources downloaded
 from the Mercurial repositories at SourceForge, and the alternative of 
 downloading the tar.gz.
+
+EXAMPLES
+--------
+You can find examples in the various test/ subdirectories, and in exampleJava [14]
+and exampleCPP directories.
 
 FOR CONNECTING EPICS V4 to EPICS V3 IN C++
 -------------------------------------------
@@ -133,4 +144,4 @@ http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/s
 [15] ChannelRPC facility javadoc in pvIOC, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/rpcSupport.html
 [16] Getting Started with EPICS V4, http://epics-pvdata.sourceforge.net/gettingStarted.html
 [17] pvIOC C++ implementation documentation, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html
-
+[18] exampleCPP, examples of use of EPICS V4 C++ binding, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/

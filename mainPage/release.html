@@ -7,7 +7,7 @@
   <meta http-equiv="PRAGMA" content="NO-CACHE">
   <meta http-equiv="EXPIRES" content="0">
 <meta name="keywords" content="EPICS, EPICSv4, epics release" />
- <title>EPICS Version 4 Development Resources</title>
+ <title>EPICS Version 4 Release Guide</title>
  <!-- Include the epicsv4 base.css, and the css for epics v4 documents -->
 <link rel="stylesheet" type="text/css" href="base.css" />
 <link rel="stylesheet" type="text/css" href="epicsv4.css" />
@@ -62,7 +62,6 @@ Edit the script to set the tag and the user name.
 <li>pvDataJava has no dependencies</li>
 <li>pvAccessJava depends on pvDataJava</li>
 <li>pvIOCJava depends on pvAaccessJava and pvDataJava for build</li>
-<li>pvService depends on all 3 above</li>
 <li>exampleJava depends on all 4 above.</li>
 </ul>
 <p>Edit each of the 5 pom.xml files 
@@ -101,26 +100,22 @@ build like versions against each other, starting with pvDataJava (that has no de
 % cd ../pvIOCJava
 % mvn compile install -DJAVAIOC=$PWD -Dmaven.test.skip=true
 
-% cd ../pvServiceJava
-% mvn compile install
-
 % cd ../exampleJava/
 % mvn compile install 
 </pre>
-<p>Verify you got what you expected, you want the 4 core modules plus exampleJavas' jars:</p>
+<p>Verify you got what you expected, you want the 3 core modules plus exampleJavas' jars:</p>
 <pre>
 % find ~/.m2 -name "pv*BETA.jar" -o -name "example*BETA.jar"
 /Users/greg/.m2/repository/epics/exampleJava/1.0-BETA/exampleJava-1.0-BETA.jar
 /Users/greg/.m2/repository/epics/pvAccess/1.0-BETA/pvAccess-1.0-BETA.jar
 /Users/greg/.m2/repository/epics/pvData/1.0-BETA/pvData-1.0-BETA.jar
 /Users/greg/.m2/repository/epics/pvIOC/1.0-BETA/pvIOC-1.0-BETA.jar
-/Users/greg/.m2/repository/epics/pvService/1.0-BETA/pvService-1.0-BETA.jar
 </pre>
 
-<p>Upload the release. In each of the 5 directories, commit the pom.xml, tag the
+<p>Upload the release. In each of the 4 directories, commit the pom.xml, tag the
 repo, and push.</p>
 <pre>
-hg commit pom.xml
+hg commit -m "beta 1 version inc" pom.xml
 
 Then tag:
 
@@ -130,15 +125,10 @@ and push:
 
 hg push
 </pre>
-<p>Additionally hg tag and push the common/ repo</p>
-<pre>
-% cd ../common/
-% hg tag 1.0-BETA
-% hg push
-</pre>
 
-<p>This results in remote repository that is versioned in tagged.
-Now Jenkins will build 1.0-BETA version and deploy JARs in EPICS remote repository.
+<p>This results in remote repository that is version tagged.
+Now Jenkins will build 1.0-BETA version and deploy JARs in EPICS 4 remote maven
+products directory (see below).
 
 Before making any changes to the project (the best thing is to do it
 immediately) you need to increase version to 1.1-SNAPSHOT. This way new changes will
@@ -149,26 +139,31 @@ deployment. Check the Maven build products directory <a
 href="http://epics.sourceforge.net/maven2/epics/">http://epics.sourceforge.net/maven2/epics/</a>,
 then:
 </p>
+<p>So, again in each of the 4 directories above, edit pom.xml and hg commit and push:</p>
 <pre>
-<version>1.1-SNAPSHOT</version>
+&lt;version&gt;1.1-SNAPSHOT&lt;/version&gt;
 
 and
 
 hg commit pom.xml
 hg push
 </pre>
-<p>Again, update also the tag in common/, as above.</p>
 
-<h3>Create the user download tarball</h3>
+<h3>Create the Source User downloadable tarball</h3>
+
 <p>The download tarball is what we put in the SourceForge download files area, and
 includes all the EPICS V4 jars just created, plus
 associated source, XMLs, scripts etc needed by someone to get going. 
 </p>
+
+<p>The tarball includes the README file, so before creating it, edit
+pvDataWWW/mainPage/README with details of the release, commit and push it. You
+need to push it, because makereleaseJars.sh takes it from the web site.</p>
+
 <p>Edit the pvDataWWW/scripts/makereleaseJars.sh file, updating the the TAG variable
-in particular. Then run /makereleaseJars.sh.</p>
+in particular. cd to some directory where you're going
+to build the tar, then run /makereleaseJars.sh from where you edited it:</p>
 <pre>
-% cd to dir that has repo root directory in it, eg ~/Development/epicsV4/, since that
-dir contains ev4hg/
 % mkdir tmp
 % cd tmp
 % ../ev4hg/pvDataWWW/scripts/makereleaseJars.sh
@@ -183,6 +178,6 @@ area.</p>
 
 <hr>
 <address>EPICS V4 Working Group</address>
-<!-- hhmts start -->Last modified: Tue Feb  7 21:05:13 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Fri Jan 11 17:19:29 CET 2013 <!-- hhmts end -->
 </body>
 </html>
