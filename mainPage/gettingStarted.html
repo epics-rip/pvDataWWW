@@ -201,7 +201,7 @@ instructions.</p>
 <img src="image/sfdownloadfiles.png">
 
 <p>To get off the ground using java download, see the examples in the
-epics-pvdata <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/" >exampleJava Mercurial repo</a> [<a href="#ev4examples" ></a>ev4examples]. <em>The setup files of those examples
+epics-pvdata <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/" >exampleJava Mercurial repo</a> [<a href="#ev4examples-java" ></a>ev4examples-java]. <em>The setup files of those examples
 (<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/helloWorld_setup.bash" >helloWorld_setup.bash</a> and <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/rdb_setup.bash" >rdb_setup.bash</a>) are written assuming
 local .class files, you'll have to convert them so the CLASSPATH points to the
 jar files instead - <a href="#step-by-step">as described below</a> ).</em> So far only 
@@ -541,7 +541,7 @@ write code that compiles and executes against the jar files above.</p>
 
 <p>For Java client and server examples, at the time of writing, see the source code
 in the examplesJava module. You can find this on the epics-pvdata web site
-[<a href="#ev4examples">ev4examples</a>]. At the time of writing, examplesJava
+[<a href="#ev4examples-java">ev4examples-java</a>]. At the time of writing, examplesJava
 contains 2 examples, both of RPC style servers (that is, pass arguments to EPICS V4
 server, get data back dependent on the arguments).</p>
 
@@ -613,7 +613,7 @@ uses Maven). A basic understanding of the EPICS V3 make system is helpful,
 although the following instructions do not assume this knowledge.
 </p>
 
-<h3 id="cppprerequisites">Prerequisites</h3>
+<h4 id="cppprerequisites">Prerequisites</h4>
 
 <p>
 You will <a href="#prerequisites">need the Mercurial client tools, as described above</a>.</p>
@@ -721,16 +721,42 @@ PVACCESS=${HOME}/Development/epicsV4/ev4hg/pvAccessCPP
 <p>This completes the C++ build of EPICS V4.</p>
 
 <h4 id="cppexamples">C++ Examples</h4>
-<p> 
-For an example of using the EPICS V4 C++ implementation to create a middleware
- service equivalent to the Java example given above, see the pvIOCCPP documentation
-[<a href="#bib:pvIOCCPP">bib:pvIOCCPP</a>]. In particular see the section on exampleServiceRPC. 
-</p>
-<p>The remainder of this section describes an example of the use of the C++ implementation of EPICS
+<p>
+<p>For C++ client and server examples see the source code
+in the examplesCPP module. You can find this on the epics-pvdata web site
+[<a href="#ev4examples-cpp">ev4examples-cpp</a>]. At the time of writing, it contains the the Channel Archiver service, an example of an RPC-style server (that is, pass arguments to EPICS V4
+server, get data back dependent on the arguments).</p>
+
+<dt>ChannelArchiverService<dt>
+  <dd>
+  The <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/ChannelArchiverService"
+>ChannelArchiverService</a> example is a complete functional EPICS V4 server for accessing an EPICS Channel Archiver index file, and returning the archive data
+back to an EPICS V4 client. It can be queried using the eget utility but also includes
+a client which provides additional processing and formatting of the results.
+ChannelArchiverService illustrates:</P>
+<ol>
+  <li><code>channelRPC</code> functionality of EPICSV4 </li>
+  <li>EPICSV4 service API using the NTURI EPICS V4 "normative type"</li>
+  <li>Passing string messages bac
+  k to the client in the event of the server
+  detecting an error or other diagnostic</li> 
+  <li>Putting complex data into an EPICS V4 pvStructure (the basic complex data
+  object of pvData), ready for returning results back to the EPICS V4 client</li>
+  <li>Client side calling the server and getting the results</li>
+  <li>Unpacking complex data out of a pvStructure</li>
+  <li>Illustration of the idea of using the NTTable EPICS V4 "normative type"</li>
+  <li>Formatting pvStructure encoded data for printing.</li>
+</ol>
+</dd>
+</dl> 
+
+<h4>Adding pvAccess support to an IOC:</h4>
+
+<p>This section describes how to use the C++ implementation of EPICS
  V4 to access EPICS V3 PVs. That is, a version 3 IOC makes the values of V3 channels
 available through pvAccess to EPICS V4 pvAccess clients. </p> 
 
-<h5>To deploy an IOC with pvAccess support:</h5>
+To deploy an IOC with pvAccess support:
 
  <ol>
    <li>   
@@ -1042,36 +1068,48 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 </pre>
 
 <h2 class="nocount">References</h2>
+
 <dt id="downloadsite">[EPICS V4 download site]</dt>
   <dd>EPICS V4 download site, <a
     href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.net/projects/epics-pvdata/files/</a>
   </dd>
+
 <dt id="sfssh">[sf ssh]</dt>
   <dd>Passwordless
   authentication setup at sourceforge, <a
   href="https://sourceforge.net/apps/trac/sourceforge/wiki/SSH%20keys">http://sourceforge.net/projects/epics-pv
   data/files/</a>
   </dd>
+
 <dt id="hgrepoinit">[hg repo init]</dt>
   <dd>Mercurial Tutorial - Initializing a Repository, 
   <a
     href="http://mercurial.selenic.com/wiki/TutorialInit">http://mercurial.selenic.com/wiki/TutorialInit</a>
   </dd>
-<dt id="ev4examples">[ev4examples]</dt>
+
+<dt id="ev4examples-java">[ev4examples-java]</dt>
   <dd>EPICS V4 Java Examples repository, <a
   href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/summary">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/summary</a>
   </dd>
+
+<dt id="ev4examples-cpp">[ev4examples-cpp]</dt>
+  <dd>EPICS V4 C++ Examples repository, <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/summary">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/summary</a>
+  </dd>
+
 <dt id="EPICSV4repos">[EPICSV4repos]</dt>
   <dd>EPICS V4 Mercurial Repositories, <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/" >
     http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/</a>
   </dd>
+
 <dt id="bib:pvIOCCPP">[pvIOCCPP]</dt>
   <dd>Getting Started with the C++ implementation of pvIOC, 
   <a
     href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html#L143">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html</a>
   </dd>
-  <dt id="bib:jca">[jcaandcaj]</dt>
+
+<dt id="bib:jca">[jcaandcaj]</dt>
   <dd>JCA and CAJ, Sourceforge, Matej Sekoranja,  
     <a href="http://epics-jca.sourceforge.net">http://epics-jca.sourceforge.net</a>
     </dd>
