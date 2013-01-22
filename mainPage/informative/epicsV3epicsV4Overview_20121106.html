@@ -38,7 +38,7 @@
 <h1>Overview of EPICS version 3 and EPICS version 4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date. -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 22-Jan-2013</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 06-Nov-2012</h2>
 <dl>
     <dt>Latest version:</dt>
     <dd><a
@@ -46,16 +46,15 @@
     </dd>
     <dt>This version:</dt>
     <dd><a
-      href="epicsV3epicsV4Overview_20130122.html">epicsV3epicsV4Overview_20130122.html</a>
+      href="epicsV3epicsV4Overview.html">epicsV3epicsV4Overview.html</a>
     </dd>
     <dt>Previous version:</dt>
     <dd><a
-      href="epicsV3epicsV4Overview_20121106.html">epicsV3epicsV4Overview_20121106.html</a>
+      href="epicsV3epicsV4Overview_20121105.html">epicsV3epicsV4Overview_20121105.html</a>
     </dd>
 
   <dt>Editors:</dt>
-    <dd>Marty Kraimer, BNL<br>
-        Ralph Lange, HZB/BESSY II</dd>
+    <dd>Marty Kraimer, BNL</dd>
 </dl>
 
   <p class="copyright">This product is made available subject to acceptance of the <a
@@ -107,8 +106,8 @@ V4 control system programming environment:</p>
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 22-Jan-2013 version of the brief overview of the core parts of V3 and V4.
-It was update with respect to the separation of pvaSrv from pvIOCCPP.</p>
+<p>This is the 06-Nov-2012 version of the brief overview of the core parts of V3 and V4.
+The only difference from the original version is the status and versioning information.</p>
 
 <div id="toc">
 <h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
@@ -126,7 +125,7 @@ It was update with respect to the separation of pvaSrv from pvIOCCPP.</p>
       EPICS base existed since 1991 and gone through many releases.
      This document discusses the 3.14 releases.
    </dd>
-   <dt>CA</dt>
+   <dt>CAV3</dt>
       <dd>This is the Channel Access component of EPICS Base.</dd>
    <dt>iocCore</dt>
       <dd>The following components of EPICS Base: static and run-time database access routines,
@@ -145,8 +144,8 @@ It was update with respect to the separation of pvaSrv from pvIOCCPP.</p>
     <dd>The definition of data.</dd>
   <dt>pvAccess</dt>
     <dd>Network support for pvData.</dd>
-  <dt>pvIOC</dt>
-     <dd>Like V3 IOC except the database is composed of pvRecords.</dd>
+  <dt>pvIoc</dt>
+     <dd>Like V3IOC except the database is composed of pvRecords.</dd>
   <dt>pvRecord</dt>
       <dd>A memory resident record which has data defined as pvData,</dd>
 </dl>
@@ -157,10 +156,10 @@ It was update with respect to the separation of pvaSrv from pvIOCCPP.</p>
 of memory resident "smart" records.
 A record is called smart because code is attached to the record
 and is triggered by asking the record to process.</p>
-<p>CA (Channel Access), which is a component of iocCore,
+<p>CAV3 (channel access version 3), which is a component of iocCore,
 provides network access to iocCore records.
 pvAccess provides network access to pvIOC records.
-Both access a record via the channel name which is just 
+Both access a record via the channelName which is just 
 the name of the record and optionally the name of a field in the record.
 The record name must be unique within the local area network.</p>
 <p>This document provides an overview of:</p>
@@ -180,8 +179,8 @@ The Java and C++ implementations of both pvData and pvAccess are complete.
 Java provides a complete implementation of pvIOC.
 The C++ implementation is only beginning. The last section briefly describes the current implementation.<p>
 <h2>Channel Access</h2>
-<h3>CA</h3>
-<p>For CA a channelName consists of a "recordName.fieldName"
+<h3>CAV3</h3>
+<p>For CAV3 a channelName consists of a "recordName.fieldName"
 The default fieldName is "VAL".
 The field data has one of the following types:</p>
 <dl>
@@ -216,7 +215,7 @@ The field data has one of the following types:</p>
     <dt>control</dt>
        <dd>control limits</dd>
 </dl>
-<p>CA provides I/O functions that fall into the following classes:</p>
+<p>CAV3 provides I/O  functions that falls into the following classes:</p>
 <dl>
    <dt>get</dt>
       <dd>The client specifies the data type desired plus a set of property data.
@@ -228,7 +227,7 @@ The field data has one of the following types:</p>
    <dt>monitor</dt>
       <dd>The client specifies the data type desired plus a set of property data.</dd>
 </dl>
-<p>CA provides no way for the client to influence record processing.
+<p>CAV3 provides no way for the client to influence record processing.
 Puts can cause processing but database access decides if a put causes a
 record to process.</p>
 <h3>pvAccess</h3>
@@ -371,7 +370,7 @@ pvRequest = createRequest("record[process=true]field(alarm,timeStamp,value)");
 </dl>
 
 <h2>Record and Record Processing</h2>
-<h3>V3 IOC record data</h3>
+<h3>V3IOC record data</h3>
 <p>A record is a flat structure, i.e.
 it is a structure that has a set of fields each of which has a name.
 Each field is one of the following types:</p>
@@ -437,7 +436,7 @@ The other types are:</p>
        from outside the record.</dd>
 </dl>
 
-<h3>V3 IOC record processing</h3>
+<h3>V3IOC record processing</h3>
 <p>A record instance has a record type.
 Each record type has a fixed set of fields. Each has a common set of 43 fields
 and a set of record type specific fields. For example ai adds 39 fields
@@ -509,11 +508,11 @@ Many record types have either a field <b>INPUT</b> or <b>OUTPUT</b>.
       But iocCore provides support for links the other records (dblink)
       and to CAV3 channels (calink). Like FLINK the dblink record will be
       in the same lock set.</dd>
-   <dt>INP</dt>
-   <dt>OUT</dt>
-     <dd>If the record type has an INP field then, by definition,
+   <dt>INPUT</dt>
+   <dt>OUTPUT</dt>
+     <dd>If the record type has an INPUT field then, by definition,
      it is an input record, i. e. it gets data from somewhere else.
-     Similarly if it has an OUT field it is an output record.
+     Similarly if it has an OUTPUT field it is an output record.
      In either case this field is a string field that has configuration
      information for the device support. The format is determined by
      the device support.</dd>
@@ -543,7 +542,7 @@ enumerated, alarm, timeStamp, display, control, and valueAlarm.
 </p>
 
 <h3>pvIOC record processing</h3>
-<p>pvIOC has the the same processing features as a V3 IOC.
+<p>pvIOC has the the same processing features as V3IOC.
 The main difference are:</p>
 <dl>
    <dt>locking</dt>
@@ -561,7 +560,7 @@ The main difference are:</p>
      top level structure. It looks in the immediate substructure for
      each field that have attached support and calls it's support methods</dd>
    <dt>support configuration</dt>
-     <dd>Configuration is done via pvData fields</dd>
+     <dd>Configuration is done via PVData fields</dd>
 </dl>
 <p>The interface for support is:</p>
 <pre>
@@ -574,43 +573,43 @@ interface Support {
 }
 </pre>
 <p>Although record types do not exist there are standards for field layout
-so that the equivalent of the V3 IOC ai, ao, etc records can be created.</p>
+so that the equivalent of the V3IOC ai, ao, etc records can be created.</p>
 <p>Support is provided that implements database and channelAccess links.</p>
 
-<h2>CA/V3Record &lt;==&gt; pvAccess/pvIOC</h2>
+<h2>CAV3/V3Record &lt;==&gt; pvAccess/pvIOC</h2>
 <p>The status of interoperability between V3 and pvIOC/pvAccess is:</p>
 <dl>
    <dt>pvAccessJava</dt>
-      <dd>A pvAccess can comunicate with a channel via either CAV3 or pvAccess.
+      <dd>A pvAccess can comunicate with a channel via either CAV3 of pvAccess.
        In either case the data appears to the client as pvData.</dd>
    <dt>pvIOCJava</dt>
-     <dd>This provides a CA server. This allows a CA client to access fields of a pvRecord.</dd>
+     <dd>This provides a CAV3 server. This allows a CAV3 client to access fields of a PVRecord.</dd>
    <dt>pvAccessCPP</dt>
-     <dd>Currenly has no support for CA.</dd>
-   <dt>pvaSrv</dt>
-     <dd>pvaSrv is a pvAccess server for accessing V3 records.</dd>
+     <dd>Currenly has no support for CAV3.</dd>
+   <dt>pcIOCCPP</dt>
+     <dd>v3Channel is a pvAccess server for accessing V3 records.</dd>
 </dl>
 <p>From the point of view of a pvAccess client.</p>
 <dl>
   <dt>Java Client</dt>
-    <dd>Has access to a channel using either the CA or pvAccess network protocol.
-      Thus it has access to pvRecords on a pvIOCJava and to V3 records on any V3 IOC.
-    It also has access to multiValue data that resides in an V3 IOC running pvaSrv.
+    <dd>Has access to a channel using either the CAV3 or pvAccess network protocal.
+      Thus it has access to PVRecords on a pvIOCJava and to V3 records on any V3 IOC.
+    It also has access to multiChannal data that resides in a pvIOCCPP.
     </dd>
   <dt>C++ client</dt>
-    <dd>Has access to a channel only via pvAccess protocol.
-      Thus it has access to pvRecords on a pvIOCJava and 
-     has access to V3 data only if the V3 IOC has the pvaSrv server running.
+    <dd>Has access to a channel only via pvAccess protocal.
+      Thus it has access to PVRecords on a pvIOCJava and 
+     has access to V3 data only if the V3IOC has the v3Channel server running.
     It also has access to multiChannal data that resides in a pvIOCCPP.</dd>
 </dl>
-<p>A CA client has access to a channel that is a pvRecord only if the record
+<p>A CAV3 client has access to a channel that is a PVRecord only if the record
 is on a pvIOCJava.</p>
 
 <h2>Status of pvIOCCPP</h2>
 <p>pvIOCCPP is the C++ implementation of pvIOC.
-<p>As of the beta 2 release of EPICS V4, the only complete feature provided
-by pvIOCCPP was <b>v3Channel</b>, which provided pvAccess for V3 records.
-This functionality has been moved to pvaSrv.</p>
+<p>As of the beta 2 release of EPICS V4 the only complete feature provided
+by pvIOCCPP so <b>v3Channel</b> , which provides pvAccess for V3 records.</p>
+<p>This allows a pvAccess client access to a V3Record with out using CAV3.</p>
 
 </div>
 </body>

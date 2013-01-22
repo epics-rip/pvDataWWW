@@ -62,8 +62,8 @@ on a Python interface to the C++ libraries.<p>
 <li id="faq4">What platforms are supported?<p>
 
 For Java, any Java SE 1.5 platform. For C++, EPICS V4 uses the EPICS V3 libCom platform abstraction 
-layer and standards-compliant C++. The C++ implementation is working on Linux, OSX, Windows and 
-RTEMS.<p>
+layer and standards-compliant C++. The C++ implementation is working on Linux, OSX, Windows, vxWorks
+and RTEMS.<p>
 
 <li id="faq5">What is the top to bottom architecture of an EPICS V4 system?<p>
 
@@ -72,8 +72,8 @@ from top to bottom in any given real world installation would be different from 
 would depend on such things as whether the installation was using EPICS V4 in a hybrid environment 
 with version 3 at this stage of development, and whether EPICS V4 high level middleware services 
 were being used. One simple architecture which utilises presently existing EPICS V4 functionality, 
-is that in which EPICS V3 IOCs would incorporate the EPICS V4 pvIOC PVAS and so be able to serve 
-control data over pvAccess. The pvManager client side tool, or the gather middleware toolkit, could 
+is that in which EPICS V3 IOCs would incorporate the EPICS V4 pvaSrv pvAccess server and so be able
+to serve control data over pvAccess. The pvManager client side tool, or the gather middleware toolkit, could 
 be used to acquire those data efficiently. The envisaged overall architecture of EPICS V4 
 installations is one that uses a service oriented architecture, as well as the basic controls 
 network, in which services make the acquisitions from devices, and present collected data to 
@@ -114,14 +114,14 @@ structured types.<p>
 
 <li id="faq11">Can I use EPICS V4 in a mixed environment with EPICS V3?<p>
 
-So far C++ implementation of pvIOC is a regular EPICS V3 IOC that provides access to EPICS V3 
-records via pvAccess, so new clients can talk to old servers.<p>
+So far the C++ implementation of an IOC is a regular EPICS V3 IOC that runs pvaSrv providing access
+to EPICS V3 records via pvAccess, so new clients can talk to old servers.<p>
 
-<li id="faq12">How does the pvAccess Server (PVAS) interface to an IOC?<p>
+<li id="faq12">How does the pvAccess server (pvaSrv) interface to an IOC?<p>
 
-The EPICS V3 support module V3Channel is a pvAccess Server that talks to the EPICS V3 database 
+The EPICS V3 support module pvaSrv/v3Channel is a pvAccess Server that talks to the EPICS V3 database 
 using dbNameToAddr to resolve pvAccess connection requests, dbGetField and dbPutField to transfer 
-data. V3Channel is started from the startup script, from that point the EPICS V3 IOC database 
+data. pvaSrv is started from the startup script, from that point the EPICS V3 IOC database 
 serves both Channel Access and pvAccess.<p>
 
 <li id="faq13">What's the performance?<p>
@@ -134,4 +134,3 @@ Physics Applications and Performance Analysis</a><p>
 
 </body>
 </html>
-

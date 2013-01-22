@@ -3,12 +3,13 @@ EPICS V4 README
 This README file describes the download files available for EPICS V4.
 
 
-Status: This is the 11-Jan-2013 version of the README, and pertains to the
+Status: This is the 22-Jan-2013 version of the README, and pertains to the
 2.0-BETA release of EPICS V4. 
 
 Author: 28-Nov-2011 Greg White (gregory.white @ psi.ch) for EPICS 
 V4 team [1]
 Mod:
+     22-Jan-2013, Ralph Lange, moved pvaSrv out of pvIOCCPP.
      11-Jan-2013, Greg White, edited for BETA 2.
      13-Mar-2012, Jams Rowland, Added C++ release "Marchtest" for internal review only.
      20-Dec-2011, Greg White, for 1.0-BETA, Java and C++.
@@ -78,8 +79,8 @@ and exampleCPP directories.
 
 FOR CONNECTING EPICS V4 to EPICS V3 IN C++
 -------------------------------------------
-See pvIOC C++ implementation documentation [17], v3Channel section, for help
-on connecting EPICS V3 channels to EPICS V4.
+See pvaSrv documentation [17], v3Channel section, for help
+on connecting EPICS V3 records to EPICS V4.
  
 FOR CONNECTING EPICS V4 to EPICS V3 IN JAVA
 --------------------------------------------
@@ -143,5 +144,5 @@ http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e5
 http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src
 [15] ChannelRPC facility javadoc in pvIOC, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/rpcSupport.html
 [16] Getting Started with EPICS V4, http://epics-pvdata.sourceforge.net/gettingStarted.html
-[17] pvIOC C++ implementation documentation, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/raw-file/tip/documentation/pvIOCCPP.html
+[17] pvaSrv documentation, http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html
 [18] exampleCPP, examples of use of EPICS V4 C++ binding, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/

@@ -303,19 +303,19 @@ mechanisms. Firstly, pvAccess user agents can be configured to use
 <em>unmodified</em> Version 3 IOCs through the "CAV3" provider of pvAccess in which
 case Channel Access is the wire protocol, called through the pvAccess API (however,
 this is new and has not yet been documented). Secondly, pvAccess user agents may
-configured to use modified V3 IOCs where the pvAccess wire protocol connects to CAV3
-server side on a V3 IOC module. The caV3 server side support (the second option
-above) is part of <a href="#pvioc" >pvIOC</a>, see in particular the description of
-<a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/pvIOCCPP.html#L402"
->V3Channel</a>, which is the embedded V3 IOC server side support that provides access
-of V3 record data to pvAccess network clients.</p>
+configured to use modified V3 IOCs where the pvAccess wire protocol connects to a
+pvAccess server residing on a V3 IOC. The pvAccess server support (the second option
+above) is part of <a href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html" target="_blank">pvaSrv</a>,
+see in particular the description of
+<a href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/html/classepics_1_1pvaSrv_1_1V3Channel.html"
+>V3Channel</a>, which is the embedded V3 IOC support that provides access
+to V3 record data for pvAccess network clients.</p>
 
 <table id="interopdiag"  width="100%" style="border-width:0px">
   <caption style="text-align:center;font-size:70%;font-style:italic"
   align="bottom">Interoperation of EPICS Versions 3 and 4 communications
   protocols, "Channel Access" and "pvAccess" respectively, is provided by the
-  CAV3 module of V4.
+  CAV3 and pvaSrv modules of V4.
   </caption>
   <tr>
     <td align="center"><img src="image/V3V4interop.png"
@@ -328,7 +328,7 @@ of V3 record data to pvAccess network clients.</p>
 prepared (see <a href="charter.html#deliverables" >Charter deliverable 10</a>). In the
 meantime, see the talk <a href="talks/2012/V3V4Interoperatibility.ppt" >V3/V4
 Interoperability</a>, Marty Kraimer, EPICS Collaboration 2012 spring meeting, (SLAC),
-PPT.  </p>
+PPT.</p>
 
 <h2 id="perf">Performance</h2>
 
@@ -778,9 +778,8 @@ Mercurial modules are: pvDataJava, pvAccessJava, pvIOCJava, exampleJava.
 system is used rather than Eclipse. V3 libCom is used for threading and
 other support. Thus it requires that you have a recent release of EPICS base.
 These are the relevant sourceforge mercurial modules: pvDataCPP, pvAccessCPP,
-pvIOCCPP, pvServiceCPP, exampleCPP.
-See <a
-href="gettingStarted.html" >Getting Started with EPICS V4</a>
+pvIOCCPP, pvaSrv, pvServiceCPP, exampleCPP.
+See <a href="gettingStarted.html" >Getting Started with EPICS V4</a>
 </p>
 
 </td>
