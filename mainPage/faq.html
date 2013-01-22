@@ -20,59 +20,115 @@ html
 <ol>
 <li id="faq1">What is EPICS V4?<p>
 
-The components of EPICS V4 are pvData, pvAccess and pvIOC. pvData is an object model and introspection API for memory-resident structured data with a defined serialization format. pvAccess is a network protocol transporting pvData and supporting put, get, publish-subscribe, and remote procedure call. pvIOC is database of records, where a record is a pvData object plus associated processing, and records can be linked together to support data-driven processing. Services may be implemented using the pvAccess protcol without using the IOC framework, typically using the RPC method. This is similar to using the Portable Channel Access Server in EPICS V3.<p>
+The components of EPICS V4 are pvData, pvAccess and pvIOC. pvData is an object model and 
+introspection API for memory-resident structured data with a defined serialization format. pvAccess 
+is a network protocol transporting pvData and supporting put, get, publish-subscribe, and remote 
+procedure call. pvIOC is database of records, where a record is a pvData object plus associated 
+processing, and records can be linked together to support data-driven processing. Services may be 
+implemented using the pvAccess protcol without using the IOC framework, typically using the RPC 
+method. This is similar to using the Portable Channel Access Server in EPICS V3.<p>
 
 <li id="faq2">What is the goal of the project?<p>
 
-The intention of version 4 was to create a new version of EPICS that allowed us to extend the data types on the wire and to create hierarchical records to better support devices and physics data constructs, in the distributed, robust, and high performance environment.
-The usefulness of hierarchical records became less clear, as over this period, the composite records such as EVG, EVR, and BPM in version 3 were not reused. Moreover, active work was done to remove the EVG and EVR records and use the basic record types. The goal here was modified to provide better support for basic types that could have a standard set of functions applied to them.
-The current scope of work is to provide an extended set of network accessible data types to better support data sources for machine control and data acquisition. This change, requires that the version 3 database is able to be served through the version 4 protocol. The version 4 protocol is then used to extend the services available to connect to relational database stores, model services, directory services, a service that aggregates version 3 data into version 4 types, and services that provide complete metadata for various forms of vector data.
-As the protocol is different, existing clients must be modified to use this protocol or new clients need to be written. Within the scope of this project, we are developing Control System Studio extensions to handle these data types and to aggregate version 3 data into these data types. We are also creating a data archiver to handle these new data types.
-The approach used, is to create infrastructure that can support dynamically adding new data structures to the server and to create a network protocol that can transport these data structures. To promote the development of reusable applications on the client side, a standard set of structures are being defined and supported. The architecture does not preclude create any data type you want, but it is not encouraged or supported in any of the tools being developed.<p>
+The intention of version 4 was to create a new version of EPICS that allowed us to extend the data 
+types on the wire and to create hierarchical records to better support devices and physics data 
+constructs, in the distributed, robust, and high performance environment.
+The usefulness of hierarchical records became less clear, as over this period, the composite 
+records such as EVG, EVR, and BPM in version 3 were not reused. Moreover, active work was done to 
+remove the EVG and EVR records and use the basic record types. The goal here was modified to 
+provide better support for basic types that could have a standard set of functions applied to them.
+The current scope of work is to provide an extended set of network accessible data types to better 
+support data sources for machine control and data acquisition. This change, requires that the 
+version 3 database is able to be served through the version 4 protocol. The version 4 protocol is 
+then used to extend the services available to connect to relational database stores, model 
+services, directory services, a service that aggregates version 3 data into version 4 types, and 
+services that provide complete metadata for various forms of vector data.
+As the protocol is different, existing clients must be modified to use this protocol or new clients 
+need to be written. Within the scope of this project, we are developing Control System Studio 
+extensions to handle these data types and to aggregate version 3 data into these data types. We are 
+also creating a data archiver to handle these new data types.
+The approach used, is to create infrastructure that can support dynamically adding new data 
+structures to the server and to create a network protocol that can transport these data structures. 
+To promote the development of reusable applications on the client side, a standard set of 
+structures are being defined and supported. The architecture does not preclude create any data type 
+you want, but it is not encouraged or supported in any of the tools being developed.<p>
 
 <li id="faq3">What is the implementation language?<p>
 
-Java and C++ implementations exist. pvData and pvAccess in C++ are working. pvData, pvAccess and pvIOC in Java are working. Some example pvServices have been written in Java. Work is in progress on a Python interface to the C++ libraries.<p>
+Java and C++ implementations exist. pvData and pvAccess in C++ are working. pvData, pvAccess and 
+pvIOC in Java are working. Some example pvServices have been written in Java. Work is in progress 
+on a Python interface to the C++ libraries.<p>
 
 <li id="faq4">What platforms are supported?<p>
 
-For Java, any Java SE 1.5 platform. For C++, EPICS V4 uses the EPICS V3 libCom platform abstraction layer and standards-compliant C++. The C++ implementation is working on Linux, OSX, Windows and RTEMS.<p>
+For Java, any Java SE 1.5 platform. For C++, EPICS V4 uses the EPICS V3 libCom platform abstraction 
+layer and standards-compliant C++. The C++ implementation is working on Linux, OSX, Windows and 
+RTEMS.<p>
 
 <li id="faq5">What is the top to bottom architecture of an EPICS V4 system?<p>
 
-The simplest installation would have one pvAccess client, and one pvAccess server. The architecture from top to bottom in any given real world installation would be different from case to case. It would depend on such things as whether the installation was using EPICS V4 in a hybrid environment with version 3 at this stage of development, and whether EPICS V4 high level middleware services were being used. One simple architecture which utilises presently existing EPICS V4 functionality, is that in which EPICS V3 IOCs would incorporate the EPICS V4 pvIOC PVAS and so be able to serve control data over pvAccess. The pvManager client side tool, or the gather middleware toolkit, could be used to acquire those data efficiently. The envisaged overall architecture of EPICS V4 installations is one that uses a service oriented architecture, as well as the basic controls network, in which services make the acquisitions from devices, and present collected data to clients, such as the bpm readings of all BPMs, the model of a whole machine, the energy profile of a whole LINAC, etc.<p>
+The simplest installation would have one pvAccess client, and one pvAccess server. The architecture 
+from top to bottom in any given real world installation would be different from case to case. It 
+would depend on such things as whether the installation was using EPICS V4 in a hybrid environment 
+with version 3 at this stage of development, and whether EPICS V4 high level middleware services 
+were being used. One simple architecture which utilises presently existing EPICS V4 functionality, 
+is that in which EPICS V3 IOCs would incorporate the EPICS V4 pvIOC PVAS and so be able to serve 
+control data over pvAccess. The pvManager client side tool, or the gather middleware toolkit, could 
+be used to acquire those data efficiently. The envisaged overall architecture of EPICS V4 
+installations is one that uses a service oriented architecture, as well as the basic controls 
+network, in which services make the acquisitions from devices, and present collected data to 
+clients, such as the bpm readings of all BPMs, the model of a whole machine, the energy profile of 
+a whole LINAC, etc.<p>
 
 <li id="faq6">What's going to be different from EPICS V3?<p>
 
-EPICS V3 does not support structured data types at the record level or on the wire. There is also no method for implementing services in EPICS V3 as the put with callback in Channel Access does not return a payload. EPICS V4 does not require pre-allocated buffers for the full size of any payload so there is no longer a initialization-time limit on the maximum payload size. EPICS V4 has a single codebase for data types, client and server side networking. EPICS V3 has one client-side network library, one portable server and one server tied to the IOC.<p>
+EPICS V3 does not support structured data types at the record level or on the wire. There is also 
+no method for implementing services in EPICS V3 as the put with callback in Channel Access does not 
+return a payload. EPICS V4 does not require pre-allocated buffers for the full size of any payload 
+so there is no longer a initialization-time limit on the maximum payload size. EPICS V4 has a 
+single codebase for data types, client and server side networking. EPICS V3 has one client-side 
+network library, one portable server and one server tied to the IOC.<p>
 
 <li id="faq7">Do I have to re-write drivers?<p>
 
-The goal is to make pvIOC C++ an asyn portDriver client so that existing asyn drivers such as areaDetector can be re-used.<p>
+The goal is to make pvIOC C++ an asyn portDriver client so that existing asyn drivers such as 
+areaDetector can be re-used.<p>
 
 <li id="faq8">What relevance does this have to controls?<p>
 
-New standardized data types such as statistical samples and unbounded variable-length arrays will replace ad-hoc workarounds necessary in the EPICS V3 environment allowing the controls engineer to focus on problems closer to the bottom line.<p>
+New standardized data types such as statistical samples and unbounded variable-length arrays will 
+replace ad-hoc workarounds necessary in the EPICS V3 environment allowing the controls engineer to 
+focus on problems closer to the bottom line.<p>
 
 <li id="faq9">How does it work with the EPICS display tools, DM, EDM, CSS etc?<p>
 
-As EPICS V4 uses a new network protocol the client tools will have to be updated to use pvAccess. Work is in progress to modify CSS using the pvManager abtstraction layer (this is not specfic to EPICS V3 but a library that can talk to V3 or V4).<p>
+As EPICS V4 uses a new network protocol the client tools will have to be updated to use pvAccess. 
+Work is in progress to modify CSS using the pvManager abtstraction layer (this is not specfic to 
+EPICS V3 but a library that can talk to V3 or V4).<p>
 
 <li id="faq10">What's the relationship of EPICS V4 to channel access?<p>
 
-EPICS V4 has a new network protocol pvAccess that is not compatible but provides extra functionality such RPC, does not require fixed-size network buffers, and supports transferring structured types.<p>
+EPICS V4 has a new network protocol pvAccess that is not compatible but provides extra 
+functionality such RPC, does not require fixed-size network buffers, and supports transferring 
+structured types.<p>
 
 <li id="faq11">Can I use EPICS V4 in a mixed environment with EPICS V3?<p>
 
-So far C++ implementation of pvIOC is a regular EPICS V3 IOC that provides access to EPICS V3 records via pvAccess, so new clients can talk to old servers.<p>
+So far C++ implementation of pvIOC is a regular EPICS V3 IOC that provides access to EPICS V3 
+records via pvAccess, so new clients can talk to old servers.<p>
 
 <li id="faq12">How does the pvAccess Server (PVAS) interface to an IOC?<p>
 
-The EPICS V3 support module V3Channel is a pvAccess Server that talks to the EPICS V3 database using dbNameToAddr to resolve pvAccess connection requests, dbGetField and dbPutField to transfer data. V3Channel is started from the startup script, from that point the EPICS V3 IOC database serves both Channel Access and pvAccess.<p>
+The EPICS V3 support module V3Channel is a pvAccess Server that talks to the EPICS V3 database 
+using dbNameToAddr to resolve pvAccess connection requests, dbGetField and dbPutField to transfer 
+data. V3Channel is started from the startup script, from that point the EPICS V3 IOC database 
+serves both Channel Access and pvAccess.<p>
 
 <li id="faq13">What's the performance?<p>
 
-pvAccess network performance should be at least equivalent to Channel Access. See <a href="http://www.c-ad.bnl.gov/pac2011/proceedings/papers/mop252.pdf">Server Development for NSLS-II Physics Applications and Performance Analysis</a><p>
+pvAccess network performance should be at least equivalent to Channel Access. See <a 
+href="http://www.c-ad.bnl.gov/pac2011/proceedings/papers/mop252.pdf">Server Development for NSLS-II 
+Physics Applications and Performance Analysis</a><p>
 
 </ol>
 
