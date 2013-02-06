@@ -303,19 +303,19 @@ mechanisms. Firstly, pvAccess user agents can be configured to use
 <em>unmodified</em> Version 3 IOCs through the "CAV3" provider of pvAccess in which
 case Channel Access is the wire protocol, called through the pvAccess API (however,
 this is new and has not yet been documented). Secondly, pvAccess user agents may
-configured to use modified V3 IOCs where the pvAccess wire protocol connects to CAV3
-server side on a V3 IOC module. The caV3 server side support (the second option
-above) is part of <a href="#pvioc" >pvIOC</a>, see in particular the description of
-<a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/pvIOCCPP.html#L402"
->V3Channel</a>, which is the embedded V3 IOC server side support that provides access
-of V3 record data to pvAccess network clients.</p>
+configured to use modified V3 IOCs where the pvAccess wire protocol connects to a
+pvAccess server residing on a V3 IOC. The pvAccess server support (the second option
+above) is part of <a href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html">pvaSrv</a>,
+see in particular the description of
+<a href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/html/classepics_1_1pvaSrv_1_1V3Channel.html"
+>V3Channel</a>, which is the embedded V3 IOC support that provides access
+to V3 record data for pvAccess network clients.</p>
 
 <table id="interopdiag"  width="100%" style="border-width:0px">
   <caption style="text-align:center;font-size:70%;font-style:italic"
   align="bottom">Interoperation of EPICS Versions 3 and 4 communications
   protocols, "Channel Access" and "pvAccess" respectively, is provided by the
-  CAV3 module of V4.
+  CAV3 and pvaSrv modules of V4.
   </caption>
   <tr>
     <td align="center"><img src="image/V3V4interop.png"
@@ -328,7 +328,7 @@ of V3 record data to pvAccess network clients.</p>
 prepared (see <a href="charter.html#deliverables" >Charter deliverable 10</a>). In the
 meantime, see the talk <a href="talks/2012/V3V4Interoperatibility.ppt" >V3/V4
 Interoperability</a>, Marty Kraimer, EPICS Collaboration 2012 spring meeting, (SLAC),
-PPT.  </p>
+PPT.</p>
 
 <h2 id="perf">Performance</h2>
 
@@ -462,7 +462,7 @@ use of the pvAccess Server (PAS). See worked example in <a
 
 <h3>Present Deployments</h3>
 <p>EPICS V4 is also being used now developing beamline image data acquisition and
-storage, using the facilities of pvData for structured data. Contact James Roland at
+storage, using the facilities of pvData for structured data. Contact Dave Hickin at
 DIAMOND. It will shortly also be deployed at PSI for back end SQL database access. </p>
 
 <h2 id="lit">Software Specifications and Implementations</h2>
@@ -667,17 +667,17 @@ the time of writing).</p>
   <dd>ChannelFinder is a toolkit for building directory services suitable for EPICS
   channel metadata.</dd>
   <dd><strong>Homepage:</strong> <a href="http://sourceforge.net/projects/channelfinder/">http://sourceforge.net/projects/channelfinder</a></dd>
-  <dd><strong>Literature:</strong><a href="http://channelfinder.sourceforge.net/ChannelFinder/">Home page of Web Service component</a>, includes Design and service data update API descriptions. 
+  <dd><strong>Literature: </strong><a href="http://channelfinder.sourceforge.net/ChannelFinder/">Home page of Web Service component</a>, includes Design and service data update API descriptions. 
     <a href="http://channelfinder.sourceforge.net/ChannelFinderAPI/">Client side java API.</a> </dd>
-  <dd><strong>Status:</strong>Usable beta</dd>
-  <dd><strong>Contact:</strong>Gabriele Carcassi (BNL),  Ralph Lange (HZB), Kunal Shroff (BNL)</dd>
+  <dd><strong>Status:</strong> Usable beta</dd>
+  <dd><strong>Contact:</strong> Gabriele Carcassi (BNL),  Ralph Lange (HZB), Kunal Shroff (BNL)</dd>
 </dl>
 
 <dl class="normativeproddescr">
   <dt id="pythoninterface">python interfaces</dt>
   <dd>Python wrappers for pvData, pvAccess and pvService are being worked on.  </dd>
-   <dd><strong>Status:</strong>Early beta</dd>
-  <dd><strong>Contact:</strong>Guobao Shen (BNL)</dd>
+   <dd><strong>Status:</strong> Early beta</dd>
+  <dd><strong>Contact:</strong> Guobao Shen (BNL)</dd>
 </dl>
 
 <dl class="normativeproddescr">
@@ -695,8 +695,8 @@ the time of writing).</p>
   Includes the C++ support for the "gather framework" early beta. Model service is alpha. pvServiceCPP <a href="doc/pvServiceCPP.html">Documentation</a>. <a href="pvServicePy.html">pvServicePy.html</a></li>
 </ul>
 </dd>
- <dd><strong>Status:</strong>Alpha</dd>
- <dd><strong>Contact:</strong>Guobao Shen (BNL)</dd>
+ <dd><strong>Status:</strong> Alpha</dd>
+ <dd><strong>Contact:</strong> Guobao Shen (BNL)</dd>
 </dl>
 
 
@@ -723,22 +723,48 @@ sourceForge account, see <a href="gettingStarted.html" >Getting Started with EPI
 
 <p>Initial examples to check out:</p>
 <ol>
-  <li>HelloWorld. The Server side <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HelloService.java"
-  >HelloService.java</a>, the client side <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HelloClient.java"
-  >HelloClient.java</a>, and its <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HELLOWORLD_README.txt"
-  >HELLOWORLD_README.txt</a></li>
 
-  <li>RDB service demonstrates returning structured data in EPICS V4. See the server
+  <li>HelloWorld. The Server side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/helloWorld/HelloService.java"
+  >HelloService.java</a>, the client side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/helloWorld/HelloClient.java"
+  >HelloClient.java</a>, and its <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/helloWorld/HELLOWORLD_README.txt"
+  >HELLOWORLD_README.txt</a></li>
+<!-- Swap once updated getting started guide
+  <li>HelloWorld. A very simple service. Both Java and C++ versions exist. For Java see the Server side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/helloWorld/HelloService.java"
+  >HelloService.java</a>, the client side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/helloWorld/HelloClient.java"
+  >HelloClient.java</a>, and its <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/helloWorld/HELLOWORLD_README.txt"
+  >HELLOWORLD_README.txt</a><br/>
+  For C++ see the Server side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/tip/HelloWorld/helloWorldApp/HelloServiceMain.cpp"
+  >HelloServiceMain.cpp</a>, 
+<a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/tip/HelloWorld/helloWorldApp/HelloService.h"
+  >HelloService.h</a> and
+<a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/tip/HelloWorld/helloWorldApp/HelloService.cpp"
+  >HelloService.cpp</a>, the client side <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/tip/HelloWorld/helloWorldApp/HelloClient.cpp"
+  >HelloClient.cpp</a>, and its <a
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/tip/HelloWorld/HELLOWORLD_README.txt"
+  >HELLOWORLD_README.txt</a></li>
+-->
+  <li>RDB service demonstrates returning structured data in EPICS V4 (Java). See the server
   side <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/RdbService.java"
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/rdbService/RdbService.java"
   >RdbService.java</a>, the client side <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/RdbClient.java"
-  >RdbClient.java</a>, and its <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/RDBSERVICE_README.txt" >RDBSERVICE_README.txt</a></li>
+  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/rdbService/RdbClient.java"
+  >RdbClient.java</a>, and its <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/services/rdbService/RDBSERVICE_README.txt" >RDBSERVICE_README.txt</a></li>
+<!-- Add once updated getting started guide
+  <li>Channel archiver service demonstrates returning structured data in EPICS V4 (C++). 
+      See <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/ChannelArchiverService/CHANNEL_ARCHIVER_SERVICE__README.txt"
+   >CHANNEL_ARCHIVER_SERVICE__README.txt</a></li>
+-->
   </ol>
-  
 <h3>Java</h3>
 
 <p>Java development help is given for Eclipse, or Maven. Help for both are given in <a
@@ -752,9 +778,8 @@ Mercurial modules are: pvDataJava, pvAccessJava, pvIOCJava, exampleJava.
 system is used rather than Eclipse. V3 libCom is used for threading and
 other support. Thus it requires that you have a recent release of EPICS base.
 These are the relevant sourceforge mercurial modules: pvDataCPP, pvAccessCPP,
-pvIOCCPP, pvServiceCPP.
-See <a
-href="gettingStarted.html" >Getting Started with EPICS V4</a>
+pvIOCCPP, pvaSrv, pvServiceCPP, exampleCPP.
+See <a href="gettingStarted.html" >Getting Started with EPICS V4</a>
 </p>
 
 </td>
