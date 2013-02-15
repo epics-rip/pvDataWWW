@@ -1,0 +1,123 @@
+Colleagues,
+
+Guobao has reserved training room 1 for our meeting from 23 ~ 26. I'm pretty
+sure that's basically at [6] but I think we've all been there before.
+Has projector and wireless. Thanks Guobao.
+
+See you there!
+Greg
+
+Slightly Revised Agenda
+=======================
+
+MONDAY (9.00 am, room to be announced)
+======================================
+Morning Morning
+* Preliminaries, finding that our room is occupied, wireless connection, intro to Titanpad, coffee. (30 mins)
+* Reports and developed systems 
+   + 9.30 Report from Lingyun Yang, BNL physicist who has used the python interface. Lingyun Yang
+   + rdbService (*Greg*)
+   + archive service (*James*)
+   + MASER (*Guobao*, *Marty*)
+   + bpm simulator (*Timo*)
+
+Break 
+
+ * Gather service (*Marty*).
+   + Include present status, architecture, and examples.
+     Outcomes: In particular I'd like to see how it would be used in the context 
+     of 2 or more co-existing services such as a bpm orbit service (acquiring from many BPMs on the same 
+     timing signal) and a magnet service (which must set many magnet field values at the same time)
+     and where these 2 both use the gather service support at the same time. 
+
+Lunch
+
+Monday Afternoon
+
+* Normative Types Review [2] (*Greg*)
+  + Look at definitions for NTStatistic, NTHistogram (*Nikolay*) and 
+    NTChannelFinderDirectory (*Ralph*)
+  + NTImage definition and areaDetector presentation (*James*)
+  + Confirm definitions of NTArray, NTImage, NTTable.
+  + Outcomes: How shall an Ntype self identify as such.
+
+* Unsigned handling proposal and examples (*Marty*)
+
+Break
+
+* EZPVA review [3] (if Normative types overflows, this will be on Tuesday afternoon or Wednesday)
+
+  (*Marty* and *Matej*, when we last looked at this you guys wanted to "go away and
+  think about it" and report back.  
+
+
+TUESDAY (9.00 am room to be announced)
+======================================
+Tuesday Morning
+
+* pvAccess spec (suspect 2nd PWD will be ready about the meeting time. Review)
+  + Invited reviewer comments.
+    Andrew. If we have comments from Jeff and and Phillip Duvall that would be great too. 
+  + Confirm plans for implementation of multicast
+
+ Lunch   
+
+Tuesday afternoon
+
+ * Architectures. *James* lead.
+   + Nominal architectures and architectures doc [4]
+   + Diagram the basic architectures people might use.
+   + ChannelFinder integration. 
+     . Status and delivery estimate of ChannelFinder ev4 service. 
+   + What can be done further to smooth backward integration of EPICS V4 with V3? Anything?
+   Outcome: I'd like us to have identified and diagrammed the basic architectures
+   which implement; interoperability with CA and V3 IOCs, Services, SOA with DS based on 
+   ChannelFinder, Gather based services, pvManager/CSS. 
+
+
+WEDNESDAY (9.00 am, room to be announced)
+==========================================
+
+Next Steps
+
+ * Plans for a command line tool. I'd like to see a reference client 
+   side API, that can be used commonly by GUI/display manager implementers, 
+   GUIs apps, and command line tool implementers. 
+   Outcome: Who will create a command line tool. Which types will it know (eg NTTable).
+            Will it include argument passing. Will it do monitor?
+
+ * pvManager integration status (*Gabriele*).
+ * Directory Service through pvAccess, status (*Ralph*). 
+   http://epics-pvdata.sourceforge.net/charter.html#deliverables (items 16, 17)
+
+Wednesday Afternoon
+
+ * BNL/FRIB Database services. Telcon with FRIB
+
+ * BETA 1 and pvAccess announcements! By meeting will be 1 month behind 
+   waiting on pvAccess edits and comments.
+   Do we need a BETA 1.1? I have things I'd like to add. 
+ * BETA 2 readiness review
+   http://epics-pvdata.sourceforge.net/charter.html#milestones
+
+ * Deliverables review.
+   http://epics-pvdata.sourceforge.net/charter.html#deliverables
+   + Seems we should drop deliverable 14, A Programmers Guide for EPICS V4 protocol 
+   implementers (for developing implementations of pvAccess, pvData or pvIOC)
+   + Deliverable 10, A report of interoperability of the EPICS V4 IOC with EPICS v3 record 
+     processing. Time to start this. Matej, is the pvIOCCPP V3 interop ready [5].
+
+ * Beer, cigarettes, and low speed chase across Long Island with a call girl named Pinky.
+
+[1] TitanPad, http://epicsv4.titanpad.com/
+[2] Normative Types, http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html
+[3] EZPVA Editors Draft, http://epics-pvdata.sourceforge.net/alpha/EZPVA.html
+[4] Architectures, http://epics-pvdata.sourceforge.net/arch.html
+[5] AI for completion of pvIOCCPP pvAccess server for V3 interop.
+[6] Map coords of meeting room, http://www.bnl.gov/maps/point.asp?Lat=40.87216&Lng=-72.88209
+
+
+
+
+
+

@@ -1,0 +1,88 @@
+[cc'ed to epics-pvdata for archive]
+
+Agenda telecon 7-Sep-2011:
+==========================
+1. Preliminaries (10 minutes - 5 in future meetings)
+
+	* Roll call.
+	* Pick hapless victim to scribe minutes. Starting at the top of the list [4], that would be *Bob*.
+	 
+2. Review of Charter (30 mins, Greg)
+
+	* Charter [2].
+	* Scope - should services be out of scope. I put production 
+	services out of scope, but open to comments.
+	* Goals include a standard for error handling.
+	* Interoperability with EPICS v3. Note, pvIOC for control is 
+	out of scope as written.
+	* Performance requirements. Is this specification sufficient? 
+	Is 80% of CA sufficient?
+	* There are many deliverables here. I'll be looking for names to assign as the 
+	primary author of each. There will be more if services are put in scope.
+	* What milestones? How about EPICS meeting demo of a command line 
+	tool exchanging data with a service?
+	* Patent policy. What is it, GPL2? 
+       * I've been using EPICS v4 as the name of the activity, rather than PvData. Ok?
+
+3. Review of present activities (40 mins, Bob)
+
+	* Well go through what everyone is presently working on, to get a check on 
+     present activities. Please be prepared to estimate your commitment level to 
+     chartered activities for the next 2 months - including non BNL people. 
+
+	** AI on all **: Please forward Bob a brief statement of what you're working on (if 
+     you work for Bob, then in general everything, not just EPICS v4 related). 
+
+     *James*, *Gabriele* - Presently only the command line client tool is in scope
+     because I wanted us to produce a way to verify client-service interactions very quickly. 
+     But, I can put BOY tools in scope. What then would be the minimum requirement for a
+     general purpose deliverable?
+
+Time
+----
+Time: Weekly, Wednesday 2.00pm (UTC/Greenwich Mean Time) 
+Switzerland      	  4:00 PM* 	
+United States - New York 10:00 AM* 		
+Slovenia                  4:00 PM* 	 
+United Kingdom            3:00 PM* 
+
+* Daylight Saving being observed [1]
+
+
+Connection
+----------
+Meeting Name: EPICSv4
+To join the meeting:
+	https://collab.switch.ch/r73247618/
+	passcode: <something everyone in EPICs v4 team likes>
+
+You will need:
+	* A recent browser with the respective Flash Plugin *9* or higher (I think 10 is best)
+	* A headset *with microphone*
+	* A webcam if you like to send video
+
+Please try to plan for the meeting with:
+	Use the Audio optimizer in the Adobe Connect plugin to  optimize audio! 
+		In particular set your baseline silent level.
+	It appears that there is no Adobe Connect for 64 bit Linux. So, you know, don't use that.
+	At beginning of meeting
+		Click mike icon, to "Connect my Audio"
+		Click camera icon, to Start my Webcam" and then "Start Sharing" (or not, that's ok)
+	See quick start guides available from [3].
+
+Cheers
+Greg
+
+	
+[1] http://www.worldtimeserver.com/meeting-planner-times.aspx?&L0=CH&L1=US-NY&L2=SI&L3=GB&L4=&Day=7&Mon=9&Y=2011
+[2] http://epics-pvdata.sourceforge.net/charter.html
+[3] http://www.adobe.com/support/connect/gettingstarted/index.html
+[4] http://epics-pvdata.sourceforge.net/home.html
+
+
+
+
+
+
+
+

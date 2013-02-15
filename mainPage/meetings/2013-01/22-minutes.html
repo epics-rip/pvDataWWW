@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$42</title>
+</head>
+<body>Agenda<br
+/>======<br
+/><br
+/>9.00 am convene<br
+/>&nbsp;<br
+/>Morning - Beta 2<br
+/><br
+/>&nbsp;* Microbenchmark testbench design and initial performance breakdown report (<b>*Matej*</b>).&nbsp;<br
+/><br
+/>&nbsp;* Status breaking v3Channel out of pvIOCCPP (<b>*Ralph*</b>, <b>*Marty*</b>), plus Demo.<br
+/><br
+/>&nbsp;* Impressions of getting started with vxWorks and v3Channel&nbsp;<br
+/>&nbsp;&nbsp; compilation (<b>*Dirk Zimoch*</b>)&nbsp;<br
+/><br
+/>&nbsp;* APS' requirements and desires for the IOC (<b>*Andrew*</b>)&nbsp;<br
+/>&nbsp;&nbsp; For Andrew and Tim Mooney.<br
+/><br
+/>&nbsp;* Beamline instrumentation controls requirements on EPICS V4 (<b>*Bob*</b>)<br
+/>&nbsp;&nbsp; Broad matters of high throughput large datasets etc.<br
+/><br
+/>Afternoon - IOC image processing requirements and CSS&nbsp;<br
+/><br
+/>&nbsp;* 1:30 pm NDarray / image server (<b>*David*</b>)&nbsp;<br
+/>&nbsp;&nbsp; Demo included.<br
+/><br
+/>&nbsp;* Versioning and the EPICS V4 release procedure (<b>*Ralph*</b>)<br
+/><br
+/>&nbsp;* **3:30 pm** [9:30 am NY local time] CSS and PvManager status (<b>*Gabriele*</b>).&nbsp;<br
+/>&nbsp;&nbsp; [Ralph will manage connection to Gabriele.]<br
+/><br
+/>&nbsp;* Plans for CSS/pvAccess integration.<br
+/>&nbsp;&nbsp; <b>*Matej*</b>, <b>*Gabriele*</b>, <b>*Bob*</b>.<br
+/><br
+/>&nbsp;* Try to make a real plan for the compression support of NTImage.&nbsp;<br
+/>&nbsp;&nbsp; [Who can talk to this, <b>*Nikolay?*</b>]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: GW,DH,RL,BD,MS,AJ,TK, Pavel Chevtsov, Martin Gasche, Dirk Zimoch<br
+/>Scribe: TK<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Microbenchmark testbench design and initial performance breakdown report&nbsp;</b><br
+/>************<br
+/>&nbsp;Slides: <a href="../../talks/2013/01-22_MS-microbench.ppt">Microbenchmarks</a><br
+/>(<b>*Matej*</b>).&nbsp;<br
+/><br
+/>Matej's talk: microbenchmarking<br
+/>create a set of profiling tools for the entire chain. Support multithreaded sw.<br
+/>Uses macros embedded in the code to insert monitoring points.<br
+/><br
+/>GW/AJ: Table of results give the RMS of time of each stage, but it was presented as the mean. Check<br
+/>whether RMS col describes mean or variance.<br
+/><br
+/>Effects at start (filling of cache) should be taken a look at.<br
+/><br
+/>GW/AJ/DZ: The benchmark results presented should distinguish between intial runthrough timings from subsequent ones, because of various process warmup effects (caching, branch-prediction and so on).<br
+/><br
+/>Plans: automate processing of results. Run the benchmark and get the results<br
+/><br
+/>GW: have we compared Java and C++ results?<br
+/>MJ: no big difference visible<br
+/><br
+/>GW: prepare instructions for programmers how to use the microbenchmarks<br
+/><br
+/>AJ/DZ: There are cases (eg snl) where the client and server are operating on the same machine. In those<br
+/>cases it would be worthwhile looking into some local transport such as shared memory. Suggestion for<br
+/>the future.<br
+/><br
+/>Need benchmarks run on different platforms: RT Linux, vxWorks, RTEMS etc.&nbsp;<br
+/><br
+/>MS: Good idea to have a machine to run the benchmarks before each release to check the performance<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Status breaking v3Channel out of pvIOCCPP plus Demo.</b><br
+/>************<br
+/>&nbsp;(<b>*Ralph*</b>, <b>*Marty*</b>),<br
+/>&nbsp;[Talk file pvaSrvStatus.html, from Marty, please fwd to Greg]<br
+/>&nbsp;<br
+/>Ralph's presentation: pvaSrv status<br
+/>Methods to use pvAccess to access version 3 records (anything that CA can connect to.)<br
+/><br
+/>DZ: What if the V3 channels are not in the same IOC?<br
+/>RL: I assume [pvaSrv] won't work unless all channels are in the same IOC. However,<br
+/>it may work with ca links in that case.<br
+/><br
+/>GW: It returns data as scalarArray, why not pvData structure [so that each V3 channel's name are the<br
+/>names of the fields of the structure]?<br
+/>RL: Don't know, ask Marty<br
+/><br
+/>GW: how to configure which channels are addressed?<br
+/>RL: answer is in the talk. Defined in the command. Current implementation is a proof of principle, not final.<br
+/><br
+/>RL: after the access is done information is deliverd if the access was atomic. Need a method that indicates (failure) if the put was not atomic<br
+/><br
+/>RL: currently works only for value (VAL) fields. Reason to be clarified, no obvious reason for that limitation.<br
+/>Semantics of puts and processing needs to be defined.<br
+/><br
+/>AJ: Change way of naming channels in multivalue to a single argument containing a space-separated list of names. e.g:<br
+/>&nbsp;&nbsp;&nbsp; $ pvput 'double01 double02 double03' 3 1 2 3<br
+/>&nbsp;&nbsp;&nbsp; $ pvput 'pva:///double01+double02+double03' 3 1 2 3<br
+/><br
+/>DZ: what is the purpose of this? Channel access clients would break this behaviour<br
+/>Discussion: what are our goals with the IOC.<br
+/>Proposal (RL): leave multiValue to be implemented only in 3.15 (and above)<br
+/>What to do with pvaSrv? Add into a EPICS release soon?&nbsp;<br
+/><br
+/>********<br
+/><b>DECISION:</b> Provide support for single value pvaSrv on EPICS ver 3.14. Support for multivalue pvaSrv will compile against 3.15 only.<br
+/>********<br
+/>********<br
+/><b>AI: on GW:</b> Add links to pvaSrv (given by Ralph) to the mainpage of EPICS V4 webpages.&nbsp;<br
+/>********<br
+/><br
+/>RL still has to actually remove pvaSrv code from pvIOCCPP.&nbsp;<br
+/><br
+/>RL: How to check that a NT type is correct?<br
+/>DZ: do not trust client writers, rather server writers<br
+/>Need way to validate the structures.<br
+/><br
+/>DIscussion: do we need an API for writing normative types<br
+/>GW: writing NT is too simple. Having a validator and API would be nice but we do not have the manpower.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Issues (annoyances) with building EPICS 4 (Dirk)</b><br
+/>************<br
+/><br
+/><b>************</b><br
+/><b>ISSUE:</b> Couldn't find out how to do things from the web page. For instance, how to get started to get things.<br
+/><b>************</b><br
+/><br
+/><b>************</b><br
+/><b>AI on GW:</b> Make "getting started" doc more visible and try to make index page link to useful data on getting started quicker. Include a text version of Getting Started in the tar distribution, possibly right in the README.<br
+/><b>************</b><br
+/><br
+/><b>************</b><br
+/><b>AI on AJ:</b> Send comments to GW on the Getting Started document.<br
+/><b>************</b><br
+/><br
+/>DZ: Gives a list of complaints and findings in his experience of first building EPICS V4 and using the "v3Channel" to get V3 data through V4:<br
+/><br
+/>DZ: readme doesnt explain how to get started.<br
+/>DZ: The required order of compilation is not given in the README.<br
+/>AJ: These have since been covered in the gettingStarted doc.<br
+/>GW: Actually they have always been covered in Getting Started.<br
+/><br
+/>DZ: There are too many warnings in the c++ compilation.<br
+/><br
+/>DZ: Getting started should say from where you should get boost for vxWorks, and how to integrate it into your compile.<br
+/><br
+/><b>************</b><br
+/><b>ISSUE</b>: Some code mixes EPICS 4 strings (String) and standard strings (std::string). This potentially breaks the code.<br
+/><b>************</b><br
+/>Passing a std::string pointer to a String pointer doesn't work.<br
+/>Solution proposed is to remove typedef String and typedef StringBuilder and simply use std::string and STL IO streams.<br
+/><b>AI on MS asap:</b> remove typedef String and typedef StringBuilder and simply use std::string and STL IO streams.<br
+/><br
+/><b>ISSUE: </b>The montavista compiler generates error on the SHOW_EXCEPTION macro.<br
+/>This probably a compiler error!<br
+/>Mitigation is to assume that this compiler will not be used commonly.<br
+/>TK: We don't so far have a list of supported target architectures, is it time to creat one?<br
+/>AJ: There are many V3 supported architectures, maybe V4 should aim to support (but not necessarily tested) on all those?<br
+/>AJ: Suggests email thread for assembling list of archs and compilers that are known to work and not work.<br
+/><br
+/>DZ: vxWorks versions of IO Streams don't support exceptions...<br
+/><br
+/><b>************</b><br
+/><b>ISSUE: </b>There are differences in how functions are called in iocShell and vxWorks shell - iocShell wrappers are doing real work instead of just wrapping the call (which is available in vxWorks).<br
+/><b>************</b><br
+/><b>************</b><br
+/><b>AI on RL</b> by any time soon: Unify configuration calls for vxWorks shell and iocShell [to mitigate issue above]<br
+/><b>************</b><br
+/><br
+/>********<br
+/><b>ISSUE: </b>DZ: the configuration mechanism for multiValue (pre-configuring records sets that are published under a new name) is rudimentary<br
+/>TK: Do we want to keep that mechanism?<br
+/>*******<br
+/>*******<br
+/><b>AI on RL &amp; AJ: </b>Need to take a look at how to configure multivalue properly. (Maybe through info fields?).&nbsp;<br
+/>*******<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC:</b> <b>APS' comments on getting started,</b><br
+/>************<br
+/>Andrew<br
+/><br
+/>Notes: <a href="22-ANJ-getting-started.txt">ANJ-getting-started.txt</a><br
+/><br
+/>************<br
+/><b>NEW TOPIC:&nbsp; requirements and desires for the IOC</b><br
+/>************<br
+/><b>Andrew for Andrew and Tim Mooney.</b><br
+/>Slides: <a href="../../talks/2013/01-22_ANJ-v4-requirements.pdf">v4-requirements</a><br
+/><br
+/><b>Recommendations for V4 db:</b><br
+/>* There is presently no value type with error bars:<br
+/>&nbsp;&nbsp; GW: Not quite true, NTAggregate includes error bars, that's purpose of "dispersion" field.<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>*&nbsp; Data Analsysis use-case.<br
+/>&nbsp;&nbsp; It would be a good idea to collaborate on a basic beamline data analysis IOC.<br
+/>&nbsp;&nbsp; BD: This might change soon.<br
+/>&nbsp;&nbsp; DZ: But experimenters won't trust an IOC they did not invent.<br
+/>&nbsp;&nbsp; Consensus: Such beamline IOC may be created within communities.<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;In general, Tim is very positive about V4, but doesn't want to reinvent the Synapps package for it.<br
+/>&nbsp;<br
+/><b>&nbsp;Additional Ideas</b><br
+/>&nbsp;&nbsp; * Subscription parameters. Would be good to add to pvaccess the same kind of server side filtering that is in V 3.15.<br
+/>&nbsp;&nbsp; Eg, client-specfic monitor dead-bands, rate limits, conditional monitors.<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp; * Reflection API, ie, one should be able to ask an IOC what PVs it holds.<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp; Discussion of with V4 servers (pvIOCJava get &amp; rpc, pure pva, and pvaSrv) should get an RI that<br
+/>&nbsp;&nbsp; at least allows one to get record name list.<br
+/>&nbsp;&nbsp; AJ: A client shoudl be abel to request of server that it tells only the list of names of records, not names of<br
+/>&nbsp;&nbsp; all fields as well.<br
+/><br
+/>*********<br
+/><b>RESOLUTION:</b> We shall add the addition of a reflection [needs to get a better name] interface accessible&nbsp; from pvaccess clients, to the goals for the year, so one can get a list of names of records and possibly fields (at least), possibly also other metadata of the server. With respect to pvaSrv, support for acquisition V3 IOC metadata (names of records and possibly list of fields for a record) and precise function, are to be decided.<br
+/>******<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Beamline instrumentation controls requirements on EPICS V4 (*Bob*)</b><br
+/>************<br
+/>Slides: <a href="../../talks/2013/01-22_LRD-beamline-requirements.pptx">Beamline Requirements</a><br
+/><br
+/>Broad matters of high throughput large datasets etc.<br
+/><br
+/>Bob described work being done at BNL for prototyping a high throughput IOC.<br
+/><br
+/><br
+/><br
+/><b>AFTERNOON</b><br
+/><br
+/>************<br
+/><b>NEW TOPIC:</b> <b>NDarray / image server</b> (<b>*David*</b>)&nbsp;<br
+/>************<br
+/>&nbsp;Test server is publishing data as defined in NTImage, modelled on the areaDetector data definition<br
+/>GW: What for?<br
+/>DH: To allow separating or distributing the image processing from the image acquisition.&nbsp;<br
+/>DH: pvGet take a long time and give time outs.<br
+/><br
+/>MS will fix the slow printing in pvGet for performance for pvStructure<br
+/>MS will look into the race condition for the PV test server.<br
+/>DH will work with Matej to incorporate this example into the test server<br
+/>DH will work with Nikolay and Michael on image compression going forward<br
+/>DH will tweak the performance for testing throughput in PVAccess<br
+/><br
+/>DH NTImage should use NTVariantArray for image data as the encoder of the pixels can change the data type during operation. (It usually won't, but it can.)<br
+/>DH The unsigned types need to be supported.<br
+/>DH field in image part includes fourcc (image encoding) (fourcc = 4 character code)<br
+/><br
+/>Tightening up the description of fourcc field of NTImage:<br
+/>"fourcc" stands for 4 character code. Identifies codec that has been used in<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the case of compressed data. "JPEG", for example. &lt;a<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; href="<a href="http://www.faqs.org/rfcs/rfc2361.html">http://www.faqs.org/rfcs/rfc2361.html</a>"&gt;List of codecs&lt;/a&gt;. The empty<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string, or a value of four spaces, indicates no compression has been<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; used. Additionally, the field may be valued "IRAW" in which case data should be interpretted<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; in compliance with&nbsp; &lt;a<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; href="<a href="http://www.faqs.org/rfcs/rfc2361.html">http://www.faqs.org/rfcs/rfc2361.html</a>"&gt;RFC2361&lt;/a&gt;.<br
+/><br
+/>DH make fourcc optional<br
+/>In his version of the NT document, DH has made changes to the NTVariantArray to include unsigned types<br
+/><br
+/><b>*********</b><br
+/><b>AI on DH</b>: Update the NT document with the agreed changes to definitions of NTImage and NTVariantArray for support of NTImage and areaDetector.<br
+/><b>*********</b><br
+/><br
+/>If image data contains compressed 3D data (meaning a series of compressed 2D images), there would need to be an offset stored for the start index of the compressed data of each slice (since the compressed slices won't all be the same size and can't easily be calculated). Ask Mark Rivers about this issue and discusss adjusting the NT spec if necessary.Versioning and the EPICS V4 release procedure&nbsp;<br
+/><br
+/>************<br
+/><b>AI on DH:</b> publish the test image server along with a readme.<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Versioning and the EPICS V4 release procedure&nbsp;</b><br
+/>************<br
+/>Ralph<br
+/>Jenkins build is now on cloudbees - and includes not only V4 but also CSS, logs, etc....<br
+/>This creates the build and pushes the result onto sourceForge<br
+/>Gabriele has secured a medium size business account for us. (I.e. 5000 minutes per month build time, good support.)<br
+/><br
+/>TK: What about vxWorks build<br
+/>AJ: ~ will be setting up vxWorks build at APS.<br
+/><br
+/>4.major.minor.bugfix<br
+/>--- major is not forward compatible.<br
+/>--- all core modules get pulled up to the major number when that one changes<br
+/>--- a new release is 4.n.0.0 (a new major release resets minor and bugfix to 0, all parts are always present)<br
+/><br
+/>************<br
+/><b>AI</b> on RL: Describe this, distribute and get confirmation - and then implement it.<br
+/>************<br
+/><br
+/>Java source in JAR - binary in TAR<br
+/>Java TAR should contain:<br
+/>- binary, sources and javadoc as JARs<br
+/>- dependency libraries as JARs (in a lib subdirectory)<br
+/>- README<br
+/>C++ TAR should contain:<br
+/>- sources expanded as a tree<br
+/>- documentation and doxygen expanded as a tree<br
+/><br
+/>************<br
+/><b>AI</b> on Ralph: will release the development branching plan.<br
+/>************<br
+/>He will take care of this in Mercurial, based on Vincent Driessen's<br
+/><a href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a><br
+/><br
+/><br
+/>************<br
+/><b>New Topic: CSS nd PvManager status (*Gabriele*):</b><br
+/>************<br
+/>Slides: <a href="../../talks/2013/01-22_GC-pvManager.pptx">pvManager</a><br
+/><br
+/><b>AI on MS: </b>will provide a PVA plugin for CSS.scalars, matrices, array, and image. Ideally that connection will be done&nbsp;<br
+/>by also writing a wrapper package of normative types, which is then used to get and set n-type variable values from vTypes.<br
+/><br
+/>************<br
+/><b>AI:</b> BD resolve how the development and integration of PVAccess into CSS will be done, ie identify a person to do it.<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Other issues</b><br
+/>************<br
+/><br
+/>************<br
+/><b>ISSUE: </b>points out that the license and copyright files in EPICS V4 repo are rubbish.&nbsp;<br
+/>************<br
+/>GW: Acknowledged and we have to fix it.<br
+/><br
+/>************<br
+/><b>ISSUE:</b> Very large data set requests, such as large NTTable data from a database, can cause middle services to crash or otherwise choke.<br
+/>************<br
+/><br
+/>RL: We have to resolve how to send tables that are way too big to be fully kept in a middle layer service's memory. Do we change tables to do this, adding an optional "more"/"done" field? Do we need a data iterator?<br
+/>MS: It should be a type - so the client can decide if it wants to do this. It may want to cancel the operation.&nbsp;<br
+/>AJ: This could also be needed for matrices, large arrays and images even...<br
+/>RL: If the database cannot be cancelled, we can handle cancel on the middle layer server side by just dropping what the database is sending back.<br
+/><br
+/><br
+/></body>
+</html>

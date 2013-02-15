@@ -1,0 +1,51 @@
+Colleagues, 
+
+Please find below our agenda for the weekly meeting [1]. Minutes in Titanpad [2]. 
+
+Agenda
+------
+
+0. Preliminaries (5 mins).
+
+1. pvAccess Specification publication public comments (30 mins)
+
+   *Matej* review of comments made on pvAccess spec. Record which comments 
+   should result in spec modifications or other actions.
+
+2. Status of introspection/unsigned changes, *Marty*, *Matej* (10 mins)
+
+   pvAccessCPP status?
+   *David* Did you get a chance to work on convert?
+
+3. pvIOCCPP requirement for THIS charter (to Sept 2012) (10 mins)
+
+   Make formal decision that the functional requirement of pvIOCCPP for this charter is confined to
+   the following functionality on embedded IOCs (please comment and amend in meeting):
+     i. v3Channel endpoint and access to ca on V3 IOC
+     ii. Existing channelRPC support presently as implemented 
+     iii. Gather service implementation
+   Decide how Marty gets requirements for iii.
+
+4. Review Diamond meeting agenda [3] (20 mins)
+
+   What if any concrete presentations are needed to start making a list of requirements and desires
+   for EPICS V4 going forward.
+ 
+   Do we need to start a list of requirements that can be prioritised at the meeting?
+   
+5. SwissFEL modelling status, *Greg* (5 mins).
+
+6. Directory Service status, *Ralph* (5 mins).
+
+
+ 
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/ 
+[3] http://sourceforge.net/mailarchive/message.php?msg_id=29399717
+
+
+
+
+
+

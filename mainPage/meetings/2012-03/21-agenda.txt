@@ -1,0 +1,93 @@
+Colleagues, 
+
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. Minutes
+in titanpad [2]. 
+
+*Note meeting time in your timezone [0]*. US is now in observance of Summer Time; but Europe
+isn't. We'll go with the Americans again. Next week we'll be back to the usual time for
+Europeans.  
+
+Agenda
+======
+
+0. Preliminaries (5 mins).
+
+1. Getting past some sticking points (15 mins). 
+
+  Like to propose the following short term assumptions so work can proceed. I think we should
+  consider these as working resolutions until we change our minds. Making these assumptions
+  allow pvAccess and Normative Types specification publications to proceed:
+
+     a. Re "Move location of fieldName from Field to Structure": 
+        -> Fieldname will go with Field, not Structure - ie, as it is now.
+     b. In Normative Types, re identification of optional fields using "Traits": 
+        -> We stay with simple introspection to determine whether optional fields we given.
+     c. In Normative Types, re whether pvAccess itself is aware of Ntype id:
+        -> No, pvAccess will have no special understanding of a Structure that expresses
+           a NType from a Structure that expresses any other system of Fields
+     d. Re Unsigned API. 
+        -> To reiterate, unsigned will be developed first as Marty's solution [5], 
+        after which David can propose API modifications.
+         
+  If possible let's just discuss whether we can accept these working assumptions
+  rather than trying to formulate alternative decisions.
+
+2. Development and Integration of unsigned work (15 mins).
+ 
+   Should Unsigned changes be made on a branch or 
+   other work made on branches. Do we need a beta 1.1 release prior to unsigned changes integration?
+
+3. Starting the V4-V3 interop guide (15 mins).
+
+  Charter deliverable #10 [3]. Really want a document ready by the EPICS meeting, that lays
+  out the mechanisms of V4 <-> V3 interop supported now, "medm" solutions, GUI solutions etc. 
+  Volunteers needed. I'm lookin at you James.
+
+4. easyPVA review (*Marty*, 30 mins)
+
+  See API proposal [4]
+  *Everyone, please check out easyPVA, run examples etc, before meeting.*
+
+5. Archiver interface demo (*David*, 15 mins)
+
+
+Items likely in future meetings soon
+------------------------------------
+ NT3dMatrix proposal from Marty and Guobao
+ Other NTypes stuff: self identification, NTURI (for calling services), 
+    NTNameValue (Guobao hates mine), NTTimeDomainArray and NTFreqDomainArray expert review
+ eget review
+ Installation guide/example review.
+
+[0] http://www.timeanddate.com/worldclock/meetingdetails.html?year=2012&month=3&day=14&hour=14&min=0&sec=0&p1=37&p2=736&p3=268&p4=179&p5=1233&p6=224
+tinyURL: http://tinyurl.com/6mv99y4
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/
+[3] http://epics-pvdata.sourceforge.net/charter.html#deliverables
+[4] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/raw-file/tip/easyPVA/documentation/easyPVA.html
+[5] http://epics-pvdata.sourceforge.net/alpha/unsigned.html
+
+On 20 Mar 2012, at 14:48, Dalesio, Leo wrote:
+
+> Wireless is not working today. Cannot email during meetings - that sucks.
+> Does it work to meet at 12:15 my time -  5:15 your time?
+> Bob
+> 
+> -----Original Message-----
+> From: White, Greg [mailto:greg@...] 
+> Sent: Tuesday, March 20, 2012 9:30 AM
+> To: Dalesio, Leo
+> Subject: chairs meeting?
+> 
+> Hey Bob, chairs meeting today? Didn't see a reply from you yesterday.
+> 
+> Maybe you're on vacation?
+> 
+> Greg
+
+
+
+
+
+

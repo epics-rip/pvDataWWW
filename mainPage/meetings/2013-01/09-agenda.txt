@@ -1,0 +1,99 @@
+Colleagues,
+
+Let's hold our regularly scheduled telcon this week at the usual time [1], 
+Minutes shall be in titanpad [2]. Note this shall be the last meeting before
+the PSI workshop.
+
+Only 1 agenda item, and is perhaps the ultimate bureaucratic nightmare- to
+review agenda for the January meeting.
+
+  What needs to be included. 
+  What are the main items to be decided. 
+  Who can speak on what.
+
+[1] http://epics-pvdata.sourceforge.net/home.html
+[2] http://epicsv4.titanpad.com/40
+
+Here is a draft. Let's please review it, certify who is going to speak
+or lead discussion, and for how long. See names in the agenda. 
+Then I'll add timing scheduling.
+
+Please assume talks are of 1/2 hr duration, and should be accompanied by some
+written material such as presentation or notes on how to reproduce results.
+Please forward talk titles and time estimates to me soon after the telecon.
+
+[Guobao, I don't have a contribution item for you. Would you like to present 
+some work?]
+
+EPICS V4 January 2013 PSI workshop, 1st draft agenda for comments.
+ 
+Monday
+======
+
+Morning - Demos of Beta 2 and administration
+
+  * Demos of bpm orbit and model services (*Timo*, *Greg*)
+  * Demo all normative types to pvget and eget (*Matej*)
+  * 2012-2013 charter review (*Greg*)
+
+Afternoon - EPICS V4 control database & IOC requirements and design references
+
+  * Marty's review of the existing pvDatabase, 
+    [Please forward title to greg] *Marty*.
+  * Marty's Ideas on memory, multithreading and locking from Marty's 
+    email of Dec 12 *Marty*.
+  * Bob's review of V4 IOC requirements 
+    [Please forward talk title to greg] *Andrew Johnson*
+  * Andrew's review of V4 IOC requirements 
+    [Please forward talk title to greg] *Bob Dalesio*
+  * Michael's review of V4 IOC requirements 
+    [Please forward talk title to greg] 
+        *Michael Davidsaver or substitute*
+ 
+Tuesday
+=======
+
+Morning - Beta 2 continued
+
+  * Microbenchmark testbench design and initial performance 
+    breakdown report (*Matej*)
+  * v3Channel review (*Marty*. Summary of the converation and outcomes from 
+    Marty and Andrew's discussion around mid november in the thread "multichannel puts")
+    Status breaking v3Channel out of pvIOCCPP (*Ralph*) and 
+    testing by Andrew.
+  * Impressions of getting started with vxWorks and v3Channel 
+    compilation *Dirk Zimock* 
+
+Afternoon - IOC image processing requirements and support plans
+
+  * Make a real plan for the compression support of NTImage. 
+    Who can talk to this, *Nikolay?*
+  * NDarray / image server - David?
+
+  What else can move us along here?
+
+
+Wednesday
+=========
+
+Talk to beamline specialists at PSI. Timo and Bob to coordinate.
+
+
+ 
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+

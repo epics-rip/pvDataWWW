@@ -1,0 +1,46 @@
+Colleagues,
+
+Please find below the agenda for our 14-Dec-2011 meeting.
+Time: UTC (GMT) Wednesdays, 15:00. [1]
+
+Agenda:
+
+0. Preliminaries
+
+1. Readiness for Beta-1.
+   Matej. pvAccess spec
+   Marty. "Overview" documentation readiness
+   How's Doxygen documentation?
+   Greg/Timo. Getting started.
+
+2. Beta 1 Announcement process.
+   Date 
+   Tech talk? Anything else? 
+
+3. Next workshop meeting dates. 
+
+4. Virtual drinking
+
+So, should be a short meeting. Any other business? 
+
+Coming up let's talk about ezpva and gather. In particular I'd like to make them distinct efforts,
+and APIs that are completely independent. Normative types and nominal architectures need work.
+
+Cheers
+Greg, for Greg and Bob
+
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] Original list was
+        + Second Public Working Draft of pvAccess (Matej, Greg)
+        + Channel RPC moved out of pvService (greg, Guobao)
+        + Examples in Java and C++ (Timo, James, Greg, others?)
+        + Getting started guide
+        + pvData and pvIOC documentation separate to JavaDoc (Marty, Greg).
+        + Nominal Architectures (James - can you make this?)
+
+
+
+
+
+

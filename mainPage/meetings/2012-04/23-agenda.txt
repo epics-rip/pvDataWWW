@@ -1,0 +1,91 @@
+Colleagues,
+
+Please find below the agenda for our 3rd face to face meeting, SLAC. This agenda is 
+open to change according to needs.
+
+Dates: 23 & 24 April. 
+Location: SLAC Bldg 48 Redwood A. See top left of map at [3]
+
+EPICS V4 Working Group meeting 
+==============================
+
+DAY 1: 23-Apr-2012
+------------------
+
+09:30am Preliminaries and Agenda review.
+
+09.34am Core 
+        Status of unsigned and Field move *Marty*
+
+        V4/V3 interoperability review *Marty*. 
+	    Status of caV3 provider
+            Pattern for V4 data through ca.
+
+11.00am Normative Types Review [4] - *Greg*, *Marty*
+ 
+        Type self identification. Decide on a straw man *Greg*
+        NTFrequencyDomainArray
+        NTTimeDomainArray
+        Format field of display_t. 
+
+12:30pm	Lunch
+
+01:30pm	Multi Channel Array & Gather Service. 
+
+        Gather Service review *Timo*
+        The nominal architecture for a gather service.
+        The types returned by a gather service.
+	NType for MultiChannelArray, including waveform v3 PVs (*Marty*)
+
+03.00 pm
+ 	Directory Service *Ralph*
+             Status
+             Interfaces
+             Charter deliverable review.              
+
+04.00pm Tables from Relational Database ??? Bob
+ 	Archiver Service Demo and release plan *David* 
+
+05:30pm Meeting Day 1 ends
+
+
+DAY 2: 24-Apr-2012
+------------------
+
+09:30am Progress and Charter [1] review *Greg* 
+
+10.00am What next? How to build on EPICS V4. *Bob*
+
+        EPICS V4 Process. *Greg*
+            Publication of the process we use, and clarification of terminology [1]
+        Follow up groups initial planning
+
+11.00am Specific Services- model, orbit, unit conversion
+        Discussion of requirements and priorities.
+
+11.30am License. get this nailed down. 
+
+        Which license and copyright files specifically
+        Where are they housed
+        Source code header.
+
+12:30pm	Lunch
+
+01.30pm Documentation standards *Greg*, *Timo*
+
+02.00pm EasyPVA review *Greg*
+
+02.30pm Time for overrun and resolution review from above meeting.
+
+04:00 Meeting Day 2 ends
+
+[1] Charter, http://epics-pvdata.sourceforge.net/charter.html
+[2] Process document, http://epics-pvdata.sourceforge.net/epicsv4process.html
+[3] SLAC Meeting Rooms, http://www6.slac.stanford.edu/pdf/slac_meeting_rooms_map.pdf
+[4] http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html
+
+
+
+
+
+

@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$26</title>
+</head>
+<body><b>AGENDA</b><br
+/>=======<br
+/><br
+/>1. Confirmation of readiness of pv* c++ and java tips. *Marty*<br
+/><br
+/>2. Normative Types self identification, Greg<br
+/><br
+/>&nbsp; Confirm basic plan:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; i) pvAccess id shall carry a namespace:type declaration;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; ii)&nbsp; we won't invent a full validating type system, we'll use<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XML as the validating type system;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; iii) pvAccess messages themselves will not hold all information to validate all fields of a<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; structure, only the terminal namespace and type declaration. Validation of derived types<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; would have refer to the external XML schema definitions.<br
+/><br
+/>3. Headers.<br
+/><br
+/>&nbsp; What should be in headers for each file type.<br
+/>&nbsp; Should license and copyright be inline (per Andrew's suggestion) or a link.<br
+/><br
+/>[1] <a href="http://epics-pvdata.sourceforge.net/home.html#usefulinfo">http://epics-pvdata.sourceforge.net/home.html#usefulinfo</a><br
+/>[2] <a href="https://epicsv4.titanpad.com/26">https://epicsv4.titanpad.com/26</a><br
+/><br
+/><br
+/><b>MINUTES</b><br
+/>========<br
+/>Present: MK, NM, MS, BD, GW, JR, GS, TK<br
+/>Scribe: MK<br
+/><br
+/>*************<br
+/><b>NEW TOPIC: Confirmation of readiness of pv* c++ and java tips</b>.&nbsp;<br
+/>*************<br
+/>MS &amp; MK report status of readiness of pv* c++ and java tips:<br
+/><br
+/>pvDataCPP, pvIOCCPP, pvServiceCPP, pvDataJava, pvServiceJava<br
+/><br
+/>These are all ready, including documentation.<br
+/>Tests pass.<br
+/>pvXXX.html up to date but still have broken links.<br
+/><br
+/>pvIOCJava is also ready except xmltest/caV3 fails.<br
+/>I just discovered problem this morning and did not have time to investigate.<br
+/>Note that documentation has lots of changes.<br
+/><br
+/>pvAccessJava and pvAccessCPP:<br
+/>&nbsp;&nbsp;&nbsp; These are all ready.<br
+/>&nbsp;&nbsp;&nbsp; Tests pass.<br
+/>&nbsp;&nbsp;&nbsp; Documentation needs to be updated.<br
+/><br
+/>Notes:<br
+/><br
+/>I think pvAccessJava.html needs updating<br
+/>pvAccessCPP.html needs LOTS of work<br
+/><br
+/>Questions about next public release.<br
+/>Is the target date Oct 1?<br
+/>Will there be interim releases before public release?<br
+/><br
+/>MK: suggest making a candidate release. Thinks that time is now.<br
+/>GW: So we will tag the tips, and build the tar files, but we won't upload them to the downloads directory.<br
+/>GW: Who will do tagging of C++ and Java?<br
+/>MS: volunteers<br
+/><br
+/><a href="http://epics-pvdata.sourceforge.net/release.html">http://epics-pvdata.sourceforge.net/release.html</a><br
+/><br
+/>JR: Volunteers to build tar for c++.<br
+/>MK: Suggest same person does both now and during release.&nbsp;<br
+/><br
+/>JR: What about running the tests? How do I run those?<br
+/><br
+/>MS will tag tips and run tests.<br
+/>JR will create tar files of c++ and run tests prescribed by MS on the c++.<br
+/>GW will create tar files of Java and run tests.<br
+/><br
+/>GW will not upload to sourceforge<br
+/><br
+/>GW target date?<br
+/><br
+/>GW next week Wed Sept 5th (?) is target date<br
+/><br
+/>Nominal release date will be Oct 1st. Call it Beta 2.<br
+/><br
+/>MK: Question on where the table of contents generators is:<br
+/>Ans:<br
+/><a href="http://epics-pvdata.sourceforge.net/script/tocgen.js">http://epics-pvdata.sourceforge.net/script/tocgen.js</a><br
+/><br
+/>*********<br
+/><b>NEW TOPIC:&nbsp; Normative Types self identification</b><br
+/>*********<br
+/>GW: Proposes Nt instances would self identify using a string composed of a namespace:typename&nbsp;<br
+/>The namespace may be a URI (or full URL).&nbsp;<br
+/>But for now no validation.<br
+/>So, the Field.ID will be URL&nbsp;<br
+/>example, NTscalar might be identified by the following:&nbsp;<br
+/><br
+/>id = "<a href="http://epics-pvdata.sourceforge.net/2012/normativetypes:scalar">http://epics-pvdata.sourceforge.net/2012/normativetypes:scalar</a>"&nbsp;<br
+/>or<br
+/>id = "uri:ev4:nt:scalar"<br
+/><br
+/>URI syntax: <a href="http://en.wikipedia.org/wiki/Uniform_resource_identifier">http://en.wikipedia.org/wiki/Uniform_resource_identifier</a><br
+/><br
+/>JR: Recommends that we have a type system competition to decide [if we were going to implement a full type system, which it would be] .<br
+/>General agreement, let's put it in January agenda.<br
+/><br
+/>MS: Offers Slovenia for January meeting.<br
+/><br
+/>NM: What about Oct for outlining requriements for a type system?<br
+/>GW: ok, may be able to make that a session.<br
+/><br
+/>GW: Is it feasible to chage the name of pvAccess field id to something else, since id seems<br
+/>to identify the object, not the type of the object?<br
+/>MS: No, it's too hard, and I don't agree that it identifies a datum.<br
+/>GW: Ok. Let's stay with id as the name.<br
+/><br
+/><b>Conclusion:</b> We will use field id to exchange datum type id, and we will use the namespace:type syntax<br
+/>as written i Aug-28 email as type id syntax.<br
+/><br
+/>*********<br
+/><b>NEW TOPIC: File headers.</b><br
+/>*********<br
+/>GW: Andrew suggested that we include all of the license in each file. What do people think of that?<br
+/>MK: Don't like it for 2 reasons; 1 it's a big header in the source file, 2 it would cause work whenever the license changed.<br
+/><br
+/><b>Conclusion</b>: File headers will only include a reference to the licence.&nbsp;<br
+/><br
+/>*********<br
+/><b>NEW TOPIC: Patches for vxWorks port</b><br
+/>*********<br
+/>Dirk Zimoch reports that teh patches he submitted for porting to vxWorks, are not in the latest release [so he'd<br
+/>have to start again].<br
+/><br
+/>ie using vector and shared ptr, size_t.&nbsp;<br
+/><br
+/>MK: We changed the code fundamentally to support these, rather than just his patches.<br
+/>So, please use what we have now - he shouldn't find many needed changes.&nbsp;<br
+/>First try to build pvData<br
+/>MS: Still has to go through his patches for pvAccess.<br
+/>MK: Certainly we will support him to resolve these in Sept.<br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/></body>
+</html>

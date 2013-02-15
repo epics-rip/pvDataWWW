@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$36</title>
+</head>
+<body><br
+/>AGENDA<br
+/>======<br
+/>0. Preliminaries, 5 mins<br
+/><br
+/>1. Beta 2 Status review, *all*, 20 mins<br
+/><br
+/>&nbsp; What are we all up to? What are we expecting to complete any more for Beta 2? If&nbsp;<br
+/>&nbsp; so when is that expected.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Will we fix the &lt;&gt; "" thing?<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Who will write an announcement?&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Suggest we publish tars first, wait a couple of days, then announce.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Want to get input from Dirk on VxWorks port status before announcement.<br
+/><br
+/>&nbsp; Expected beta 2 schedule.&nbsp;<br
+/><br
+/>2. Jenkins support. Who can we call on to implement Jenkins support for:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vxWorks build<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Continuous test servers<br
+/><br
+/>3. locksets and V3Channel strategy agreement, *all*, 20 mins<br
+/><br
+/>&nbsp; Verify strategy for V3Channel w.r.t. writing to N&gt;1 channels: that for the&nbsp;<br
+/>&nbsp; immediate term, we want to support the easily implementable case of requiring all<br
+/>&nbsp; referenced channels to be in the same lockset (as decided in the BNL meeting).<br
+/><br
+/>&nbsp; And that in the longer term we do want to work towards N&gt;1 IOC coordinated get&nbsp;<br
+/>&nbsp; and set (though clearly not of arbitrary collections of records - those specifically<br
+/>&nbsp; designed to work within that framework).&nbsp;&nbsp;<br
+/><br
+/>4. pvIOC strategy agreement, 20 mins<br
+/><br
+/>&nbsp; We have the pvIOC in Java. The consensus of the working group is, I think,&nbsp;<br
+/>&nbsp; that the requirements and design of the EPICS V4 IOC needs to be reviewed before<br
+/>&nbsp; we port it straight to C++. Marty may disagree [2]<br
+/><br
+/>&nbsp; I'd like to check my feeling of the timeline and deliverable for that work. My&nbsp;<br
+/>&nbsp; feeling is that the next charter should have an defined effort to review the&nbsp;<br
+/>&nbsp; requirements and the design of V4 IOC, with the explicit deliverable of a&nbsp;<br
+/>&nbsp; normative requirements document, plus an illustrative implementation. Further,&nbsp;<br
+/>&nbsp; that design and reference implementation would be expected only in the 2014 charter.<br
+/>&nbsp;&nbsp;<br
+/>&nbsp;<b> MINUTES</b><br
+/><b>&nbsp; =======</b><br
+/>&nbsp; Present: BD, MS, MK, GS, DH, TK, GW<br
+/>&nbsp; Scribe: BD,&nbsp;<br
+/>&nbsp;&nbsp;<br
+/>================<br
+/>&nbsp; New Topic: Beta 2 Status review<br
+/>&nbsp; ================<br
+/>Ready for a Beta 2 prerelease.<br
+/>Matej is ready for a Demo - up to Item 9 on the list of Beta 2 use cases.<br
+/>&nbsp; 1) get/put simple value<br
+/>&nbsp; 2) get/put structure from V4<br
+/>&nbsp; 3) get/put PVAccess to V3 Channel<br
+/>&nbsp; 4) example of CA getting V4 data pvGet&nbsp;<br
+/>&nbsp; 5) CAV3 on the wire from the V4 interface - but Channel Access to a V3 IOC<br
+/>&nbsp; 6) Access to the directory service<br
+/>&nbsp; 7) Access to the archive service<br
+/>&nbsp;AI: Matej, make demo for beta 2.<br
+/>&nbsp;<br
+/>&nbsp;<b>*********</b><br
+/><b>AI: Matej,</b> construct demo of use cases for beta 2 for doing 1-7 above. Should start al servers required.<br
+/><b>AI: David</b>, package cpp pv* modules ready to be put on sSourceforge.<br
+/><b>AI: Greg</b>, package java pv* modules ready to be put on Sourceforge<br
+/>**********<br
+/>Referenes and scripts for packaging the release are at:<br
+/>&nbsp; <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/7b8c0174228d/scripts">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/7b8c0174228d/scripts</a><br
+/>&nbsp;&nbsp;<br
+/>&nbsp;<br
+/>==================<br
+/>New Topic:&nbsp;<br
+/>2. Jenkins support. Who can we call on to implement Jenkins support for:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vxWorks build<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Continuous test servers<br
+/>==============================<br
+/>*******<br
+/><b>AI: GW </b>Check on vxWorks build status<br
+/>*******<br
+/>*******<br
+/>&nbsp;<b>AI: On Gabriele:</b> move the pvManager projects to his open source project.<br
+/>&nbsp;<b>AI: On Gabriele:</b> create continuous integration servers of EPICS V4 modules for testing.&nbsp;<br
+/>*******<br
+/><br
+/>BD: How is integ of pvManager into V4 client?<br
+/>MS: What remains is to compelte work on [normative] types, type by type.<br
+/>BD: Who should do that?<br
+/>MS: I require indication of priorities<br
+/>BD: Nice to get table or image etc into pvManager. Table is a good place to start.<br
+/>BD: Are these types defined well enough for integration into pvManager?<br
+/>MS: rpc is not readily supported by pvManager. [so the high level types, except images,<br
+/>which are directed at services, is not so clearly a requirement].<br
+/>BD: So we should get an image service running. Maybe just a demo running.<br
+/>BD: David, are you doing an image server?<br
+/>DH: We're thinking of a PV rather than a service. An image service is on our road-map, but<br
+/>not an immed deliverable.<br
+/>BD: Feb?<br
+/>DH: Feb is reasonable.<br
+/>BD: Possibly a fixed image is enough for allowing the clients to be developed by BNL.<br
+/>DH: gets, or monitors as well.<br
+/>BD: Does pvMan need data to be acq as monitor?<br
+/>MS: -&nbsp;<br
+/>BD: Maybe take say 5 images output at 1-5 Hz would allow clients to be developed.<br
+/>DH: Yes I can do that.<br
+/>********<br
+/><b>AI on DH: By Dec 20th,</b> create test image service: 5 NTImages served at 1-5 Hz.&nbsp;<br
+/>concensus - basically need areaDetector data in an image and serve it.<br
+/>********<br
+/><b>AI on BD: By Nov 15th.</b> Coordinate requirements for NTImage. Get Michael and Nikolay<br
+/>to review. We should have a revised proposla for NTImage by then.<br
+/>*******<br
+/>GW: Rpc !== to service.&nbsp;<br
+/>BD: Yea, but so far all our services are RPC, so that's why we need the NTImage.<br
+/><br
+/>*******<br
+/><b>NEW TOPIC: locksets and V3Channel strategy agreement</b>, *all*, 20 mins<br
+/>*******<br
+/>BD: This is first major item for definition of new IOC.<br
+/>BD: Is this going to be imlemented by Marty?<br
+/>MK: Forgetting lockset, just setting all V3 channels needs to be completed.&nbsp;<br
+/>- discussion on whether it's enough to tell people how to define locksets sensibly so that&nbsp;<br
+/>V4 V3Channel could interface to them, or to code an efficient way of dynamically change the locksets<br
+/>so that all in a V3channel request can be completed.<br
+/>BD: Doesn't think we need to dynamically change locksets.<br
+/>MK: Warns that it would be very difficult to dynamically reconfigure locksets. Primary users<br
+/>are experimenters, and they don't care about disruption.&nbsp;<br
+/>BD: In V4 use cases, all we need to do is make sure theyre in the same lockset.<br
+/>MK: Writing to all same lock set should be easy.<br
+/>BD: That would be clean. All scaning would take one lock.<br
+/><br
+/>******<br
+/><b>RESOLUTION:</b> Implement multiChannel write for all fields of V4 datum to V3Channel that&nbsp;<br
+/>map to the same V3 PV lockset, rather than attempt dynamic lockset reconfiguration; at&nbsp;<br
+/>least for the first pass.<br
+/>******<br
+/>********<br
+/><b>AI on MK by Nov 14</b>: Investigate and report feasibility of multichannel write in V3Channel<br
+/>to all V3 PVs of the same lockset.<br
+/>********<br
+/>BD: Next week MK will give us a report.<br
+/><br
+/>********<br
+/><b>NEW TOPIC: pvIOC strategy agreement</b><br
+/>********<br
+/>BD: lets resolve that in a month we will have a draft requirements document, or at least forward&nbsp;<br
+/>references to the requirements document.<br
+/><br
+/><b>MK...</b><br
+/><br
+/><i>Instead of pvIOC strategy perhaps it is better to use the term pvAccess Channel Provider.</i><br
+/><i>pvIOCJava is one example of a Channel Provider.</i><br
+/><i>[BD/GW +1]</i><br
+/><br
+/><i>Greg said:</i><br
+/><br
+/><i>"It's horrible when one considers that for EPICS V4 to amount to anything,</i><br
+/><i>it has to be a standard."</i><br
+/><br
+/><i>For a pvAccess Channel Provider there is a "standard"</i><br
+/><i>The standard is that a Channel Provider must implement the following interfaces:</i><br
+/><br
+/><i>ChannelProvider</i><br
+/><i>ChannelFind</i><br
+/><i>Channel</i><br
+/><i>ChannelGet</i><br
+/><i>ChannelPut</i><br
+/><i>ChannelPutGet</i><br
+/><i>ChannelArray</i><br
+/><i>Monitor</i><br
+/><i>ChannelRPC</i><br
+/><br
+/><i>It must register it's ChannelProvider with ChannelAccess.</i><br
+/><br
+/><i>For ChannelPut,...,Monitor it should accept a pvRequest created by CreateRequest.</i><br
+/><i>Note that the arguments for ChannelGet,...,ChannelRPC imply that data must be formated as pvData.</i><br
+/><br
+/><i>With regards to pvIOC David said:</i><br
+/><br
+/><i>"I think when we get to the design stage we can think about how what Marty's already done on the Java side satisfies those requirements. We may want to port the implementation as is, add bits, change bits or even start again from scratch, in which case we may want to recycle bits."</i><br
+/><br
+/><i>Other than "start from scratch" I think I agree with what David.</i><br
+/><br
+/><i>I have started on a document named pvIOCCPPRoadMap.</i><br
+/><i>It discuses a strategy for implementing in C++ features provided by Java.</i><br
+/><i>By the end of this week I should have enough ready to make it available via the pvdata home page.</i><br
+/><i>But for now let me say that it is a phased implementation where somthing useful will be avaliable at the end of each phase.</i><br
+/><i>Let me just discuss the first phase.</i><br
+/><br
+/><i>The completion of this phase is a set of "base" classes that implement a Channel Provider.</i><br
+/><i>The idea is that a specific Channel Provider would "extend" the base ChannelProvider by implementing a</i><br
+/><i>top level PVStructure and a process method.</i><br
+/><br
+/><i>The code involved with the first phase should NOT be in pvIOCCPP.</i><br
+/><i>Perhaps all the data related code belongs in pvData and the Channel stuff in pvAccessCPP?</i><br
+/><i>In any case it should be avalable for use by providers other than pvIOC</i><br
+/><br
+/>MK: I expect to deliver a document by Fri (9-Nov) which makes the case for seperating the pvAccess<br
+/>Channel provider interface from the pvIOC, and also then defends the present design of pvIOCJava.<br
+/>That is, makes the case that the EPICS V4 IOC should be based on pvIOCJava.<br
+/><br
+/>Meeting ends.<br
+/><br
+/></body>
+</html>

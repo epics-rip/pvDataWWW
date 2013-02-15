@@ -1,0 +1,68 @@
+Colleagues, 
+
+Please find below our agenda for the weekly meeting [1]. Minutes in Titanpad [2]. Please sign up
+for a login, so minute entries are associated with a real person.
+
+Agenda
+------
+
+0. Preliminaries, 5 mins. Bob, you can start the Skype call right?
+
+1. pvAccess Spec Publication. ! *Bob* 5 mins.
+
+2. IPAC EPICS V4 report, *Bob* 5 mins.
+
+3. Status of core modules in Java and C++. Planned release schedule? 
+   *Marty*, *Matej* 20 mins.
+
+   Ay remaining issues with PVStructure, PVDataCreate, FieldCreate etc (*Marty*, *Matej*)?
+   We need services and all examples (gather, rdb java example, bpm C++ example, 
+   channelArchiver) brought up to date w.r.t. the new interfaces and tested by release 
+   date (*greg*, *Marty*, *David*, Timo*). So, what date is reasonable, Friday 15 June?
+
+4. Services input interface proposal [3]. *Greg*, *Ralph*, *Matej*, 20 mins. 
+
+   Let's try to agree on the target for Matej and pvget.
+      - That for now, -s <server> must be given to pvget
+      - Which arg types will be supported? Propose string, int, double, boolean. pvget will coerce 
+        given ints to doubles, and given "1" or "y" or "yes" to booleans.
+  
+5. Architecture or pattern for Dirk Zimock's use case. *Marty*, *Matej* comment, 20 mins.
+
+   Recall Dirk's requirement is a single (v4) PV to encapsulate the values of a number of 
+   V3 PVs as a structure. Clearly it can be done with a pvIOC in some high level host. 
+   But how much better is it to cohosting a pvIOC and a V3 IOC in the vxWorks/RTEMS embedded computer? 
+   If the answer is "much better, but can't reasonably be done yet because vxWorks pvIOC is not ready," 
+   then when? 
+ 
+6. EPICS V4 charter exit status (if we have time, else next week)
+
+   We have 3 months to go in our charter. What are our hard targets
+   for completion to full "ready for use" status by then. 
+   I have a use case list I'll publish for next week. Please let me know what is not going to happen.
+   Eg 
+     - completed javadoc and DOxygen for released software?
+     - These 2 deliverables [4] seem in danger to me:
+       i.  A normative document of the EPICS V4 IOC processing pipeline" 
+       ii. A User Guide for EPICS V4 IOC control application developers
+
+Next Week
+---------
+Normative Types 1st PWD
+Charter exit objectives. 
+Beginning thoughts on followup after this charter. 
+ 
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/ 
+[3] http://sourceforge.net/mailarchive/message.php?msg_id=29346546
+[4] http://epics-pvdata.sourceforge.net/charter.html#deliverables
+
+
+
+
+
+
+
+
+
+

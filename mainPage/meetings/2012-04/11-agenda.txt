@@ -1,0 +1,45 @@
+Colleagues,   
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. Minutes
+in titanpad [2]. 
+
+Agenda
+------
+
+0. Preliminaries (5 mins)
+Agenda
+
+1. EPICS meeting talks related to EPICS V4
+
+2. Status of Fieldname and unsigned move
+
+3. pvData field name naming standard and restrictions
+   - where documented
+   - C and java restrictions, if any. Do we allow 
+     any allowed by the language - what about interop in that case.
+   - enum right in pvData - Ben's suggestion [3]
+
+4. Normative Types
+   Incorporation of NT3dTable functionality into NTMultiChannelArray
+   General bitching
+
+5. eget demo - *Matej*?
+
+
+Cheers
+Greg for Bob and Greg
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/
+[3] http://sourceforge.net/mailarchive/forum.php?thread_name=201204101832.17751.benjamin.franksen%40helmholtz-berlin.de&forum_name=epics-pvdata-devel
+
+
+   
+
+
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+Please find below the agenda for our weekly EPICS V4 telecon [1]. Minutes
+in titanpad [2]. 
+
+Might be a short meeting. 
+
+Prefix naming ca: pva: and Andrew's proposal etc 
+still, not this week. Don't think it's ready for taking up.
+
+Agenda
+======
+
+1. New pvAccess protocol spec [3] version (*Matej*). 
+
+Please check it out and
+email Matej with everything from typos to substantive material. Not suggesting
+a full review of this in the meeting, we've done that enough, but
+we're getting ready to publish so we should make a publication readiness 
+decision.
+
+2. Maturity matrix (*Greg*).
+
+Would you realistically maintain a maturity matrix on the web site?
+
+3. Troubleshooting help [4] (*Greg*).
+
+Is this a good idea? To be a thing it needs to be reliable and quite 
+complete. Is that realistic?
+
+Cheers
+Greg, for Bob and Greg
+
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/2?
+[3] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/rawfile/a7971156a08c/mainPage/pvAccess_Protocol_Specification.html
+[4] http://epics-pvdata.sourceforge.net/troubleshooting.html
+
+
+
+
+
+
+
+

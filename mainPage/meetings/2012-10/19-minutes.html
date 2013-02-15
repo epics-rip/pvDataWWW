@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$34</title>
+</head>
+<body><b>EPICS V4 Working Group face-to-face Meeting, Day 3, 17-Oct-2012</b><br
+/><br
+/><b>Agenda, Day 3.</b><br
+/><br
+/>Friday AM - Next 12 months.<br
+/>==========================<br
+/><br
+/>* BNL Physics Services, Guobao Shen<br
+/>* Python physics applications that the BNL physics group has developed,<br
+/>&nbsp;What they like and what they want.&nbsp; *Lingjun*<br
+/><br
+/>* Normative Types review. *Greg*<br
+/>* EPICS URI. Use of the EPICS URL. *Greg*<br
+/>* Proposal for "editing down" and implementation of N-types *Michael*&nbsp;<br
+/><br
+/>* Next charter deliverables and roadmap for the next 12 months.&nbsp;<br
+/>&nbsp;+ Requirements for the IOC. *Marty*<br
+/>&nbsp;+ Review requirements generated since Wednesday.<br
+/>&nbsp;+ Charter items proposal. *Greg*<br
+/>&nbsp;+ Itemizing goals and maybe even deliverables. Assign action items from week.<br
+/>&nbsp;<br
+/>*<b>******</b><br
+/><b>NEW TOPIC: Model Service, Guobao Shen</b><br
+/><b>*******</b><br
+/>The model service allows one to put 1st order optics in the db, and retrive it.<br
+/>&nbsp;<br
+/><b>*******</b><br
+/><b>NEW TOPIC: Magnet Calibration Service, Guobao Shen</b><br
+/><b>*******</b><br
+/>The Magnet calibration data is kep in a simple scheme in the online database.<br
+/>Its data is made available through a V4 service<br
+/>&nbsp;<br
+/>&nbsp;<b>*******</b><br
+/><b>NEW TOPIC: Unit Conversion Service, Guobao Shen</b><br
+/><b>*******</b><br
+/>A unit conversion service uses conversion equations, epressed simply as srings, in the<br
+/>database, to convert b to k, i to b etc, and their inverses.<br
+/><br
+/>Example of call to unit conversion<br
+/>&nbsp;munitconv(<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elementName<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value: starting value&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fromUnit: source unit system<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; toUnit: destination unit system<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; E: Energy, if converting to k<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; referenceradius: radius of coil if using rotating coil )<br
+/>&nbsp;<br
+/>&nbsp;<b>AI on GS</b>: Please send schema diagrams of these services to Greg &amp; Timo.<br
+/>&nbsp;<br
+/>&nbsp;<br
+/>&nbsp;<b>*******</b><br
+/><b>NEW TOPIC: High Level Application Library, Lingyun Yang</b><br
+/><b>*******</b><br
+/>&nbsp;<br
+/>Demo of aporbit application for interactive inspection of orbit data and lattice elements.<br
+/><br
+/>Includes local bump calculator<br
+/><br
+/>They use HDF5 to store structured data like response matrix measurement results. They a&nbsp;<br
+/>public HDF5 viewer to view the data.&nbsp; Currently no defined conventions for hdf5 file layout.<br
+/><br
+/>They will use Python Notebook as their interactive environment for control oom physics.<br
+/><a href="http://ipython.org/ipython-doc/dev/interactive/htmlnotebook.html">http://ipython.org/ipython-doc/dev/interactive/htmlnotebook.html</a><br
+/><br
+/>Summary: The HLA Physics library is basically a "Matlab Middle Layer" implemented in<br
+/>python. It now uses the existing Channel Finder service to get PV names matching filters.<br
+/>So far, put opetations go to PVs of a "virtual accelerator", - all units are "physics units" so&nbsp;<br
+/>the unit conversion service is not yet needed.&nbsp;<br
+/><br
+/><b>*******</b><br
+/><b>NEW TOPIC: Normative Types overview, Greg White</b><br
+/><b>*******</b><br
+/><br
+/>Presenting from<br
+/><br
+/><a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html</a><br
+/><br
+/><b>NEW TOPIC: What made EPICS Successful,</b> Michael Davidsaver<br
+/><br
+/>[and what can be learnt from that]<br
+/><br
+/>* Portablility of components<br
+/>* What makes them portable<br
+/>&nbsp;&nbsp; Common primite types (DBR)<br
+/>&nbsp;&nbsp; Flexibility to adapt to sepcific users<br
+/>* DBR types are static. Where is the flexibility<br
+/>&nbsp; - Linking in PDB<br
+/>&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;<br
+/><br
+/><br
+/></body>
+</html>

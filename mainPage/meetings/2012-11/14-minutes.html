@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$37</title>
+</head>
+<body>Meeting 14-Nov-2012<br
+/><br
+/>Present: BD, MK, MS, GS,TK<br
+/>Scribe: mostly TK<br
+/><br
+/>New topic: Status for Beta 2 release<br
+/><br
+/><br
+/>MS: Modules are ready, tests pass<br
+/>Demo modules need some work<br
+/>Should be ready by next week's meeting<br
+/><br
+/><br
+/>New Topic: locksets<br
+/><br
+/>lockSets<br
+/><br
+/>1) efficency:<br
+/><br
+/>Implementation does look like it is optimized.<br
+/><br
+/>When a link is modified dynamically only the records in<br
+/>the lockset to which the record initially belongs<br
+/>have their lockset recomputed.<br
+/><br
+/>Thus if the original lockset has only the record being changed<br
+/>it is really fast.<br
+/>It just means adding an element to the record list<br
+/>for the lockset to which it is being added.<br
+/><br
+/>2) multiChannel synchronous get/put:<br
+/><br
+/>There is a function dbLockGetLockId(struct dbCommon *precord)<br
+/>Thus it is easy to determine if all records in a multiChannel<br
+/>are in the same lock set.<br
+/>If so it could do a dbScanLock for one record, do gets or puts to all<br
+/>the records, and finally call dbScanUnlock.<br
+/>But it must call dbGet and dbPut and dbProccess NOT dbPutField and dbGetField.<br
+/>It can not use v3Channel like remote dbAccess does.<br
+/>Remember that if any of the records are asynchronous then<br
+/>a multiChannel get/put is also not synchronous.<br
+/><br
+/>This would have to be done for each get/put request to the multChannel,<br
+/>because the the locksets might change between get/put requests.<br
+/><br
+/>3) Force all the records in a multiChannel to be in the same lockSet:<br
+/><br
+/>Not possible without changes to the dbLock.c.<br
+/><br
+/>When it recomputes lockSets it looks at the links in records<br
+/>to determine which records belong in the same lockSet.<br
+/><br
+/>Assume multichannel has rec1, rec2, and rec3<br
+/>and all are in a lockSet consisting of just itself.<br
+/><br
+/>multiChannel can succesfuly force rec1 and rec2 to be in the same lockSet.<br
+/>But when it puts rec2 into the same lockSet as rec3, the<br
+/>recompute algorithm will put rec1 into lockSet having just rec1.<br
+/><br
+/>Resolution: to use multiChannel, the developer has to put all records in the same lockset. This has to be documented.<br
+/><br
+/><b>AI on MK</b>: Contact AJ about the plan for multichannel puts<br
+/><br
+/>New topic: Services<br
+/>Produce services that produce image and matrix NT types<br
+/><br
+/>MS: to produce such services, I would need some data that is useful to demonstrate.<br
+/><b>AI on BD, MD</b>:&nbsp; produce some useful data and send it to Matej&nbsp; by next week<br
+/><br
+/><br
+/><b>AI on TK</b>: Check that the next V4 meeting at PSI would be OK&nbsp; on the week of 21st January. Also check with the detector group people that they are available. Confirm by next week's meeting<br
+/><br
+/>Beamline requirements discussion<br
+/><br
+/>Database access, logbook access etc.<br
+/>HDF5 data handling and management<br
+/>Application categories:<br
+/>looking at images and matrices<br
+/>Metadata handling<br
+/><br
+/>MK: pvDatabaseCPP should be implemented before multiChannel puts<br
+/>BD: that should be a couple of weeks work. We could use that soon<br
+/>MK: portable server would be a couple of weeks work. Multichannel puts a week or so.<br
+/><br
+/></body>
+</html>

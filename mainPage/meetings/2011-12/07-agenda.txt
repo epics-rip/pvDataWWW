@@ -1,0 +1,10 @@
+1) James: Normative Types spec. Review James' changes
+
+2) James: review James' suggestion for changing the implementation of structures in pvDataCPP needs to be approved (or rejected)
+
+3) Matej: Need status on pvAccess protocol spec. Is it all ready for 2nd publich working draft and publication to tech-talk (appart from my final "english" edits.) 
+
+4) Marty and Guobao: Status on save set service
+
+
+

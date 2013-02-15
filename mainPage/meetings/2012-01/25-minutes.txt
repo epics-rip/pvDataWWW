@@ -1,0 +1,288 @@
+These minutes are edited from the original http://sourceforge.net/mailarchive/message.php?msg_id=28734782.
+
+EPICS WORKSHOP MEETING, DAY 3, WED 25-JAN-2012
+==============================================
+
+Present: GW, TK, PD, MK, GS, DH, JR, BD, AJ, MS
+
+
+Scribe: JR
+
+NEW TOPIC: Review Deliverables
+-------------------------------
+
+GW: Review deliverables list. 14 removed. What about 10, v3 interop?
+
+GW: Is there anything you can't do through pvAccess to a v3 IOC that you can't do with CA?
+
+MK: Java IOC, records can talk to v3 records on another machine using gets and put. v3 client can also access records on a JavaIOC.
+
+MK: A version 4 client can access records on a v3 IOC using the v3channel server.
+
+MK: pvData can use CAJ/JCA to link to v3 records using channel access.
+
+GW: To clarify, when using v3chanel, is talking to v3 IOC over pvAccess feature complete when compared with channel access? MK: Yes
+
+GW: What about the other way around? What can a v3 client do when talking to a v4 server?
+
+MK: JavaIOC can optionally start a v3 server and a v3 client can attach to any field that is supported by channel access any scalar or scalar array type, or enumerated structure.
+
+MK: Want to put channel access into client side of pvAccess as a second network provider. More work in C++, JavaIOC already has some of this code so v4 records can talk to v3 records.
+
+[AI on JR]: Add diagrams of these to architectures document with proper links to the code examples in hg.
+JR: OK
+---
+
+GW: Do we need a beta 1-1 release? Want to make some code modifications. Is the tip ready for a release?
+
+ALL: Don't know.
+
+---
+
+GW: What does ezpva look like? 
+MK: Current implementation is ok for a interface at the level above raw pva. Need more work on final higher-level user API.
+
+GW: Gather ready for users?
+MK: Gather usable but needs some user feedback before making API changes.
+GW: Add Gather to beta2
+
+
+AI on GW [by 14-Feb]: Edit gather service documentation before beta2
+
+GW: ezpva document will be edited by GW, JR, MK to add easier interface before implementation
+
+BD: Directory service a priority. 30% of Matlab Middlelayer is the directory.
+
+GW: Who tags devices in ChannelFinder for physics apps?
+LY: I do
+
+[AI on BD]: Talk to RL about directory service [prioritisation and expected delivery]
+
+GW: AIDA physics directory lives in SQL.
+
+LY: Error detection is hard with ChannelFinder service, for example two elements with different s co-ordinate.
+
+GS: Any user can add new properties to ChannelFinder directory which can cause problems.
+
+LY: Problem comes from using PV name as key and properties under that key.
+
+GW: Directory service should point to lattice to give you the S position.
+
+BD: Leave directory / RDB discussion for later.
+
+GS: ChannelFinder is designed for finding channels
+
+---
+
+NEW TOPIC: Services and Modules assignment and responsibility review.
+---------------------------------------------------------------------
+BD: Fix archiver example.
+
+AI on JR [14-Feb]: Finish archiver example without decimation in next month, 
+produce example and sample files.
+
+BD: Alignment, magnet, lattice, model services:
+
+GW: Offline tracking code reads in lattice and optionally setpoints (from the machine) and envelope 
+tracks twiss parameters and matrices to file or RDB. All applications to look at one defined model. 
+This is being developed for PSI as the Model.
+
+GW: Second is the simulator service running continually, reading live inputs
+
+GW: PSI Model in detail: gui runs model, store model in the database, v4 clients get the model as 
+twiss or R-matrix for any section, at all potential operating conditions. Doing it in MAD-X 
+
+NM: Can do this in realtime, and doesn't need a database. 
+
+GW: Probably want both. Need to decide on a golden model and then save.
+
+NM: Can do both with one service.
+
+GW: Want to do both eventually.
+
+LY: Want online simulator, receive setpoints, calculate values, and store values. Can tag 
+particular results with a run number.
+
+GS: Provide twiss service for pre-calculated twiss parameters. Second service is the online calculator.
+
+LY: Exporting the lattice to another code is also needed.
+
+DD: IRMIS database has the structure to store the lattice and twiss
+
+BD: Interfaces for model and simulator should be standard across NSLS2 and PSI.
+
+GS: Don't want to put everything in one service, making it too complicated.
+
+GW: Interfaces are already decided for PSI, but GS schema is very similar to mine. Would like to formalize the schema. But this is out of scope for V4.
+
+BD: Will work independenly but collaborate between the 3 groups, can tighten up later.
+
+BD: v3 / v4 interop is done. MK: Yes
+
+GW: pvIOC ought to be reviewed. 
+BD: Need to involve a wider group starting now, including data acquisition people.
+BD: Mark Rivers, Steve Hartman, Marty Kraimer, Nick Rees, Timo to name PSI contact, Bob Dalesio, 
+Dave Hickin, Nikolay Malitsky, Daron Chabot.
+[AI on BD?: I think this resulted in an an AI on Bob to start organising a review of pvIOC 
+with special emphasis on areaDetector]
+
+BD: Performance study, owned by MS
+
+DB: First step is services which is well under control, now need compelling use cases for the v4 IOC. Statistical data is one example, and detectors is the next.
+
+GW: Gathering BPM orbit service using gather is useful.
+
+BD: 10KHz stream does that already at NSLS2
+
+GW: Orbit server that can do subtraction etc.
+
+BD: Guobao to investigate this
+
+BD: Physics application review in April, MML, SDDS, XAL experts invited.
+
+--- break ---
+
+NEW TOPIC: Planning for Command-line Tool
+-----------------------------------------
+GW: Does this depend on a directory service?
+James: Local service from a file to begin with?
+AJ: If you're using a DS this isn't a caget replacement (which MS says exists).
+
+James: A DS could provide the IP address for the actual channel to avoid the need for name lookup
+AJ: Another use for a name prefix.
+
+This tool takes a channel specification of some kind, looks it up somehow to find the 
+endpoint to communicate with, constructs a request specified in the cmdline arguments, sends 
+the request and displays the results.
+
+JR: Suggesting a mechanism to introspect what the service can do.
+
+MK+JR: Each service should provide summary documentation that can be accessed 
+through PVA explaining what you can ask it to do.
+MS: Send it an empty structure, it responds with the description.
+
+GW: To support generic clients, each service should allow clients to send them an empty 
+structure (possibly with one argument) to which the service responds by returning a structure 
+containing the entity name string, an array of parameters ...
+
+AJ: Aren't you inventing another introspection interface here
+JR: Use PVData type system to describe those parameters.
+AJ: The return type should be an instance of the structure that the entity accepts as its arguments.
+
+GS: MASER uses name/value pairs.  
+
+JR: The command-line client tool needs a way for the user to declare the structure to 
+be sent, but other generic clients send the empty request.
+
+GW: This doesn't provide a way to let the client know what parameters are optional.
+GS: Can't expect all servers to do this.
+AJ: Send two structures, one with optional params, one with none
+GW: Doesn't explain dependent optional parameters.
+
+GW: Services don't have to implement this, but ...
+JW: want to encode this in a single string (like a URL) but the URL has to include the type info.
+
+GW: eget Q4.HIST -s archive -p startTime=... -p endTime=...
+The eget encodes this into the URL
+
+AI on GW [by Feb 14]: Write something to describe this
+
+Matej will implement this.  GW will provide some existing code for rendering tables.
+
+GW: cmdline tool needs to understand NT types and render the results appropriately; NTTable shown as table.  NTImage is rather more complicated, use GNUplot, imageMagic etc.
+
+JR: Language for implementation?
+GW: Java?
+AJ: Startup time...
+BD: What does Matej want to use?
+MS: Pref Java but understand the limitations of this.
+GW: Service response time may dominate
+BD: Need both, the question is just which we implement first.
+GW: eget will be a brilliant tool.
+
+GW: When can you start?
+MS: First have to finish PVAccess spec.
+MK: Matej is also doing V3 client side move from pvIOC to pvAccess, 1-2 Wks max.
+GW: Then performance evaluation, and eget tool.
+MS: Print scalar and table is quick, code already exists.
+GW: Start with those, refine later after feedback.
+
+SCRIBE: GW
+
+NEW TOPIC: Invited pvAccess Review from Andrew.
+------------------------------------------------
+
+DOCMOD: Add "no data" to Field Encoding table, NULL_TYPE_CODE desc
+
+DOCMOD: Sec 2.7 Add a code to send introspection data that has no id.
+
+DOCMOD: Sec 2.7 Add to descr of Field Encoding table, add that all other Field Encoding codes are reserved.
+
+DOCMOD: Sec 2.7 example, start with much simpler example, say a timestamp only.
+
+DOCMOD: Sec 2.8: Move example to directly below "Data (i.e. PVField) MUST encode raw values." 
+
+AJ: The questions the sentence "The structure above requires 16 bits.
+If [the] bit corresponding to a structure node is set then all the fields of that node MUST 
+be de-/serialized." Conclusion: sentence stands
+
+Sec 3. AJ would like an overview paramgraph that descr what is meant my connection management. Eg 
+what connection management is, and why it's good.
+
+AJ: would liek to see what conditions cause each transition in the connection state diagram. 
+DOCMOD: Suggest add also a state transition table.
+ 
+DOCMOD: Last para of Sec 6.1 is discrurive of requriements, not specification. In general,
+ make it clearer what is informative and what is normative, say putting informative in italics.
+
+DOCMOD: Sec 8.1, replace "Protocol MUST be backward compatible." with "all implementations must 
+support all prior versions of the protocol." That is, comvert statement about intention of the 
+protocol with a statement about implementations of the protocol.
+
+Re pvAccess Header Flags Description.
+AJ: Desc of bit 4 is wrong. It should be "if bit 4 is up, then this message is not the last 
+message". AJ suggests collapsing bits 4 and 5  - and adjust following paragraph to match. 
+
+DOCMOD: Move sec 11 to before sec 9
+
+DOCMOD: Sec 9.1, Specify how many beacon messages MUST be sent.
+In general, don't specify the constraints, instead specify the solutions. 
+
+DOCMOD: Sec 9.1. Remove the "e.g." from the Description of the "protocol" Member of the Beacon 
+Message Members. Add also text that specifies that implemetations MUST examine the protocol 
+member to verify exchange protocol.
+
+AJ: Does pvAccess support any equiv. of ca "event type", so when endpint gets monitor it can see why?
+Ans: Yes, it's part of the monitor request and implemented by the server, not pvAccess itself.
+
+
+NEW TOPIC: Multicast
+--------------------
+Section 7: More detail needed in the description for channel search over multicast, about 
+joining multicast groups.
+
+MS: Should PVAccess support multicast for special data transport (over UDP)?  Needs implementation 
+of flow control, additional complexity etc.
+JR: Camera users are very interested in this, although users want to use a standard protocol.  
+Already use FFMpeg, don't want to invent a new standard for video transport.
+
+No other use cases for data over multicase yet, but there might be some in the future.
+
+NEW TOPIC: pvManager integration
+--------------------------------
+Matej and gabriele will work on the pvManager - pvAccess interface.
+
+It is required that there is a mapping from a source data object (PVStucture) to Vtypes. 
+Marty will do that, with priority after ezpva.
+
+NEW TOPIC: python interface to pvAccess
+---------------------------------------
+JR: suggests implementing a python implementation of the pvAccess data de/serialization. 
+This would avoid his having to wrap the pvAccess / pvData Field API.
+
+
+
+
+
+
+

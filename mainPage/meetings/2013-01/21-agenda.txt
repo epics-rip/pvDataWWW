@@ -1,0 +1,111 @@
+Colleagues,
+
+Please find below the agenda of our PSI meeting.
+
+Dates: January 21-23, 2013.  
+Location: Room 008 of the SLS building in PSI West area.
+          5232 Villigen PSI, Switzerland. 
+          
+This room is in the center of the SLS "donut" on the ground floor.
+No special authorization or dosimetry is required.
+Room has whiteboard, flipboard and projector (VGA).
+There will be wifi. 
+Location and transport details in [1].
+
+Note that power sockets are the Swiss unique standard. We'll try to get
+European socket converters. So bring Euro plugs, or Swiss if you have it.
+ 
+Times below are approximate and subject to revision, except those marked with **
+since those require remote coordination. As our practice, Wednesday afternoon
+is kept free for overflow.
+
+
+MONDAY 21 JAN
+=============
+9.00 am convene and get ready. Power strip, network mucking about etc.
+Actually start at 9:30.
+
+Morning - Administration and Demos
+
+  * 9:30 Demos of bpm orbit and model services (*Timo*, *Greg*)
+
+  * 10:30 Demo all normative types to pvget and eget (*Matej*)
+
+  * 11:30 2012-2013 Charter review (*Greg*)
+
+Afternoon - EPICS V4 control database & IOC requirements and design references
+
+  * Beamline instrumentation controls requirements on EPICS V4 (*Bob*)
+    Broad matters of high throughput large datasets etc.
+
+  * **3.00 pm** [9:00am Michigan local time, via Skype screenshare/video] 
+    Marty's review of the existing pvDatabase (*Marty*),  
+
+  * **3.30 pm** [9:30am Michigan local time, via Skype screenshare/video]
+    Marty's ideas on Memory, Multithreading and Locking (*Marty*). 
+    From Marty's email of Dec 12
+
+  * APS' requirements and desires for the IOC (*Andrew*) 
+    For Andrew and Tim Mooney.
+
+  [* Michael's review of V4 IOC requirements, if present] 
+ 
+ 
+TUESDAY 22 JAN
+==============
+9.00 am convene
+
+Morning - Beta 2
+
+  * Microbenchmark testbench design and initial performance breakdown report (*Matej*). 
+    
+  * Status breaking v3Channel out of pvIOCCPP (*Ralph*) and 
+    testing by *Andrew*, plus Demo.
+ 
+  * Impressions of getting started with vxWorks and v3Channel 
+    compilation (*Dirk Zimoch*) 
+ 
+  * Versioning and the EPICS V4 release procedure (*Ralph*)
+
+Afternoon - IOC image processing requirements and CSS 
+
+  * 1:30 pm NDarray / image server (*David*) 
+    Demo included.
+ 
+  * **2:30 pm**, [8:30am Michigan local time, via Skype screenshare/video]
+    v3Channel review (*Marty*). 
+    Summary of the converation and outcomes from Marty and Andrew's discussion in 
+    the thread "multichannel puts")
+    
+  * **3:30 pm** [9:30 am NY local time] CSS and PvManager status (*Gabriele*). 
+    [Ralph will manage connection to Gabriele.]
+
+  * Plans for CSS/pvAccess integration.
+    *Matej*, *Gabriele*, *Bob*.
+
+  * Try to make a real plan for the compression support of NTImage. 
+    [Who can talk to this, *Nikolay?*]     
+
+
+WEDNESDAY 23 JAN
+================
+
+Morning
+
+  Talk to beamline specialists at PSI. Timo and Bob to coordinate.
+  Bob is going to give a talk on BNL's beamlines.
+
+Afternoon
+ 
+  Overflow.
+
+I'm sure I've forgotten something, but this is all for now. Let me know
+if you need any other clarifications.
+
+[1] https://sourceforge.net/mailarchive/message.php?msg_id=3035267
+
+
+
+
+
+

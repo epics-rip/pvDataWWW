@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$13</title>
+</head>
+<body>============= Meeting 24-Apr-2012 =============<br
+/><br
+/>11.30am Progress and Charter [1] review *Greg*&nbsp;<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; What next? How to build on EPICS V4. *Bob*<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EPICS V4 Process. *Greg*<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Publication of the process we use, and clarification of terminology [1]<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Follow up groups initial planning<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Documentation standards *Greg*, *Timo*<br
+/><br
+/>12.00pm License. get this nailed down.&nbsp;<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Which license and copyright files specifically<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Where are they housed<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source code header.<br
+/><br
+/>12:30pm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lunch - Stanford<br
+/><br
+/>02.00pm Provider identification.<br
+/><br
+/>02.30pm Review, AIs, Resolutions.<br
+/><br
+/>03.00pm Refactor existing services for new pv* Java versions.<br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present:&nbsp; BD, DH, GW, MK,&nbsp; TK, AM, AJ,DC,RL,MD<br
+/>Scribe: MD<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Save Set Normative Type</b><br
+/>************<br
+/>Two normative types were discussed in this serssion - one to capture save sets and one to capture archive data.<br
+/>A save set is a set of Channels at a point in time.<br
+/>Arcvhive data is a single change over time.<br
+/>These two types were derived from a RaggedTable - basically a list of any scalar or array of data types.<br
+/>these will appear in the appendix of the current draft.<br
+/>Multi-channel array should be revisited as a result of this.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Charter Deliverables<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>AI</b> on Marty and Matej by end of June: Performance analysis and document of results<br
+/>************<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Date of next meeting</b><br
+/>************<br
+/><br
+/>July 16-18, @Diamond.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: V4 Process</b><br
+/>************<br
+/><br
+/>AJ: Do you envisage that V4 replaces V3 IOC?<br
+/>BD: V4 probably won't replace V3 IOC, but it may replace CA.<br
+/><br
+/>MK: Once pvIOCCpp is done, it could sit on the IOC above a V3 database, and provide areaDetector images via V4 NT types.<br
+/>BD: V3 records that produce V4 types gives a foundation to go fwd.<br
+/><br
+/>AJ: pts out that v3 helps us in creating an environment that is helpful to create data acq support, by creating client specific filter to your channel names so client can say "i don't want updates to this signal at more than 5hz".<br
+/>BD: You can also create a region of interest on an image.<br
+/>MK: V4 has something like that.<br
+/><br
+/>DC: [V4 may not be the best model for the beamline data acq problem, so better look at the problem domain in order to inform the model]<br
+/>BD: +1. Maybe V4 fits 60, or 80%<br
+/><br
+/>BD: Asks DC if he is willing to do a feasibility study to look at suitability of V4 for beamline control and data acq and analysis.&nbsp;<br
+/>GW: What characterizes beamline control and data acq and analysis?<br
+/>BD: V. large [50 GByte] data samples, 10000s of images, that must be analysed and graphed in 2 seconds!!!<br
+/>DC: Detector technology has increased so far, ...<br
+/>BD: And also that the technology is in flux. Typical data rates are going us so far. After detector and beam technology goes up, then control becomes the critical path factor, so [Ev4 has to address that].<br
+/><br
+/>DC: The different aspects of the new problem have islands of solutions [BD: so that needs a new model for unifying the solutions].<br
+/><br
+/>************<br
+/><b>AI</b> on BD by July meeting: Examine the emerging beamline problem domain, and determine if there is a suitable scope for solution by a process like that done by EPICS V4. Working with DC and Mark Rivers.<br
+/>Suggested that this is an item of discussion at the July EPICS V4 meeting. AI is to produce a proposed charter for such a group. Early Charter version should include Scope, and success criteria at least, but probably not deliverables.<br
+/>************<br
+/>So, next f2f should have beamline guys, to look at the proposed scope and commit time.<br
+/><br
+/><br
+/><br
+/>Lunch<br
+/><br
+/>************<br
+/><b>NEW TOPIC: License</b><br
+/>************<br
+/><br
+/>RD: What found from Legal Dept.<br
+/>Copyright notice SHOULD (not must) go in every file. Should go togther with a reference to a License.<br
+/>A License file MUST be distributed with any distribution. A reference MUST be made to the local licesne file<br
+/>in each file of the distribution after unpacking. There may additionally be a reference to remote License file<br
+/>by URL.<br
+/><br
+/>************<br
+/>RESOLUTION: We shall use the EPICS License, from the EPICS Web site.&nbsp;<br
+/>************<br
+/>The use of the EPICS License implies that we have to include the EPICS License file in our distribution tars. That implies we have to incude the EPICS License file in our merc repos.<br
+/><br
+/>The header of each file must then include, at the BOTTOM of the header:<br
+/><br
+/>Java/C++ source<br
+/>/*=========<br
+/>&nbsp;&nbsp; Abs: One sentence description of the function of the file<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp; Auth: Author name, dd-mmm-yyyy<br
+/>&nbsp;&nbsp; Mod: Modifiers name, dd-mmm-yyyy<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; What was done in the modification<br
+/>-----------------------<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; Copyright: &lt; Write 1 line, of the form "Copyright, YYYY, Institution" &gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; License:&nbsp;&nbsp;&nbsp; See License of EPICS Version 4 contained in the file named LICENSE.txt<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; that is part of each distribution. That file is also available at&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="http://epics-pvdata.sourceforge.net/LICENSE.txt">http://epics-pvdata.sourceforge.net/LICENSE.txt</a>.&nbsp;<br
+/>==========*/<br
+/>/**<br
+/>package or class description<br
+/>*/<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; The institution part of copyright should be decided by each participating institution or individual.<br
+/><br
+/>AI on GW: Devise a find command to prepend such a header to each source file.&nbsp;&nbsp;&nbsp;<br
+/><br
+/>RESOLUTION: Each EPICS V4 developer should fill in this header when visiting a file.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Provider Identification</b><br
+/>************<br
+/><br
+/>The problem:<br
+/>The pvAccess client knows the list of providers that is available for it to use. Our problem is that it for any given channel, it doesn't know which provider it should use. Since EPICS V4 allows pvAccess to be used to get V3 record data directly from a v3 IOC (using ...) then it becomes possible for both CA to reply to broadcasts (on the CA port) and pvAccess to reply.<br
+/>&nbsp;<br
+/>MK: Choices for solving the problem above:<br
+/>1. Client specifices provider. No automatic mechanism, client simply specifies provider. If the client specifies the wrong provider, the connection simply times out; no second provider is tried.<br
+/><br
+/>2. Client does NOT specify provider. A name resolution request [UDP broadcast] is made on both provider ports. More than one reply may be received where each implies a different provider. Specifically, this will happen when a channel is hosted by an V3 IOC that has both a V3 and V4 server on it. The client would then connect on the provider which answered first. Other policies could be implemented.<br
+/>&nbsp;<br
+/>3. Client gets the provider from the directory service before connecting to the channel on the provider given.&nbsp;<br
+/><br
+/>4. Numbers 1 to 3 above may be used, as identified by a "policy." Client does NOT specify a provider initially, the default provider works out which provider should be used (like ca or pvAccess) by implementing a policy.<br
+/><br
+/>[ Discussion<br
+/>MK: Client has to specify provider when connecting to a channel. Parallel searching multiple providers may cause trouble when multiple providers respond.<br
+/>RL: Clients side could configure priorities for providers, allowing the client to always determine the provider to choose.<br
+/>GW: That would introduce an additional delay, as the client has to wait for answers.<br
+/>RL: Client would have to connect to the first responder, then close and reconnect if a higher priority response comes in.<br
+/>GW: What if the client started an operation through the low priority provider?<br
+/>RL: Reconnect anyway.<br
+/><br
+/>RL: There should be a layer inbetween application and pvAccess client, that is able to find out the provider to use, either by querying a name server, or by filling in a default provider.<br
+/><br
+/>GW: The directory service should act as a name service, responding with the provider and IP/port information.<br
+/>]<br
+/><br
+/>Conclusion:<br
+/><b>AI on DH by 29-Apr-2012:</b> Write proposal for provider resolution.<br
+/><br
+/>DH and RL will write up the requirements and design for provider resolution.<br
+/><br
+/>Meeting ends.<br
+/><br
+/><br
+/><br
+/></body>
+</html>

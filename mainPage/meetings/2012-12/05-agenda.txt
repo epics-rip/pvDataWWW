@@ -1,0 +1,54 @@
+Colleagues,
+
+Please find the agenda for usual weekly EPICS V4 telecon [1]. Minutes
+in titanpad [2].
+
+Agenda
+------
+0. Preliminaries. 10 mins
+
+1. Beta 2 readiness review. 5 mins (+15).
+   + CPP - all good right?
+   + Java (*Greg*, mea culpa)
+   + Beta 2 demo list (*Matej*)
+
+2. Status and Upcoming Work Review. 20 mins (+35)
+   What's important now. Help Greg and Bob restart. Other than the
+   Db discussion and charter, what are people up to.
+   + EasyPVA status in CPP and Java. Is this complete for now?
+   + V3Channel status. Is get and set of a set of V3 channels in same lockset done [3]?
+   + Benchmark testbench for EPICS V4. Do *Marty* and *Matej* concede the requirement
+     necessity and to undertake work.
+   + BPM orbit service (Timo)
+   + Model service (Greg)
+   + V3-V4 interop (David)
+   What else is presently being done? ** What's unfinished **?
+
+3. January meeting agenda review (*Greg*) [4]. 15 mins (+50).
+   + Confirm dates 21-23 Jan (note 21t Jan is Martin Luther King holiday!)
+   + Will at least EPICS V4 participants agree to provide discussion documents
+     and requirements talk at the meeting (Bob, Ralph, Michael).
+   + Bob invite Tim?
+
+4. PVDatabase first review (*Marty*), [5]. 40 mins (+90)
+   Let's make a read through page by page with initial comments.
+   Let's try to distinguish requirements implied by pvDatabase, as opposed to
+   design proposals and actual design.
+   + Review of mail thread comments made so far, esp Benjamin's and Michael's.
+
+Cheers
+Greg, for Bob and Greg
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/39
+[3] http://epicsv4.titanpad.com/37
+[4] http://sourceforge.net/mailarchive/message.php?msg_id=30182187
+[5] http://epics-pvdata.sourceforge.net/informative/pvDatabaseCPP.html
+
+
+
+
+
+
+
+

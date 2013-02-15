@@ -1,0 +1,336 @@
+These minutes are edited from the original http://sourceforge.net/mailarchive/message.php?msg_id=28734782.
+
+EPICS WORKSHOP MEETING, DAY 2, TUE 23-JAN-2012
+==============================================
+SCRIBE: GW
+
+NEW TOPIC: EZPVA
+----------------
+ 
+An easy to use API for pvAccess [and pvData]
+   
+Is based on what pvAccess provides.
+   
+Separate methods for scalar and arrays
+   
+EZArray method allows one to get subarrays
+   
+EZMultiChannel method gets a group of channels
+   
+features:
+      Easy to use
+      .. while providng full access to pvAccess
+      efficient
+
+Examples, single value from a single channel:
+      Takes 6 lines of code, 3 if you chain/nest methods and args
+      
+Multichannel get is quasi parallel [q: threads?]
+
+Getting from Multichannel (many channels in a MultiChannelArray)
+[q: diff to above?]
+
+Factory method:
+  Requires that you give channel provider [in client side code]
+
+INterface:
+  For setting provider, create a channel, or multichannel
+
+EZChannel, wraps above
+
+AJ: This API is not simple, "it's reasonably complicated"
+
+GW: Need for command line getter/setter will require simpler API
+
+JR: This is a 1st step to synchronous API
+
+JR: Suggests an API that looks like matlab lca, since that demonstrates building a list and executing in threads.
+
+AJ: the existing "ca" API already confuses people, since users 
+are unsure of whether pendio() is required in the process they're using. We should address that here.
+
+AJ: sugguest name change from ezpva=>spva, for example, simply replace ezay with simple
+
+MK want's to skip to desc of EZGet...
+
+EZGet
+
+AJ: Suggests name change to SPV, for stupid, simple, synchronous, PV. In particular don't use "EZ" since existing ezca users will expect rough correspondence and not see it. Which will piss them off.
+
+Consensus:
+  * We require a even higher level interface, which wraps basic process (below) into a simple get and set. That is, wrap:
+
+   EZPVA ezpva = EZPVAFactory.create();
+    EZChannel channel = ezpva.createChannel("someChannelName");
+    // following will block until channel is created
+    EZGet get = channel.createGet();
+    // following will block until get is created.
+    double value=get.getDouble();
+    System.out.println("value = ",Double.toString(value));
+    ezpva.destroy();
+
+into something v simple, with
+
+    get, put, possibly putGet
+    taking string channel name or array of strings of channel names
+    returning vector (specifically heterogenous type), since each channel may return different type.
+
+The above looks much like ezca, and maps to APIs now used by lca and other script interfaces.
+
+Discussion: 
+    When it's desired to use both v3 and v4 protocols on one IOC
+    namespace distinction is important. Suggested to prefix the
+    name of v4 channel names with a protocol identifier.
+
+AI on AJ by Feb 14: Describe protocol distinction problem, his prefix namespace solution, 
+and illustrate with his proposal for 
+what "ezpva" get of 2 channels (one v3 and one v4) should look like.
+
+[ REDACTED FROM UNPROCESSED MINUTES: - doesn't really rise to the level of ISSUE; really
+just a thing we have to do, make ezpva simpler ..
+ISSUE: We need to decide on a new name of ezpva, or add the higher level API which matches 
+the requirement for a simple API that matches the ezca methodology for acquiring values form a number of
+channels simultaneously.
+]
+
+[ REDACTED AI, AI is first on JR and GW to define simpler API layer, then get MK to implement it…
+  AI on MK: Upgrade ezpva w.r.t. adding v. easy API layer, and possibly changign name.
+]
+
+AI on JR and GW: Specify what "ezpva" interface should look like for the simplest possible gets.
+
+
+
+NEW TOPIC: pvAccess Review. 
+===========================
+Start with Matej's presentation.
+AJ: Why to use different numbers for TCP and UDP
+MJ: to reserve the first port for data communication and the second port for channel searches.
+GW: clarify the statement: default port is the one the server is listening on. Should be called in the document as the port the server is listening on for connections.
+MK: add a statement that this was designed to support pvData (but does not strictly depend on it.)
+JR: preference for data serialization to be part of pvData. Potentially useful in other applications.
+Introspection and data serialization should be in the same library.
+
+AI on MS by [Feb-14]: Look at whether type introspection data serialization should be moved to pvData, so that all serialization is kept in pvData (presently pvData serializes data, pvAccess serializes type) .
+
+PVAccess is roughly codec based: one could transport different message designs with pvAccess, not just pvData.
+
+AJ: Can't write a gateway without it having to unpack and repack the messages, because ...??
+MS: clients must check that they are talking to a gateway, and check endianness flag, so the simple passthrough alluded to in Sizes section can't be followed blindly.
+
+JR: suggests doc lang is changed to say byte order must be regotiated on a per channel basis.
+MS: Special requirements of a gateway were not in scope for pvAccess
+
+Caching gateways will get complicated, because they need potentially to serve different clients with different parts of the data.
+
+Discussion: alignment of arrays.
+AJ: What about arrays within structures?
+MS: possible to implement (TBD)
+
+Support of data sizes. Data size > 255 elements is defined as an unsigned.
+AJ: adding a reserved value to indicate sizes larger than 2 GigElems would solve the problem for the future:
+
+AI: Change the document to state how sizes than 2 GElements can be handled. One value of the size indicator indicates a value larger than 2^31-1 elements. Matej to write how the large sizes will be supported.
+
+Unsigned integer support. MK: have unsigned in C++, plus implement the conversion in Java as previously discussed.
+Implications. pvAccess is going to have the unsigned integer types in. 
+
+Options:
+1: no support (declined)
+2: flag to indicate sign only
+(support, action needed in Java only)
+3: u int becomes long etc.
+4: int to int ("do nothing")
+5: scalar type does not encode size or sign.
+
+Conclusion: unsigned integer types will be supported.
+
+MS: implement two classes: PVInt and PVUint. In PVUint, getUnsigned
+and setUnsigned methods do widening.
+The unsigned class has unsafe method that just copies the bit pattern. The safe method extends the data type so that the sign can be represented correctly. The safe method shall be the default.
+
+pvData fully supports unsigned integer types. The ScalarType Nibble encoding table will be extended.
+
+RESOLUTION: pvData will fully support unsigned integers, i.e. ScalarType enum will be extended to unsigned integers.
+We get PVInt and PVUInt (one does not derive from the other):
+C++: 
+int PVInt::get()
+unsigned int PVUInt()::get()
+
+Java:
+int PVInt::get()
+long PVUInt::get()
+in addition we have: int PVUInt::getRaw()
+
+For unsigned 64-long: BigInteger PVULong::get()
+
+Hence a server in C++ might populate an array of unsigned int, and a java client receive these data, as such:
+
+C++
+=====
+
+PVUIntArray pvUIntArray = …
+
+unsigned int vals[] = { U_MIN_INT, 0, U_MAX_INT }; 
+pvUIntArray->put(vals);
+
+
+Java
+====
+
+
+PVUIntArray pa = (PVUIntArray)pvStructure.getSubfield("value")
+
+/* Client programmer would use one or the other of the following */
+long[] value = pa.get();          // widened access method
+int[] signedValus = pa.getRaw();  // unwidend, but efficient.
+
+For Java long:
+BigInteger[] bn = pvULongArray.get();
+
+
+AJ: Source of the data must not break multibyte characters.
+Wording change: strings MUST not contain *any* zero bytes. (-> completed)
+
+AJ: (Re bitsets) Both endpoints have to support byte swapping. Why not use little endian encoding and not separate out bytes at end.
+
+Examples: Please include 55 and 56 bits.  [not needed because of following AI]
+
+AI (Matej): Redefine bitsets to use little endian encoding.
+
+AJ: Don't like idea of sending stackdumps on error.
+
+MS: Rename stackDump => callTree
+
+Specchange: remove Status NOTE re many enums to indicate specific error. -> Completed.
+
+AJ: Can we delete paragraph "Note: a decision ...". 
+GW: Agrre take it out now.
+-> Completed
+
+MS: Field desc and scalar type to change.
+
+MK: Why do structures have two names?
+
+JR: Doesn't understand it either.
+
+
+MK: Top level name doesn't have well-defined meaning.
+
+DH: Down to differences between pvData and reflection API. In JAVA objects know their classes class objects know members of class. Objects essentially know names of members not their own name. pvData mixing of JAVA class and field objects. Might reduce issue of dual names but big change.
+
+JR:No meaning of second name.
+
+JR: Names are instance names, not type names.
+
+JR: Gives example of structure containing two identical structure with different names.
+
+structure top
+{
+    struct t1 {int x,y}
+    struct t2 {int x,y}
+}
+
+Have to create two field objects identical except with different names.
+
+
+DH: Naming issue fixed by JAVA stile API.
+
+GW: Understand point but too late.
+
+JR: Structures should have two names like structure array.
+
+AJ: Structure and structure array could have same type of constructure.
+
+JR: Hard to justify asymmetry.
+
+MS: One solution remove name from field and create memberfield  object with name.
+
+DH: Like JAVA API?
+
+GW: Ideally we would rename field Type:
+
+MS:
+Type type = new Type()
+Member meber = createMember("t1", type)
+
+MK: For normative types name can be used for name of normative types.
+
+AJ: What about normative types that aren't top level. Possible solution.
+
+GW: If AJ'd like to write up a suggestion.
+
+MK: If you touch anything in introspection API it'll be a lot of work
+
+GW: Pragmatic fix is likely to be in documentation.
+
+NEW TOPIC: Sheng Peng's review of pvData Record system
+------------------------------------------------------
+SP: Noted that V4 emphasises that a value is associated with 
+a field in v4, as opposed to a record in v3.
+
+[sorry, scribe didn't catch remainder because he was leading the call too.
+Sheng asked to write up findings]
+
+   
+NEW TOPIC: architectures
+ -----------------------
+SCRIBE: DH
+
+JR: presenter
+
+Helo World is just channelRPC with server implemention just an RPC server. 
+
+GW: Should pvIOCJava provide what pvIOCCPP provide?
+
+DH: AI to implement channelRPC server in Java similar to what is on C++. Use this for Hello World.
+
+JR: EPICSV3 integration. Tomo's use of V4 pcAccess server for V3 records.
+
+pvManager VTypes to V4 ?
+
+BOY ->pvManager-?pvAccess or V3 channel access.
+
+Local Gather now channelAccess later pvAccess.
+
+Gather: EZMultiChannelGet, local gather, sevice gather Why two client APIs?
+
+gather Client library will have special features that EXMutiChannelGet does not provide.
+
+RDB server: client <<pvAccess>> RDBServer -> RDBService.
+
+Server to RDBService are both pvAccess & direct acccess supported?
+
+Answer seems to be yes.
+
+There may be 2 kinds of Model Server implemented appropriately with V4: 
+   1. "Simulation" - where tracking is done in the server from present values (possibly acquired by gather service).
+   2. Where tracking is done in a client side app, and the app then puts the tracking results in a database. In this case the maode server's job is ease access to the database, say getting Rmats of individual devices, or calculating Rmat A to B. 
+
+What types are appropriate for client<=> service?
+
+Mchine Physics: gatherService, archiveService, machine, model
+
+Archiver:  archiveService libStorage EPICSv3 Archive
+
+Model. Machine Architecture.
+
+Detector: detector --- areadDetector pvAccess <=> Storage Server <=> HDF5
+
+
+Directory Services: V4 client or REST client <=>
+
+ChannelFinder <=> REST server or pvAccess <=> RDB
+
+GW: Directory service essential got general purpose eget.
+
+Need to specify normative types supported.
+
+END for today.
+
+
+
+
+
+
+

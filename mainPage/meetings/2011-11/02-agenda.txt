@@ -1,0 +1,49 @@
+Colleagues,
+
+Please find below the agenda for our 2-Nov-2011 meeting.
+
+Time: UTC (GMT) Wednesdays, 14:00. 
+URL: https://collab.switch.ch/r73247618/ 
+
+*NOTE*, Observance of Daylight Savings Time ended in Europe on Sunday, so
+in Europe our meeting will be one hour earlier from now until Spring,
+or until we change the time of the meeting w.r.t. Greenwich (see item 0). 
+
+See http://tinyurl.com/673ga6f. 
+
+
+Cheers
+Greg
+
+--------
+
+Agenda
+
+0. Preliminaries (15 mins). 
+        - Time of winter meeting. Shall we move the time of the telecon 
+          to UTC 15:00 to put it back to the expected time?
+
+1. First review of Marty and Matej's EZPVA API. (30 mins)
+   Including
+        - Callbacks and monitoring. 
+        - Hiding the channel creation etc
+        - Use of PVStructure.
+        Others.
+
+2. Quick review of C++ coding standards. What about Java coding standards (15 mins) [1]
+
+3. NTTable encoding method. How to pass a table to a service (15 mins) [2]
+
+4. Review of present activities and plans for November (0 minutes)
+   I have a list I'll try to send out before the meeting. 
+
+
+[1] http://epics-pvdata.sourceforge.net/Coding_Style_Guidelines.html
+[2] NTTable encoding threads http://tinyurl.com/668jath, 
+                             http://tinyurl.com/6cs85qa
+
+
+
+
+
+

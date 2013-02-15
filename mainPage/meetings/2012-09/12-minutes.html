@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$28</title>
+</head>
+<body><b>Present:</b> BD, GS, MS, MK, GW, JR<br
+/><b>Scribe:</b> GW<br
+/><br
+/><br
+/><b>NEW TOPIC: Use of SWT in pvIOC distribution.</b><br
+/><br
+/><b>RESOLUTION</b>: We will move the pvioc.swtshell package to its own EPICS V4 project [that is, a new independent repo].<br
+/><br
+/>Marty and Matej will do that either before or after the BNL Oct Meeting, depending on their own progress at meeting<br
+/>the demo objectives from the September 5 telecon (<a href="http://epicsv4.titanpad.com/ep/pad/view/27/latest)">http://epicsv4.titanpad.com/ep/pad/view/27/latest)</a> .<br
+/><br
+/><b>NEW TOPIC: policy for choice of wire provider (v3Channel or CAV3) when both are possible.</b><br
+/><br
+/><b>AI: Matej</b> will develop a policy that implements the mechanism to choose. One policy choice will be that<br
+/>both providers will be given a chance to respond and a preferred provider will be used if it responds.<br
+/><br
+/><b>NEW TOPIC: Status of VxWorks port</b><br
+/><br
+/><b>AI: Matej</b>, check with Dirk.<br
+/><br
+/><b>NEW TOPIC: ServiceClient, ServiceClientFactory and ServiceClientRequester&nbsp;</b><br
+/><br
+/><b>RESOLUTION</b>: ServiceClient, ServiceClientFactory and ServiceClientRequester&nbsp; will be moved to pvaccess from pvService.<br
+/><br
+/><b>NEW TOPIC: BD asks Question: Is there consensus on Self-ID and why we need it?&nbsp;</b><br
+/><br
+/>MS: Self ID isn't needed for pvAccess itself<br
+/>BD: Is it necessary for memory allocation at an endpoint? Presumably not.<br
+/>Correct.<br
+/>GW: Self-ID is to help a client determine how to interpret the data in a (pvData) structure. The reason we had so much discussion about it was that it was being proposed that EPICS V4 should define a type system, and that type system should be polymorphic. Example: we define NTTable. Some institution decides to extend NTTable to produce "BPMOrbitTable" by adding some requried fields. A client that knows NTTable, but doesn't speocically know BPMOrbitTable, should be able to display those facets of BPMOrbitTable object that conform to NTTable. However, we have decided as a group that to support this, possibly multiple inheritance, system all from inside code, is too hard for this charter.<br
+/>&nbsp;<br
+/><br
+/></body>
+</html>

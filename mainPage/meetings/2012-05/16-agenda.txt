@@ -1,0 +1,44 @@
+Colleagues,   
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. 
+
+Agenda 15-May-2012
+==================
+
+1. How to get to pvAccess 2nd public working draft (*Matej*)
+
+  pvAccess Spec 2pwd hasn't been published yet (email to tech-talk == publication in my view).
+
+  Need AIs and definitive publication date.
+
+  Ben has made comments, have they been answered?
+
+
+2. How to get to eget with rpc support done and available (Matej, Greg, Michael)
+
+  Presently eget knows only NTtable, and using an assumption about how to form a query.
+
+  With eget deserialization and rendering examples, pvmangager changes should be v easy.
+  
+  Need AIs assigned with delivery dates for pvget and its prerequisites. Verify 
+  prerequisites are only completion of Normative Types to 1PWD: 
+
+        a. NTQuery or at least a normative pattern for service queries (*Greg*)
+        b. NT self-id (yes I know, overdue, *Greg*). 
+        c. "NTContinuum" (*Michael*) 
+
+3. Architectures doc 
+
+  I'd like to get the Architectures doc up to release as a normative document and published.
+
+  For that I think it needs references to be added (Dirk couldn't use it to answer his questions
+  about how, in code, to collect V3 PVs and package them into a V4 pvData. This is a clearly
+  predictable use case, so I think we have to add references and example code.  
+
+[1] http://epics-pvdata.sourceforge.net/home.html#meeting 
+
+
+
+
+
+

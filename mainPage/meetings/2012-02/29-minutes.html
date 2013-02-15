@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$6</title>
+</head>
+<body>============= Meeting 29-Feb-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/><u>0. Preliminaries (5 mins)</u><br
+/><br
+/><u>1. Status of Masar service (<b>*Guobao*</u></b><u>, 15 mins)</u><br
+/><br
+/><u>2. Preliminary thinking on Directory service (<b>*Ralph*</u></b><u>, 15 mins)</u><br
+/><br
+/><u>3. Archive Service (<b>*James*</u></b><u> 15 mins)</u><br
+/>&nbsp;&nbsp; What is now published (there's stuff now in exampleCPP right?), what more<br
+/>&nbsp;&nbsp; can be done to help a lab deploy an archive service.<br
+/><br
+/><u>4. PSI services (Greg, Timo, 15 mins)</u><br
+/>&nbsp;&nbsp; Status of deployment of java (<b>*Greg*</b>)<br
+/>&nbsp;&nbsp; Estimate on deployment for C++ support (<b>*Timo*</b>)<br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: BD, DH, JR, TK, MK, RL, NM, MS, GS, GW&nbsp;<br
+/>Scribe: TK<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Status of Masar</b><br
+/>************<br
+/>GS: meeting with users. Functionality: take a snapshot, put in comments. Any combination of PVs, waveform PVs are also supported. Storage into DB. IRMIS database connection TBD.&nbsp;<br
+/>NTNameValue pair used used for the all stored parameters for client queries.<br
+/>Facility of a client to initiate a query, which configuration is to be retrieved. Comparison of a snapshot to the present machine status.<br
+/>After request, NTTable is returned to the client. In a second step, the current machine status is sent as NTTable.<br
+/>Search criteria (parameters) are NTNameValue pairs.&nbsp;<br
+/>Status: server and client sides are functional.A pyQt application is existing.<br
+/>Demo presented now...<br
+/>Discussion about displaying setpoint and readback values, saved and live...<br
+/><br
+/>repo:<br
+/>epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/masarService<br
+/><br
+/><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/masarService/file/25e7dd75ec8e">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/masarService/file/25e7dd75ec8e</a><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Directory service</b><br
+/>************<br
+/>RL:<br
+/>Thin ChannelRPC layer on top of the existing ChannelFinder web service.<br
+/>Query type: NTNameValue:<br
+/><ul><li>search string (same as for the web service or in CSS clients)</li
+><li>additional flags (e.g. if ownership should be returned in the reply)</li></ul
+>Reply type: NTTable, e.g.<br
+/>&nbsp;&nbsp;&nbsp; channel&nbsp;&nbsp; property1&nbsp;&nbsp; property2&nbsp;&nbsp; tag1&nbsp;&nbsp; tag2&nbsp;&nbsp; ...<br
+/>&nbsp;&nbsp;&nbsp; ABC:pv&nbsp;&nbsp;&nbsp;&nbsp; 0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; green&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; true&nbsp;&nbsp;&nbsp; false<br
+/>&nbsp;&nbsp;&nbsp; ....<br
+/>Column types are data driven. All values are double -&gt; double etc.<br
+/><br
+/>Demo in ~ two weeks. Implementation in Java, based on one of the existing Java services in pvService.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Archive service</b><br
+/>************<br
+/>JR:<br
+/>ArchiveService example in the C++ area. exampleCPP<br
+/>A client example&nbsp; also exists (with hardcoded arguments.)Adding commandline arguments to be implemented (simple to do.)<br
+/>Parametrize with timestamps: Use unix-type (ISO) time definitions<br
+/><br
+/><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/6a03a18b8171/ChannelArchiverService">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/6a03a18b8171/ChannelArchiverService</a><br
+/><br
+/>Python stuff:&nbsp; connecting python objects to pvAccess; example in mercurial repository.<br
+/>This python example retrieves data from the archiver server in exampleCPP.&nbsp;<br
+/>See in particular <b>pythonSerialize/test/PythonRPC.py</b><br
+/><br
+/><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/file/7f2b63da9d84/pythonSerialize/test">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/file/7f2b63da9d84/pythonSerialize/test</a><br
+/><br
+/>James to provide a readme how to get started.<br
+/><br
+/>GW: Could David work on the archive client example? Looks like being doable within time constraints (to work on EPICS 4.)<br
+/><br
+/>Greg give David client side examples and references.<br
+/><br
+/>Example client side:<br
+/>&gt; gethist -s 2012-01-29T10:45&nbsp; -e 2012-02-29T10:45 quad5:bfield&nbsp;<br
+/>^^<br
+/>a (possibly bash) script, which calls:&nbsp;<br
+/>archiveClient&nbsp; &lt;- <s>java CPP or python</s> C++<br
+/><br
+/>************<br
+/><b>AI</b> on DH by 15-Mar-2012: Convert Archive service and client example to production<br
+/>quality: Document starting the server side per index, and write client side (probably java and some wrapper) to allow a user to easily query the server given command line above.<br
+/>************<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Status of PSI Services</b><br
+/>************<br
+/>GW:<br
+/>Java side deployed and services are running. Client side being packaged into RPMs and to be deployed with yum/puppet.<br
+/>TK: C++ V4 server with BPM simulation is like deploying any soft IOC so not much work, but my timetable is unpredictable at the moment. Should be done by the next meeting (in two weeks.)<br
+/><br
+/></body>
+</html>

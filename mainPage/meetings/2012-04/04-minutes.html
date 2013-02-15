@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$10</title>
+</head>
+<body>============= Meeting 04-Apr-2012 =============<br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: DH, MK, MS, GW<br
+/>Scribe: DH<br
+/><br
+/>********<br
+/><b>NEW TOPIC: EasyPVA Review</b><br
+/>********<br
+/><br
+/>MK: To get EasyPVA to build<br
+/>command line hg clone<br
+/>start eclipse<br
+/>file,import easypva, Java part<br
+/>hg/alphacpp/easypva<br
+/><br
+/>GW: Do I only need Java part to run tests<br
+/><br
+/>MK:Have to nake sure pvdata and pvaccess in projects.<br
+/><br
+/>GW: Have multiple methods of building&nbsp; makefile for C++, Eclipse for Java, others?<br
+/><br
+/>DH: Maven?<br
+/><br
+/>GW: Didn't seen Maven in alphaCPP<br
+/><br
+/>GW: alphaJava in alphaCPP - love that<br
+/><br
+/>MK: How many repositoriories?:&nbsp;<br
+/>GW:Re look at locations later along.<br
+/><br
+/>MK: Do now or , do test, make release.do it.<br
+/><br
+/>MS; Do it after this reorg - else break something and have a mess.<br
+/><br
+/>GW: Finish reorg, test, make release.<br
+/><br
+/>MK: Use easyPVAVA is our test.<br
+/><br
+/>GW: You mean alphaCPP?<br
+/><br
+/>MK: Alpha is single space for all new ideas, rather than have multiple repos.<br
+/><br
+/>MK: Everything in alphaCpp/easyPVAA can be used as test for multiultiple languages<br
+/><br
+/>GW; Generalise toe to other modules will turn out to be complicated.<br
+/><br
+/>GW: Show me how to download ad pvIOC and build Java or CPP or both.<br
+/><br
+/>************<br
+/><b>NEW TOPIC:&nbsp; MoveField name and unsigned status</b><br
+/>************<br
+/><br
+/>MK: Builds but not running correctly - problems with easyCopy. pvDataJava. pvvAccess java. pvIOC java builds but doesn't workrk.<br
+/><br
+/>MS:&nbsp; Not sure about ppvServiceJava. On MS side side pvAccess works corrs correctly but doesn't communicate with cpp becaecause haven't touched it yet.<br
+/><br
+/>***********<br
+/><b>NEW TOPIC: Eget and Normative Types Progress</b><br
+/>************<br
+/>MS: I'm ready to do eget. How should a normative type self-identify?<br
+/>GW: Let's use the pattern in rdbService as an outline, then change it when we decide how<br
+/>self-id will actually be done. see<br
+/><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/e0c47ded1a39/src/rdbService/RdbClient.java">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/e0c47ded1a39/src/rdbService/RdbClient.java</a><br
+/><br
+/>GW: For eget will it&nbsp; it be able to get v3 and v4 pvs.<br
+/><br
+/>MS: In CPP. V4 only.&nbsp;<br
+/><br
+/>GW: How will it be done?<br
+/><br
+/><br
+/>GW: If I type a versionsion 3 PV how does eget establish whether to get data.<br
+/><br
+/>MS; Just do V4 a4 at moment. In future broadcast on both.<br
+/><br
+/>*********<br
+/><b>NEW TOPIC: Plaform support</b><br
+/>*********<br
+/><br
+/>GW: MS thinks shouldn't support Windows or VxWorks<br
+/>Think need to help get VxWoks 6 to work.<br
+/><br
+/>MS: We can't say we support VxWorks because none one have us has compiled it.<br
+/><br
+/>GW: Can we say we don't run regression test on windows. We e believe VXworkss 6.? and window version ? will work with makefiles provide.<br
+/><br
+/>MS/GW: Can't say support it unless we regression test it.<br
+/><br
+/>GW: Are we agreed that will provide table with compatibility of each module and a clue how to do it (e.g. tr1/boost shared pointer)<br
+/>Can MS providevide it.<br
+/><br
+/>MS: OK<br
+/><br
+/>***********<br
+/><b>NEW TOPIC: Maturity matrix</b><br
+/>************<br
+/><br
+/>GW: Need AI - probably to me. MK/MS to check out.<br
+/><br
+/>************<br
+/><b>NEW TOPIC:&nbsp; Performance Measurement</b><br
+/>************<br
+/><br
+/>GW: Number of process gets goes uoes up with number of channels.<br
+/><br
+/>GW: Data isn't normalised - odd way of showing it.<br
+/><br
+/>GW; What hat about gather service graph speed of transaction (ms) goes down with channels.<br
+/><br
+/>MS: Will get all at once. Will happen in parallel up to some limit.<br
+/><br
+/>GW: Think divividing by number of channels.<br
+/>Will have to ask Gubao.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: EPICS V 4 Meeting at SLAC</b><br
+/>************<br
+/><br
+/>Few members going.<br
+/><br
+/>GW: May look to cancel eV4 meeting at SLAC epics meeting.<br
+/>&nbsp;Emergency move to Oxford? (3 days).<br
+/>&nbsp;<br
+/>&nbsp;DH: I'll look at possibility.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: EPICS V4 Test and Development Support&nbsp;</b><br
+/>************<br
+/>GW: Can Jenkins support starting a V4 server and then making test acq from it?<br
+/>MS: Yes, you just put the serbver startup in the junit test, and then make acq against it.&nbsp;<br
+/>GW: So we need a test server against which we can run regression tests.<br
+/>MS: There is one in pvAccessCPP there already is a test server named "testserver"<br
+/>GW: Does it automatically run when you do a mercurial release of pvAccessCPP?<br
+/>MS: Yes, and the same is true of java.<br
+/>GW: Does it do channelRPC?<br
+/>MS: Yes, just a simple example though.<br
+/><br
+/>MS will write an email on how to start it standalone and as part of regression tests after a relase.<br
+/><br
+/>Meeting ends.<br
+/><br
+/><br
+/></body>
+</html>

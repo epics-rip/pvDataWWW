@@ -1,0 +1,37 @@
+Colleagues, 
+
+Please find below our agenda for the weekly meeting [1]. Minutes in Titanpad [2]. Please sign up
+for a login, so minute entries are associated with a real person.
+
+Short meeting today. Let's review Matej's suggestion for a revised services interface. 
+ 
+Agenda
+------
+
+0. Preliminaries, 5 mins. 
+
+1. pvAccess Spec Publication status, *Bob*. 5 minuts
+
+2. Status of unsigned/introspection changes. See last weeks minutes for last weeks estimates.
+*Marty*, *Matej*. 15 minutes.
+   - Presumably this work explains Ralph's non-compiles of java repos, though not multiple heads.
+   - Any other questions on DS implementation sticking points (*Ralph*)
+     (Non) plan for Services framework, *Greg*, *Ralph* [3]
+
+3. Services interface definition mechanism proposal (*Matej*, 30 mins) [4]
+
+Matej, please walk us through your proposal. I'm most interested in how a physicist would 
+write simple code to interact with it at the most practical level - what would one type in matlab
+or on the command line. Would they need an RPC compiler for instance. 
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/ 
+[3] Services Framework Question, http://sourceforge.net/mailarchive/message.php?msg_id=29388360
+[4] Service Interface Proposal, http://sourceforge.net/mailarchive/message.php?msg_id=29374311
+
+
+
+
+
+
+

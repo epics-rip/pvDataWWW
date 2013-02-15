@@ -1,0 +1,52 @@
+Colleagues,   
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. Minutes
+in titanpad [2]. 
+
+Agenda
+------
+
+0. Preliminaries (5 mins)
+
+1. Structure/Field move and Unsigned status. 10 mins
+   + Marty - still plan a subset of regression tests for unsigned? 
+
+2. Platform support (20 mins)
+   + Review of platforms now under test. 
+   + What have we learnt from Dirk
+   + How to record platform compatibility so people can see it.
+
+   PSI person complained bitterly that when he tried EPICS V4 on Windows 
+   it didn't compile, and there was no indication of this on the web site. We really 
+   have to do better with this.
+   Need to assign AI for platform support matrix, and document what one needs compile
+   load and run for C++, Java, and whether or not using V3 etc.
+
+3. Maturity matrix (10 mins). 
+
+   Also had comments at PSI that we need an indication of maturity of the
+   different facets of EPICS V4. Need to assign AI - probably on me to outline it, and
+   Marty/Matej to check it.
+
+4. Performance Measurement (10 mins). 
+
+   Need to get this going. Need to assign definitive AI. Probably on
+   Guobao. I thought we had one on Matej?
+
+5. EasyPVA review report (Greg)
+
+
+Items likely in near future meetings
+------------------------------------
+NT3dMatrix proposal from Marty and Guobao
+Other NTypes stuff: self identification, NTURI (for calling services), 
+   NTNameValue (Guobao hates mine), NTTimeDomainArray and NTFreqDomainArray expert review
+eget review
+Installation guide/example review.
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/10   
+
+
+
+

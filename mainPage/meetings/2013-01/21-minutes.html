@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$41</title>
+</head>
+<body>============= Meeting 21-Jan-2012 =============<br
+/><br
+/>Agenda <b>(as followed)</b><br
+/>================<br
+/><br
+/>9.00 am convene and get ready. Power strip, network mucking about etc.<br
+/>Actually start at 9:30.<br
+/><br
+/>Morning - Administration and Demos<br
+/><br
+/>&nbsp; * 9:30 Demo of model services (<b>*Greg*</b>)<br
+/><br
+/>&nbsp; * 10:30 Demo all normative types to pvget and eget (<b>*Matej*</b>)<br
+/><br
+/><br
+/>Afternoon - EPICS V4 control database &amp; IOC requirements and design references<br
+/><br
+/>&nbsp; * Draft Charter deliverables&nbsp; (<b>*Bob*</b> and <b>*Greg*</b>)<br
+/><br
+/>&nbsp; [ moved to tomorrow] * Beamline instrumentation controls requirements on EPICS V4 (<b>*Bob*</b>)<br
+/>&nbsp;&nbsp;&nbsp; Broad matters of high throughput large datasets etc.<br
+/><br
+/>&nbsp; * **3.00 pm** [9:00am Michigan local time, via Skype screenshare/video]&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; Marty's review of the existing pvDatabase (<b>*Marty* given by *Matej*</b>),&nbsp;&nbsp;<br
+/><br
+/>&nbsp; * **3.30 pm** [9:30am Michigan local time, via Skype screenshare/video]<br
+/>&nbsp;&nbsp;&nbsp; Marty's ideas on Memory, Multithreading and Locking (<b>*Marty*</b>).&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; From Marty's email of Dec 12<br
+/><br
+/>&nbsp; * APS' requirements and desires for the IOC (<b>*Andrew*</b>)&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; For Andrew and Tim Mooney.<br
+/><br
+/>&nbsp; [* Michael's review of V4 IOC requirements, if present]&nbsp;<br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: GW DH RL BD MS AJ TK + observers (PSI3)<br
+/><br
+/><br
+/>Scribe: DH<br
+/><br
+/>************<br
+/><b>NEW TOPIC:</b><br
+/>************<br
+/><br
+/>Online Modelling of SwissFel with EPICS<br
+/><br
+/>GW gives talk. Outlines twiss parameters and R-matrix. Use of MAD. Affect of change at one point of ring at other points of beam.<br
+/><br
+/>GW: 2x2, 4x4 and 6x6 R-matrices exist (2x2 1 plane of motion, 4x4 2 planes 6x6 +energy).<br
+/><br
+/>BD: Parameters at each energy?<br
+/>GW: That's important - you get parameters from a given energy.<br
+/><br
+/>GW: Not running continuously - constantly updating parameters to machine in real time - because not enough trust. Get values and then operators looks at values and uploads to machine. May be well-understood enough to auto upload steering system if passes certain criterion. Intermidiate step is to continously calculate parameters. Operators can try adding bumps and see if high beta elsewhere.<br
+/><br
+/>GW: Gold model for each energy etc. Can have multiple models in database and switch. E.g. physicist can&nbsp; calculate parameters for a future experiment and put in DB in advance.<br
+/><br
+/>GW: Only recompute model if something changes - e.g. energy.<br
+/><br
+/>GW: Start to end simulation 1 idea for modelling beam. JR may have done something on this at DLS - not deployed.<br
+/><br
+/>DH: Can this be used to examine cross-coupling. (R(1,4), R(3,2))?<br
+/>GW: Looking at cross terms can be used for this. MAD can calculate this - some models don't.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Demo all normative types to pvget and eget</b> (<b>*Matej*</b>)<br
+/>***********<br
+/>pvget normative type agnostic. eget knows NTs.<br
+/>Important on public network had to change ca address list<br
+/><br
+/>export EPICS4_CA_ADDR_LIST=<br
+/><br
+/>MK Demos eget&nbsp; scalar<br
+/><br
+/>eget gets value<br
+/><br
+/>***<br
+/>Good idea to add human readible option&nbsp; - e.g. -i) - translate enums, timestamps, and warning limits etc.<br
+/>***<br
+/><br
+/>MK Demos eget&nbsp; scalarArray, NTTable, NTMatrix, NTMatrix<br
+/><br
+/>For eget table test supply columns argument else error.<br
+/><br
+/>GW: Service writers should implement error messages that show what's missing.&nbsp;<br
+/><br
+/>Can't set precision - stardard C++ default. Should add this option. -t = terse or transpose? Confusing for user.&nbsp;<br
+/><br
+/>AJ: Perhaps use -v for verbose and default is terse.<br
+/><br
+/>For Matrix test supply row and columns.<br
+/><br
+/>GW: eget has -x option ("Use column-major order to decode matrix.") but document states much use row major order.<br
+/><br
+/>eget -s pva:///auth/testNTURI?name0=value0<br
+/><br
+/>GW: Why using -s flag.<br
+/>DH: Is -s necessary to decide whether to use RPC or get.<br
+/><br
+/>Use Authority? eget pvarpc? -- Neither<br
+/><br
+/>eget pva:///testA#field(value,timeStamp)<br
+/><br
+/>GW: Can field be encoded as service parameters. Reserve some names like field?<br
+/><br
+/>GW: Is field sent to server.<br
+/>MS: No. # hint to client , not sent to server.<br
+/><br
+/>MS: ? means RPCS. Otherwise get.<br
+/><br
+/>***************<br
+/><b>RESOLUTION:</b> We shall use a difference of client side syntax of the pva URI, to specify whether pvaccess "get" or pvaccess "rpc"<br
+/>should be used to make an acquisistion. Ie&nbsp;<br
+/>so eget pva:///test shall use pvaccess get<br
+/>eget pva:///test?&nbsp; (with no arguments) shall use pvaccess rpc<br
+/>****************<br
+/><br
+/>MS looks at remaining NTs.<br
+/><br
+/>Discussion of NTAny - should this be a normative type.<br
+/><br
+/>DH: A type that's either scalar or scalar array useful for NTImage.<br
+/><br
+/>Postpone discussion of this until tomorrow.<br
+/><br
+/>*******<br
+/><b>AI: on GW.</b> The syntactical desctiption of NTURI in the NOrmative Types doc, does not match the code example nor<br
+/>intuitive use in a pvData datum. The query part should be defined in teh same way as the &lt;field-name&gt;&lt;field-value&gt;<br
+/>below it.&nbsp;<br
+/>*******<br
+/><br
+/>*******<br
+/><b>AI on GW</b>: The definition of NTMultiChannelArray should be fixed so that the timeStamp member is optional (as is normal<br
+/>for other N-types).<br
+/>*******<br
+/><br
+/>GW: Suggests NTHistogram is changed back to fixed ranges. NTContinuum will remain as defined with a<br
+/>comment in the doc alerting the reader that NTContinuum may be changed.<br
+/><br
+/>*******<br
+/><b>AI on GW:</b> Change NTAggregate to to carrying an array of data. Add the M field, the number of elements, even<br
+/>though M could be derived from the length of the value array. This is because a use may only request the&nbsp;<br
+/>statistics fields, and not the value field, using eg 'field(M)' to find out how many measurements were made.<br
+/>*******<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>EPICS V4 control database &amp; IOC requirements and design references<br
+/>************<br
+/>Slides: <a href="../../talks/2013/01-21_LRD-v4-charter.pptx">21-LRD-v4-charter.pptx</a><br
+/><b>Bob Dalesio and Greg White</b><br
+/><br
+/>Deliverables:<br
+/>* Matej will create c++ binding of EAZYPA.<br
+/><br
+/>* Matej will create the conversion classes between PVAccess and Gabriele's PVManager<br
+/><br
+/>BD: What does "v3channel" presently do?<br
+/>(ans) RL: pvasrv, the new name of v3Channel - a pva server on top of v3, has 2 parts. i. V3Channel, maps to one&nbsp;<br
+/>field of a record, and provides metadata of the v3 db access,<br
+/>like the DBR types but not exactly, and delivers the value and metadata as a v4 pvData structure.<br
+/>&nbsp;ii. multiValue, this supports atomic operations on groups of v3 records as long as they are in the same lockset.<br
+/><br
+/>GW: How is the set of v3 records in teh multivalue specified?<br
+/>MS: That is answered in Marty's talk, basically it's part of the "field" request.<br
+/><br
+/>BD: Charter requires that a client can request aggregation or other functionality on the server side per subscription. (Implemented in 3.15 as server-side filter plug-ins.)<br
+/>GW: Take that idea and convert it to a comprehensive design for subscription parameters. Keep things like buffers for averaging private, while making the results public.<br
+/>BD: Similarily: Client can ask server to aggregate related structures (e.g. belonging to the same device) into a single structure.<br
+/>Client can request time correlated scalars as a vector.<br
+/><br
+/>RL: suggest we wait until filtering options are implemented for v4 monitors. So, the deliverables list of slide 2 of talk should be extended to include monitor options.&nbsp;<br
+/><br
+/>* Ralph will implement v4 subscription options in pvaSrv/v3Channel (implemented as special server-side filters).<br
+/><br
+/>slide: Version 4 IOC<br
+/>BD: We intend to orient development to support high prformance data acquisition as required in physics and science applications.<br
+/>We would pursue this as an extension of V3 IOC.<br
+/>Including:<br
+/>&nbsp; - large buffer passing&nbsp;<br
+/>- large buffer driver support<br
+/>- large buffer to PVAccess<br
+/>TK: So this would be implemented in V3 IOC?<br
+/>BD: Yes<br
+/>BD: marty you're ok with thsi approach?<br
+/>MK: Yes<br
+/>BD: That would be in the EPICS Base repo?<br
+/>AJ: yes<br
+/><br
+/>slide: Physics Services<br
+/>BD: Model service will be a middle layer V4 service in top of the model code(s).<br
+/>For unit conversion (current/field/energy and such) the IOC downloads the numbers from the conversion service and does the conversion on the (V3) server side.<br
+/>Device views will use directory service (ChannelFinder) functionality to create these.<br
+/>Orbit Service: definition seems unclear.<br
+/>GW: Getting the "position of the last 1000 pulses around the machine" is the basic orbit service.<br
+/>BD: Needs to flag defective BPMs (e.g. to take them out of machine protection).<br
+/><br
+/>GW/BD: In Gather there would be a number of fixed channels for each gathered set of channels, each setting up a PVmanager chain that provides the data.<br
+/>RL: That is very similar to adding more records to a V3 IOC, doing the different averages.<br
+/><br
+/>slide: Version 4 Beamline Applications<br
+/>* Image Archiving and Server. Offline analysis of acquired image data.<br
+/>* Scan server (Daron)<br
+/>* unit conversion of HKL/Energy (Arman)<br
+/>* Image Compression.&nbsp;<br
+/>* Electronic Log[book] Service. That is, be able to put pvData structures as entries (better: attachments to entries) into the electronic logbook (olog) with "eput" (or any other V4 pvaccess put client).<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Review of the existing pvIOC, pvData, pvAccess and pvDatabase</b><br
+/>************<br
+/><b>Matej for Matej and Marty</b><br
+/><br
+/>Java binding status.<br
+/>pvData and pvAccess are complete [with repect to what the original developers envisaged].&nbsp;<br
+/>pvIOC is largely "complete" [under that same definition of complete]. It is proposed that<br
+/>pvIOC be split into pvDatabase, and the existing higher level additions remaining in pvIOC.<br
+/><br
+/>GW: What is the direction for this?<br
+/>DH: Is this the design for the V4 IOC, so that we just add the C++ implementation?<br
+/>MS: No. this is Marty's idea of a new database. We don't even have a use case.<br
+/><br
+/>[discussion of clarification of what would constitute pvDatabase, pvIOC and what parts<br
+/>of the existing pvIOCJava would become independent projects]<br
+/><br
+/>C++ implementation status<br
+/>pvData and pvAccess are complete [with repect to what the original developers envisaged]. Some C++ specifics (shared pointers, memory management)<br
+/><br
+/>MK: (on pvIOC vs. pvDatabase) there's just too much stuff in pvIOC.<br
+/><br
+/>Proposal:&nbsp; For Java, pvIocJava do what Marty suggests. For C++, extract v3Channel and multiValue into pvaSrv, stop further C++ IOC database development for now.&nbsp;<br
+/><br
+/>GW: What is the group's feeling on whether we should continue active<br
+/>development of pvIOCCPP [or focus on pvaSrv (for C++) and finalize the IOC design and implementation in Java first?<br
+/><br
+/>Answers:<br
+/><br
+/>DH: would rather we not "rush off" and create a new design for c++ ioc. Want<br
+/>to know what we would intended to do for area detector and other systems with respect to<br
+/>the new c++ ioc. By default pvaccess will look for a provider called "local", that<br
+/>connects to a local database. The point is the database code can't be reused. DH<br
+/>doesn't like that the IOC presupposes the existence of a database - DH isn't sure<br
+/>that's necessary. DH [feels that there are a number of questions which are not&nbsp;<br
+/>being adequately addressed prior to design]. Polymorphism is only supported in the device support, maybe in the record, but not on the database level.<br
+/>DH would like the C++ bindin of the V4 ioc should not be implemented before&nbsp;<br
+/>much more design is done.&nbsp;<br
+/>So in summary, to answer the question - yes.<br
+/><br
+/>RL: Yes. Looking at our existing users, their biggest use cases are connecting to existing IOCs and existing areaDetector [hence we want good support for connecting v4 to v3].<br
+/><br
+/>MS: Yes, with the caveat that the requirements for a new IOC design are use case requirements not design proposals.<br
+/><br
+/>AJ: Idea for areaDetector remote operation: create a camera driver that has a pvAccess client and connects to a remote areaDetector instance, that serves up images as pvAccess NTImage structures.<br
+/><br
+/>BD: There is a need to do configuration of acquisitions, and so there must be a place to do that config. {If that config can be done in the context of pvaSrv ok, but it may well not be the case}. For instance, how would a non-programmer set the region of interest for an image acquisition, would be a question.<br
+/>We must have a way to configure areaDetector acquisitions.<br
+/>In summary, to answer the question, yes.<br
+/><br
+/>RL: areaDetector could run in the existing V3 framework, or in a new (to be created) framework, that instantiates and plugs together AD plug-ins.<br
+/>A client could create AD plug-ins on-line. As soon as they start, their configuration is available through a top-level pvData structure.<br
+/>AJ: Persistence could be achieved by a snapshot service like masar.<br
+/><br
+/>AJ: +1. The existing pvIOCCPP work should be split up; move the pvaSrv out.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; The interesting&nbsp; question for DH's work is how an acquisition would be reconfigured. Initially the acq could be reconfigured by config files, later it could be by a new callable interface.<br
+/><br
+/>TK: +1 (subject to understanding of the AD). Would like to know in general where we are going with the V4 IOC.<br
+/>in particular, are we going to move away from the idea of a pv database? What would be the structure to replace that?<br
+/><br
+/>************<br
+/><b>RESOLUTION:</b><br
+/>(1) Suspend active development of pvIOCCPP. Move pdrv and swtshell pvIOCJava modules to separate projects (repos).<br
+/>(2) Create new project pvaSrv (a cpp project), extracting v3Channel and multiValue and add filtering and aggregation features.<br
+/>(3) Create an areaDetector image acquisition (including reconfiguring acquisitions) project possibly called pvAreaDetector [pvAccess on top of areaDetector].<br
+/>(4) Continue the large bufffer work in both 3.15 and pvData that Michael D is working on.<br
+/>************<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Marty's ideas on Memory, Multithreading and Locking</b><br
+/>************<br
+/><br
+/>For the purpose of support of high performance processing, we require some changes to the EPICS Base API the code is based on, per resolution:<br
+/><br
+/><b>************</b><br
+/><b>RESOLUTION: pvaSrv shall be based on 3.15, but with an initial release based on 3.14 coming out soon.</b><br
+/><b>************</b><br
+/><br
+/>The 3.14 release will only provide basic, existing functionality, depend on 2.0-BETA of the CPP modules, and be supported only in terms of bug fixes.<br
+/><br
+/>Once that 3.14 release is out, we can switch the CPP modules over to 3.15.<br
+/><br
+/>************<br
+/><b>AI</b> on Ralph by asap: Get the 3.14 pvaSrv release out and prepare the switch to 3.15<br
+/>************<br
+/><br
+/><br
+/></body>
+</html>

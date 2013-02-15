@@ -1,0 +1,216 @@
+============= Meeting 15-Feb-2012 =============
+
+Agenda
+======
+1. easyPVA review [3]. Marty, Matej, 20 minutes. 
+
+  Looks good. Quick walk through. I saw a couple of things. 
+  Please let us know status (is there any implementation?). 
+
+2. easierPVA [4], James, 20 minutes
+
+  Let's take a first look.
+
+3. The Unsigned API [5]. David vs Marty. 15 minutes. 
+
+  Can David seriously commit to producing Java and C++ implementations?
+  If so, then we can consider a comparison of implementations.
+  If not, then I think Marty has to just proceed. Which would be good
+  because maybe then we get David to do a bpm orbit service using gather? 
+  Just day dreamin!
+
+4. Time specification standardisation. T00:10 
+
+   Draft resolution like: We recommend that EPICS V4 systems use ISO 8601 format
+   and that takers of a time SHOULD process ending Z according to that standard.
+
+5. pvAccess protocol 2nd PWD readiness. Matej 10 mins.
+
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/2?
+[3] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/raw-file/tip/easyPVA/documentation/easyPVA.html
+[4] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/alpha/EasierPVA.html
+[5] Thread on unsigned, https://sourceforge.net/mailarchive/forum.php?thread_name=4F3A5143.8000308%40comcast.net&forum_name=epics-pvdata-devel
+
+------------------------ Minutes ----------------------------
+
+Present: RL, MK, NM, JR, DH, MS, GS
+Scribe: DH
+
+RL:  Should "following" be replaced by "previous"
+MK: No
+
+GW: What's the function of EasyGet?
+MK: EasyGet is meant for getting scalar values.
+GW: Once channel is is connected.
+MK: Yes.
+
+
+MK: Simple things are simple, but with possibility of full access. Interface to terface to do everything you can with th PVAccess.
+
+RL: <Question  - DH can you add this I missed it?>
+GW: In answer to Ralph's question "get" is not a mistake.
+
+GW: Can you descibe where you do getting the EasyGet and where you create the channel?
+
+MK: What is the function of the interface versus the behaviour of the ininterface.
+
+MK: waitforconnect, issueconnect, connect allow the client to  to overlap operations as only connect blocks
+
+GS: client can use lazy connect/initialization to simplify usage
+
+GW: lazy init belongs in easierAPI
+
+MA: ezrPVA
+
+MK: GW and JR to demonstrate ezrAPI
+
+MK: looking at Easy Channel, full access to pvAccess API but deals with callbacks
+
+GW: multiput puts values into a set of scalars. There should be 2 entries in the array in the example to match the 2he 2 channel names
+
+GS: Want a single interface for everything, why the separation between easyget and easyarrayget apart from the value type
+
+GW: could have same intererface name but different method names. 
+
+MK: yes can do that
+
+MK: currently throws exception if the returned type is not what is expected. Could convert a scalar to a single element array for exampleple
+
+MK: Do we want to action merging interfaces?
+
+GW: No, part of design process if MK considers better design
+
+MK: Will combine get and arrayget interface (and put)d put)
+
+GS: can put flag in for request type rather than using method name
+
+GW: Array access in PVs difficult. DH  made same point by email earlier.
+
+************
+NEW TOPIC: Easy API
+************
+
+JR: (Reads doc) Is this what is wanted.
+GS: Where do you specify meta-data
+JR: Get takes a PVStructure which parameterizes get. Replaces numeric code in V3.
+JR: If you want a particular metadata you fill in result string.
+
+GW: For channel get don't send values.
+GW: Names and values need to be vectorized. How names and values interpretted in cothread.
+JR: ArrayList is the preferred container in Java.
+
+JR: PV fills in container. Users want to return copy.
+
+GW: Flush method.
+JR: Cothread doesn't t have one closes porcess.
+GW: Might want to add one.
+
+GW: When servers died and came back new objects don't match server side.
+With proper cache management it will work.
+
+JR: This is the API we use for everything now.
+GS uses this so can comment.
+GS: I like it.
+
+GW:
+MA: Channel acces in pyhton uses ctypes to accessess channel directly.
+GW: Rewrite to add v4.
+MA: Could be starting point.
+MA: Need stable C API. Way Ctypes work is to connect directly to dll exports.
+
+JR: Anyone looked at my python/Ctypes  serializer.
+
+JR: Only concern is copy PVStructures out of array.
+stl::vector in for names and vector of structures out.
+
+PVStructure might not be best but need something (normative type).
+
+MK: EasyPVA used to get simple things double.
+JR: For RPC need structures.
+
+GW: Marty's query isn't one we can solve this call
+JR: Will fill in some examples for further discussion, especially channelRPC
+
+**********************
+NEW TOPIC: unsigned API
+***********************
+
+DH: Can make changes in branch for discussion on once MK codes initial version
+DH: half time available for EPICS
+DH: 1st suggestion MK does unsigned, DH changes function names 
+DH: 2nd suggestion DH simultaneously does Java unsigned for consideration
+
+GW: Doing 1st suggestion, want to work on new functionality
+
+GW: MK to work on existing unsigned API, DH to refactor as time allows
+
+MK: what are priorities?
+
+GW: Gather, EasyPVA, Unsigned, depending on time to do the work
+MK: unsigned needs approximately one week with Matej support. Matej needs to do the serialization/deserialization support
+
+MS: Want to finish spec doc using existing comments
+
+GW: Able to start on unsigned in 2 weeks?
+
+GW: Aim for pva spec in next few days
+
+*******************
+NEW TOPIC: DATE TIME
+******************
+
+MA: ISO8601 used successfully, time zone correctness is important
+
+MA: ISO8601 supports local time or UTC. Local time is preferred for most people, ple, being able to force UTC is necessary sometimes. Ending in Z means UTC, otherwise localtime.
+
+GW: Wathhat do developers do?
+
+MA: Must look ook for Z in strings. If Z is present, it's UTC. Otherwise wise it's local time.
+
+RL: Are offsets legal? As in time offset from UTC.
+
+MA: No
+GW: No
+JR: No
+GW: can document that you can use the uniunix date function to do some time arithmetic beforehand
+
+RL: Want to express a timestamp in my local time zone but be explicit about it. This is an offset that goes instead of the Z.
+
+GW: Don't want to make programmers do this
+
+MA: can provide a library
+
+GW: too hard for physicists
+
+RL: concerned about archiver retrieval, what happens for  for data taken last year?
+
+MA: Good example, desireable to provide a simple library for dealing with th ISO8601
+
+MA: or us in unix epoch!
+
+GW: don't fully undernderstand issue
+
+MA: localtime not defined for any day but today
+
+RL: archiver has utc timestamps
+
+MA: can write library
+
+GW: Use ISO8601 in EPICSv4 tools as a resolution, as a recommendation client users should be able to use a time offset tool do convert to UTC
+
+GW: or not [!]
+
+JR: simplified ISO8601 http://www.w3.org/TR/NOTE-datetime
+
+JR: doesn't help decide if we use offset or not
+
+GW: bye
+
+
+
+
+
+
+

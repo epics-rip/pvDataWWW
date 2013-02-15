@@ -1,0 +1,49 @@
+Colleagues,
+
+Please find below the agenda for our 14-Sep-2011 meeting.
+
+*Bob*, you're up to scribe. I'm just sayin.
+
+Cheers
+Greg
+--------
+
+0. Preliminaries (10 mins)
+
+1. Directory service requirement for services (Greg, 20 mins)
+
+   More to follow tomorrow. Following on from the meeting last week [1]
+   for requirements to satisfy the simple client access tool (#14) [2], we
+   need to work out the implied requirements for a directory
+   service for services, so RPC service clients can contact the 
+   appropriate service without knowing which service is responsible for a
+   given query/pV. In particular, is ChannelFinder appropriate. 
+   I'm looking for a basic solution or whether I should write it from scratch.
+
+2. Mercurial/Maven and all that jazz (Gabriele, 20 min)
+
+   + CIS utility over and above unit and iterop tests just run ad hoc
+   + SCM Help for the hard of thinking. Eclipse and command line help
+   + Automatic web update
+   + Thoughts for full development and programmers guide
+   + Considerations for users of Epics v4, as opposed to us
+
+3. Charter vote (20 mins, Greg)
+
+   Please read the charter. I'll fix up and send out another version with 
+   TBDs filled in tomorrow. Take a vote to approve that we're all agreed.
+
+4. Heads up on Milestones (10 mins, Greg).
+
+
+[1] http://epics-pvdata.sourceforge.net/minutes_07092011.txt
+[2] http://epics-pvdata.sourceforge.net/charter.html#commandline_impl
+    (actiually, "Simple command line tool" is an oversimplification, 
+    it's really just "simple caget like tool" but basic API can be used 
+    from matlab, python, java, c/c++ etc. I'll modify the charter.
+
+
+
+
+
+

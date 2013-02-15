@@ -1,0 +1,56 @@
+Instructions in gettingStarted.html don't mention creating
+RELEASE.local and CONFIG.local files in the parent directory,
+which is much more convenient.
+
+pvDataCPP/README.html needs updating; remove status info?
+
+pvDataCPP built Ok, but why am I seeing '//' in paths on
+compile line?
+    PVDATA definition needs trailing '/' removed.
+
+
+pvAccessCPP/README and TODO: Are these still correct?
+
+pvAccessCPP/RELEASE - set a default path for PVDATA?
+
+pvAccessCPP built Ok, still '//' in include and source file
+paths.
+    PVACCESS definition needs trailing '/' removed.
+
+
+pvIOCCPP/READDME - typo in name, wrong.
+
+pvIOCCPP built Ok, '//' again.
+    IOC definition needs trailing '/' removed.
+
+
+gettingStarted instructions for running pvIOCCPP are broken
+(under C++ Examples, To deploy an IOC ...)
+
+ * envPaths is created for you and should not be modified by
+   hand as any changes will be lost if you do a 'make rebuild'.
+
+ * The code-block in item 3 shows running a binary called
+   'example' which doesn't exist.
+
+ * The "sample output" shows lots of errors from dbLoadRecords
+   which I don't get.  They are even mentioned below, but have
+   apparently been cleaned up now.
+
+
+Tried building on vxWorks, needs boost/tr1/memory stuff
+   installing.  I didn't do this, so I stopped working on
+   vxWorks.
+
+Discuss when it's appropriate to use the pv/ directory prefix
+for include files.
+This is OK for pvData and pvAccess, but doesn't seem right for
+pvIOC/pvaServer.
+    We need build rules to support installing include files
+    under a directory prefix without having to put the source
+    files inside that directory.
+
+    I would also like to introduce my Makefile fragments, like
+    I did in Base, so there's a Makefile in the same
+    subdirectory as the source files.
+

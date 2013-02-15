@@ -1,0 +1,31 @@
+Colleagues,
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. Minutes
+in titanpad [2]. 
+
+Again hopefully a short meeting. Let's get some status updates with respect to services.
+Matej, you can also give us an update on pvAccess.
+
+0. Preliminaries (5 mins)
+
+1. Status of Maser service (*Guobao*, 15 mins)
+
+2. Preliminary thinking on Directory service (*Ralph*, 15 mins)
+
+3. Archive Service (*James* 15 mins)
+   What is now published (there's stuff now in exampleCPP right?), what more
+   can be done to help a lab deploy an archive service.
+   
+4. PSI services (Greg, Timo, 15 mins)
+   Status of deployment of java (*Greg*)
+   Estimate on deployment for C++ support (*Timo*)
+   
+Cheers
+Greg, for Bob and Greg
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/
+
+
+
+

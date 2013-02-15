@@ -1,0 +1,24 @@
+Colleagues,
+
+Let's have a short status meeting tomorrow at the usual time.
+
+Agenda
+------
+Status with respect to a candidate release
+
+Also, there is a new NTypes spec [1], that includes a new method of self-identification
+and a revised NTTable (intended to integrate Ben and Ralph's comments). However, I haven't
+myself had time to check it against their emails and to proof read. Still, you can yell
+at me about it if you like. It's intended to get us going with a basic system which will work 
+for beta 2 demos.
+
+Cheers
+Greg
+
+[1] http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html#normative_type_instance_self_identification
+
+
+
+
+
+

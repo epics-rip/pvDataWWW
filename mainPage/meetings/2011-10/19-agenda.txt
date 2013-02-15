@@ -1,0 +1,88 @@
+Colleagues,
+
+Please find below the agenda for our 28-Sep-2011 meeting.
+
+Time: UTC (GMT) Wednesdays, 14:00. 
+URL: https://collab.switch.ch/r73247618/ [1]
+
+*Timo* or *Michael* up to scribe. *Bob*, not you again. We have to all feel the pain.
+
+I'm sorry, I haven't yet updated the Working group meeting minutes, AIs and Issues from
+the meetings just before the EPICS meeting or the epics meeting itself. I've 
+concentrated in the first service (which is now working beta software - I'll
+deploy it into PSI's controls infrastructure this week).
+ 
+Cheers
+Greg
+--------
+
+
+0. Preliminaries (10 mins)
+
+Just 1 agenda item this week, outcomes of the EPICS and ICALEPCS meetings. That is,
+Action Items, Issues, and priorities stemming from comments received etc.
+
+Outcome of the telecon should be assigned AIs and ISSUES.
+ 
+My own list is the following. Please feel free to comment and add to these. 
+
+a) Marty's priorities. 
+
+   Marty has written a list. The most important items were I think:
+
+      i) Normative types. (Charter deliverable 7 [2])
+         Working with GC, BD and GW on further specification of the types.
+         Writing helper classes for encoding/decoding normative types into PVStructures. 
+
+     ii) Making the client side easier to code for.
+
+    iii) Reorganizing the existing documentation so that it's delivered both as framed Javadoc (for 
+         programmers reference), and as reference documentation (1 document per project like pvData).
+
+b) AI on Greg, Oct 30th, sourceforge and mercurial how-to
+
+c) AI on *Bob* (date?), as chief editor of Normative Types, complete the first editors draft. I 
+   think we at least need the first definition of each type from Bob before the others add to it
+
+d) AI on *Marty* (date?): Write analysis of how Gather can be delivered as a library for use by services, 
+   as well as a service itself
+
+e) AI on *Greg* (date?): Write proposal for restructuring pvService to orient towards containing
+   only the RPC framework and possibly the Gather service and gather library 
+
+f) AI on *Greg* (date?): Write proposal for error handling framework.
+
+g) ISSUE: Should pvManager and ChannelFinder be separate sourceforge projects. 
+   Sorry to spring this on you Gabriele and Ralph, but a couple of people brought this up including  
+   people in the working group. I understand if you have strong feelings. it's ok to say "absolutely not."
+
+h) AI on *Marty* (date?): Write straw man proposal for unsigned handling, including illustration code. 
+
+i) ISSUE: The nominal usage architectures of EPICS V4 are a point of difficulty for newcomers.
+
+   Perhaps this should be addressed by a short document that outlines some sensible EPICS V4 architectures
+   for various use cases. Sounds like a job for *James*. I'm just sayin. I can help too.
+   Ideally this will be associated with an EPICS V4 cookbook. A man can dream.
+
+j) ISSUE (well, more of a bug really): Anonymous Mercurial clone (http) doesn't work for everyone. 
+   Should work out what's up - is it port 8000 being commonly blocked?
+
+k) We don't have an example of monitoring. *Paul* has some experience, it would be great to see his
+   examples.
+
+Topics for coming weeks. Comments and proactive action welcome. Please tell Bob and me
+what's missing from this list that needs to be addressed urgently  (gently this time)
+
+ * Comments received on pvAccess
+ * NT type identifier specification
+ * License and Patent language
+ * Build and deployment system for Java independent of Eclipse
+ * XML schema for record definitions. It should probably include at least a way to formally associate 
+   help and semantics with fields.
+
+[1] http://epics-pvdata.sourceforge.net/home.html
+[2] http://epics-pvdata.sourceforge.net/charter.html#deliverables
+
+
+
+

@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$33</title>
+</head>
+<body><br
+/><b>EPICS V4 Working Group face-to-face Meeting, Day 1, 17-Oct-2012</b><br
+/><br
+/><br
+/><b>Agenda, Day 1.</b><br
+/><br
+/>Wed AM - Review and Demo of key EPICS V4 functionality achieved<br
+/>===============================================================<br
+/><br
+/>* Minutes<br
+/><br
+/>* Agenda Review.<br
+/><br
+/>* Status review:<br
+/><br
+/>Go through the line item charter exit demos per list [1] *Greg*<br
+/>I predict this will take the whole morning. We really aim to demo every piece of&nbsp;<br
+/>infrastructure sw we've created, so it should take a long time!&nbsp;<br
+/><br
+/>Wed PM - Services<br
+/>=================<br
+/>1:30pm Relational Database service - demo. Dovetails into Db meeing. *Greg*<br
+/>2:00pm Archive Service - *David*<br
+/>2:30pm Model Service - *Guobao*<br
+/>3:00 break<br
+/>3:30pm Directory service demo, and it's applications for management and in CSS *Ralph*, *Kunal*<br
+/>4:00pm&nbsp; Masar service and python applications *Guobao*<br
+/>4:30pm&nbsp; Unit conversion service *Guobao*<br
+/>5:00pm PXDB - beamline database user management demo Rick Buono<br
+/><br
+/><b>*********</b><br
+/><b>NEW TOPIC: AGENDA REVIEW</b><br
+/><b>&nbsp;********</b><br
+/><b>&nbsp;</b><br
+/>AGENDA EPICS V4 OCTOBER 2012 MEETING<br
+/>====================================<br
+/><br
+/>Wed AM - Review and Demo of key EPICS V4 functionality achieved<br
+/>===============================================================<br
+/><br
+/>* Agenda Review.<br
+/><br
+/>* Status review:<br
+/>Go through the line item charter exit demos per list [1] *Greg*<br
+/>I predict this will take the whole morning. We really aim to demo every piece of&nbsp;<br
+/>infrastructure sw we've created, so it should take a long time!&nbsp;<br
+/><br
+/>Wed PM - Services<br
+/>=================<br
+/>* Relational Database service - demo. Dovetails into Db meeing. *Greg*<br
+/>* Archive Service - *David*<br
+/>* Model Service - *Guobao*.&nbsp;<br
+/>* Directory service demo, and it's applications for management and in CSS *Ralph*<br
+/>* Elog Service and it's applications for management and viewing *WHO*<br
+/>* Masar service and python applications *Guobao*<br
+/>* Unit conversion service *Guobao*<br
+/><br
+/>Thurs AM - Requirements and Planning for beam line controls&nbsp;<br
+/>===========================================================&nbsp;<br
+/><br
+/>9:00am&nbsp; Application of V4 architecture in High Level Applications Bob Dalesio<br
+/>9:30am interoperaboility V3 V4&nbsp;&nbsp;&nbsp;&nbsp; Marty Kraimer<br
+/>10:00 break<br
+/>10:30 am&nbsp; Beam line requirements for scanning, data acquisition, and analysis, Daron Chabot.<br
+/>11:00 am&nbsp; synApps, record types and data. Tim Mooney.<br
+/>11:30 am Use of areaDetector and synApps for biological data analysis. John Skinner.<br
+/>12:00 noon Requirements for experiments at SNS. Kay Kaswemir<br
+/>12:30-1:30 lunch<br
+/>1:30-3:00 pm Version 4 IOC planning to support beamline controls.&nbsp; Discussion. Bob Dalesio.<br
+/>3:30 – 4;00 break<br
+/>4:00 – 4:30pm Normative Types review. *Greg*<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * EPICS URI. Review of use of the EPICS URL. *Greg*<br
+/>4:30pm – 5:00 Proposal for "editing down" and implementation of N-types *Michael*<br
+/><br
+/><br
+/>Friday AM - Next 12 months.<br
+/>==========================<br
+/><br
+/>* Python physics applications that the BNL physics group has developed,<br
+/>&nbsp;What they like and what they want.&nbsp; *Lingjun*<br
+/><br
+/>* Next charter deliverables and roadmap for the next 12 months.&nbsp;<br
+/>&nbsp;+ Review requirements generated since Wednesday.<br
+/>&nbsp;+ Charter items proposal. *Greg*<br
+/>&nbsp;+ Charter discussion.<br
+/><br
+/><br
+/>======NEW TOPIC=================<br
+/>=<br
+/>= Status Review<br
+/>=<br
+/>================================<br
+/>Scribe: GS<br
+/><br
+/>MD: is there way to call ca://<br
+/>BD: what is the min requirement?<br
+/>GW: pvname is moved into part of URI<br
+/>GW: V3 is easy. ca:///channelname<br
+/>&nbsp; V4 is complicated...<br
+/>BD: should be status report. Details should be later<br
+/>BD: for "organization structure", is it for people, or software?<br
+/>GW: Software<br
+/>BD: Does everyone agree with recommandation?<br
+/>RL: Hardly yes<br
+/>MS: Yes<br
+/>DH: Yes<br
+/><br
+/>BD: Hold items to Friday<br
+/><br
+/>GW: review of the list of nominal tests for V4.&nbsp;<br
+/>relation of pvget/put and eget.&nbsp;<br
+/>MS: eget is oriented towards piping to different applications etc.<br
+/>pvget is a caget-equivalent for pvAccess<br
+/><br
+/>GW: is there a eput<br
+/>MS: no.<br
+/>TK: pvget takes a long time of exit, reason?<br
+/>MS: I will take a look at that<br
+/>Defaults for processing with puts<br
+/>MK: default for puts is now to process. It can be specified if processing should not take place<br
+/>Documentation for request strings and their semantics is in pvAccess documentation. Should be in pvData.<br
+/>Discussion about error messages in database initialization. Related to non-matching record types<br
+/>===<br
+/>AI: MK to revise the example database in the V3 channel example<br
+/>===<br
+/>MK: use of -r request string in eget automatically implies using structure mode in the reply<br
+/>(issue: client then needs to parse the return string to get the value of the specified field)<br
+/><br
+/>Getting the values of all V3 standard fields<br
+/>GW: even if I specify a different field, why does eget return the val field?<br
+/>MK: possibly a bug. Will take a look at it<br
+/>===<br
+/>AI: MK to look at the behaviour of what the eget returns<br
+/>===<br
+/>MS: the bug of returning all fields even if one was specified has been fixed<br
+/>GS: is there a utility similar to cainfo available<br
+/>MS: not yet, but it is planned to have one<br
+/><br
+/>MS: pvput to arrays has the same syntax as caput<br
+/>GS: in caput with arrays you have to explicitly to state that you are doing an array put. How does pvput know that this should<br
+/>be an array put without the argument<br
+/>DH: is the different sytax needed. create put knows about the channel type and should be able to figure out that the arguments<br
+/>are array values<br
+/>GS: how does pvput know that the first value stating the number of values is that, and not the first value<br
+/>GW: keep the syntax for pvput. For eput, just use the values (without specifying the number of elements. Determine programmatically<br
+/>the number of elements) eput can be used in scripts etc. to pipe&nbsp;<br
+/>RL: how would eput know where to separate the values for different channels (when putting to two channels)<br
+/>GW: in that case use pvput (syntax will be kept)<br
+/>pvput can do puts to different fields but not to two pv's<br
+/>DH: will this work with string arrays<br
+/>GW: yes, it should work<br
+/>DH: when do we need quotes<br
+/>GW: when using eput on the command line (as opposed to piping files)<br
+/>GW: eget with arrays adds a blank to the end. This will break pipes<br
+/>MS:<br
+/>GS: how about getting a defined number of elements with eget<br
+/>GW: it is not possible yet. Is this useful?<br
+/>GS: yes.<br
+/>RL: propose to use the syntax in 3.15. (first element, last element, step) Will send a proposal to Matej<br
+/>MK: this implies changing ChannelArray<br
+/>GW: is it useful to do data selection on the server side<br
+/>(many): yes it is<br
+/>is the dynamic array sizing supported in V4<br
+/>MK: yes it is, however not with V3 pv's<br
+/><br
+/>eget doubleArray01 doubleArray02<br
+/>&nbsp; 1&nbsp; 6<br
+/>&nbsp; 3&nbsp; 7<br
+/>&nbsp; 7&nbsp; 8<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; eget -t doubleArray01 doubleArray02<br
+/>1 3 7<br
+/>6 7 8<br
+/><br
+/>KK: can I ask a service what arguments does it support<br
+/>GW: it has to be supported by the service writer, but yes it is possible (details still subject to discussion)<br
+/><br
+/><br
+/>eget -a columns=3 -a rows=5 -s testNTMatrix<br
+/>&nbsp;&nbsp;&nbsp; 0.434822&nbsp; 0.0547287&nbsp;&nbsp; 0.824523<br
+/>&nbsp;&nbsp;&nbsp; 1.75967&nbsp;&nbsp;&nbsp;&nbsp; 1.8181&nbsp;&nbsp;&nbsp; 1.73792<br
+/>&nbsp;&nbsp;&nbsp; 2.17249&nbsp;&nbsp;&nbsp; 2.00028&nbsp;&nbsp;&nbsp; 2.71234<br
+/>&nbsp;&nbsp;&nbsp; 3.34916&nbsp;&nbsp;&nbsp; 3.27615&nbsp;&nbsp;&nbsp; 3.28958<br
+/>&nbsp;&nbsp;&nbsp; 4.01409&nbsp;&nbsp;&nbsp; 4.73464&nbsp;&nbsp;&nbsp; 4.08091<br
+/><br
+/>eget -a columns=3 -a rows=5 -s testNTMatrix -t<br
+/>&nbsp; 0.435558&nbsp;&nbsp; 1.87279&nbsp;&nbsp; 2.59468&nbsp;&nbsp; 3.21029&nbsp;&nbsp; 4.12483<br
+/>&nbsp; 0.419281&nbsp;&nbsp; 1.89822&nbsp;&nbsp; 2.81356&nbsp;&nbsp; 3.32535&nbsp;&nbsp; 4.98442<br
+/>&nbsp; 0.851423&nbsp;&nbsp; 1.32008&nbsp;&nbsp; 2.56621&nbsp;&nbsp; 3.11472&nbsp;&nbsp; 4.10631<br
+/><br
+/><br
+/><br
+/>eget -a columns=3 -s testNTTable<br
+/>&nbsp;&nbsp; column0&nbsp;&nbsp; column1&nbsp;&nbsp; column2<br
+/>&nbsp; 0.435738&nbsp;&nbsp;&nbsp; 1.1459&nbsp;&nbsp; 2.22137<br
+/>&nbsp;&nbsp; 0.44465&nbsp;&nbsp;&nbsp; 1.0613&nbsp;&nbsp; 2.60045<br
+/>&nbsp; 0.230346&nbsp;&nbsp; 1.23703&nbsp;&nbsp; 2.74881<br
+/>&nbsp; 0.421738&nbsp;&nbsp; 1.77958&nbsp;&nbsp; 2.17418<br
+/>&nbsp; 0.151863&nbsp;&nbsp; 1.33592&nbsp;&nbsp; 2.42832<br
+/>&nbsp; 0.356142&nbsp;&nbsp; 1.88846&nbsp;&nbsp; 2.81326<br
+/>&nbsp; 0.676708&nbsp;&nbsp; 1.36269&nbsp;&nbsp; 2.54078<br
+/>&nbsp; 0.427452&nbsp;&nbsp; 1.77496&nbsp;&nbsp; 2.95499<br
+/>&nbsp; 0.190023&nbsp;&nbsp; 1.67901&nbsp;&nbsp; 2.56949<br
+/>&nbsp; 0.708225&nbsp;&nbsp; 1.13174&nbsp;&nbsp; 2.44391<br
+/><br
+/><br
+/>eget -a columns=3 -s testNTTable -t<br
+/>column0&nbsp;&nbsp;&nbsp;&nbsp; 0.435746&nbsp; 0.576188&nbsp; 0.985951&nbsp; 0.880388&nbsp;&nbsp; 0.68463&nbsp; 0.575101&nbsp; 0.723752&nbsp; 0.106317&nbsp; 0.869319&nbsp; 0.642918<br
+/>column1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.5294&nbsp;&nbsp; 1.58071&nbsp;&nbsp;&nbsp;&nbsp; 1.068&nbsp;&nbsp; 1.81415&nbsp;&nbsp; 1.38939&nbsp;&nbsp; 1.41816&nbsp;&nbsp; 1.03384&nbsp;&nbsp; 1.78265&nbsp;&nbsp; 1.06243&nbsp;&nbsp; 1.19859<br
+/>column2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.63886&nbsp;&nbsp; 2.28722&nbsp;&nbsp; 2.33778&nbsp;&nbsp; 2.10462&nbsp;&nbsp; 2.27449&nbsp;&nbsp; 2.34019&nbsp;&nbsp; 2.63275&nbsp;&nbsp; 2.60891&nbsp;&nbsp; 2.98549&nbsp;&nbsp;&nbsp; 2.1451<br
+/><br
+/><br
+/><br
+/>&nbsp;&nbsp;<br
+/>===<br
+/>AI: on GW: define examples of cases where one needs terse output, or/and transposed output<br
+/>===<br
+/><br
+/>Wed PM - Services<br
+/>===============================================================<br
+/>Archive Service - *David*<br
+/>==================<br
+/><br
+/>DH: Problems with getting the specific client to work with the new server model (no pvIOC), so the example can only use eget and misses the extensive formatting options of the specific client.<br
+/><br
+/>The specific client allows more versatile timestamp specification (on input) and e.g. more types of output formatting (e.g. time stamps as time-string, or as double for plotting).<br
+/><br
+/>BD: What functioniality do the physics apps expect?<br
+/>Needed: Weekly reports on things. ~dozens of fixed query plots generated.<br
+/><br
+/>GW: SLAC uses Matlab tools for data mining, finding devices or physics entities that are drifting etc.<br
+/><br
+/>========<br
+/>Diamond is looking forward to the NT Image Server - that should be made a deliverable.<br
+/>-&gt; Thursday - beamline session<br
+/>========<br
+/><br
+/>KK: Non-streaming service might run into trouble, as archive queries might call for large amounts of data, which is a resource issue when the service has to create the complete answer structure befoe sending it.<br
+/><br
+/>GW: Don't waste time working on the solution for 1% of teh queries.<br
+/>MD, RL: There have been recent issues with channelarchiver clients not being able to retrieve sets of waveform data.<br
+/><br
+/>GW: shows LCLS web pages that do reports (last hr - last yr) on important machine parameters ("how did we do last week?").<br
+/><br
+/>RL: Directory service demo<br
+/>V4 service is a (separate) layer on top of the Glassfish implementation. Takes the request structure, converts it to the API of the directory service. Results are again converted to pvData structures and put on the wire.<br
+/><br
+/>KK: Could the directory service go directly to the database?<br
+/>RL: it *could* but the implementation has a lot of businesslogic implemented in the database, it isolates the implementation from the database system below and provides a more robust system.<br
+/><br
+/>===<br
+/>AI: on RL to implement sorting the results by multiple items, and show columns in the specified order<br
+/>===<br
+/><br
+/>Discussion about handling the results in CSS. With the (current) V4 results CSS cannot know that the<br
+/>returned data is in fact channel names. The problem would be solved by a NT type that specifies that<br
+/>a string array contains channel names.<br
+/>GW: it is planned (NTMultiChannelArray) but not yet implemented nor fully specified<br
+/><br
+/>*********<br
+/><b>NEW TOPIC: Channel Viewer</b><br
+/>*********<br
+/>Kunal<br
+/><br
+/>Kunal showed a CSS widget library for creating "channel finder driven" CSS displays.<br
+/><br
+/>And example bump display was shown.<br
+/><br
+/>*******<br
+/><b>NEW TOPIC: MASAR Service and Experiance at NSLS II</b><br
+/>*******<br
+/>Guobao Shen<br
+/><br
+/>GS:<br
+/>MASAR is a save and restore service.<br
+/><br
+/>Masar is now a V4 service. It doesn't presently use NTURI but it is using NTNameValue pair for arguments, and NTTable for returned data.<br
+/><br
+/>Masar uses SQLlite database for configs.<br
+/><br
+/>pvclient -&gt; MASAR -&gt; V3 iocs<br
+/><br
+/>MASAR can take a snapshot of any kind of V3 data, including waveform<br
+/><br
+/>The MASAR service only save and serves "snaphots", it doesn't itself restore snapshots. That is, it&nbsp;<br
+/>doesn't write to setpoints of the machine. Physicists use the sanpshots and write their own<br
+/>software to implement those snapshots.<br
+/><br
+/>Lessons Leant<br
+/>Design your configurations carefully.&nbsp;<br
+/>Tell physicists to be careful not to compare the values in two snapshots without<br
+/>also being conscious of the times at which the channels were processed (which is also recorded in the event snapshot).<br
+/><br
+/>BD: Is there a way to search all the snaphsots for a given PV?<br
+/>GS: No, short of greping the SQLLite database file<br
+/><br
+/>RL: Saving readbacks with the setpoints adds valuable information (e.g. setpoints from a ps that was switched off might be dangerous to restore).<br
+/>Some restore operations need pre and post operations, e.g. to switch a device to "manual" before restoring setpoints, and back to "automatic" after.<br
+/><br
+/><br
+/><br
+/><br
+/><br
+/></body>
+</html>

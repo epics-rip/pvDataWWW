@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$31</title>
+</head>
+<body><br
+/><b>Agenda for Day</b><br
+/><b>===========</b><br
+/>9:00am&nbsp; Application of V4 architecture in High Level Applications Bob Dalesio<br
+/>9:15 am interoperaboility V3 V4&nbsp;&nbsp;&nbsp;&nbsp; Marty Kraimer<br
+/>10:00 am Use of V3Channel for Gas Analyser at Diamond, David Hickin<br
+/>10:15&nbsp; break<br
+/>10:30 am&nbsp; Beam line requirements for scanning, data acquisition, and analysis, Daron Chabot.<br
+/>11:00 am&nbsp; synApps, record types and data. Tim Mooney.<br
+/>11:30 am Use of areaDetector and synApps for biological data analysis. John Skinner<br
+/>12:00 noon Scan system for experiments at SNS. Kay Kasemir<br
+/>12:30-1:30 lunch<br
+/>snuck in talk: PXdb, John<br
+/>1:30-3:00 pm Version 4 IOC planning to support beamline controls.&nbsp; Discussion. Bob Dalesio.<br
+/>3:30 – 4;00 break<br
+/>4:00 – 4:30pm Normative Types review. *Greg*<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * EPICS URI. Review of use of the EPICS URL. *Greg*<br
+/>4:30pm – 5:00 Proposal for "editing down" and implementation of N-types *Michael*<br
+/><br
+/>*****<br
+/><b>NEW TOPIC: Application of V4 architecture in High Level Applications,</b> Bob Dalesio<br
+/>*****<br
+/>Talk presentation Powerpoint at: <a href="http://epics-pvdata.sourceforge.net/talks/2012/V4EPICSKorea20121023.ppt">http://epics-pvdata.sourceforge.net/talks/2012/V4EPICSKorea20121023.ppt</a><br
+/><br
+/>Gave a summary of how EPICSV4 is adding facilities for building data services. Showed for beamline<br
+/>experimenters, where in their experimental control system EPICS V4 service would fit and what they&nbsp;<br
+/>might do.&nbsp;<br
+/><br
+/><b>*****</b><br
+/><b>NEW TOPIC: interoperaboility V3 V4, </b>Marty Kraimer<br
+/><b>*****</b><br
+/>See sections Overview of iocCore, pvAccess and pvIOC at:<br
+/><a href="http://epics-pvdata.sourceforge.net/talks/2012/pvIOCCPP.html#overview_of_ioccore,_pvaccess_and_pvioc">http://epics-pvdata.sourceforge.net/talks/2012/pvIOCCPP.html#overview_of_ioccore,_pvaccess_and_pvioc</a><br
+/>and section&nbsp;<br
+/>CAV3/V3Record &lt;==&gt; pvIOC/pvAccess :<br
+/><a href="http://epics-pvdata.sourceforge.net/talks/2012/pvIOCCPP.html#cav3/v3record_">http://epics-pvdata.sourceforge.net/talks/2012/pvIOCCPP.html#cav3/v3record_</a>&lt;==&gt;_pvioc/pvaccess<br
+/><br
+/><br
+/><b>*****</b><br
+/><b>NEW TOPIC: Using V3Channel at Diamond, </b>David Hickin<br
+/><b>*****</b><br
+/><br
+/>Showed how you change a&nbsp; V3 IOC boot script, dbd file, and its makefile to add v3channel.<br
+/><br
+/>Then he used an example of using pvput (with pvaccess on the wire), to write to<br
+/>a V4 scalar, attached to a V3 channel on the IOC.&nbsp;<br
+/><br
+/>He then showed monitoring (pvget -m) a V4 array, which in the IOC is attached to&nbsp;&nbsp;<br
+/>a V3 waveform.<br
+/><br
+/>Scribe: Brilliant!<br
+/><br
+/><br
+/>******<br
+/><b>NEW TOPIC: Beam line requirements for scanning, data acquisition, and analysis</b>, Daron Chabot.<br
+/>******<br
+/><br
+/>See talk at: <a href="http://epics-pvdata.sourceforge.net/talks/2012/bnl_10_18_12.pdf">http://epics-pvdata.sourceforge.net/talks/2012/bnl_10_18_12.pdf</a><br
+/><br
+/>Next generation detectors are of order 1-4 Mpix@s-24 kHz. == 40 Gbps. Another example: LBNL FastCCD 2 Mpix @ 2.2 kHz = 6.4 Gbps.<br
+/><br
+/>For X-ray Photon Correlation Spectroscopy (a common technique) people are looking to<br
+/>analyze 40-60,000 frames per second and making correlations between frames.<br
+/><br
+/>So, presently it takes only 1 or 2 sconds to take the data.&nbsp;<br
+/>Then presently the pre processing of the images (which detemines whether there was anything interesting in the data) takes about 15-60 mins. They want to get that down to seconds.<br
+/><br
+/>Things V3 is missing for beamlines<br
+/>* A way of managing data that is represented in Reciprocal Space (a coordinate transform of the data), which is common for beamline physics. A system which maps coordinate space to reciprocal space.&nbsp;<br
+/>* "Asynchronous timestamps" - where the time at which data was taken is attached to the data after the fact. That is, event reconstruction. This functionality is common in particle physics, but isn't native to EPICS or have a well known pattern.<br
+/>*&nbsp; A native data manager.&nbsp; Something like pvManager operating server side as a service. "Decoupling the rate of events on the network from the rate of refresh needed by the client".<br
+/><a href="http://pvmanager.sourceforge.net">http://pvmanager.sourceforge.net</a><br
+/>* A framework for "fly scanning" (scanning a number of dependent variables against time - the independent variable needs no settle time).<br
+/>GW: Are you talking about a client side program like a "correlation Plots"?<br
+/>DC: Yes, that would be great.<br
+/><br
+/>Summary:<br
+/>* New detectors pose a challenge<br
+/>* SW must permit interactive "exploration" for data acquisition and analysis. Too allow experimenters to&nbsp;<br
+/>&nbsp; interactively try different frame rates, triggering times etc. Need a flexible tool that allows one<br
+/>&nbsp; to configure an experminetal setup and change it ad hoc.<br
+/>* No single person can meet the challenges, collaboration is requried.<br
+/><br
+/>******<br
+/><b>NEW TOPIC: synApps, Epics Software for beamline controls, Tim Mooney</b><br
+/>******<br
+/><br
+/>SynApps is a collection of EPICS modules for synchrotron beamlines.<br
+/>Oriented to beamline control, not experiment control<br
+/>Modules:<br
+/>areaDetector: CCD detector support. Supports 2-d detectors. areaDetector includes a plugin mech. for<br
+/>grabbing the detector device data, and assemble a data file + eg the conditions under which data was taken.<br
+/>Importantly it takes images of the disk, and puts them into EPICS Pvs.<br
+/>It operates in the range of up to 100Hz.&nbsp;<br
+/><br
+/>autoSave module:<br
+/>Records the latest values of selected EPICS Pvs; restores those values when the IOC restarts.<br
+/><br
+/>busy module:<br
+/>Allows Ca clients, and asyn threads, to complete put_callback operations.<br
+/>Eg, SNL prog driven by EPICS PVs.<br
+/>Scan sw in synapps is absolutely reliant on thsi module, because without it it wouldn't know when to execute the callback.<br
+/><br
+/>calc module:<br
+/>Evaluates expressions entered at runtime. Hence sequence of operations.&nbsp;<br
+/>When doing a scan that involves a motor and scanners, the calc module is what is controlling the sequence.<br
+/><br
+/>dxp module<br
+/>Important for acquiring spectra<br
+/>UC is focusing down to a small point, and then raster scanning.&nbsp;<br
+/>Is central to method for storing spectra for each pixel&nbsp;<br
+/>Streams to disk for fly scans.<br
+/><br
+/>mca module:<br
+/>Used for step scans (as opposed to fly scans)<br
+/><br
+/>motor module<br
+/>For controlling the "manual" move of a motor - which is out of scope for the motor record.<br
+/>For instance, if you want N (&lt;8 or so) motors to each be at a given position at a given time.<br
+/>Uses motor record.<br
+/>&nbsp; stepper and servo motors<br
+/>&nbsp; soft-motor support<br
+/>&nbsp; user/dial/raw coordinates<br
+/>&nbsp; pre/post move commands<br
+/>&nbsp; etc..<br
+/>Trajectory support built in for some motors.<br
+/><br
+/>optics module<br
+/>Supports slits and mirrors, and monochromaters<br
+/>Aslo low E monochrometers<br
+/>Supports optics table<br
+/><br
+/>quadEM module<br
+/>Support for 4-input electrometers<br
+/><br
+/>softGlue module<br
+/>Support for end-user programmable glue electronics<br
+/>Applications:<br
+/>&nbsp; Simple glue electronics problems, where otherwise you may have had to use a breadboard.<br
+/>&nbsp; Fly scans<br
+/>&nbsp; Pump-probe experiments<br
+/>&nbsp; Implement smart oscilloscope trigger for eg diagnostics<br
+/>Drives EPICS record processing from hardware input<br
+/>Works with microline off the shelf FPGAs<br
+/><br
+/>sscan module<br
+/>Allows for expression and acquisition of 1-d correlation experiments.&nbsp;<br
+/>The issue for it, is that storing previously configured scan records for later retrieval and<br
+/>reuse, has no well established pattern or user level support.<br
+/><br
+/>SynApps in Context<br
+/>It is suff. for many types of experminent<br
+/><br
+/>Wanted:<br
+/>&nbsp; There are too many expermient types to develop a custom client for each.<br
+/>&nbsp; So, need generic tools from which to build experiment controls.<br
+/>&nbsp; Ideally "do for experiments what EPICS does for beamlines."<br
+/>&nbsp;&nbsp;<br
+/>SynApps is used with "spec". Spec is the standard progrm used by materials scientists for controlling experiments. It does not do analsysis. So, the common UC would be control eg a crystallography experiment with spec, and use the synApps sscan record to read results.<br
+/><br
+/>Discussion<br
+/>TM wants to give experimenters what EPICS did for beamline.<br
+/>Not clear what that means<br
+/>python wrapper for the client seems the only obvious thing.<br
+/><br
+/>session ends 12:40<br
+/><br
+/><br
+/><b>AFTERNOON</b><br
+/><b>==========</b><br
+/><br
+/>NEW TOPIC: <b>Scan system for experiments at SNS. </b>Kay Kaswemir<br
+/><br
+/>KK described a CSS client and server side suport, for scanning.<br
+/>Scans are confirgured in the GUI, or by hand in XML. Once the scan is configured,<br
+/>it is submitted (by java RMI) to the scan server which executes it and returns results.<br
+/>The scan server does not wrap sscan record, it implements its own scan engine.<br
+/><br
+/>The architectural premise is that one beamline experminent would use one scan server.<br
+/>One scan server presently only (deliberately) executes one scan request at a time.&nbsp;<br
+/><br
+/>So, it's oriented toward helping beamline scientists graphically set up their experimanent<br
+/>in CSS, then run it remotely in the experminetal beamline, possibly lasting a long time (hrs or days)<br
+/><br
+/>[gw: It's not so much oriented toward accelerator physics, where one might well set 100s of<br
+/>dependent variables, but acquiring relatively slowly, and one doen't have want to or need to&nbsp;<br
+/>write a script to make the scan.<br
+/><br
+/>Since it's java, an acquisition script can be written in matlab!<br
+/><br
+/>GW: very cool for beamline experminents. Probably not so pertinent for accel. phyics.<br
+/><br
+/>TM: How do I get this system and deploy it?<br
+/>KK: It's packaged as a CSS [ie an eclipse] plugin. You build your scanner as an Eclipse "product"<br
+/>using the CSS Scan "feature".&nbsp;<br
+/><br
+/>******<br
+/><b>NEW TOPIC: PXdb,</b> Rick Buono<br
+/>******<br
+/>Is a Protien Crystalography Database.<br
+/>Written in perl, javascript, on a postgress db.<br
+/><br
+/>PXdb is used by visiting scientists, to<br
+/>&nbsp; request beamtime<br
+/>&nbsp; manage groups, projects, crystals<br
+/>&nbsp; Review details of all tehir data collections<br
+/>&nbsp; Generate summary reports<br
+/>&nbsp;&nbsp;<br
+/>Utilized by BNL staff to<br
+/>&nbsp; Administer BNL hosted and remote experiment scheduling and execution.<br
+/>&nbsp;&nbsp;<br
+/>******<br
+/><b>NEW TOPIC: CBASS experimental data setup</b><br
+/>******<br
+/>CBASS is a beamline experiment platform by BNL.<br
+/>It uses EPICS, on RTEMS, EPICS SoftIOCs<br
+/>It's essentially 3-layer model, where the servers are implemented.&nbsp;<br
+/>It's python on server side. The GUI is tkl/TK<br
+/><br
+/><b>******</b><br
+/><b>NEW TOPIC: Formulating the Remit of the EPICS V4 Working Group for the next year.&nbsp;</b><br
+/><b>******</b><br
+/>Discussion led by BD.<br
+/>BD comments that there were 2 levels of participation in the first WG:<br
+/>&nbsp;- Participant - at least 20-30% of your time<br
+/>&nbsp;- Observer. Makes comments on the work of the group.<br
+/>&nbsp;We'd love Tim and others to be at least observer.<br
+/><br
+/>&nbsp;BD starts listing service we might work on:<br
+/>&nbsp;<br
+/>&nbsp;Potential Projects of Next Working Group Charter:<br
+/>&nbsp;&nbsp; * pvIOC should understand multi-core processors, and matrix manipulation, recording the time sequence from hardware.<br
+/>&nbsp;&nbsp; * NDArray support - areaDetector. Normalizing areaDetector using Normative Types<br
+/>&nbsp;&nbsp; * Image Library - tools for manipulating images and packaging as NTImage<br
+/>&nbsp;&nbsp; * Diamond had the following specific requirements:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DH (on behalf of JR):<br
+/>&nbsp;&nbsp;&nbsp; Want monitors suitable for data acquisition. Must guarantee in-order delivery and configurable queue size and replacement&nbsp;&nbsp;&nbsp; policy on overflow (drop newest or drop oldest etc). May already exist, want to develop test app (ethercat or areadetector)<br
+/><br
+/>DH (on behalf of Tom Cobb):<br
+/>Want to be able to run an areaDetector driver on one machine, and an areaDetector plugin on another machine, and transfer the NDArrays between the two using EPICS V4 monitors<br
+/><br
+/>DH (on behalf of Tom Cobb):<br
+/>Want to have an existing areaDetector driver (like simDetector) be connected to a V4 record layer so that it dynamically created fields according to the underlying parameter library, and to do it with only header file changes to the driver.<br
+/><br
+/>&nbsp;&nbsp; * Client Applications. Replacement for (m)edm<br
+/>&nbsp;&nbsp; * Scan service<br
+/>&nbsp;&nbsp; * Experimental data environment logging<br
+/>&nbsp;&nbsp; * Coordinate space conversion library<br
+/>&nbsp;&nbsp; * Analysis library<br
+/>&nbsp;&nbsp;<br
+/>GW: The above projects and requirements do not seem perculiar to beamline physics, they're really applicable also to accelerator physics.&nbsp;<br
+/>GW: Also, many of them are still quite etherial, not closely defined. But to be a goal of a collaboration, a goal must be very concrete.<br
+/>So, suggest not explicitly orienting the next WG toward beamline physics, but rather taking only those requirements above&nbsp;<br
+/>which are conrete, and doing those within the existing context of the WG.<br
+/>Consensus agrees.<br
+/><br
+/>Conclusion: the next charter of the WG will be oriented towards accelerator and bealine physics support jointly. We won't specifically orient one WG to beamline physics, and another to accelerator phyics.<br
+/>&nbsp;<br
+/>Meeting ends, 17:00<br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/></body>
+</html>

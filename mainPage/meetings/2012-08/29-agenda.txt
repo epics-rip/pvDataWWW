@@ -1,0 +1,35 @@
+Colleagues,
+
+Please find below the agenda for our  weekly meeting [1]. Minutes in titanpad [2].
+
+Cheers
+Greg
+
+Agenda
+======
+
+1. Confirmation of readiness of pv* c++ and java tips. *Marty*
+
+2. Normative Types self identification, Greg
+
+   Confirm basic plan:
+      i) pvAccess id shall carry a namespace:type declaration;
+      ii)  we won't invent a full validating type system, we'll use
+           XML as the validating type system;
+      iii) pvAccess messages themselves will not hold all information to validate all fields of a
+           structure, only the terminal namespace and type declaration. Validation of derived types
+           would have refer to the external XML schema definitions.
+
+3. Headers.
+
+   What should be in headers for each file type.
+   Should license and copyright be inline (per Andrew's suggestion) or a link.
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] https://epicsv4.titanpad.com/26
+
+
+
+
+
+

@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$43</title>
+</head>
+<body>============= Meeting 23-Jan-2013 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/><b>MORNING</b><br
+/><br
+/>Overflow / Open Issues<br
+/><br
+/><b>Skype/Titanpad vs. Google hangout</b><br
+/><br
+/><b>pvaSrv multiValue issues</b><br
+/><br
+/><b>New V3 Gateway implementation</b><br
+/><br
+/><b>Streaming (chunking) NTTables and other large data</b><br
+/><br
+/><b>pvAccess Authentication and Authorization</b><br
+/><br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: TK, AJ, MS, RL, DH<br
+/>Scribe:&nbsp;<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Skype/Titanpad vs. Google hangout</b><br
+/>************<br
+/><br
+/>RL: Google seems to offer better integration of video, shared docs, shared slides, etc.<br
+/>Problem: How do we integrate "old" Titanpad meeting notes with "new" notes on Google Drive?<br
+/><br
+/>Question: how long are the minutes kept on Titanpad? Should we archive the old minutes (to the V4 website)?<br
+/><br
+/>************<br
+/><b>AI on AJ:</b> Extract all old titanpad minutes into files (html preferably) on the sourceforge website and update the links.<br
+/>************<br
+/><br
+/>Question: Should we switch to using Google hangouts instead of Skype conference calls, and when?<br
+/><br
+/>************<br
+/><b>AI</b> on RL by end of week 06: Find out how to create regular hangouts for the telecons<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: pvaSrv multivalue issues</b><br
+/>************<br
+/><br
+/>RL: There is a configuration of a group from a file, and it publishes the result under a name. This is just a plain file without proper syntax or macro expansion.<br
+/>There should be predefined groups available as well as on-the-fly creation of groups.<br
+/>RL: return type is an unnamed top level structure of NT_SCALAR and NT_SCALAR_ARRAY structures.<br
+/>&nbsp;&nbsp;&nbsp; No Alarm or Display information at the top level.<br
+/>AJ - it would be nice to support both preconfigured groups and on the fly creation.<br
+/>RL - we have an RPC service to create groups, and a local API within the IOC.<br
+/><br
+/>Operations:<br
+/>&nbsp;&nbsp;&nbsp; Create group takes arguments group name, (once_only, specific lifetime or forever), monitor latency period, require atomic.<br
+/>&nbsp;&nbsp;&nbsp; Operations on the group by group name (get, put, monitor).<br
+/>&nbsp;&nbsp;&nbsp; Delete group by name.<br
+/><br
+/>************<br
+/><b>RESOLUTION: </b>Rename "multiValue" to "molecule" = bound collection of atoms.<br
+/>************<br
+/><br
+/><b>ISSUE:</b> How to persist remotely-created groups over a reboot?<br
+/>&nbsp;&nbsp;&nbsp; Consider using auto-save/restore for this, not convinced whether this is the right place.<br
+/>&nbsp;&nbsp;&nbsp; Would like to use the mechanism for saving files that save/restore has, but use a different file.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: New V3 Gateway implementation</b><br
+/>************<br
+/>TK: PSI has finished the implementation of a new V3 gateway, which is not based on gdd/CAS, but acts more like a switch or firewall: The raw CA message stream is fanned out to clients. Reason were problems with the CAs based Gateway: e.g. large arrays (images) have to be received completely by the Gateway before it can start sending the update out to its clients.<br
+/>Implemented in C# on Windows.<br
+/><br
+/>Group: Encourage the authors to give a talk about it at the next EPICS Collab meeting in Diamond.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Streaming (chunking) NTTables and other large data</b><br
+/>************<br
+/>RL: This problem is on application level - our definition of NTTable requires a pvAccess server to have the complete table in memory before it can start sending it out to the client.<br
+/>MS: Full implementation - client asks specifying number of rows and offset, gets the matching part.<br
+/>RL: Light implementation - client asks for the whole table, but gets sent parts, each being an NTTable that is flagged as "more to come", until the last one which is flagged "end".<br
+/>MS: This requires a change in the pvAccess spec for RPC, which currently defines the RPC as "one request, one answer".<br
+/>We will also need the ability for a client to cancel an ongoing RPC request.<br
+/><br
+/>************<br
+/><b>AI</b> on MS : Check which changes are necessary in the pvAccess spec to allow this.<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: pvAccess Authentication and Authorization</b><br
+/>************<br
+/><br
+/>BD: Should not be part of this year's charter.<br
+/>DH: Then pvaSrv on a V3 IOC is a security hole, and not implementing authN will prevent installations to use pvaSrv.<br
+/>AJ: Could pvaSrv use CA's Access Security? Probably.<br
+/><br
+/>************<br
+/><b>RESOLUTION: pvaSrv will use a configurable user name and the pvAccess client host name, and utilize CA Access Security for its local V3 access</b><br
+/>************<br
+/>That will allow to restrict access to records for V4 pvAccess clients similar to controlling access for a PV Gateway.<br
+/>DH: That should be good enough.<br
+/><br
+/>************<br
+/><b>RESOLUTION: Pluggable AuthN and AuthZ will not be part of this year's charter</b><br
+/>************<br
+/><br
+/><br
+/></body>
+</html>

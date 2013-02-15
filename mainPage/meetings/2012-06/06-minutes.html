@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$17</title>
+</head>
+<body>============= Meeting 06-Jun-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/>0. Preliminaries, 5 mins. Bob, you can start the Skype call right?<br
+/><br
+/>1. pvAccess Spec Publication. ! <b>*Bob*</b> 5 mins.<br
+/><br
+/>2. IPAC EPICS V4 report, <b>*Bob*</b> 5 mins.<br
+/><br
+/>3. Status of core modules in Java and C++. Planned release schedule?&nbsp;<br
+/>&nbsp;&nbsp; <b>*Marty*</b>, <b>*Matej*</b> 20 mins.<br
+/><ul><li>Any remaining issues with PVStructure, PVDataCreate, FieldCreate etc (<b>*Marty*</b>, <b>*Matej*</b>)?</li
+><li>We need services and all examples (gather, rdb java example, bpm C++ example, channelArchiver) brought up to date w.r.t. the new interfaces and tested by release&nbsp;</li
+><li>Date (<b>*greg*</b>, <b>*Marty*</b>, <b>*David*</b>, Timo*). So, what date is reasonable, Friday 15 June?<br/><br
+/></li></ul
+>4. Services input interface proposal [3]. <b>*Greg*</b>, <b>*Ralph*</b>, <b>*Matej*</b>, 20 mins.&nbsp;<br
+/>&nbsp;&nbsp; Let's try to agree on the target for Matej and pvget.<br
+/><ul><li>That for now, -s &lt;service&gt; must be given to pvget</li
+><li>Which arg types will be supported? Propose string, int, double, boolean. pvget will coerce given ints to doubles, and given "1" or "y" or "yes" to booleans.<br/><br
+/></li></ul
+>5. Architecture or pattern for Dirk Zimock's use case. <b>*Marty*</b>, <b>*Matej*</b> comment, 20 mins.<br
+/>Recall Dirk's requirement is a single (V4) PV to encapsulate the values of a number of V3 PVs as a structure. Clearly it can be done with a pvIOC in some high level host.<br
+/>But how much better is it to cohosting a pvIOC and a V3 IOC in the vxWorks/RTEMS embedded computer?<br
+/>If the answer is "much better, but can't reasonably be done yet because vxWorks pvIOC is not ready," then when?&nbsp;<br
+/><br
+/>6. EPICS V4 charter exit status (if we have time, else next week)<br
+/>We have 3 months to go in our charter. What are our hard targets for completion to full "ready for use" status by then.<br
+/>I have a use case list I'll publish for next week. Please let me know what is not going to happen.<br
+/>Eg.:<br
+/><ul><li>Completed javadoc and DOxygen for released software?</li
+><li>These 2 deliverables [4] seem in danger to me:<ul><li>A normative document of the EPICS V4 IOC processing pipeline"&nbsp;</li
+><li>A User Guide for EPICS V4 IOC control application developers<br/><br
+/></li></ul
+></li></ul
+>Next Week<br
+/>---------<br
+/>Normative Types 1st PWD<br
+/>Charter exit objectives.&nbsp;<br
+/>Beginning thoughts on followup after this charter.&nbsp;<br
+/><br
+/>[3] <a href="http://sourceforge.net/mailarchive/message.php?msg_id=29346546">http://sourceforge.net/mailarchive/message.php?msg_id=29346546</a><br
+/>[4] <a href="http://epics-pvdata.sourceforge.net/charter.html#deliverables">http://epics-pvdata.sourceforge.net/charter.html#deliverables</a><br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: DH, MK, RL, NM, JR, MS, GW, GS, TK<br
+/>Scribe: NM<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>pvAccess Spec Publication<br
+/>************<br
+/><br
+/>************<br
+/><b>AI: BD </b>working on a letter for tech-talk<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Status of core modules in Java and C++. Planned release schedule?&nbsp;<br
+/>************<br
+/>Marty's status<br
+/><br
+/>pvIOCJava<br
+/><br
+/>I am almost finished with new version of pvCopy.<br
+/>Some tests are still failing.<br
+/>I should be able to commit tomorrow.<br
+/><br
+/>Remaining tasks:<br
+/><br
+/>pvDataCPP<br
+/><br
+/>Change appendField, appendFields, etc so that they have the same semantics as pvDataJava<br
+/>Should not take long because the semantcs are same as Java.<br
+/>&lt; 1 week.<br
+/><br
+/>pvIOCCPP<br
+/><br
+/>Must be upgraded to for unsigned and moving fieldName.<br
+/>MK:- "2 days"<br
+/><br
+/>pvServices&nbsp;<br
+/>&nbsp;<br
+/>Both Java and CPP must be upgraded.<br
+/>pvServiceJava has things in there that should be moved out.&nbsp;<br
+/>Guobao move things that shoud be moved out, out.<br
+/>Marty, add gather and glue code.<br
+/><br
+/>Documentation<br
+/>MK: "at least 2 weeks"<br
+/><br
+/>All out of date.<br
+/><br
+/>What about license and headers in source files?<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1,1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Top<br
+/><br
+/>MK: pvIOCJava will be committed tomorrow.<br
+/><br
+/>************<br
+/><b>AI</b> GW: scripting for adding license and headers in source files. See existing headers in pvDataJava/PV.&nbsp;<br
+/>************<br
+/><br
+/>************<br
+/>AI: GS: moving prototypes of services from pvServiceJava containing a framework and gather only.<br
+/>************<br
+/><br
+/>GW: we need revise the existing overview&nbsp;<br
+/><br
+/>Matej re pvAccess:<br
+/>pvAccessJava complete.<br
+/>1 week, c++ implementation of spec complete<br
+/>1 week for p/eget unsigned integration and additional tests.<br
+/><br
+/>GW: These completion estimates imply Integration with services in 2 weeks.<br
+/>&nbsp;<br
+/>GW: Also means license and header changes ready in about 2 weeks.<br
+/><br
+/>GW: let's discuss the target date next week<br
+/><br
+/>DH: question about his comments about unsinged issues<br
+/>MK: did not look at this issue<br
+/>GW: let's defer it to the next week<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Services input interface proposal<br
+/>************<br
+/>MS: did not consider it yet<br
+/>Two options: (1) support of the limited set of types (2) service assumes the required structure<br
+/><br
+/>RL: will service support the introspection interface?<br
+/><br
+/>MK: composite approach: support of the limited set of structures (arguments) which can be selected by client.<br
+/><br
+/>GW: how to discover arguments/structures?&nbsp;<br
+/><br
+/>MS: getField returns the name of the method. Then - list of arguments. These arguments can be mandatory or optional.<br
+/><br
+/><br
+/>&lt;database&gt;<br
+/>&nbsp; &lt;record recordName="bpmService" extends="org.epics.pvservice.service"&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;scalar name="factoryRPC"&gt;bpmService.bpmServiceFactory&lt;/scalar&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;structure name="arguments"&gt;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- *** --&gt;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;scalar name="entity" scalarType="string"/&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;scalar name="type" scalarType="string"/&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- abs or diff --&gt;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;scalar name="Npulses" scalarType="integer"/&gt;&nbsp; &lt;!-- Num beam passes to average, if not given then 1 --&gt;<br
+/>&nbsp;&nbsp;&nbsp; &lt;/structure&gt;<br
+/>&nbsp; &lt;/record&gt;<br
+/>&lt;/database&gt;<br
+/><br
+/>************<br
+/><b>AI</b> MS: June 13: refine the service API proposal for optional arguments<br
+/>************<br
+/>Existing Proposal at: <a href="http://sourceforge.net/mailarchive/message.php?msg_id=29346546">http://sourceforge.net/mailarchive/message.php?msg_id=29346546</a><br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Architecture or pattern for Dirk Zimock's use case, cohosted v3/v4 ioc in vxworks<br
+/>************<br
+/>MK: A main reason for rewrites was to support Dirk in his effort, so he needs to retry his builds after we complete the rewrites.<br
+/><br
+/>TK: if you use pvAccess to get data from v3, then you can data from 1 v3 record. Is there any way to<br
+/>extend it so you can get a structure?<br
+/><br
+/>MK: in pvIOCCPP we dont have a db, or any record support [right now]. So, only way to do it is to implement the channel interface.<br
+/>JR: Marty already done the bit for 1 record, right? So, why so hard for &gt;1? Why is RPC relevant.<br
+/><br
+/>MK: channelRPC gives you the ability to write your own record support, so it's the way to get &gt;1 V3 channel in a (CPP)<br
+/>pvIOC [cohosted in vxworks].<br
+/><br
+/>MK; The V3channel that's in [pvIOCCPP] now, is geared towards making v3 record data avail to v4 clients. But uses<br
+/>the channel interface. Since Dirk wants the server side to package up the data on the server side into 1 v4 pv,<br
+/>he needs the database and recor support that is in the pvIOCJava, but is not yet in pvIOCCPP.<br
+/><br
+/>TK: So the interim "workaround" is to use the gather service on a host level pvIOC. Or use a pvIOCJava at the host level to<br
+/>make the acquisitions and package and return the results.<br
+/><br
+/>MK: Yes, I'm not happy about the present workarounds either.<br
+/><br
+/>TK: Anton was also asking after suhc an architecture.<br
+/><br
+/>GW: Can one use a loval gather just to satisfy this specific requirement, as opposed to fully implementing record support in pvIOCCPP.<br
+/><br
+/><br
+/>************<br
+/><b>AI</b> MK: write the architecture suggestion for achiving these requirements on the existing C++ iocs (v3).&nbsp;<br
+/>************<br
+/><br
+/>MK: Emphasises that image collection would be a strong use case also for the V4 access to V3 PVs on an embedded CPP IOC.<br
+/><br
+/>Meeting ends<br
+/><br
+/><br
+/></body>
+</html>

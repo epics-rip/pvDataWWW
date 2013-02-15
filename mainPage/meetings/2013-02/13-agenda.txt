@@ -1,0 +1,34 @@
+Colleagues,
+
+Please find below the agenda for our weekly telecon, 13-Feb-13, at the usual
+time [1].
+
+*Ralph*, *Andrew* can one of you give us instructions for how to attend the
+meeting, including the meeting minutes page and instructions for audio. Thanks.
+
+*Michael*, are you joining us now? What's the status of thinking on a redesign of
+the c++ API for arrays?
+
+Cheers
+Greg
+ 
+Agenda
+======
+
+* pvaSrv. Please see the Requirements doc, and be ready with thoughts on 
+  the questions asked in it [2]. 
+  (*Ralph*)
+  
+* Plan for defining the list of architectures, compilers and optimization 
+  options supported for EPICS V4 
+  (*Matej*, *Andrew*)
+
+
+
+[1] Meeting time, http://epics-pvdata.sourceforge.net/home.html#usefulinfo 
+[2] EPICS pvaSrv Specification Ideas, 
+http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrvSpec.html
+
+
+
+

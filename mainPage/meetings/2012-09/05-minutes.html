@@ -1,0 +1,471 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$27</title>
+</head>
+<body><b>AGENDA</b><br
+/><b>=======</b><br
+/><br
+/>Colleagues,<br
+/><br
+/>In tomorrow's telecon I'd like to go through the list of illustrations of the<br
+/>basic functionalities of EPICS V4, and assign people responsible for delivering<br
+/>demos of that functionality.<br
+/><br
+/>There are 18 such illustrations listed below. Each have a name attached.<br
+/><br
+/>Now, basically all the line items have pre-requisities, that's the point of the exercise. It<br
+/>forces us to be clear about the non-functional requirements necessary to achieve the<br
+/>functional requirements. For instance, #10 requires NTMatrix be defined, which means an<br
+/>NT self-id solution must be implemented, and a way for eget to talk to a service must be implemented.<br
+/>Therefore, for each of these, we must be clear on the prerequisites and who is responsible for them (yes,<br
+/>I know I'm attached to many of them). However, part of the intention of assigning responsibility<br
+/>for the line item deliverable, is to ensure that the named individual demos the functionality<br
+/>whether they received the prerequisite or not. I think there is only one prerequisite which, if absent,<br
+/>truly renders solution impossible; that's the way eget should interface to services<br
+/>that take arguments.<br
+/><br
+/>So, tomorrow, let's first go through the list below to assign responsible party. Then spend<br
+/>some time on the basic service interface.<br
+/>&nbsp; * *Ralph*, *David*, how do you define your services to take arguments. Did you use the same method<br
+/>&nbsp; as hellowService and rdbService?<br
+/>&nbsp; * Should a javaIOC be necessary? if not, how would be arguments be formally documented (since there<br
+/>&nbsp;&nbsp;&nbsp; would be no database xml file?<br
+/>&nbsp; * I would like an interface in which one can ask the service what are its arguments. How would that be<br
+/>&nbsp;&nbsp;&nbsp; achieved?<br
+/><br
+/>Timeline. All of these shall be demoed at the October meeting, 17-19 Oct.<br
+/>** But, I would like to be able to conduct ALL the demoes myself. That ensures that they<br
+/>are all mature enough, and encapsulated enough, that examples can be distributed and documented<br
+/>sufficiently for a new user. So, I'd like to take delivery of these by *1-Oct*.<br
+/><br
+/><b>MINUTES</b><br
+/><b>=======</b><br
+/><br
+/><b>Present: BD, DH, TK, MR, JR, MS, GS, GW</b><br
+/><b>Scribe: JR</b><br
+/><br
+/>*********<br
+/><b>TOPIC: Put names on each deliverable demo per list below</b><br
+/>*********<br
+/>GW: Focus on first item, demos to be delivered for the October meeting.<br
+/><br
+/>GW: Any person should be able to download and run the examples after reading the documentation. Better than developers demonstrating their applications.<br
+/><br
+/>MS: can do items 1 and 2<br
+/><br
+/>GW: This is ambiguous, would like to demonstrate both cav3 as a provider, and cav3 via V3Channel.<br
+/><br
+/>MS: Use channel access native libraries from client?<br
+/><br
+/>GW: Ways are channel access on the wire, and V3Channel on the V3IOC with pvAccess on the wire. Don't have good names for these methods.<br
+/><br
+/>MK: V3Channel is in pvIOCCpp, returns V3 record values over pvAccess.<br
+/><br
+/>MK: cav3 is in pvAccessJava and allows you to talk channel access using the pvAccess API. Not available in CPP. Client must specifiy which transport.<br
+/><br
+/>GW: V3Channel is pvAccess on the wire (c++ server only), cav3 is channel access on the wire (Java client only). Both use the pvAccess client API.<br
+/><br
+/>GW: Hard part of 2 is a is a way of specifying the provider on the command limand line.<br
+/><br
+/>MS: Problem is no implementation of cav3 in cpp, eget is in cpp.<br
+/><br
+/>GW: MS can demonstrate V3Channel by October, not the use of cav3 in eget?<br
+/><br
+/>MS: Yes<br
+/><br
+/>GW: OK<br
+/><br
+/>MK: Week's work to do that.<br
+/><br
+/>GW: Important AI. Do V3Channel mechanism. Demo cav3 when it's ready.<br
+/><br
+/>AI MS: November, start cav3 implementation in C++.<br
+/><br
+/>GW: Item 3 (unsigned)<br
+/><br
+/>MK: Java client can talk to pvIOCCPP over pvAccess and get an unsigned field or record. It will work. But the Java client can't use the data.<br
+/><br
+/>GW: Can use C++ both ends. Point is to demonstrate pvAccess transporting unsigned.<br
+/><br
+/>MK: What are you going to do with it?<br
+/><br
+/>MS: C++ client and V3Channel server.&nbsp;<br
+/><br
+/>MK: This will work with C++ both ends. Item 3 will work.<br
+/><br
+/>GW: MK able to implement?<br
+/><br
+/>MK: Need records to demonstrate this. Records that make sense.<br
+/><br
+/>GW: Just need large number.<br
+/><br
+/>MK: Need a record with a large 32 bit unsigned value. Can do that with MS.<br
+/><br
+/>MS: Yes we can do that<br
+/><br
+/>GW: Item 4&nbsp; trivial<br
+/><br
+/>GW: Item 5&nbsp; trivial<br
+/><br
+/>MS: Want one value per line?<br
+/><br
+/>GW: Yes, like RDB service. Default one value per line. Optional for row-wise is good. Can pipe into UNIX tools.<br
+/><br
+/>GW: Item 6, will eput exist?&nbsp;<br
+/><br
+/>MS: pvput exists, can do scalars and arrays.<br
+/><br
+/>GW: Need a server that has a scalar and and array to put to.<br
+/><br
+/>MK: For 7 and 8, when I setup a V3 IOC with V3Channel have another waveform record for item 8. Use the same test IOC IOC.<br
+/><br
+/>GW: Yes would like a V3 and V4 IOC for tests/demos. Shall we use a test one for demo purposes?<br
+/><br
+/>MS: Yes.<br
+/><br
+/>MK: Yes, one Java IOC and one V3 IOC with V3Channel. I will do this with MS.<br
+/><br
+/>AI on MK and MS: Produce test/demo IOCs in C++ and Java to go with client items.<br
+/><br
+/>GW: Item 9<br
+/><br
+/>MS: eget with switch performs monitors.<br
+/><br
+/>GW: Item 10 get as a NTMatrix. Does eget know NTMatrix?&nbsp;<br
+/><br
+/>MS: It knows NTTable, not NTMatrix yet. I will add NTMatrix to eget.<br
+/><br
+/>GW: Pass arguments, make new item 10.1<br
+/><br
+/>MS: Arguments are passed as a string. What is the service API?<br
+/><br
+/>GW: WIll define API. Have Java library for arg parsing.<br
+/><br
+/>MS: eget in C++<br
+/><br
+/>GW: Argument passing for RDB service use support offered by bash for argument passing. Java library does the same thing.<br
+/><br
+/>GW: Item 11 get NTTable and print as a table and print as a table.&nbsp;<br
+/><br
+/>DH: Archiver result is NTTable. Request is a structure containing start and end time, channel name. Request is not an NTTable<br
+/><br
+/>GW: Ok, requests won't be NTTables anyway.<br
+/><br
+/>DH: Current repo built against release 1.1. Currently refactoring. Fieldname change is ok, some libraries have moved around, more work required. No problem for October.<br
+/><br
+/>GW: Demonstration?<br
+/><br
+/>JR: You can distribute archive data with the example, no need to connect to a remote server.<br
+/><br
+/>DH: Works out of the box once it's been refactored, already includes sample data.<br
+/><br
+/>GW: Gather. Timo? Example by 1st October.<br
+/><br
+/>TK: Time is tight.<br
+/><br
+/>GW: Get synchronous orbit data?<br
+/><br
+/>TK: Same time pressure.<br
+/><br
+/>GW: Item 17. Using V3Channel mechanism.&nbsp;<br
+/><br
+/>MK: Clarification required? Is this an local gather on a V3 IOC.<br
+/><br
+/>GW: Yes.<br
+/><br
+/>MK: Work needs to be done. V3Channel connects to a single record at one one time.<br
+/><br
+/>MK: Start with homogenous gather for October. Get an array of scalars where each element comes from a different V3 record.<br
+/><br
+/>GW: How to configure it so that the V4 PV knows which records to gather. Requirement is to get multiple fields.<br
+/><br
+/>MK: Fields and record terminology is mixed. Can get EGU, timestamp, alarm p, alarm etc. from single V3 value already over channel access.<br
+/><br
+/>GW: So user can get all channel access standard fields back alreadyy. But only what version 3 supports.<br
+/><br
+/>MK: Value of V4 gather record will be an array of scalars.<br
+/><br
+/>GW: Why is homogeneous support harder? Can introspect and create structures on the fly.<br
+/><br
+/>MK: Could do something like the example.<br
+/><br
+/>GW: If I want to get a quadrupole, what would I see? I want a single V4 PV giving me back the B field, polynomial and energy. Create support with V3Channel to get a list of version 3 PVs as a PVData structure.<br
+/><br
+/>MK: What are the records that represent a quadrupole? There are a collection of V3 records that give you the various parameters.<br
+/><br
+/>JR: Something like this?<br
+/><br
+/>record(ai, "CURRESETPOINT")<br
+/>record(waveform, "POLYNOMIAL")<br
+/>record(ai, "FIELDSETPOINTNT")<br
+/><br
+/>MK: Committed to come up with a V3 IOC and a V4 IOC for the demo. Will attempt to to come up with some records for an example.<br
+/><br
+/><br
+/>MK: Is all&nbsp; this stuff going in example application.<br
+/><br
+/>GW: Not single application, no. I'd like to be able tole to talk to example IOC with eget on comommand line.<br
+/><br
+/>MK: Where are we going to put them.<br
+/><br
+/>GW: New place&nbsp; on sourceforge.<br
+/>MK: exampleCPP/Java?<br
+/><br
+/>GW: All ok with that?<br
+/><br
+/>Resolution: Put demos in examexampleJava and exampleCPP.<br
+/><br
+/>GW: Put good readmes in these.<br
+/><br
+/>GW: last Item. EasyPVA. I will take responsibility for that. Haven't tried for RPC yet. Once have ththat can test everything.<br
+/><br
+/>GW: Is there a way for a user to ask a service what it's arguments are.<br
+/><br
+/>MS: User can get information using introspection with get field. Needs text too.<br
+/><br
+/>GW: Formal definition can be in description field. I'll try and work on that.<br
+/><br
+/>Thanks to James and David.<br
+/>Meeting ends.&nbsp;<br
+/><br
+/><br
+/>FUNCTIONAL REQUIREMENTS OF EPICS V4 ILLUSTRATIONS<br
+/>=================================================<br
+/>Basic Get and Put<br
+/>=================<br
+/><br
+/>*MS*<br
+/>1. Get the value of an V3 PV [user has no knowledge that it's V3 as opposed to V4]<br
+/>eget QUAD:34:IDES<br
+/>23.424<br
+/><br
+/>*MS*<br
+/>2. Get the values of all the V3 CA standard fields (-r is pvAccess request string)<br
+/>eget QUAD:34:IDES -r 'field()'<br
+/>structure QUAD:34:IDES<br
+/>{<br
+/>&nbsp;&nbsp; value = 23.424<br
+/>&nbsp;&nbsp; alarm = structure<br
+/>&nbsp;&nbsp; {<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; severity = structure<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; index = 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; choices = [none,minor,major,invalid]<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; message = null<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ackTransient = false<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ackSeverity = structure<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; index = 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; choices = [none,minor,major,invalid]<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br
+/>&nbsp;&nbsp; }<br
+/>&nbsp;&nbsp; timeStamp = structure<br
+/>&nbsp;&nbsp; {<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; secondsPastEpoch = 1253549456<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nanoSeconds = 478000000<br
+/>&nbsp;&nbsp; }<br
+/>}<br
+/><br
+/>*MK*<br
+/>3. Get the value of an UNSIGNED V3 PV<br
+/>[Can't think of a sensible large number, but can think of many that would only be +ve]<br
+/>eget BEAM:RATE<br
+/>60<br
+/><br
+/>*MS*<br
+/>4. Get the value of a V4 scalar pv<br
+/>eget XCOR:LI:34:IACT<br
+/>23.3<br
+/><br
+/>*MS*<br
+/>5. Get the value of a V4 array pv to the command line<br
+/>eget QAUD:LI:18:POLYOMIALS<br
+/>34.6<br
+/>19.5<br
+/>29.3<br
+/><br
+/>*MS*<br
+/>6. Put the value of a V4 scalar pv<br
+/>eput -v 34.4 XCOR:LI:34:IDES<br
+/><br
+/>*MS*<br
+/>7. Put the value of a V4 array PV<br
+/>eput -v 34.4 19.6 29.3 XCOR:LI:34:IDES<br
+/><br
+/>*MS*<br
+/>8. Put the value of a V3 waveform [(!!!) is this possible?]<br
+/>eput -v 34.4 19.6 29.3 QUAD:34:POLY<br
+/><br
+/>*MS*<br
+/>9. Monitor the value of a simple type V4 PV<br
+/>emon BPMS:LI34:X<br
+/>[MS: says we have pvget with a special switch for monitor]<br
+/><br
+/>*GW*&amp;MS<br
+/>10.&nbsp; Get a NTMarix and print as a matrix<br
+/>$ eget -a TYPE=DESIGN -a POS=MID -a RUN=LATEST QUAD:LI21:271/R<br
+/>0.23 0.1234 0.0 0.0 0.067562 0.001167<br
+/>-0.34520 0.0923 0.0 0.0 0.046981 0.001514<br
+/>0.0 0.0 1.881007 4.857304 0.0 0.0<br
+/>0.0 0.0 -1.50064 -3.862346 0.0 0.0<br
+/>-0.00132 -0.001129 0.0 0.0 0.224701 0.003894<br
+/>0.162595 0.10285 0.0 0.0 -19.603 -0.233109<br
+/><br
+/>10.1 Get values according to arguments in a consistent way from any RPC service<br
+/>See examples eget -a above.<br
+/><br
+/>*DH*<br
+/>11. Get a NTTable and print as a table. Illustrate with archive service.<br
+/>$ eget -a start="3 minutes ago" -a end="now" -a p=12 QUAD34_Bfield<br
+/><br
+/>TimePastEpoch(s) Value Date Alarm<br
+/>496169397.856321000 7.355487346649e-02 Wed Jun 21 17:49:57 2012 NO ALARM<br
+/>496169401.996447000 1.682446300983e-01 Wed Jun 21 17:50:01 2012 NO ALARM<br
+/>496169410.052636000 2.558367252350e-01 Wed Jun 21 17:50:10 2012 NO ALARM<br
+/>496169420.109690000 3.173123300076e-01 Wed Jun 21 17:50:20 2012 NO ALARM<br
+/>...<br
+/><br
+/><br
+/>Use Cases of Directory Service<br
+/>==============================<br
+/>*RL*<br
+/>12. Get the names of a number of PVs (v3 or v4 potentially heterogeneous mix) where their names match a string, using the Directory Service. Ideally, sort by a tag or option. E.g.:<br
+/>eget -s DirectoryService -a pattern 'XCOR:*:BDES' -a options "sortbyz"<br
+/>XCOR:1:BDES<br
+/>XCOR:20:BDES<br
+/>XCOR:44:BDES<br
+/>XCOR:68:BDES<br
+/>XCOR:89:BDES<br
+/>...<br
+/>Extra credit: ideally not just * but regular expression.<br
+/><br
+/>*RL*<br
+/>13. As above but additionally get the values. In the case illustrated below done with a pipe, but better if integrated into eget.<br
+/>Eg. Print the value of BDES from all correctors whose PV name matches the pattern XCOR:LI:*:BDES<br
+/>eget -s DirectoryService -a pattern=XCOR:*:BDES -a options="sortbyz" -a beampath=0 | xargs eget -t {}<br
+/>XCOR:1:BDES<br
+/>23.5<br
+/>XCOR:20:BDES<br
+/>34.5<br
+/>XCOR:44:BDES<br
+/>15.5<br
+/>XCOR:68:BDES<br
+/>13.7<br
+/>XCOR:89:BDES<br
+/>34.5<br
+/>...<br
+/><br
+/>*RL*<br
+/>14. Get the value of a number of PVs, where the names match the conjunction (AND) of Directory Service tags<br
+/>E.g.: Print the value of the desired B field (BDES) from all correctors in the (SwissFEL) section SINBC01<br
+/>eget -s DirectoryService -a property='section=SINBC01' -a property='type=COR' tag='BDES' -options="sortbyz" | eget -t<br
+/>sinbc01.cor01:B 23.34345<br
+/>sinbc01.cor02:B 43.47543<br
+/><br
+/><br
+/>Use Cases of Gather Service<br
+/>===========================<br
+/>*TK*<br
+/>15. Use of an ad hoc Gather to get the field value (V3 PVs) of many magnets or BPMs.<br
+/>Show use of gather service to simply give LATEST gathered values from a Gather record defined by the client:<br
+/>So this is something probably done in Matlab<br
+/>[TODO insert example]<br
+/><br
+/>*TK*<br
+/>16. Get synchronous BPM orbit data from a BPM service, that is using the gather service in combination with a SLAC/PSI<br
+/>like BPM synchronous data system. Data form is NTTable.<br
+/><br
+/>eget -a Npulses=3 SwissFELTI:sync:bpmorbit<br
+/>pulse_Id bpm_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMIT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status<br
+/>31330&nbsp;&nbsp;&nbsp; sinlh01.diag01.bpm&nbsp; 0.331939 -0.20821595 9.2273582E9 OK<br
+/>31690 sinlh01.diag01.bpm&nbsp; 0.343939 -0.21321534 9.3973582E9 OK<br
+/>32056 sinlh01.diag01.bpm&nbsp; 0.343939 -0.21321534 9.3973582E9 OK<br
+/>31330 sinlh02.diag01.bpm&nbsp; 0.430091 -0.19211863 9.4554767E9 OK<br
+/>31690 sinlh02.diag01.bpm&nbsp; 0.429820&nbsp; -0.18054654&nbsp;&nbsp;&nbsp; 9.3577114E9 OK<br
+/>32056 sinlh02.diag01.bpm&nbsp; 0.476549&nbsp; -0.23452345&nbsp;&nbsp;&nbsp; 9.3245235E9 OK<br
+/>... snipped many more<br
+/>Total number of rows printed would be M bpms in the gather record named SwissFELTI:sync:bpmorbit, times<br
+/>N pulses<br
+/><br
+/>*MK*<br
+/>17. Get the values of a number of V3 PV (fields) from one V3 IOC, through a V4 record on V3 IOC PVA<br
+/>[ie, "The Dirk Requirement" ].<br
+/>Ideally a heterogenous structure of V3 scalar and waveforms.<br
+/>E.g. Get a summary of the PVs relating to a QUAD from an IOC. In this example the V4 PV<br
+/>is QUAD35:SUMMARY, to illustrate that one might use the "physics" name (QUAD35) for such summary<br
+/>PVs, and their values might be composed of a structure of V3 PVs named with engineering names and their values:<br
+/><br
+/>eget QUAD35:SUMMARY<br
+/>QUAD:SECT02:13:B 42.3<br
+/>QUAD:SECT02:13:POLY 23234.2342 5435.34 753.3 4.34234 5.32E-23<br
+/>QUAD:SECT02:13:E 4.454<br
+/><br
+/><br
+/>EasyPVA, Model Service and Directory Service from Matlab.<br
+/>=========================================================<br
+/><br
+/>Overall *GW*, from input from RL and TK.<br
+/><br
+/>18.&nbsp; Example of orbit correction from Matlab, done using easyPVA<br
+/>Illustrates requirements for:<br
+/>1. EasyPVA understanding request for PVStructure<br
+/>2. EasyPVA understanding arguments as part of request for data<br
+/>3. EasyPVA understanding that an argument TO a service may be an array<br
+/>&nbsp;&nbsp; (in the example a table of magnet names and B field values)<br
+/>Also assumes the Directory Service requirement articulated above to get Corrector and BPM names<br
+/>-------------------------------<br
+/>% SwissFEL orbit correction in 1/2 page of matlab<br
+/>% The following is syntactically valid Matlab, but need to see from Ralph how it is actually done.<br
+/>%<br
+/>import org.epics.ca.easyPVA.*;<br
+/>easyPVA = EasyPVAFactory.get();<br
+/><br
+/>% *RALPH*<br
+/>% Get the names of all the Correctors and BPMs from the Directory Service<br
+/>corrNamesChan = easyPVA.createChannel('DS:SwissFEL:GUN_to_ARAMIS');<br
+/>corrNamesChan.addArgument('DEVICETYPETAG','XCOR');<br
+/>corrNames = corrNamesChan.createGet().getStringArray();<br
+/>bpmNamesChan = easyPVA.createChannel('DS:SwissFEL:GUN_to_ARAMIS');<br
+/>bpmNamesChan.addArgument('DEVICETYPETAG','BPMS');<br
+/>bpmNames = bpmNamesChan.createGet().getStringArray();<br
+/>Ncor = length(corrNames);<br
+/>Mbpm = length(bpmNames);<br
+/><br
+/>% *Timo*<br
+/>% Get BPM x orbit from the BPM service.<br
+/>b = easyPVA.createChannel(...<br
+/>&nbsp;&nbsp; 'BPMORBIT:SwissFEL:GUN_to_ARAMIS').createGet().getDoubleArray();<br
+/><br
+/>% *Greg*<br
+/>% Form the Ax-b problem getting Rmats from the Model Service<br
+/>modelmatrixChan = easyPVA.createChannel('model:aramis:gold:extant:R');<br
+/>for bpmi = 1:Mbpm;<br
+/>&nbsp; modelmatrixChan.addArgument('to',bpmNames(bpmi));<br
+/>&nbsp; for corj = 1:Ncor;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; modelmatrixChan.addArgument('from',corrNames(corj));<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; rmatAtoB_pvStruct = modelmatrixChan.createGet().getPVStructure();<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; RmatCorToBpm = toMatrix(rmatAtoB_pvStruct);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; A(bpmi, corj) = RmatCorToBpm(1,2);<br
+/>&nbsp; end<br
+/>end<br
+/><br
+/>% 2 lines of actual physics<br
+/>x = inv(A)*b; % Solve Ax-b<br
+/>newBDESes = -KtoB(x); % new B field values from K to B<br
+/><br
+/>% *RALPH*<br
+/>% Deploy the new magnet settings.<br
+/>magSetChan = easyPVA.createChannel('MAGNETSET');<br
+/>magSetChan.addArgument('magnetlist',corrNames);<br
+/>magSetChan.createPut().putDoubleArray(newBDESes,length(newBDESes));<br
+/>-----------------------------<br
+/><br
+/>* EasyPVA to "put" a PVStructure to a service or PV<br
+/>add example.<br
+/><br
+/><br
+/></body>
+</html>

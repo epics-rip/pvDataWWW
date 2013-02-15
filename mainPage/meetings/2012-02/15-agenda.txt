@@ -1,0 +1,53 @@
+Colleagues,
+
+*Michel* can you join us for this one, re 4 below?
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. We'll use
+Etherpad for minutes. *Ralph*, which URL should we use for that? Is [2] right, or will
+it be one for this specific meeting?
+
+Let's leave matters around the prefix naming ca: pva: and Andrew's proposal etc 
+until next week. Don't think it's ready for taking up.
+ 
+Agenda
+======
+1. easyPVA review [3]. Marty, Matej, 20 minutes. 
+
+   Looks good. Quick walk through. I saw a couple of things. 
+   Please let us know status (is there any implementation?). 
+
+2. easierPVA [4], James, 20 minutes
+
+   Let's take a first look.
+
+3. The Unsigned API [5]. David vs Marty. 15 minutes. 
+
+   Can David seriously commit to producing Java and C++ implementations?
+   If so, then we can consider a comparison of implementations.
+   If not, then I think Marty has to just proceed. Which would be good
+   because maybe then we get David to do a bpm orbit service using gather? 
+   Just day dreamin!
+
+4. Time specification standardisation. T00:10 
+
+    Draft resolution like: We recommend that EPICS V4 systems use ISO 8601 format
+    and that takers of a time SHOULD process ending Z according to that standard.
+
+5. pvAccess protocol 2nd PWD readiness. Matej 10 mins.
+
+
+Greg, for Bob and Greg
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/2?
+[3] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/raw-file/tip/easyPVA/documentation/easyPVA.html
+[4] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/alpha/EasierPVA.html
+[5] Thread on unsigned, https://sourceforge.net/mailarchive/forum.php?thread_name=4F3A5143.8000308%40comcast.net&forum_name=epics-pvdata-devel
+
+
+
+
+
+
+
+

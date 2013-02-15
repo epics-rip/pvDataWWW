@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$7</title>
+</head>
+<body>============= Meeting 14-Mar-2012 =============<br
+/><br
+/>Agenda<br
+/>-----------<br
+/><br
+/><u>0. Preliminaries (5 min)</u><br
+/><br
+/><u>1. Normative Types (40 mins, <b>*Greg*</u></b><u>) [3]</u><br
+/>&nbsp;&nbsp; NTMatrix<br
+/>&nbsp;&nbsp; NTVariantArray<br
+/>&nbsp;&nbsp; NTNameValue (Guobao doen't like present arrangement)<br
+/>&nbsp;&nbsp; more next week.<br
+/><br
+/><u>2. Normative Types self identification review of Andrew's suggestion</u><br
+/><u>(20 minutes) [4]</u><br
+/><br
+/><u>3. Version release requirement (do we need a beta 1.1 or beta 1.0.1, or not?)</u><br
+/><u>(<b>*Guobao*</u></b><u>, 15 mins)</u><br
+/><br
+/><u>4. Archiver interface demo from David would be great (It's been 2 weeks David!)</u><br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: AJ, TK, MK, NM, JR, GS, MA, GW, MS<br
+/>Scribe: NM<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Normative Types</b><br
+/>************<br
+/>MK: concerns about ntfield_t (section 3).&nbsp;<br
+/>MK: suggests to extend ntfield_t with structure_t and structure_t[]<br
+/>MK and GW: discussion about structure_t[] in the context of Maser<br
+/>GW: thinks that Maser uses application-specific types but normative<br
+/>types should be general.<br
+/>GS, MK, GW: discussion about scope of normative types<br
+/>GW: NTTable is not CORBA any<br
+/>MK &amp; GS: Maser should rely on only normative types<br
+/>GW &amp; JR: consider that normative types represent only subset&nbsp;<br
+/>(90%) of (many) application types, for example, archiver<br
+/>GS: suggests two extensions of normative types, NTTable and NTNameValue (performance reason)<br
+/>GW: good idea. If they are generic enough, then we can add<br
+/>them as normative types.<br
+/>JR &amp; DH: also consider (probably, non-normative) new type(s)&nbsp;<br
+/>for archiver<br
+/>MK: does not like "NTMatrix" and suggests like "NTNDArray"<br
+/>JR: NTNDArray is reserved by AreaDetector<br
+/>AJ: agrees with Marty, probably NT2DArray ...<br
+/>GW: plans to think about comments ...<br
+/><br
+/>************<br
+/><b>AI</b> on GS &amp; MK by Mar-22-12: Write proposal to intoduce a new normative type for addressing&nbsp;<br
+/>requirements of Maser and (probably) Archiver. Specifically for representation and transport of numbers of channels, where each channel may be a waveform valued channel.<br
+/>************<br
+/>GW: suggests to consider and extend NTMultichannelArray<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b><u>Normative Types self identification review of Andrew's suggestion</u><br
+/>************<br
+/><br
+/>AJ: suggest to apply the aspect-oriented approach<br
+/>AJ: The bitfield that defined the contents of the type may be extendible for&nbsp;<br
+/>data that are extensions of NTypes.<br
+/>NM: What is teh definition of trait?<br
+/>GW: let's consider NTAggregate (section 6.6) What is relationship<br
+/>between types and traits?<br
+/>AJ: bitfield can be associated with a structure rather than a structure member<br
+/><br
+/>All: hot discussion about type ids .... no convergence<br
+/><br
+/>GW (with the help of AJ) will try to implement some&nbsp;<br
+/>demo to resolve issues.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC:</b><u> Version release requirement (do we need a beta 1.1 or beta 1.0.1, or not?)</u><br
+/>************<br
+/><br
+/>GS: needs a version number for his debian package<br
+/><br
+/>GW: Suggets libpvdata--20120315<br
+/><br
+/>AI on JR by (open): Release new snapshot for c++ called beta-1.0.1<br
+/><br
+/><br
+/></body>
+</html>

@@ -1,0 +1,32 @@
+Colleagues,
+
+Please find below the agenda for our weekly telecon, 3-Oct-2012.
+
+Agenda
+======
+0. Preliminaries, 5 mins
+
+   Let's restart use of the bug tracker.
+   Normative Types bindings.
+
+1. Status review of items for demo of beta 2 [1].
+
+2. NTURI and Service API [2].
+
+   Should the URI form of a pvaccess RPC request that includes an entity,
+   put the entity in the query part of the URI (i below), or in the path part (ii below).
+
+    normal form: $ pvget -s modelservice -a entity=swissfel/in/quads
+
+    i) uri form:    $ pvget pva:///modelservice?entity=swissfel/in/quads
+    or
+    ii) uri form:    $ pvget pva:///modelservice/swissfel/in/quads
+
+[1] http://epicsv4.titanpad.com/ep/pad/view/27/latest
+[2] http://epics-pvdata.sourceforge.net/alpha/EPICS_URI.txt
+
+
+
+
+
+

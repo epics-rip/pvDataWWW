@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$14</title>
+</head>
+<body>============= Meeting 09-May-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/>1. What to do about non-threading channelRPC. (*Ralph* re problem, *Marty* re proposed reaction)&nbsp;<br
+/>2. Time domain based dataset Normative Type proposal (*Michael*)<br
+/>3. Introspection and unsigned C++ version upgrade status<br
+/>4. New releases for Java and C++ version upgrades. Nailing it down. When and who does it.<br
+/>5. Schedule and assignment to connect the PVManager interface to Normative types<br
+/>6<b>. </b>Date of next meeting<br
+/>7. Will monitoring options be supported under C++?<br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: BD, NM, MS, TK, MK, GS, JR, AM<br
+/>Scribe: AM, RL<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: What to do about non-threading channelRPC</b><br
+/>************<br
+/>What to do about threading channelRPC (currently it is non-threading). (*Ralph* re problem, *Marty* re proposed reaction)&nbsp;<br
+/>Multiple clients must use the same service at the same time. So multiple clients need to access this at the same time. The directory server gets this at the same time. The&nbsp; RPC service must be able to spawn off threads that are running in parellel. The service developer will determine the behavoir.<br
+/><br
+/>************<br
+/><b>AI</b> on Matej (Java) and Marty (C++) will take care of this after the current refactoring. A spearate thread will be spawned for each request. Expected delivery - 2 months. Implement Java first.<br
+/>************<br
+/><br
+/>BD: What first? Java or C++? Probably both shortly after another.<br
+/><br
+/>RL: Other similar services (e.g. web containers, db connections) are working with thread pools for maximum performance and safety.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Time domain based dataset Normative Type proposal (*Michael*)<br
+/>************<br
+/>Greg has taken a stab at capturing what Michael had said. There is still not agreement on this.<br
+/><br
+/>************<br
+/><b>AI</b> on Bob by [soon]: Ask&nbsp; Michael to generate the Normative Type proposal for time and frequency domain arrays.<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Introspection and unsigned C++ version upgrade status</b><br
+/>************<br
+/>GS: Fears that it affects servers that are already deployed<br
+/>MK: Should only be minor changes<br
+/>Marty: Java stuff is essentially done. C++ version has C++ shared pointers as an issue. Matej can start on the PVAccess section of this. Expected completion in 3 weeks.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>New releases for Java and C++ version upgrades. Nailing it down. When and who does it.<br
+/>************<br
+/>Group is unsure what this is supposed to mean.<br
+/>[GW: meant when do we intend to release the Java and C++ implementations of the unsigned and<br
+/>introspection interfave changes, as point releases, ie BETA-2.0.0].&nbsp;&nbsp;<br
+/>TK: Should ship a new release after the current refactoring.<br
+/>Greg was always managing the release process, with James doing a lot of the under-the-hood work.<br
+/><br
+/>************<br
+/><b>AI</b> on Greg by 3 weeks plus 1 day: Manage next beta release.<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Schedule and assignment to connect the PVManager interface to Normative types<br
+/>************<br
+/>BD: Who is going to connect the V4 types to CSS?<br
+/>MS: As I understand Gabriele, he needs to finish one more layer on top of pvManager<br
+/><br
+/>************<br
+/><b>AI</b> on Bob by after refactoring and multithreading: Check with Gabriele, when pvManager will be ready for our plugs.<br
+/>************<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Date of next meeting</b><br
+/>************<br
+/>TK: Doodle says <b>11.07.-13.07.</b> looks like the better option with more participants.<br
+/>RL: Will check if he can make on the 13th.<br
+/>JR: Is the new date definite?<br
+/>BD: Yes.<br
+/><br
+/>************<br
+/><b>RESOLUTION: July meeting date:&nbsp;&nbsp; 11.07.-13.07.</b><br
+/>************<br
+/>BD: expects up to 2⁴ participants.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Will monitoring options be supported under C++?</b><br
+/>************<br
+/>GB: Will C++ be limted to RPC<br
+/>MK: That would need the pvIOC on C++.<br
+/>GS: Some of the planned services will need monitor functionality.<br
+/>MK: That could be done by directly overriding the monitoring methods. The database would take care of the threading issues in a general way.<br
+/>Implementing this in C++ would be a 0.5 man year task.<br
+/>Suggests trying to implement monitors and see how complicated it gets.<br
+/>The Java version has most of the framework. If you run your service in a record, the basics are there.<br
+/>GS: doesn't want SWTshell nor XML in the IOC.<br
+/>MK: May do XML stuff last.<br
+/>GS: XML record definition is an unsightly mess, hard to do.<br
+/>MK: XML allows to define record without writing code.<br
+/>RL: pvIOC functionality has not been reviewed yet. Should do this before writing the second implementation.<br
+/>MK: The V4 IOC engine design should get higher priority.<br
+/>MK: SWTshell is an important debugging tool - someone should reimplement something like this for the c++ version.<br
+/>Upcoming meeting should have a session on this.<br
+/>BD: After the beamline discussions, we should generate a basic statement of what a V4 IOC would be.<br
+/><br
+/>************<br
+/><b>RESOLUTION: At the upcoming meeting, have 0.5 days about beamline requirements and 0.5 days about what a V4 IOC should be.</b><br
+/>************<br
+/><br
+/>End of meeting 14:49 UTC<br
+/><br
+/></body>
+</html>

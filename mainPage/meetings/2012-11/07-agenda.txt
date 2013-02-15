@@ -1,0 +1,61 @@
+Colleagues,
+
+Please find below the agenda for our weekly meeting, 7-Nov-2012. Minutes
+in titanpad 36 [1].
+
+Cheers
+Greg, for Greg and Bob
+
+
+AGENDA
+======
+0. Preliminaries, 5 mins
+
+1. Beta 2 Status review, *all*, 20 mins
+
+  What are we all up to? What are we expecting to complete any more for Beta 2? If
+  so when is that expected.
+Will we fix the <> "" thing?
+Who will write an announcement?
+Suggest we publish tars first, wait a couple of days, then announce.
+Want to get input from Dirk on VxWorks port status before announcement.
+
+  Expected beta 2 schedule.
+
+2. Jenkins support. *Bob - can you address this?* 5 mins
+   Who can we call on to implement Jenkins support for:
+vxWorks build
+Continuous test servers
+
+3. locksets and V3Channel strategy agreement, *all*, 20 mins
+
+  Verify strategy for V3Channel w.r.t. writing to N>1 channels: that for the
+  immediate term, we want to support the easily implementable case of requiring all
+  referenced channels to be in the same lockset (as decided in the BNL meeting).
+
+  And that in the longer term we do want to work towards N>1 IOC coordinated get
+  and set (though clearly not of arbitrary collections of records - those specifically
+  designed to work within that framework).
+
+4. pvIOC strategy agreement 20 mins
+
+  We have the pvIOC in Java. The consensus of the working group is, I think,
+  that the requirements and design of the EPICS V4 IOC needs to be reviewed before
+  we port it straight to C++. Marty may disagree [2]
+
+  I'd like to check my feeling of the timeline and deliverable for that work. My
+  feeling is that the next charter should have an defined effort to review the
+  requirements and the design of V4 IOC, with the explicit deliverable of a
+  normative requirements document, plus an illustrative implementation. Further,
+  that design and reference implementation would be expected only in the 2014 charter.
+
+  Maybe we'll get into some nomenclature bitchin too
+
+[1] http://epicsv4.titanpad.com/36
+[2] thread http://sourceforge.net/mailarchive/forum.php?thread_name=5098FA91.4010700%40comcast.net&forum_name=epics-pvdata-devel
+
+
+
+
+
+

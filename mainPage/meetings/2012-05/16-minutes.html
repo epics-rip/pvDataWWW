@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$15</title>
+</head>
+<body>============= Meeting 16-May-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/>1. How to get to pvAccess 2nd public working draft (<b>*Matej*</b>)<br
+/>&nbsp; pvAccess Spec 2pwd hasn't been published yet (email to tech-talk == publication in my view).<br
+/>&nbsp; Need AIs and definitive publication date.<br
+/>&nbsp; Ben has made comments, have they been answered?<br
+/><br
+/>2. How to get to eget with rpc support done and available (Matej, Greg, Michael)<br
+/>&nbsp; Presently eget knows only NTtable, and using an assumption about how to form a query.<br
+/>&nbsp; With eget deserialization and rendering examples, pvmangager changes should be v easy.<br
+/>&nbsp; Need AIs assigned with delivery dates for pvget and its prerequisites. Verify&nbsp;<br
+/>&nbsp; prerequisites are only completion of Normative Types to 1PWD:&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a. NTQuery or at least a normative pattern for service queries (<b>*Greg*</b>)<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b. NT self-id (yes I know, overdue, <b>*Greg*</b>).&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c. "NTContinuum" (<b>*Michael*</b>)&nbsp;<br
+/><br
+/>3. Architectures doc&nbsp;<br
+/>&nbsp; I'd like to get the Architectures doc up to release as a normative document and published.<br
+/>&nbsp; For that I think it needs references to be added (Dirk couldn't use it to answer his questions<br
+/>&nbsp; about how, in code, to collect V3 PVs and package them into a V4 pvData. This is a clearly<br
+/>&nbsp; predictable use case, so I think we have to add references and example code.&nbsp;&nbsp;<br
+/><br
+/>Also Discussed:<br
+/><b>&nbsp;</b> source code status.<br
+/>&nbsp; What are requirements for the workshop meeting<br
+/>&nbsp; IPAC meeting contribution<br
+/>&nbsp;&nbsp;<br
+/>[1] <a href="http://epics-pvdata.sourceforge.net/home.html#meeting">http://epics-pvdata.sourceforge.net/home.html#meeting</a>&nbsp;<br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: BD, JR, DH, GS, GS, AM<br
+/>Scribe: GS<br
+/><br
+/><br
+/><a href="http://epics-pvdata.sourceforge.net/literature.html#talks">http://epics-pvdata.sourceforge.net/literature.html#talks</a><br
+/><br
+/>************<br
+/><b>NEW TOPIC: How to get to pvAccess 2nd public working draft</b>&nbsp;<br
+/>************<br
+/><br
+/>GW: Bob should NOT announce today<br
+/>BD: Is RPC used for RDB related service?<br
+/>GS: Yes, RPC used by MASAR<br
+/>GW: Appendix should then include what is not presently in the spec (per Ben's email). When it should that be finished?<br
+/>GW: propose by next Wed<br
+/>GW: We should make a resolution to publish<br
+/><br
+/>**********<br
+/><b>AI: </b>Matej by Tue (5/22), part appendix are missing, specically pvRequest are listed,&nbsp;<br
+/>and "Status of this Document" lists what is missing.<br
+/>**********<br
+/>**********<br
+/><b>RESOLUTION:</b> We will publish pvAccess 2nd public working draft, subject to addtion of an&nbsp;<br
+/>appendix that lists important missing aspects, and a reference to that appendix in the Status of this Document.&nbsp;<br
+/>**********<br
+/>**********<br
+/><b>AI:</b> Bob will announce 2nd public working draft by email to tech-talk by Wed (5/23)&nbsp;<br
+/>**********<br
+/><br
+/>************<br
+/><b>NEW TOPIC: How to get to eget with rpc support</b><br
+/>************<br
+/>GW: a demo available, but not standard<br
+/>GW: promises to define NTQuery and how NT self-id will be done<br
+/>We will make a formal Normative Type document to public working draft<br
+/>DH: original proposal to add ID to data, type info into channel connection on SLAC meeting. Any resolution for that?<br
+/>GW: Minutes not complete enough, lost result. Might need to start the process again<br
+/>DH: on the mailing list. NT type has a member, string id. Possible encode the type info?<br
+/>GW: promises to complete a draft including service interfaces and self-id by Fri 5/25. Recover self-id proposals from e-mail<br
+/>DH: It would be better to encode NTtype info into the introspection tyep information<br
+/>GW: Will that not bind NT type to protocol support?<br
+/>JR: keep protocol simple, always has the name of type, encode as string with type info, but not payload info<br
+/><br
+/>DH/JR: Propose that NT self id is done by name of a field rather than value. In this way the&nbsp;<br
+/>NT type can be exchange in type information.<br
+/>GS/GW: How would then a genral purpose client determine which type it got - it would have to test for every<br
+/>normative type.&nbsp;<br
+/>DH: Use a practice that the type information is the first type.&nbsp;<br
+/>DH: Say you received a PV structure, with a sequence of fields of that structure, indexed by int and also hae a name.&nbsp;<br
+/>Then if a client conforms to the practice that checks for nt field type name first, then that is efficient.&nbsp;<br
+/><br
+/>DH: Put a structure called "normativeType" with a field called "NT&lt;type&gt;".&nbsp;&nbsp;<br
+/>GW: +1<br
+/>DH: Shall I write this up and email it?<br
+/>GW: I think the summary line above is pretty clear, so no need.<br
+/><br
+/>**********<br
+/><b>AI: </b>GW by Fri 5/25, Add standard interface for RPC service + proposal self-identification for NT types, to Normative Types document<br
+/>**********<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Architectures doc&nbsp;</b><br
+/>************<br
+/>GW: Arch doc at least need references, need examples<br
+/>JR: link to SCM repo example?<br
+/>GW: yes<br
+/>GW: each architecture schema needs to inlude which facilities of EPICS V4 it is using, and give a reference to examples.<br
+/>JR: so add lots of hyperlinks?<br
+/>GW: Yes&nbsp;<br
+/>GW: publish it by email to tech-talk. How long will it take to add the examples?<br
+/>JR: about month<br
+/><br
+/>**********<br
+/><b>AI:</b> JR by 6/04 add example links to arch doc.<br
+/>**********<br
+/><br
+/>********<br
+/><b>NEW TOPIC: source code status.</b><br
+/>********<br
+/>GS: Presently the C++ implementations of pvAccess (possibly also pvData against gcc 4.6.1) can't be<br
+/>compiled.<br
+/>GW: marty reported that the heads don't compile for C++<br
+/>GS: well, it's been a month!<br
+/><br
+/>GW: - will send email asking what the status of the C++ heads is.<br
+/>GS: Good<br
+/><br
+/>GW: Any other business?<br
+/>------------------------------------<br
+/>DH: What are requirements for the workshop meeting<br
+/>Enough room for say 16 people<br
+/>Whiteboard<br
+/>Power for all laptops<br
+/>Overhead projector "beamer"&nbsp;<br
+/><br
+/>BD: There will be an EPICS V4 meeting at IPAC.&nbsp;<br
+/>GW: Timo has a prototype orbit service that uses the gather service. He may be able to give examples.<br
+/>GW will talk to Timo about giving bob a screen shot by early next week, so it can be used at IPAC.<br
+/>GW: Will withdraw the withdrawl for IPAC! Bob will make the poster!<br
+/><br
+/><br
+/><br
+/><br
+/></body>
+</html>

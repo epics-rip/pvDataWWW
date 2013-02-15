@@ -1,0 +1,469 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$21</title>
+</head>
+<body><b>Wednesday, July 11th</b><br
+/><b>====================</b><br
+/><br
+/><b>AGENDA</b><br
+/><b>=======</b><br
+/><br
+/>9.15 Morning<br
+/>------------<br
+/>Preliminaries. Getting wired up, scribe hit list, making the projector work etc.<br
+/><br
+/>9.30 Status. Timeline planning and firm commitments.<br
+/><br
+/>1. Charter and status.&nbsp; Briefly go over our charter success criteria and deliverables.&nbsp;<br
+/>Get status on all of the work that has been done relative to the charter.<br
+/>&nbsp;<br
+/>9.45 Required Charter Exit Functionalities (*Greg*, 45 mins)<br
+/>Proposal for how to present the deliverables at charter end in September/the next EPICS meeting:&nbsp;<br
+/>A list of small use cases and functionalities should be shown, and how you would do those with EPICS V4.<br
+/><br
+/>10.30 Status of Core PV* modules, Java and C++, with respect to the charter.<br
+/><br
+/>Objective is to be definitive about charter exit objectives *for each Deliverable individually*, and&nbsp;<br
+/>timeline to charter exit. That is, what must be in late BETA by September, as a finer level of detail&nbsp;<br
+/>than the Charter deliverables list.<br
+/><br
+/>3.1 *Marty* status report, 15 mins.<br
+/><br
+/>pvDataJava, pvIOCJava, pvDataC++, pvIOCC++.&nbsp;<br
+/>In particular, pvIOC C++ on embedded IOC, for mediating V3 I/O ("Dirk's Use Case")<br
+/>What will this take, is it possible by September? Should it form basis for next year?<br
+/>easyPVA. Will this include RPC and PVStructure?<br
+/><br
+/>3.2 *Matej*, status report, 15 mins.&nbsp;<br
+/><br
+/>pvAccessJava,&nbsp;<br
+/>pvAccessCPP<br
+/>eget - will this include channelRPC? Confirm only waiting on Normative Types?<br
+/><br
+/>3.3 *David*, status of unsigned and report on the status of RPC in both Java and C++ support, 20 mins.<br
+/><br
+/>3.4&nbsp; Ralph (although won't be there)<br
+/>Will the Charter DS deliverables be met?<br
+/><br
+/><br
+/><br
+/>1.30 Afternoon<br
+/>--------------<br
+/>1.30 Data Services,&nbsp; Programming Clients, and High Level Data Types<br
+/><br
+/>* Status and demos of applications and services.<br
+/><br
+/>PSI orbit acquisition, (*Timo* 10 mins)<br
+/><br
+/>PSI modelling (*Greg*, 30 mins)<br
+/><br
+/>EasyPVA review (*Greg*, 30 mins)<br
+/>First review, what's still required, plus lessons for architecture of EPICS V4 w.r.t. the Directory<br
+/>Service and its relation to services and clients from writing a practical orbit correction application&nbsp;<br
+/>in matlab using EPICS V4.<br
+/><br
+/>BNL physics status and demos (*Guobao*, 20 mins)<br
+/><br
+/>3.30 pm Normative Types.<br
+/><br
+/>Return to the matter of self identification of Normative Types, and their programming interface<br
+/>(*Greg*, 60 mins)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/><br
+/><br
+/><b>MINUTES</b><br
+/><b>=======</b><br
+/><br
+/><br
+/><b>Present</b>: DH, Mark Heron (MH) subject to availability), BD, GS, MK, Philip Taylor (PT), Michael Abbot (MA), JR, TK, Daniel Meyer (DM), Markus Janousch (MJ), MS, Daron Chabot (DC)<br
+/><br
+/><b>Scribes: </b>DH, BD, GS<br
+/><br
+/>********<br
+/><b>NEW TOPIC: Status. Timeline planning and firm commitments.</b><br
+/>********<br
+/><br
+/>GW: Review charter deliverables with 3 months to go.<br
+/>1. pvAccess spec - in hand..<br
+/>2. normative doc pvData protocol.&nbsp;<br
+/>3. Norrmative doc EV4 IOC processing pipeline. IOC overview document will do for this. Java and C++ v versions different. No record processing in C++.&nbsp;<br
+/>4-.6 Mostly done. Using this.<br
+/>7. Normative types at draft stage.&nbsp; Waiting on input from Michael Davidsaver. Various people (BNL) want this.<br
+/>8. Directory service. Ralph hopes to have this done. Full implentation dependent on fully async RPC.<br
+/>9. Services API.&nbsp;<br
+/>&nbsp;&nbsp; GW:Part of pvacess/pvdata done.<br
+/>MK: Does Services API depend on normative types?&nbsp;<br
+/>GW: No. They're independent. Possible to do services without NT<br
+/>MJ: Can [the list of] normative types be added to?<br
+/>GW: No (unless you're the WG). NTs are well defined and stable data types defined in terms of PVStructures, for common physics operations. Of course, individual users or labs can define their own PVStructures for their own applications.]<br
+/>MJ: If get widely used new type can it be added.<br
+/>GW/BD: Yes, by the working group.<br
+/>10. V3/V4 Interop doc. Not really started. Only requires a rreport. Nice if actually works.<br
+/>11.&nbsp; Performance report. Report not done but services exist. Have to retest everything [following the changes made for beta 2].&nbsp;<br
+/>***********<br
+/><b>AI on MS by &lt;not defined&gt;</b>: write performance report. Required date is subject to when a stable release can be measured.<br
+/>***********<br
+/>12. Getting startarted doc done. Can add to it when new features donone.<br
+/>13. Done.<br
+/>14. eget. 60% done. Framework done. not linked to interoperable&nbsp; types. Technical issue service api to be utnderstood by eget<br
+/>15-16. RL working on this. When he gets going on this "it will be don real quick"<br
+/><br
+/><br
+/>********<br
+/><b>NEW TOPIC: Required Charter Exit Functionalities&nbsp;</b><br
+/>********<br
+/>&lt;GW: Goes through eget interface and output. - see end of these minutes.&gt;<br
+/><br
+/>**********<br
+/><b>ISSUE: If add accessing V3 PVs through eget this is dependent on determing provider.</b><br
+/>**********<br
+/>Usual discussion on alternatives (one at a time,&nbsp; broadcast on both, what if two respond, use directory service, dependent on service knowing PV names.)<br
+/>Discussion on "Dirk requirement." GW: Just requires embededded gather. "Just go to pv and get values and put in vector".<br
+/>Just has to handle V3 types (scalar, waveform).<br
+/>BD: Shouldn't return Multichannel array [since that NT is for a homogenous set of PVs, not for a mixed bag of PVs as is the Dirk Requirement].<br
+/>GW: 2 types of multichannel arrays. The new kind is for the Dirk Requirement&nbsp;<br
+/>BD: Can you confirm want you want Dirk to do.<br
+/>(GW adds to his doc.)<br
+/>GW: Should be able for BD to standup at net next EPICS meeting at demo everything in doc.<br
+/><br
+/>***********<br
+/><b>NEW TOPIC: Marty reports on status of pvData, pvIOC java and C++.</b><br
+/>***********<br
+/>pvData<br
+/>-no documentation has been changed to reflect the changes most recently made.<br
+/>Documentation is to be started in August and completed by the end of August. This is a revision of the overview documents to reflect the changes.<br
+/>Unsigned conversion is the only test that did not pass. David will fix this issue.<br
+/><br
+/>pvIOC<br
+/>caV3 is up to Matej to inform Marty on this connection.<br
+/>pvAccess is not connecting propoerly. Requires working with Matej<br
+/><br
+/>pvService<br
+/>On rpc and gather code should remain<br
+/>*********<br
+/><b>AI GS</b> by ????: to remove the remaining application packages out of pvService repository, so that pvService<br
+/>contains only RPC and gather.<br
+/>*********<br
+/><br
+/>C++ status<br
+/>pvData - ready for testing with pvAccessXCPP and pvIOCCPP<br
+/>Needs more tests on array types such as image<br
+/><br
+/>pvIOCCPP<br
+/>example Service RPC is working. - except the exit is throwing an exception.<br
+/><br
+/>testV3Channel<br
+/>&nbsp;&nbsp;&nbsp; PVGet to get data is crashing.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; V3 channel access does not support unsigned - but the records do support it.<br
+/>&nbsp;&nbsp;&nbsp; The V4 service to the V3 records is capable of handling the unsigned values.....<br
+/><br
+/>pvServiceCPP<br
+/>&nbsp; Only supports of client side of gather.<br
+/>&nbsp; Will support unsigned from the V3 database through the V4 service.<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; PVAccess - unsigned, structure provides the name of a field - not the field.<br
+/>&nbsp;&nbsp;&nbsp; Test server is not up, as the server is not up.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; C++ - compiles, works, but it needs more testing. It is not codek(sp) based.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; Specification is not aligned with the implementation. These will be slowly added, but not included in the release.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; What is needed for completion of pvCore beta 2:<br
+/><br
+/><b>AI GW:</b> provide headers for copyright<br
+/><b>AI MK:</b> V3 Channel needs unsigned support, (PVAccess C++)<br
+/><b>AI MK:</b> and MS Remote PV Access is failing<br
+/><b>AI MS:</b> make changes to PVAccess to make the tests compatible with Marty's changes.<br
+/><b>AI MK:</b> and MS - make documentation at the beginning<br
+/><b>AI MK:</b> and MS - internal use of Beta 2 ready July 31st.<br
+/><br
+/>****************<br
+/><b>NEW TOPIC:</b> <b>status of unsigned and report on the status of RPC in both Java and C++ support (David)</b><br
+/>****************<br
+/><br
+/>*******<br
+/><b>AI on DH by July 31:</b> Finish implementation &amp; bug fixed unsigned types in Java.<br
+/>Complete Unsigned request on both Server and Client sides in Java<br
+/>*******<br
+/>Create helper header in Java for channel archiver rpc server [??]<br
+/><br
+/><b>AI on DH by July 31</b>: implement C++ interface of pvService RPC client, symmentric with Java client side interface As Much As Possible<br
+/><br
+/>ChannelRPC in java is in pvServiceJava client<br
+/><br
+/>Channel RPC presently is implemented as a pvIOC. channelRPC and should be decoupled from record proocessing,<br
+/>since record processing is not implemented in CPP. In this way, channelRPC can be implemented symmetrically&nbsp;<br
+/>and completely on server side in both java and CPP.<br
+/><br
+/><b>AI on MS by July 31</b>: decouple rpc server side from java ioc record processing, and put it into pvAccess.&nbsp; Move channel RPC from pvIOCCPP to pvAccessCPP.<br
+/><br
+/><b>ISSUE:</b> Multi-threading will not be implemented in CPP for now<br
+/>GW: where is C++ implementation?<br
+/>MK: current, at pvIOCCPP, can be moved into pvAccessCPP<br
+/>MS: interface implementation will not be symmentric<br
+/><br
+/>BD: Does James have time to look at server side in C++?<br
+/>JS: need a good design first.&nbsp;<br
+/>BD: may be next cycle. Sometime Oct. 1<br
+/><br
+/>BD says DS by Ralph will be done by July 31.<br
+/>GW: RH said he needs mullti-threading<br
+/><br
+/>****************<br
+/><b>NEW TOPIC: Demo of PSI model system (greg)</b><br
+/>****************<br
+/>In Matlab:<br
+/>--------------<br
+/>modelconstants<br
+/>status = modelrun(ARAMIS, DONT_INCLUDE_GUN, DESIGN_MODELTYPE, OPTICS_NOMINAL, Q_NOMINAL, P0_NOMINAL);<br
+/>status = modelrun(0, 0, 1, [48.09 0.36 48.08 .36], 2.0e-10, 274.28);<br
+/>status = modelrun(ATHOS, DONT_INCLUDE_GUN, DESIGN_MODELTYPE, OPTICS_NOMINAL, Q_NOMINAL, P0_NOMINAL);<br
+/>modelplot&nbsp;<br
+/>status = modelupload('Aramis with nominal initial conditions');<br
+/>modelsetgold<br
+/><br
+/>also<br
+/>modelplot_given(ARAMIS);<br
+/>status = modelupload_given(ARAMIS,DONT_INCLUDE_GUN,DESIGN_MODELTYPE,...<br
+/>OPTICS_NOMINAL, Q_NOMINAL, P0_NOMINAL, Lastmodelrun_lattice, ...<br
+/>'Aramis with nominal initial conditions, 2nd upload to BD database');<br
+/>modelsetgold_given(11)&nbsp; - sets runid 12 to gold.<br
+/><br
+/><br
+/>Get model data from rdbService:<br
+/>Start a EPICS V4 server:<br
+/>cd Development/epicsV4/workspace_hg/exampleJava/src/rdbService/<br
+/>./rdbServerRunner<br
+/><br
+/><br
+/>Get model data:<br
+/>-----------------------<br
+/>getmodel model:beampaths<br
+/>getmodel model:runs<br
+/>getmodel swissfelmodel:nominal_initial_conditions<br
+/>getmodel model:aramis:design:gold<br
+/>getmodel model:aramis:extant:gold<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>****************<br
+/><b>NEW TOPIC: orbit service: TK</b><br
+/>****************<br
+/>TK: Aims to create synchronous BPM orbit service using gather and PSI/SLAC synchronous acq pattern.<br
+/><br
+/>Add to easyPVA unsign to document through giving helper method Java implementation (a hint how to do it)<br
+/><br
+/>AI on MS by middle of AUG(???): add support for structure to eazyPVA &amp; add RPC to eazyPVA Java<br
+/>DH will go through previous AI to support RPC in pvService C++<br
+/>API should be symmetric<br
+/>MS to create eazy channel RPC binding<br
+/><br
+/><b>List of Technical Issues and Requirements outstanding for Charter exit:</b><br
+/>-------------------------------------------------------------------------------------------------------<br
+/>The following list was added to intermittently through the meeting:<br
+/>1. Add the following to EasyPVA<br
+/>&nbsp; a. request for PVStructure<br
+/>&nbsp; b. arguments as part of request for data (that is support for channelRPC).<br
+/>2. Module on V3 IOC to aggregate V3 IOC data and return v4 structure (Dirk Request).<br
+/><br
+/><b>MS priorities:</b><br
+/>-------------------<br
+/>1. Complete changes for introspection and unsigned + tests (beta 2)<br
+/>2. Add pvStructure and RPC to EasyPVA Java implementation<br
+/>3. Add NTs to CSS<br
+/>4. Add async to channelRPC<br
+/>5. Add support for NTs to eget<br
+/>6. Performance report<br
+/><br
+/>Also MS will be figuring out technical issues for switching ca/pvAccess provider. Note that this may be complicated when a V3 PV is accessible through either CA or pvAccess.<br
+/><br
+/><br
+/><b>EPICS V4 CHARTER EXIT FUNCTIONALITIES USE CASE OBJECTIVES PROPOSAL</b><br
+/><br
+/>This is a proposal for the objectives of the EPICS V4 charter exit (what should be finished<br
+/>at the end of our charter period). The list is expressed as a list of examples, from<br
+/>the perspective of a command line user.<br
+/><br
+/>Basic Get and Put<br
+/>=================<br
+/><br
+/>* Get the value of an V3 PV<br
+/>&gt; eget QUAD:34:ELECTRICCURRENT<br
+/><br
+/><ul><li>Get the values of all the V3 CA standard fields (-r is pvAccess request string)</li
+><li>&gt; eget QUAD:34:FIELD -r 'field()'</li
+><li><br/></li></ul
+>* Get the value of an UNSIGNED V3 record<br
+/>[Can't think of a sensible large number, but can think of many that would only be +ve]<br
+/>&gt; eget BEAM:RATE&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>60<br
+/><br
+/>* Get the value of a V4 scalar pv<br
+/>&gt; eget XCOR:LI:34:IACT<br
+/>23.3<br
+/><br
+/>* Get the value of a V4 array pv to the command line<br
+/>&gt; eget QAUD:LI:18:POLYOMIALS&nbsp;<br
+/>34.6<br
+/>19.5<br
+/>29.3<br
+/><br
+/>* Put the value of a V4 scalar pv<br
+/>&gt; eput -v 34.4 XCOR:LI:34:IDES&nbsp;<br
+/><br
+/>* Put the value of a V4 array PV<br
+/>&gt; eput -v 34.4 19.6 29.3 XCOR:LI:34:IDES&nbsp;<br
+/><br
+/>* Put the value of a V3 waveform<br
+/>&gt; eput -v 34.4 19.6 29.3 QUAD:34:POLY<br
+/><br
+/>* Monitor the value of a simple type PV<br
+/>&gt; emon BPMS:LI34:X<br
+/><br
+/>*&nbsp; Get a NTMarix and print as a matrix<br
+/>$ eget -a TYPE=DESIGN -a POS=MID -a RUN=LATEST QUAD:LI21:271/R&nbsp;<br
+/>0.23 0.1234 0.0 0.0 0.067562 0.001167<br
+/>-0.34520 0.0923 0.0 0.0 0.046981 0.001514<br
+/>0.0 0.0 1.881007 4.857304 0.0 0.0<br
+/>0.0 0.0 -1.50064 -3.862346 0.0 0.0<br
+/>-0.00132 -0.001129 0.0 0.0 0.224701 0.003894<br
+/>0.162595 0.10285 0.0 0.0 -19.603 -0.233109<br
+/><br
+/>* Get a NTTable and print as a table<br
+/>$ eget -a start="3 minutes ago" -a end="now" -a p=12 QUAD34_Bfield<br
+/><br
+/>TimePastEpoch(s) Value Date Alarm<br
+/>496169397.856321000 7.355487346649e-02 Wed Jun 21 17:49:57 2012 NO ALARM<br
+/>496169401.996447000 1.682446300983e-01 Wed Jun 21 17:50:01 2012 NO ALARM<br
+/>496169410.052636000 2.558367252350e-01 Wed Jun 21 17:50:10 2012 NO ALARM<br
+/>496169420.109690000 3.173123300076e-01 Wed Jun 21 17:50:20 2012 NO ALARM<br
+/>...<br
+/><br
+/>* Get values according to arguments in a consistent way from any RPC service<br
+/>See examples eget -a above.<br
+/><br
+/><br
+/>Use Cases of Directory Service<br
+/>------------------------------<br
+/><br
+/>* Get the names of a number of PVs, where their names match a string, using the Directory Service. Ideally, sort by a tag or option. E.g.:<br
+/>&gt; eget -s DirectoryService -a pattern 'XCOR:*:BDES' -a options "sortbyz"<br
+/>XCOR:1:BDES&nbsp;<br
+/>XCOR:20:BDES&nbsp;<br
+/>XCOR:44:BDES<br
+/>XCOR:68:BDES<br
+/>XCOR:89:BDES&nbsp;<br
+/>...<br
+/>Extra credit: ideally not just * but regular expression.<br
+/><br
+/>Eg. Print the value of BDES from all correctors whose PV name matches the pattern XCOR:LI:*:BDES&nbsp;<br
+/>&gt; eget -s DirectoryService -a pattern=XCOR:*:BDES -a options="sortbyz" -a beampath=0 | eget -t&nbsp;<br
+/>XCOR:1:BDES 23.5<br
+/>XCOR:20:BDES 34.5<br
+/>XCOR:44:BDES 15.5<br
+/>XCOR:68:BDES 13.7<br
+/>XCOR:89:BDES 34.5<br
+/>...<br
+/><br
+/>* Get the value of a number of PVs, where the names match the conjunction (AND) of Directory Service tags<br
+/>E.g.: Print the value of the desired B field (BDES) from all correctors in the (SwissFEL) section SINBC01&nbsp;<br
+/>&gt; eget -s DirectoryService -a property='section=SINBC01' -a property='type=COR' tag='BDES' -options="sortbyz" | eget -t<br
+/>sinbc01.cor01:B 23.34345<br
+/>sinbc01.cor02:B 43.47543<br
+/>&nbsp;&nbsp;<br
+/><br
+/>Use Cases of gather service<br
+/>===========================<br
+/>* Use of an ad hoc Gather to get the field value (V3 PVs) of many magnets or BPMs.<br
+/>Show use of gather service to simply give LATEST gathered values from a Gather record defined by the client:<br
+/>So this is something probably done in Matlab<br
+/>Use gather API to watch and gather data from named magnets:<br
+/>TODO, show pseudocode<br
+/>&lt;include python example from BNL&gt;<br
+/><br
+/><br
+/>* Get synchronous BPM orbit data from a BPM service, that is using the gather service in combination with a SLAC/PSI<br
+/>like BPM synchronous data system. Data form is NTTable.<br
+/><br
+/>&gt; eget -a Npulses=3 SwissFELTI:sync:bpmorbit&nbsp;<br
+/>pulse_Id bpm_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMIT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status<br
+/>31330&nbsp;&nbsp;&nbsp; sinlh01.diag01.bpm&nbsp; 0.331939 -0.20821595 9.2273582E9 OK<br
+/>31690 sinlh01.diag01.bpm&nbsp; 0.343939 -0.21321534 9.3973582E9 OK<br
+/>32056 sinlh01.diag01.bpm&nbsp; 0.343939 -0.21321534 9.3973582E9 OK<br
+/>31330 sinlh02.diag01.bpm&nbsp; 0.430091 -0.19211863 9.4554767E9 OK<br
+/>31690 sinlh02.diag01.bpm&nbsp; 0.429820&nbsp; -0.18054654&nbsp;&nbsp;&nbsp; 9.3577114E9 OK<br
+/>32056 sinlh02.diag01.bpm&nbsp; 0.476549&nbsp; -0.23452345&nbsp;&nbsp;&nbsp; 9.3245235E9 OK<br
+/>... snipped many more<br
+/>Total number of rows printed would be M bpms in the gather record named SwissFELTI:sync:bpmorbit, times<br
+/>N pulses<br
+/><br
+/>* Get the values of a number of V3 PVs from one V3 IOC, through a V4 record on V3 IOC PVA<br
+/>[ie, "The Dirk Requirement" ].<br
+/>Ideally a heterogenous structure of V3 scalar and waveforms.&nbsp;<br
+/>E.g. Get a summary of the PVs relating to a QUAD from an IOC. In this example the V4 PV<br
+/>is QUAD:35:SUMMARY, showing that one might use the "physics" name for such summary&nbsp;<br
+/>PVs, and their values might be composed of a structure of V3 PVs named with engineering names and their values:<br
+/><br
+/>&gt; eget QUAD:35:SUMMARY<br
+/>QUAD:SECT02:13:B.VAL 23.5<br
+/>QUAD:SECT02:13:B.EGU KG-m<br
+/>QUAD:SECT02:13:POLY.VAL 23234.2342 5435.34 753.3 4.34234 5.32E-23<br
+/>QUAD:SECT02:13:E.VAL 4.454<br
+/>QUAD:SECT02:13:E.EGU GeV<br
+/><br
+/>&nbsp;<br
+/>EasyPVA from Matlab.&nbsp;<br
+/>-------------------<br
+/>* Example of orbit correction from Matlab, done using easyPVA<br
+/>Illustrates requirements for:<br
+/>&nbsp;1. EasyPVA understanding request for PVStructure<br
+/>&nbsp;2. EasyPVA understanding arguments as part of request for data&nbsp;<br
+/>&nbsp;3. EasyPVA understanding that an argument TO a service may be an array<br
+/>&nbsp;&nbsp;&nbsp; (in the example a table of magnet names and B field values)<br
+/>Also assumes the Directory Service requirement articulated above to get Corrector and BPM names<br
+/>-------------------------------<br
+/>% SwissFEL orbit correction in 1/2 page of matlab<br
+/>%<br
+/>import org.epics.ca.easyPVA.*;<br
+/>easyPVA = EasyPVAFactory.get();<br
+/><br
+/>% Get the names of all the Correctors and BPMs from the Directory Service<br
+/>corrNamesChan = easyPVA.createChannel('DS:SwissFEL:GUN_to_ARAMIS');<br
+/>corrNamesChan.addArgument('DEVICETYPETAG','XCOR');<br
+/>corrNames = corrNamesChan.createGet().getStringArray();<br
+/>bpmNamesChan = easyPVA.createChannel('DS:SwissFEL:GUN_to_ARAMIS');<br
+/>bpmNamesChan.addArgument('DEVICETYPETAG','BPMS');<br
+/>bpmNames = bpmNamesChan.createGet().getStringArray();<br
+/>Ncor = length(corrNames);<br
+/>Mbpm = length(bpmNames);<br
+/><br
+/>% Get BPM x orbit from the BPM service.<br
+/>b = easyPVA.createChannel(...<br
+/>&nbsp;&nbsp;&nbsp; 'BPMORBIT:SwissFEL:GUN_to_ARAMIS').createGet().getDoubleArray();<br
+/><br
+/>% Form the Ax-b problem getting Rmats from the Model Service<br
+/>modelmatrixChan = easyPVA.createChannel('model:aramis:gold:extant:R');<br
+/>for bpmi = 1:Mbpm;<br
+/>&nbsp;&nbsp; modelmatrixChan.addArgument('to',bpmNames(bpmi));<br
+/>&nbsp;&nbsp; for corj = 1:Ncor;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; modelmatrixChan.addArgument('from',corrNames(corj));<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rmatAtoB_pvStruct = modelmatrixChan.createGet().getPVStructure();<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RmatCorToBpm = toMatrix(rmatAtoB_pvStruct);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A(bpmi, corj) = RmatCorToBpm(1,2);<br
+/>&nbsp;&nbsp; end<br
+/>end<br
+/><br
+/>% 2 lines of actual physics<br
+/>x = inv(A)*b; % Solve Ax-b<br
+/>newBDESes = -KtoB(x); % new B field values from K to B<br
+/><br
+/>% Deploy the new magnet settings.<br
+/>magSetChan = easyPVA.createChannel('MAGNETSET');<br
+/>magSetChan.addArgument('magnetlist',corrNames);<br
+/>magSetChan.createPut().putDoubleArray(newBDESes,length(newBDESes));<br
+/>-----------------------------<br
+/><br
+/>* EasyPVA to "put" a PVStructure to a service or PV<br
+/>add example.<br
+/><br
+/></body>
+</html>

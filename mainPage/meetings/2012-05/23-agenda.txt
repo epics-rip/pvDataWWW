@@ -1,0 +1,41 @@
+Colleagues,   
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. Minutes
+in titanpad [2]. 
+
+Cheers
+G
+
+Agenda
+------
+
+0. Preliminaries (5 mins)
+
+1. Announcement text review [3] (10 mins) 
+
+   Check announcement text for completeness, grammar etc.
+
+2. Normative Type self id and meta data outline proposal [4] *Greg* (30 mins)
+
+   Whether the outline proposal looks reasonable.
+
+3. NTQuery and services interface *Greg* 
+
+   I'm thinking of using the original idea (James' I think) for querying for the
+   introspection interface of a service. So we'd be replacing the name/value
+   system with full typed parameters. This is necessary for set operations.  
+
+4. Gather service implementations cleanup. *Guoabao*, *Marty*.
+
+   
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com  
+[3] http://sourceforge.net/mailarchive/message.php?msg_id=29298140
+[4] http://sourceforge.net/mailarchive/message.php?msg_id=29298388
+[5] http://sourceforge.net/mailarchive/forum.php?thread_name=D9BC25F6F7EF9346B862834BA05ECEDD0F9812DB%40EXCHMBX03.fed.cclrc.ac.uk&forum_name=epics-pvdata-devel
+
+
+
+
+
+

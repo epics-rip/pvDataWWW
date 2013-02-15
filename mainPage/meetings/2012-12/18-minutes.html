@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$38</title>
+</head>
+<body><br
+/><b>AGENDA</b><br
+/><b>=======</b><br
+/><br
+/>1. Activities and Action Item verification and prioritization. [4]<br
+/><br
+/>2. Clarification of role of pvIOC Java and CPP from now (beta 2) and up to implementation of pvDatabase.&nbsp;<br
+/><br
+/>3. "Surprising feature of PVStructureArrays" (David) [3]<br
+/><br
+/>4. AlarmStatus. Should it be renamed AlarmCause? [5]<br
+/><br
+/>[1] <a href="http://epics-pvdata.sourceforge.net/home.html#usefulinfo">http://epics-pvdata.sourceforge.net/home.html#usefulinfo</a><br
+/>[2] <a href="http://epicsv4.titanpad.com/39">http://epicsv4.titanpad.com/39</a><br
+/>[3] thread at <a href="http://sourceforge.net/mailarchive/forum.php?thread_name=5B023ECC-6692-4F66-944A-D1B3EF1FC3DE%40slac.stanford.edu&forum_name=epics-pvdata-devel">http://sourceforge.net/mailarchive/forum.php?thread_name=5B023ECC-6692-4F66-944A-D1B3EF1FC3DE%40slac.stanford.edu&amp;forum_name=epics-pvdata-devel</a><br
+/>[4] <a href="http://epics-pvdata.sourceforge.net/worklist.txt">http://epics-pvdata.sourceforge.net/worklist.txt</a><br
+/>[5] thread at <a href="http://sourceforge.net/mailarchive/forum.php?thread_name=50BCBB2E.1050704%40comcast.net&forum_name=epics-pvdata-devel">http://sourceforge.net/mailarchive/forum.php?thread_name=50BCBB2E.1050704%40comcast.net&amp;forum_name=epics-pvdata-devel</a><br
+/><br
+/><br
+/><b>MINUTES</b><br
+/><b>=======</b><br
+/>Present: BD, NM, RL, GW, MS, MK, GS, DH, TK<br
+/>Scribe: GS,<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Activities and Action Item verification and prioritization.<br
+/>************<br
+/><br
+/>Re items in meeting reference [4]:<br
+/><br
+/>1. DS service:&nbsp;<br
+/>RL: depends on requirement. Could be improve in terms of error handling.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; No planning on that unless getting feedback (statued by BD)<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ready in V4 framework.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RL to send URL of documentation to GW.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>2. easyPVA:<br
+/>MK:&nbsp; not ready but Matej will take it.&nbsp;<br
+/>BD: do Java &amp; C++ separately.<br
+/>MJ: Java one week, C++ 3 weeks.<br
+/>MK: suggest to double the time<br
+/>[Sched est 1-Feb-&gt;Mar 15]<br
+/><br
+/>3. Gather. MK says it's done. Ready for users.&nbsp;<br
+/><br
+/>4. v3Channel. MK says done and documented. Documentation in pvIOCCPP.<br
+/>RL: Why is v3Channel part of pvIOCCPP, as opposed to seperately?<br
+/>MK: because one would expect connection to v3 IOC is part of cpp or java V4 IOC.<br
+/>GW: Let's address where v3Channel goes as part of pvIOC rethinking.<br
+/>RL could do it ofr linux but not vxWorks.<br
+/><br
+/><b>*********</b><br
+/><b>AI on RL by 20-Jan-2013: - will pull v3Channel out of pvIOCCPP and make it its own project.&nbsp;</b><br
+/><b>*********</b><br
+/>DEMO in meeting.<br
+/><b>*********</b><br
+/><b>AI on RL: - will persuade andrew to check the vxWorks port of v3Channel then I'll do the Linux port check.</b><br
+/><b>*********</b><br
+/><br
+/>5. v3-v4 interop guide.&nbsp;<br
+/>Ready estimate for 1st draft 20-Jan-2013.<br
+/>DH reports not started guide.<br
+/><br
+/><b>*****</b><br
+/><b>AI on GW to write requirements for the v3-v4 interop guide. including what this guide would be used for.</b><br
+/><b>*****</b><br
+/><br
+/>6. MK: If Ralph breaks out V3channel then Dirk can port only that.&nbsp;<br
+/><br
+/>7. Performance benchmark.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; MS estimate: 2 weeks. Ready est. 1-Feb-2013.<br
+/><br
+/>8. ArchiveService. DH thinks the README is sufficient as a user guide.&nbsp;<br
+/>DH: Not sure exampleCPP is the right place. But not sure Diamond will use it.<br
+/>GS: Does that mean multiple index file support will not be done?<br
+/>DH: don't know. It's in a good state now for someone to use it.<br
+/>NM: The documentation does not include indexing.&nbsp;<br
+/>NM/DH: [conversation confirms that the ArchiveService does go straight to the archive data through the archive library]<br
+/>GS: We need to get any archvie data regardless of "source" - ie from any archiver index.&nbsp;<br
+/>DH: if you'd like new features please take it.<br
+/>BD: We've taken it (at BNL) and deployed it. We'll add to it ourselves.<br
+/><br
+/><br
+/>16. eget/pvget. [MS estimates a &amp; b 1 wk, ready est 1-Feb]&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; a. Add demo of acquisition of unsigned (byte for simplicity) from V3<br
+/>&nbsp;&nbsp;&nbsp; channel. (MS).&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; b. Add full support of NTURI. (MS)&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i.&nbsp;&nbsp;&nbsp; Basic regular broadcast acquisition, eg eget pva:///quad45:bdes<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ii.&nbsp;&nbsp; Registry based name acquisition, eg eget pva://psihost.psi.ch/quad45:bdes<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iii.&nbsp; Service support; ie, use of query part of NTURI. Eg<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eget pva:///testNTMatrix?columns=3&amp;rows=5 to do equivalent of&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eget -a columns=3 -a rows=5 -s testNTMatrix<br
+/>&nbsp;&nbsp;&nbsp; c. Add mechanism at pvAccess API client side for a client user to choose the<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; so-called "provider" of the data, presently planned to be either pvaccess, or<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ca. (MS)&nbsp;<br
+/>MS/BD: Let's move 16.c to next year's charter.<br
+/><br
+/>-<b>-- Meeting ended before covering subitems 9-15 (of [1]) of item 1, and not covering 2 or 3. ---</b><br
+/><br
+/>TK gave summary pertaining to item 1:<br
+/><i>vxWorks port: is on Dirk's work plan for 2013. I assume porting of v3Channel, pvData, pvAccess. Not scheduled (i.e., which week, month) yet.</i><br
+/><i>orbit server: I (TK) can (re)start working on it in January. My plans depend on the availability of the Gather so I need to take a good look at that first.Too early to give a time estimate.</i><br
+/><i>caQtDm: Anton would be happy to integrate V4 into the display manager, he just needs a couple of examples to get started. Has been pending on me giving those examples to Anton.</i><br
+/><br
+/></body>
+</html>

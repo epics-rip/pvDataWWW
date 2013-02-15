@@ -1,0 +1,92 @@
+These  minutes are edited from the original https://sourceforge.net/mailarchive/message.php?msg_id=28718298
+
+EPICS V4 Meeting Minutes 23-Jan-2012 (Monday)
+=============================================
+
+Scribe: GW 
+
+NEW TOPIC: Gather Service
+-------------------------
+MK presenting:
+
+Impl: 2 parts: createGather, gather
+
+AJ: blocking a call?
+
+GS: createGather to create an instance of a new V4 record to do gather job
+
+Gather methods:
+  get() simply gets present (unrecord-processed) values
+  processGet() process records before get
+  
+createGather takes 2 seconds is caused by 2 seconds hardcoding. It does not really take so long time, 
+and can be solved easily.
+
+ISSUE: should gather diff language implementations be in one repo or separated repo?
+
+ISSUE: gather in pvService or elsewhere?
+
+Thinking about this tonight, and discuss it tomorrow
+
+ISSUE: should the data package for Gather be NTTable NTMultiChannelArray, or both?
+
+
+Client Gather API in Matlab, cothread, API like that
+return a vertor of double
+
+Looking to cothread code, DBR type support already in cothread (but cothread is based on Python which supports putting heterogenous data into lists)
+
+separate ezpva and gather
+
+ezpva in C++ first
+
+AI - MK by [Feb 14] complete gather doc, make a simple complete example: orbit service based on gather. 
+(GS, MK, LY). First just publish a simple written example of what a user would type to use the gather
+library to acquire the values of 3 (homogenous) V3 PVs (just literally the 10 minute job of writing
+an example in the document), then do the bigger implementation example. 
+[Greg has the AI of editing the gather doc for form and making it a user guide, but Marty has to add
+the example]
+
+RESOLUTION: ezpva should be developed independently of Gather requirements. 
+
+Gather functionality implemented as a library should be published first and is our priority. Gather as a service will come later.
+
+PD: What about atomaticity and synchronization of acquisitions?
+GW: The gather library in itself doesn't have support for synchronization. It would be up to a service that uses the Gather library to ensure that what is returned to a user is synchronized data, using whatever facilities exist at each institution.
+
+
+NEW TOPIC: Normative Types review
+---------------------------------
+NTNameValue
+structure NTxxx
+    string ref (Greg agrees this is a crappy name)
+
+alarm and timestamp: returned value should always have this setting correctly.
+
+modify section 4: Services SHOULD provide alarm and timestamp information
+
+NTMutiChannelArray: have a pvname [] field
+    string [] pvnames
+
+NTTimeDomainArray and NTFreqDomainArray, the value should be double array
+
+Change structure NTHistogram
+    rename long[] values => long[] counts
+    enum_t => double [] binIntervals
+    double firstValue => gone
+    double lastValue => gone
+
+NTImage: Simple display tools should check colorMode to ensure that they can actually display a particular image.
+
+variant_t as a field
+   variant_t variant_field
+
+AI on BD [by 14-Feb]: write Mark River an email whether NTImage is suitable.
+
+
+
+
+
+
+
+

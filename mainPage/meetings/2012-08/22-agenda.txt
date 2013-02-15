@@ -1,0 +1,85 @@
+Colleagues,
+
+Please find below the agenda for our recently somewhat inaccurately named, weekly meeting [1]. Minutes in titanpad [2]. 
+
+Agenda
+======
+1. Preliminaries, 5 mins.
+
+2. Status Review.
+
+   We haven't had a meeting in 4 weeks, so we need some catchup. Roundtable of what people are doing.
+
+   Specifically, please comment on advances towards the outstanding items defined in the Diamond Meeting [3]
+   reproduced below.
+
+   Please take a moment to think about any preconditions you need for completions. This includes what you're
+   doing in order to be able to do the line item as listed, and what you need from other team members. 
+   We need to be clear on what people are waiting in order to proceed. 
+
+   For instance, I'm presently looking at XML Schema for defining Normative Types, which is necessary for 
+   NT self-id, namespacing and extensibility, which is necessary for item 2 (services API). 
+
+3. Collecting the complete list of work outstanding
+
+   What is NOT on this list for work that must be completed for charter exit? Take a moment to
+   review all the work you would like to do by Charter exit. For instance, for myself I want to 
+        1. define XML Schema NT description mechanism
+        2. 1PWD of NTs
+        3. rebuild and test exampleJava against the new pv* modules and convert them to using pvAccess only RPC 
+        4. convert examples to use the new Normative Type self id (depends on 1), through pvaccess id 
+           mechanism (depends on Matej)
+        5. define interface for superEasyPva
+        6. Check use of easyPVA and superEasyPVA for doing RPC from Matlab, specifically to get model data
+        7. Complete model service (not in EPICS V4 charter but related for 6 and 8) 
+        8. Make sure we can demo all of the charter exit functionalities as described at the Diamond meeting. 
+        9. Make proposal items for the next charter.
+
+4. Clear Module Status review.
+   If it wasn't explicit from the above discussion, explicitly review the state of 
+   readiness of pv* java and c++ modules. 
+
+   When can we:
+      i. sync and integrate endpoint software against pv* tips?
+      ii. When can Dirk start again to build on vxWorks?
+      iii. Convert RPC uses to pvAccess only method?  
+      iv. Use the pvaccess id field for sending structure ids? 
+
+
+Outstanding Technical Issues for this charter exit
+--------------------------------------------------
+MS 1. Asynch RPC.
+GW 2. Services API. Add services to eget.
+MS 3. Deciding provider (that is, pvAccess or CA) for a V3 PV.
+    MS: Problem is in 2 parts: Specifying the list of alternative providers. 2nd, how to use a provider. 
+    We may simply implement the solution that both providers are always tried! 
+MK: 4. "Dirk Requirement." A module on embedded IOC that can collect V3 record data and return it as V4 data.
+    Get and Put MUST be implemented. But not monitor.
+    One MUST be able to specify an ad hoc list of V3 PVs to be acquired or put to. Additionally,
+    alternatively, an IOC engineer must be able to pre-specify the list of V3 PV as a static list
+    in a file on the IOC.
+MS: 5. easyPVA RPC (in Java impl of easyPVA)
+GW/JR 6.  SupereasyPVA.
+
+Required for beta 2:
+
+MS   7. Add the relevant NT PVstructures to pvManager - those types pvmanager already understands. 
+GW 8. Mechanism for header and copyright.
+MK 9. Debug that v3Channel and pvIOCJava fail for remote access.
+MK 10. Add unsigned to v3channel 
+MS 11. pvAccessJava test server not working due to beta 2 changes.
+MK/MS 12. Upgrade documentation to beta 2. 
+MS 13. Upgrade pvAccess specification document reflect implementation.
+DH 14. Finish implementing java unsigned. 
+MS 15. Java RPC depends on record processing, c++ Doesn't. Put Java RPC into pvAccess. This is
+part of job 1 aboce, Async RPC. In Java, RPC will be multithreaded. In C++, not multithreaded.
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] https://epicsv4.titanpad.com/25
+[3] http://epicsv4.titanpad.com/ep/pad/view/23/latest
+
+
+
+
+
+

@@ -1,0 +1,69 @@
+Telecon today at the usual time, as agenda, plus Nikolay and James on detector and image type.
+
+Ralph, you'll be getting a little punishment. I'm thinking a few weeks of scribing.
+
+Cheers
+Greg
+ 
+On 29 Nov 2011, at 17:45, Greg White wrote:
+
+> Colleagues,
+> 
+> Please find below the agenda for our weekly telecon [1]. May be a short meeting tomorrow!
+> Nikolay, can you scribe?
+> 
+> Cheers
+> Greg, for Bob and Greg
+> 
+> Agenda
+> ----------
+> 
+> 0. Preliminaries (10 mins)
+> 
+> 1. Changes being made in support of Masr (*Marty*, *Guobao*) 30 mins
+>    [masr or masar?]
+> 
+> 2.  Milestones progress. Can we be done with Beta 1 before Dec 20th? (15 mins)
+> 
+>     From last week:
+>     -------
+>      Beta 1: December 20th:  First version of EPICS v4 that's easy to pick up, 
+>              install and understand
+>         + Second Public Working Draft of pvAccess (Matej, Greg)
+>         + Channel RPC moved out of pvService (greg, Guobao)
+>         + Examples in Java and C++ (Timo, James, Greg, others?)
+>         + Getting started guide
+>         + pvData and pvIOC documentation separate to JavaDoc (Marty, Greg).
+>         + Nominal Architectures (James - can you make this?)
+> 
+>      Beta 2: March 2012. Easier UI, support for gather.
+>         + ezpva
+>         + gather
+>         + Doxygen doc 
+>         + Normative Types specification and helper code
+>         + Architectures.
+>      -------
+> 
+>      The important differences between beta 2 and the charter deliverables [2] is:
+>         + A directory service, normative specification and implementation
+>         + Performance report
+>         + EPICS V3 interoperability report
+>         + Document outlining what EPICS V4 IOC control programmers can use and expect
+> 
+>  3. Ridicule and generally taking the piss out of Greg over the gateway.
+> 
+> 
+> [1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+> [2] http://epics-pvdata.sourceforge.net/charter.html#deliverables
+> ------------------------------------------------------------------------------
+> All the data continuously generated in your IT infrastructure 
+> contains a definitive record of customers, application performance, 
+> security threats, fraudulent activity, and more. Splunk takes this 
+> data and makes sense of it. IT sense. And common sense.
+> http://p.sf.net/sfu/splunk-novd2d
+
+
+
+
+
+

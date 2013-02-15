@@ -1,0 +1,32 @@
+Colleagues,
+
+Please find below the agenda for our weekly telecon [1]. Short meeting,
+mainly to decide on pvAccess Spec publication, and EPICS V4 beta 1.0 announcement.
+
+Nikolay, are you up to scribe this week?
+
+Cheers
+Greg, for Bob and Greg
+
+Agenda
+----------
+
+0. Preliminaries (10 mins)
+
+1. Fallout and lessons from beta 1 preparation:
+   + Jenkins for all?
+   + management of RELEASE file
+   + others?
+
+2. pvAccess Specification 2nd public working draft publication
+
+3. EPICS V4 beta 1.0 announcement.
+
+4. Archiver, if we're up for it!
+
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+
+
+
+

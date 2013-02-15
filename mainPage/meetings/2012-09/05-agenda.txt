@@ -1,0 +1,283 @@
+Colleagues,
+
+In tomorrow's telecon I'd like to go through the list of illustrations of the 
+basic functionalities of EPICS V4, and assign people responsible for delivering
+demos of that functionality. 
+
+There are 18 such illustrations listed below. Each have a name attached.
+
+Now, basically all the line items have pre-requisities, that's the point of the exercise. It
+forces us to be clear about the non-functional requirements necessary to achieve the 
+functional requirements. For instance, #10 requires NTMatrix be defined, which means an 
+NT self-id solution must be implemented, and a way for eget to talk to a service must be implemented. 
+Therefore, for each of these, we must be clear on the prerequisites and who is responsible for them (yes,
+I know I'm attached to many of them). However, part of the intention of assigning responsibility 
+for the line item deliverable, is to ensure that the named individual demos the functionality
+whether they received the prerequisite or not. I think there is only one prerequisite which, if absent, 
+truly renders solution impossible; that's the way eget should interface to services
+that take arguments. 
+
+So, tomorrow, let's first go through the list below to assign responsible party. Then spend
+some time on the basic service interface. 
+   * *Ralph*, *David*, how do you define your services to take arguments. Did you use the same method
+   as hellowService and rdbService?
+   * Should a javaIOC be necessary? if not, how would be arguments be formally documented (since there 
+     would be no database xml file?
+   * I would like an interface in which one can ask the service what are its arguments. How would that be
+     achieved?
+
+Timeline. All of these shall be demoed at the October meeting, 17-19 Oct. 
+** But, I would like to be able to conduct ALL the demoes myself. That ensures that they 
+are all mature enough, and encapsulated enough, that examples can be distributed and documented
+sufficiently for a new user. So, I'd like to take delivery of these by *1-Oct*.
+
+
+Agenda
+======
+  Preliminaries
+  Assign responsibility for each demo below
+  Service interface 
+
+
+FUNCTIONAL REQUIREMENTS OF EPICS V4 ILLUSTRATIONS
+================================================= 
+Basic Get and Put
+=================
+
+*MS*
+1. Get the value of an V3 PV [user has no knowledge that it's V3 as opposed to V4]
+> eget QUAD:34:IDES
+23.424
+
+*MS*
+2. Get the values of all the V3 CA standard fields (-r is pvAccess request string)
+> eget QUAD:34:IDES -r 'field()'
+structure QUAD:34:IDES
+{
+    value = 23.424
+    alarm = structure
+    {
+        severity = structure
+        {
+            index = 0
+            choices = [none,minor,major,invalid]
+        }
+        message = null
+        ackTransient = false
+        ackSeverity = structure
+        {
+            index = 0
+            choices = [none,minor,major,invalid]
+        }
+    }
+    timeStamp = structure
+    {
+        secondsPastEpoch = 1253549456
+        nanoSeconds = 478000000
+    }
+}
+
+*MK*
+3. Get the value of an UNSIGNED V3 PV 
+[Can't think of a sensible large number, but can think of many that would only be +ve]
+> eget BEAM:RATE    
+60
+
+*MS*
+4. Get the value of a V4 scalar pv
+> eget XCOR:LI:34:IACT
+23.3
+
+*MS*
+5. Get the value of a V4 array pv to the command line
+> eget QAUD:LI:18:POLYOMIALS 
+34.6
+19.5
+29.3
+
+*MS*
+6. Put the value of a V4 scalar pv
+> eput -v 34.4 XCOR:LI:34:IDES 
+
+*MS*
+7. Put the value of a V4 array PV
+> eput -v 34.4 19.6 29.3 XCOR:LI:34:IDES 
+
+*MS*
+8. Put the value of a V3 waveform [(!!!) is this possible?]
+> eput -v 34.4 19.6 29.3 QUAD:34:POLY
+
+*MS*
+9. Monitor the value of a simple type V4 PV
+> emon BPMS:LI34:X
+
+*GW*
+10.  Get a NTMarix and print as a matrix
+$ eget -a TYPE=DESIGN -a POS=MID -a RUN=LATEST QUAD:LI21:271/R 
+0.23 0.1234 0.0 0.0 0.067562 0.001167
+-0.34520 0.0923 0.0 0.0 0.046981 0.001514
+0.0 0.0 1.881007 4.857304 0.0 0.0
+0.0 0.0 -1.50064 -3.862346 0.0 0.0
+-0.00132 -0.001129 0.0 0.0 0.224701 0.003894
+0.162595 0.10285 0.0 0.0 -19.603 -0.233109
+
+*DH*
+11. Get a NTTable and print as a table. Illustrate with archive service. 
+$ eget -a start="3 minutes ago" -a end="now" -a p=12 QUAD34_Bfield
+
+TimePastEpoch(s) Value Date Alarm
+496169397.856321000 7.355487346649e-02 Wed Jun 21 17:49:57 2012 NO ALARM
+496169401.996447000 1.682446300983e-01 Wed Jun 21 17:50:01 2012 NO ALARM
+496169410.052636000 2.558367252350e-01 Wed Jun 21 17:50:10 2012 NO ALARM
+496169420.109690000 3.173123300076e-01 Wed Jun 21 17:50:20 2012 NO ALARM
+...
+
+* Get values according to arguments in a consistent way from any RPC service
+See examples eget -a above.
+
+
+Use Cases of Directory Service
+==============================
+*RL*
+12. Get the names of a number of PVs (v3 or v4 potentially heterogeneous mix) where their names match a string, using the Directory Service. Ideally, sort by a tag or option. E.g.:
+> eget -s DirectoryService -a pattern 'XCOR:*:BDES' -a options "sortbyz"
+XCOR:1:BDES 
+XCOR:20:BDES 
+XCOR:44:BDES
+XCOR:68:BDES
+XCOR:89:BDES 
+...
+Extra credit: ideally not just * but regular expression.
+
+*RL*
+13. As above but additionally get the values. In the case illustrated below done with a pipe, but better if integrated into eget.
+Eg. Print the value of BDES from all correctors whose PV name matches the pattern XCOR:LI:*:BDES 
+> eget -s DirectoryService -a pattern=XCOR:*:BDES -a options="sortbyz" -a beampath=0 | xargs eget -t {} 
+XCOR:1:BDES 
+23.5
+XCOR:20:BDES 
+34.5
+XCOR:44:BDES 
+15.5
+XCOR:68:BDES 
+13.7
+XCOR:89:BDES 
+34.5
+...
+
+*RL*
+14. Get the value of a number of PVs, where the names match the conjunction (AND) of Directory Service tags
+E.g.: Print the value of the desired B field (BDES) from all correctors in the (SwissFEL) section SINBC01 
+> eget -s DirectoryService -a property='section=SINBC01' -a property='type=COR' tag='BDES' -options="sortbyz" | eget -t
+sinbc01.cor01:B 23.34345
+sinbc01.cor02:B 43.47543
+  
+
+Use Cases of Gather Service
+===========================
+*TK*
+15. Use of an ad hoc Gather to get the field value (V3 PVs) of many magnets or BPMs.
+Show use of gather service to simply give LATEST gathered values from a Gather record defined by the client:
+So this is something probably done in Matlab
+[TODO insert example]
+
+*TK*
+16. Get synchronous BPM orbit data from a BPM service, that is using the gather service in combination with a SLAC/PSI
+like BPM synchronous data system. Data form is NTTable.
+
+> eget -a Npulses=3 SwissFELTI:sync:bpmorbit 
+pulse_Id bpm_name            X         Y             TMIT         Status
+31330    sinlh01.diag01.bpm  0.331939 -0.20821595 9.2273582E9 OK
+31690 sinlh01.diag01.bpm  0.343939 -0.21321534 9.3973582E9 OK
+32056 sinlh01.diag01.bpm  0.343939 -0.21321534 9.3973582E9 OK
+31330 sinlh02.diag01.bpm  0.430091 -0.19211863 9.4554767E9 OK
+31690 sinlh02.diag01.bpm  0.429820  -0.18054654    9.3577114E9 OK
+32056 sinlh02.diag01.bpm  0.476549  -0.23452345    9.3245235E9 OK
+... snipped many more
+Total number of rows printed would be M bpms in the gather record named SwissFELTI:sync:bpmorbit, times
+N pulses
+
+*MK*
+17. Get the values of a number of V3 PV (fields) from one V3 IOC, through a V4 record on V3 IOC PVA
+[ie, "The Dirk Requirement" ].
+Ideally a heterogenous structure of V3 scalar and waveforms. 
+E.g. Get a summary of the PVs relating to a QUAD from an IOC. In this example the V4 PV
+is QUAD35:SUMMARY, to illustrate that one might use the "physics" name (QUAD35) for such summary 
+PVs, and their values might be composed of a structure of V3 PVs named with engineering names and their values:
+
+> eget QUAD35:SUMMARY
+QUAD:SECT02:13:B.VAL 23.5
+QUAD:SECT02:13:B.EGU KG-m
+QUAD:SECT02:13:POLY.VAL 23234.2342 5435.34 753.3 4.34234 5.32E-23
+QUAD:SECT02:13:E.VAL 4.454
+QUAD:SECT02:13:E.EGU GeV
+
+ 
+EasyPVA, Model Service and Directory Service from Matlab. 
+=========================================================
+
+Overall *GW*, from input from RL and TK.
+ 
+18.  Example of orbit correction from Matlab, done using easyPVA
+Illustrates requirements for:
+ 1. EasyPVA understanding request for PVStructure
+ 2. EasyPVA understanding arguments as part of request for data 
+ 3. EasyPVA understanding that an argument TO a service may be an array
+    (in the example a table of magnet names and B field values)
+Also assumes the Directory Service requirement articulated above to get Corrector and BPM names
+-------------------------------
+% SwissFEL orbit correction in 1/2 page of matlab
+% The following is syntactically valid Matlab, but need to see from Ralph how it is actually done.
+%
+import org.epics.ca.easyPVA.*;
+easyPVA = EasyPVAFactory.get();
+
+% *RALPH*
+% Get the names of all the Correctors and BPMs from the Directory Service
+corrNamesChan = easyPVA.createChannel('DS:SwissFEL:GUN_to_ARAMIS');
+corrNamesChan.addArgument('DEVICETYPETAG','XCOR');
+corrNames = corrNamesChan.createGet().getStringArray();
+bpmNamesChan = easyPVA.createChannel('DS:SwissFEL:GUN_to_ARAMIS');
+bpmNamesChan.addArgument('DEVICETYPETAG','BPMS');
+bpmNames = bpmNamesChan.createGet().getStringArray();
+Ncor = length(corrNames);
+Mbpm = length(bpmNames);
+
+% *Timo*
+% Get BPM x orbit from the BPM service.
+b = easyPVA.createChannel(...
+    'BPMORBIT:SwissFEL:GUN_to_ARAMIS').createGet().getDoubleArray();
+
+% *Greg*
+% Form the Ax-b problem getting Rmats from the Model Service
+modelmatrixChan = easyPVA.createChannel('model:aramis:gold:extant:R');
+for bpmi = 1:Mbpm;
+   modelmatrixChan.addArgument('to',bpmNames(bpmi));
+   for corj = 1:Ncor;
+      modelmatrixChan.addArgument('from',corrNames(corj));
+      rmatAtoB_pvStruct = modelmatrixChan.createGet().getPVStructure();
+      RmatCorToBpm = toMatrix(rmatAtoB_pvStruct);
+      A(bpmi, corj) = RmatCorToBpm(1,2);
+   end
+end
+
+% 2 lines of actual physics
+x = inv(A)*b; % Solve Ax-b 
+newBDESes = -KtoB(x); % new B field values from K to B
+
+% *RALPH* 
+% Deploy the new magnet settings.
+magSetChan = easyPVA.createChannel('MAGNETSET');
+magSetChan.addArgument('magnetlist',corrNames);
+magSetChan.createPut().putDoubleArray(newBDESes,length(newBDESes));
+-----------------------------
+
+* EasyPVA to "put" a PVStructure to a service or PV
+add example.
+
+
+
+
+
+
+

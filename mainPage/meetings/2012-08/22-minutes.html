@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$25</title>
+</head>
+<body><b>MEETING AGENDA</b><br
+/>===============<br
+/>1. Preliminaries, 5 mins.<br
+/><br
+/>2. Status Review.<br
+/><br
+/>&nbsp;&nbsp; We haven't had a meeting in 4 weeks, so we need some catchup. Roundtable of what people are doing.<br
+/><br
+/>&nbsp;&nbsp; Specifically, please comment on advances towards the outstanding items defined in the Diamond Meeting [3]<br
+/>&nbsp;&nbsp; reproduced below.<br
+/><br
+/>&nbsp;&nbsp; Please take a moment to think about any preconditions you need for completions. This includes what you're<br
+/>&nbsp;&nbsp; doing in order to be able to do the line item as listed, and what you need from other team members.&nbsp;<br
+/>&nbsp;&nbsp; We need to be clear on what people are waiting in order to proceed.&nbsp;<br
+/><br
+/>&nbsp;&nbsp; For instance, I'm presently looking at XML Schema for defining Normative Types, which is necessary for&nbsp;<br
+/>&nbsp;&nbsp; NT self-id, namespacing and extensibility, which is necessary for item 2 (services API).&nbsp;<br
+/><br
+/>3. Collecting the complete list of work outstanding<br
+/><br
+/>&nbsp;&nbsp; What is NOT on this list for work that must be completed for charter exit? Take a moment to<br
+/>&nbsp;&nbsp; review all the work you would like to do by Charter exit. For instance, for myself I want to&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1. define XML Schema NT description mechanism<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2. 1PWD of NTs<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3. rebuild and test exampleJava against the new pv* modules and convert them to using pvAccess only RPC&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4. convert examples to use the new Normative Type self id (depends on 1), through pvaccess id&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mechanism (depends on Matej)<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5. define interface for superEasyPva<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6. Check use of easyPVA and superEasyPVA for doing RPC from Matlab, specifically to get model data<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7. Complete model service (not in EPICS V4 charter but related for 6 and 8)&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8. Make sure we can demo all of the charter exit functionalities as described at the Diamond meeting.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9. Make proposal items for the next charter.<br
+/><br
+/>4. Clear Module Status review.<br
+/>&nbsp;&nbsp; If it wasn't explicit from the above discussion, explicitly review the state of&nbsp;<br
+/>&nbsp;&nbsp; readiness of pv* java and c++ modules.&nbsp;<br
+/><br
+/>&nbsp;&nbsp; When can we:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i. sync and integrate endpoint software against pv* tips?<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ii. When can Dirk start again to build on vxWorks?<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iii. Convert RPC uses to pvAccess only method?&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iv. Use the pvaccess id field for sending structure ids?&nbsp;<br
+/><br
+/><br
+/><b>MEETING MINUTES</b><br
+/>================<br
+/>Present: BD, GW, DH, RL, MK, MS, GS<br
+/>Scribe: DH<br
+/><br
+/>***********<br
+/><b>NEW TOPIC: Status Review</b><br
+/>***********<br
+/>Looking at all Agenda items above as one, overall status:<br
+/><br
+/>Bob's Status:<br
+/>BD: Have money for MK/MS for next 8 months.<br
+/>GW: [Updating telcon attendees who were not in the Diamond meeting] Next year&nbsp; 2 working&nbsp; groups, one on IOC oriented towards beamline physics requirements, and one oriente towards accelerator data services.<br
+/><br
+/>Greg's Status:<br
+/>GW: Model service&nbsp; using rdb service using normative types and xml l schema. xml schema solves a lot of&nbsp; problems, e.g. identification. Sent this out before meeting.<br
+/><br
+/>Proposal will go into normative types document.<br
+/><br
+/>RL: Need multiple inheritance at the pvData level.<br
+/>GW: xml schema allows multipliple inheritance. Well-defined for xml schema. Not sure how to do this for PVData.<br
+/><br
+/>David's status:<br
+/>DH: *Working on [type] conversion API. Pretty good and committed.*<br
+/>Before we had a number of errors, now these have been removed and all reasonable type conversions are included.<br
+/>Range checking now included.<br
+/>Special handling for the Java float saturation points handled.<br
+/>Worked also on consistency. Esp w.r.t. string conversions, and made error handling consistent.<br
+/>Regularized use of API, and made the higher level methods use lower level.<br
+/>There are conversions from PVFields to Java primitives, PVField to strings,and several other permutations. So, 100s of methods, haven't tested each one.<br
+/>Will send email to describe the new API.<br
+/>Conversion to strings in particular may be changed. Please take a look.<br
+/><br
+/>MK: Are there changes to convertTest - so how are tests done?<br
+/>DH: Tests not yet in the build.<br
+/>MK: Ok with me if you replace the existing convertTest.<br
+/>DH: ok.&nbsp;<br
+/>DH: Problematic to make an exhaustive test.<br
+/>MK: +1<br
+/>MK: Looks carefully done, wonderful.<br
+/><br
+/>Ralph's Status:<br
+/>RL: Basic directory service is working. Currently adding options: Getting answers sorted on certain columns, specify columns to return.<br
+/>Waiting on:<br
+/>1) PVAccess normative type for queries to service<br
+/>2) resolution to problems with NTTable (should columns have fixed names, or be in substructure with a fixed name; order is not an issue)<br
+/>3) what is a normative document<br
+/><br
+/>GW: Have alternative idea. Discuss using email.<br
+/><br
+/>GW: If Normative Document, then owe it to reader to tell them how it works.<br
+/>If not normative: I'm giving you some information about how you might to use the service.<br
+/><br
+/>RL: What should write given some things are not defined yet.<br
+/><br
+/>GW: Don't publish in one go. This is a normative standard, but it's a draft. When defined update.&nbsp;<br
+/><br
+/>GW: Directory service looking good. How to deal with NTTable structure containing more than the expected number of elements - will discuss.<br
+/><br
+/>Marty and Matej's Status:<br
+/><br
+/>Looking at Status and Technical Issues status as line items<br
+/><br
+/>4. Clear Module Status review.<br
+/>&nbsp; If it wasn't explicit from the above discussion, explicitly review the state of&nbsp;<br
+/>&nbsp; readiness of pv* java and c++ modules.&nbsp;<br
+/><br
+/>&nbsp; When can we:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; i. sync and integrate endpoint software against pv* tips?<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; &gt;&gt; Next week.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; ii. When can Dirk start again to build on vxWorks?<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; &gt;&gt; ii&nbsp; Now. We want to know if he has problems.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; iii. Convert RPC uses to pvAccess only method?<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; &gt;&gt; iii, the Java impl is now tested.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; iv. Use the pvaccess id field for sending structure ids?&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; &gt;&gt; Ready for test now.&nbsp;<br
+/><br
+/>MS: pvAccess java and cpp are stable. Implemented getID in java and c++.<br
+/>Will update pvAcAccess spec.<br
+/><br
+/>MK:By end of month in place with all the major momodules in java and c++<br
+/><br
+/>MS: Can implement Java RPC service without&nbsp; pvIOC -&nbsp; implemented and working.<br
+/><br
+/>RL: Directory service doesn't need any pvIOC. The code is much easier to understand. Like it. Includes thread pool so can run multiple accesses. Infrastructure there to have multiple worker er threads.<br
+/><br
+/>MS When do RPC request&nbsp; on the client side have to wait.<br
+/><br
+/>RL: Two different clients can send multiple threads. Single client can't send multiple requests from one channel RPC.<br
+/>MS: The client would have to create two RPC requests for that<br
+/>GW: Can we have an example.<br
+/>MS: Well .... yes.<br
+/><br
+/>MS: easyPVA rpc report - status implemented in java. (no easyPVA in C++)<br
+/>MS: Started working on PVManager PVStructures<br
+/><br
+/>MS will proceed to convert PvAccess CPP to the new RPC mechanism.&nbsp;<br
+/>AI pending: We will need to remove that code from pvService.<br
+/>GS: Which language is PVVManager work in.<br
+/>MS: Java only, since PVManager is only available in Java.<br
+/>&nbsp;<br
+/>BD: Can this be accomplished this month.<br
+/>MS: Think so, so can do this next month.<br
+/><br
+/>All: Probably no one going to Korea meeting. At best give talk for someone else to give.<br
+/><br
+/>BD: Who's coming to BNL meetiing?<br
+/><br
+/>Ans:Probably everyone (MS 40%).<br
+/><br
+/><b>Status of Outstanding Technical Issues for this charter exit [from Diamond Meeting]:</b><br
+/><br
+/>MS 1. Asynch RPC.<br
+/>&gt;&gt; See above for RPC<br
+/>GW 2. Services API. Add services to eget.<br
+/>MS 3. Deciding provider (that is, pvAccess or CA) for a V3 PV.<br
+/>&nbsp;&nbsp; MS: Problem is in 2 parts: Specifying the list of alternative providers. 2nd, how to use a provider.&nbsp;<br
+/>&nbsp;&nbsp; We may simply implement the solution that both providers are always tried!&nbsp;<br
+/>MK: 4. "Dirk Requirement." A module on embedded IOC that can collect V3 record data and return it as V4 data.<br
+/>&nbsp;&nbsp; Get and Put MUST be implemented. But not monitor.<br
+/>&nbsp;&nbsp; One MUST be able to specify an ad hoc list of V3 PVs to be acquired or put to. Additionally,<br
+/>&nbsp;&nbsp; alternatively, an IOC engineer must be able to pre-specify the list of V3 PV as a static list<br
+/>&nbsp;&nbsp; in a file on the IOC.<br
+/>&nbsp;&nbsp; &gt;&gt; Will start beginning of Sept&nbsp;<br
+/>MS: 5. easyPVA RPC (in Java impl of easyPVA)<br
+/>&gt;&gt; Implemented for months in Java! Waiting for Greg to test. [There is no EasyPVA in cpp]<br
+/>GW/JR 6.&nbsp; SupereasyPVA.<br
+/><br
+/><b>Status of Items Required for beta 2 [from Diamond Meeting]:</b><br
+/><br
+/>MS&nbsp;&nbsp; 7. Add the relevant NT PVstructures to pvManager - those types pvmanager already understands.&nbsp;<br
+/>&gt;&gt; Ongoing. Just started as of this meeting.<br
+/>GW 8. Mechanism for header and copyright.<br
+/>MK 9. Debug that v3Channel and pvIOCJava fail for remote access.<br
+/>&gt;&gt; Fixed!<br
+/>MK 10. Add unsigned to v3channel&nbsp;<br
+/>&gt;&gt; Done!<br
+/>MS 11. pvAccessJava test server not working due to beta 2 changes.<br
+/>&gt;&gt; Fixed!<br
+/>MK/MS 12. Upgrade documentation to beta 2.&nbsp;<br
+/><br
+/>&gt;&gt; pvDataJava, pvDataCPP, pvIOCCPP are ready.<br
+/><br
+/>&gt;&gt; pvServiceCPP is next.&nbsp; Then pvIOCJava and pvServiceJava<br
+/><br
+/>&gt;&gt; I will let Matej discuss pvAccessJava and pcAccessCPP.<br
+/><br
+/>MS 13. Upgrade pvAccess specification document reflect implementation.<br
+/>DH 14. Finish implementing java unsigned.&nbsp;<br
+/>MS 15. Java RPC depends on record processing, c++ Doesn't. Put Java RPC into pvAccess. This is<br
+/>part of job 1 above, Async RPC. In Java, RPC will be multithreaded. In C++, not multithreaded.<br
+/>&gt;&gt; Done. But we still have to remove RPC from pvService.<br
+/><br
+/>*************<br
+/><b>NEW TOPIC: BNL Meeting</b><br
+/>*************<br
+/>Oct 15-19th. Monday &amp; Tues are RDB. Wed RDB and V4 services.<br
+/>Thur and Fri V4.<br
+/><br
+/>Meeting Ends.<br
+/><br
+/><br
+/><br
+/></body>
+</html>

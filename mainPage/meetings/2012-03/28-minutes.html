@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$9</title>
+</head>
+<body>.============= Meeting 28-Mar-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/><u>1. Demo of the archive service - (<b>*David*</u></b><u>)</u><br
+/><br
+/><u>2. review AIs</u><br
+/>DH by 27th Mar: Add inserstions into MK's proposed changes document to illustrate the alternative for moving the introspection interface.<br
+/><br
+/>MS/GW by Fri 23: Tag all pv*Java and pv*CPP repos beta.1.1. alphaJava and alphaCPP tagged too<br
+/><br
+/><u>3. easyPVA review / Test results (<b>*Marty*</u></b><u>)</u><br
+/><br
+/><u>4. Open Issue.....</u><br
+/>structures should&nbsp; consist of members which consist of name plus a s a type object. This&nbsp; isn't incoconsistent with PVs knowing there own name - resolve<br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: BD, DH, MS, RL, GW, DH, NM, GS, TK<br
+/>Scribe: GW<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Action Items</b><br
+/>************<br
+/>MS: yes, all repos were tagged.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: easyPVA review / Test results&nbsp;</b><br
+/>************<br
+/><br
+/>Test Results: No, noone ran EasyPVA<br
+/><br
+/>GW: There are talks at the meeting (Monday)<br
+/><br
+/>************<br
+/><b>AI on GW&nbsp; by next meeting</b>. to test EasyPVA<br
+/>************<br
+/><br
+/>GS: Do we have a meeting next week<br
+/>BD: Suggests we do.<br
+/>GW: Meeting as usual next week. (Just without BNL people.)<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Issue of Definition of a Structure</b><br
+/>************<br
+/>RL: Didn't understand the email description.<br
+/>DH: Doesn't like present lovation of fieldname in Field. Move instead to a "member" object with name + field.<br
+/>As well as refactor of Field, refactor also PVField.<br
+/>Turns out it would be a lot of work.<br
+/>We're converging on same solution only difference is grouping Field and Field-name into a single object (DH), rather than 2 arrays(MK).<br
+/>MK: Reply to this prop in email today.<br
+/>MK: Difference between DH and MK is "structure of arrays" (MK) and "array of structures" (DH). structure of arrays is simpler.<br
+/>DH: Yes, but natural OO approach is structure as object, with its own interface. OO system eases burden of keeping names and values straight.<br
+/>If we're that concerned about overhead, there are many places where this inversion would be appropriate.<br
+/>GW: Physicists don't care too much about the beauty of the interface definitions. The "structure of array" approach seems more appropriate for our users and more efficient in its implementation.<br
+/>DH: not convinced, but will accept that the implementer (MK) decides.<br
+/>DH: Will top fieldName disappear?<br
+/>MS/MK: Yes<br
+/>DH: Structure name of StructureArrays now goes?<br
+/>MS/MK: Yes<br
+/>DH/GW:&nbsp;<br
+/>MK: Im ignoring de/serialization issues for now, is that ok for MS to pick up?<br
+/>MS: Yes, that's fine.<br
+/><br
+/>************<br
+/><b>RESOLUTION: The definition of Structure's with respect to introspection interface and</b><br
+/><b>FieldName, will be as designed in proposal by Marty. That is, FieldName moves from Field to Structure, and Fields and FieldNames will be accessible from the Structure object (as arrays).</b><br
+/>************<br
+/><a href="http://epics-pvdata.sourceforge.net/alpha/pvDataPVAccessChanges.html">http://epics-pvdata.sourceforge.net/alpha/pvDataPVAccessChanges.html</a><br
+/><br
+/>public interface Field {<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; Type getType();<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; void toString(StringBuilder buf);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; void toString(StringBuilder buf,int indentLevel);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; String toString();<br
+/>}<br
+/>public interface Structure extends Field{<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Field getField(String fieldName);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int getFieldIndex(String fieldName);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Field[] getFields();<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String getFieldName(int fieldIndex);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String[] getFieldNames();<br
+/>}<br
+/><br
+/>************<br
+/><b>NEW TOPIC: How much work to get pvIOC working on VXWorks?&nbsp;</b><br
+/>************<br
+/>MS: Find all modules are written the way they should be for VxWorks.<br
+/>.. we use sourcy?? layer.<br
+/>GS: When tried to compile on RTEMS we found an error complaining that Thread Name was already in use.<br
+/>GS: Now [] compiles, but doesn't load - or run.<br
+/>MS: We need to do continuous integration on VxWorks and RTEMS as well as others.<br
+/>TK: Dirk is now starting to look into these things.<br
+/>TK: Detail that's not clear:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Which parts are needed?<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MK: Ans std::tr1 - the shared pointer interface.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; We do not require Boost as such, we only require std::tr1?<br
+/>&nbsp;<br
+/>&nbsp;To compile and run EPICS V4 pv* core modules, on VxWorks v6, you must have:<br
+/><br
+/>Example: for the target of running PVAS on a v3 ioc, what are the system and tool requirements:<br
+/><br
+/>VxWorks 6.01 through 6.65<br
+/>Which versions of EPICS base?<br
+/>std::tr1::shared_ptr from <a href="http://gcc.gnu.org/gcc-4.0/changes.html">http://gcc.gnu.org/gcc-4.0/changes.html</a> version 4.0&nbsp;&nbsp;<br
+/>Which version of GCC?&nbsp;<br
+/><br
+/><b>************</b><br
+/><b>AI on MS:</b> Answer what is the list of pre-requisites for compilation, loading nd execution of<br
+/>pv* core modules on VxWorks 5 and VxWorks 6. Also on version.h file requried actions.<br
+/><b>************</b><br
+/>RTEMS IOC compilation and test will be done after vxWorks.<br
+/><br
+/>************<br
+/><b>NEW TOPIC:&nbsp; </b><u>Demo of the archive service - (<b>*David*</u></b><u>)</u><br
+/>************<br
+/><br
+/>./gethist<br
+/>Error: no channel supplied<br
+/>Usage: gethist [OPTIONS] channel<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gethist [-h|--help]<br
+/>see gethist --help for details<br
+/><br
+/>./gethist -h<br
+/>./gethist --help<br
+/>gethist<br
+/><br
+/>Usage: gethist [OPTIONS] channel<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gethist [-h|--help]<br
+/>see gethist --help for details<br
+/><br
+/>Options<br
+/><br
+/>Mandatory arguments to long options are mandatory for short options too.<br
+/><br
+/>-h,--help&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; display help<br
+/>-s,--start=START_TIME&nbsp; query archive for results starting from START_TIME<br
+/>-e,--end=END_TIME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; query archive for results up to END_TIME<br
+/>-f,--file=FILENAME&nbsp;&nbsp;&nbsp;&nbsp; output results of archiver query to file named FILENAME<br
+/>-n,--title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print channel name, preceeded by #, before results&nbsp;&nbsp;<br
+/>-x,--scientific&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; results of archiver query request outputted using<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scientific (i.e. exponent/mantissa) format&nbsp;<br
+/>-d,--fixed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; results of archiver query request outputted using<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scientific (i.e. exponent/mantissa) format<br
+/>-o, --fields&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; specifies which fields to output, in which order&nbsp;<br
+/>-p,--precision=PREC&nbsp;&nbsp;&nbsp; results of archiver query request given to precision PREC<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Default value is 6.<br
+/><br
+/>Description<br
+/><br
+/>gethist queries the Channel Archive Server for the data for the channel specified<br
+/>by channel argument between the -s,--start and -e,--end flags. The format<br
+/>for the start and end parameters is that of the date -d command. The defaults<br
+/>are "1 hour ago" for start and "now" for the end.<br
+/><br
+/>The data returned by the archive server is outputted in columns, formatted<br
+/>according to the -x,--scientific, -d,--fixed and -p/--precision options.<br
+/>For the fixed option, the precision specifies the number of decimal places. For<br
+/>scientific it specifies the number of decimal places of the mantissa. The default<br
+/>is neither scientific nor fixed formatting. In this case the value is formatted as<br
+/>fixed or scientific, the format being value-dependent.<br
+/><br
+/>If the -n,--title option is selcted the channel name, preceeded by'#', is outputted<br
+/>before the archived values. If the -t,--header option is selected the column name,<br
+/>preceeded by'#', is outputted before the values.<br
+/><br
+/>The choice of fields and the order in which they are outputted can be selected by the<br
+/>-o,--field option. The argument for this option consist of a sequence of characters<br
+/>representing the possible fields<br
+/>t&nbsp;&nbsp;&nbsp; floting point time, in seconds, past EPICS epoch<br
+/>v&nbsp;&nbsp;&nbsp; the archived value<br
+/>D&nbsp;&nbsp;&nbsp; the date and time string of the archived value<br
+/>A&nbsp;&nbsp;&nbsp; A string based on the alarm status and severity<br
+/>s&nbsp;&nbsp;&nbsp; seconds past UNIX epoch<br
+/>n&nbsp;&nbsp;&nbsp; nanoseconds<br
+/>S&nbsp;&nbsp;&nbsp; The alarm status, as an integer<br
+/>V&nbsp;&nbsp;&nbsp; The alarm severity, as an integer<br
+/><br
+/>Output by default goes to the standard output along with any logging information.<br
+/>It can be directed to a file using the -f,--file option. Logging information<br
+/>will still be outputted to standard out.<br
+/><br
+/>EXAMPLES:<br
+/><br
+/>./gethist -s "20 years ago" -e "10 January 2012" -tn -f out.txt -x -p 12 fred<br
+/><br
+/>#fred<br
+/>#timePastEpoch(s)&nbsp;&nbsp;&nbsp; #value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Alarm<br
+/>496169397.856321000&nbsp;&nbsp; 7.355487346649e-02&nbsp; Wed Sep 21 17:49:57 2005&nbsp; NO ALARM<br
+/>496169401.996447000&nbsp;&nbsp; 1.682446300983e-01&nbsp; Wed Sep 21 17:50:01 2005&nbsp; NO ALARM<br
+/>496169410.052636000&nbsp;&nbsp; 2.558367252350e-01&nbsp; Wed Sep 21 17:50:10 2005&nbsp; NO ALARM<br
+/>496169420.109690000&nbsp;&nbsp; 3.173123300076e-01&nbsp; Wed Sep 21 17:50:20 2005&nbsp; NO ALARM<br
+/>496169430.100015000&nbsp;&nbsp; 2.159405648708e-01&nbsp; Wed Sep 21 17:50:30 2005&nbsp; NO ALARM<br
+/>496169440.081932000&nbsp;&nbsp; 4.953919649124e-01&nbsp; Wed Sep 21 17:50:40 2005&nbsp; NO ALARM<br
+/>496169450.089935000&nbsp;&nbsp; 3.187555372715e-01&nbsp; Wed Sep 21 17:50:50 2005&nbsp; NO ALARM<br
+/>496169450.699760000&nbsp;&nbsp; 0.000000000000e+00&nbsp; Wed Sep 21 17:50:50 2005&nbsp; Disconnected<br
+/>496169450.699760000&nbsp;&nbsp; 0.000000000000e+00&nbsp; Wed Sep 21 17:50:50 2005&nbsp; Archive_Off<br
+/>496169537.905713000&nbsp;&nbsp; 0.000000000000e+00&nbsp; Wed Sep 21 17:52:17 2005&nbsp; Disconnected<br
+/>496<br
+/><br
+/>./gethist -s "20 years ago" -e "10 January 2012" -tn -f out.txt -x -p<br
+/>&nbsp;12 -o tsnvADSV fred<br
+/><br
+/><br
+/>#timePastEpoch(s)&nbsp;&nbsp;&nbsp; #secsPastEpoch&nbsp; #nsecs&nbsp;&nbsp;&nbsp;&nbsp; #value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Alarm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Status&nbsp; #Severity<br
+/>496169397.856321000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 496169397&nbsp; 856321000&nbsp;&nbsp; 7.355487346649e-02&nbsp; NO ALARM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Wed Sep 21 17:49:57 2005&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br
+/>496169401.996447000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 496169401&nbsp; 996447000&nbsp;&nbsp; 1.682446300983e-01&nbsp; NO ALARM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Wed Sep 21 17:50:01 2005&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br
+/>496169410.052636000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 496169410&nbsp;&nbsp; 52636000&nbsp;&nbsp; 2.558367252350e-01&nbsp; NO ALARM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Wed Sep 21 17:50:10 2005&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br
+/>496169420<br
+/><br
+/>GS: Asks can I ask for archive of &gt;1 channel at a time:<br
+/><br
+/>./gethist -s "20 years ago" -e "10 January 2012" -tn -f out.txt -x -p 12 fred janet<br
+/><br
+/>ANS: You could do that by appending channels to the output, then piping to sort.<br
+/><br
+/>GS: Does the server side support &gt;1 index?<br
+/><br
+/>DH: The shell script supplies the server name in its call to the client side. Each server&nbsp;<br
+/>is associated with one index.&nbsp;<br
+/><br
+/>Meeting ends&nbsp;<br
+/><br
+/><br
+/></body>
+</html>

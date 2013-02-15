@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$19</title>
+</head>
+<body><br
+/>============= Meeting 20-June-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/>0. Preliminaries (5 mins).<br
+/><br
+/>1. pvAccess Specification publication public comments (30 mins)<br
+/><br
+/>&nbsp;&nbsp; *Matej* review of comments made on pvAccess spec. Record which comments&nbsp;<br
+/>&nbsp;&nbsp; should result in spec modifications or other actions.<br
+/><br
+/>2. Status of introspection/unsigned changes, *Marty*, *Matej* (10 mins)<br
+/><br
+/>&nbsp;&nbsp; pvAccessCPP status?<br
+/>&nbsp;&nbsp; *David* Did you get a chance to work on convert?<br
+/><br
+/>3. pvIOCCPP requirement for THIS charter (to Sept 2012) (10 mins)<br
+/><br
+/>&nbsp;&nbsp; Make formal decision that the functional requirement of pvIOCCPP for this charter is confined to<br
+/>&nbsp;&nbsp; the following functionality on embedded IOCs (please comment and amend in meeting):<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; i. v3Channel endpoint and access to ca on an embedded IOC<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; ii. Existing channelRPC support presently as implemented&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; iii. Gather service implementation.<br
+/>&nbsp;&nbsp; Decide how Marty gets requirements for iii.<br
+/><br
+/>4. Review Diamond meeting agenda [3] (20 mins)<br
+/><br
+/>&nbsp;&nbsp; What if any concrete presentations are needed to start making a list of requirements and desires<br
+/>&nbsp;&nbsp; for EPICS V4 going forward.<br
+/>&nbsp;<br
+/>&nbsp;&nbsp; Do we need to start a list of requirements that can be prioritised at the meeting?<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>5. SwissFEL modelling status, *Greg* (5 mins).<br
+/><br
+/>6. Directory Service status, *Ralph* (5 mins).<br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: DH, BD, GS, MS, NM, GW<br
+/>Scribe: BD<br
+/>************<br
+/><b>PVAccess Comments: Matej has responded to all issues except multicast.&nbsp;</b><br
+/>************<br
+/>IOC can crash when large arrays are requested. This was not a PVAccess issue. The underlying IOC should reject or put a limit there.<br
+/><br
+/>MS is goingto change echo and response message header to support pass-through gateways<br
+/><br
+/>AI: greg, make a Titanpad for comments and resolutions for pvAccess spec<br
+/><br
+/>MS: Re comment on magic number in each message. No action because it is useful for TCP.<br
+/><br
+/>MS; Re string size encoding. No action because serialization/deserialization would get more complicated, therefore more CPU.<br
+/><br
+/>MS: Much discussion on Flow Control. MS now thinking we don't need to specify flow control at all. [pvAccess] would<br
+/>work without FC.&nbsp;<br
+/>MS: it's a finesse that requires complications.<br
+/>NM: Already mentioned it's not normative<br
+/>MS: Yes, it's only an informative description anyway. And there are many missing details for an implementer,<br
+/>so an implementer could not implement FC based only on the spec now anyway.<br
+/>MS: We're awaiting input from MD on whether an FC description is desirable in the spec.<br
+/><br
+/>Re msg segmentation.&nbsp;<br
+/>MS:<br
+/>&nbsp;If variable msg size, then you don't need segmentation. TCP allows non-segmentaiton, but not UDP or possibly other networks.&nbsp;<br
+/>If UDP is used, then one must deal with packet order and loss. So one needs meta info, like packet Id; and an algorithm.<br
+/>These things can be speced in the pvAccess spec. But there is already a reliable UDP spec for that.&nbsp;<br
+/>So, it may be better to leave it out of the pvAccess protocol; rather promote the idea of users using "reliable UDP" etc instead.<br
+/><br
+/>However, MS really wants multi-cast support in pvAccess.&nbsp;<br
+/>BD: +1 esp good for beamlines<br
+/><br
+/>Multi-cast would be easy to define in pvAccess, but is not presently in it. MD has been asked whether he&nbsp;<br
+/>agrees it's a good idea.&nbsp;<br
+/><br
+/>MS: Will add now, that Multi-cast will be added to pvAccess spec in a future draft.<br
+/><br
+/>Conclusion:&nbsp;<br
+/>&nbsp;&nbsp; Wel'll make a titanpad for pvAccess spec comment actions.<br
+/>&nbsp;&nbsp; MS wil edit it.<br
+/>&nbsp;&nbsp; MD will be invited to review it.<br
+/>&nbsp;&nbsp; Multi-cast will be added to a future draft.<br
+/>&nbsp;&nbsp; Not yet decided whether flow control will be part of the spec (even if as an informative additon).<br
+/><br
+/>Depending on comments, then we are aiming at a LAST CALL draft in about a month.&nbsp;&nbsp;&nbsp;<br
+/><br
+/>Ask Jeff Hill to review.<br
+/><br
+/>************<br
+/><b>AI</b> on Greg White to ask Jeff to review today.:&nbsp;<br
+/>************<br
+/><br
+/>************<br
+/><b>NEW TOPIC</b>: Status of introspection/unsigned changes, *Marty*, *Matej* (10 mins)<br
+/>************<br
+/><br
+/>PVAccess - everything builds and all of the basic actions are working. There seems to be a problem with big arrays. The build needs to be tested against the Java release. The hopeful deadline for this is in two weeks.<br
+/><br
+/>PVAccess C++ and Java heads status? Are they usable again?<br
+/>RPC Service can be done without PVioc<br
+/><br
+/>************<br
+/><b>AI</b> on Bob Dalesio to ask Marty the state of the build on PVData and PVIOC<br
+/>************<br
+/><br
+/><br
+/>**********<br
+/><b>NEW TOPIC: pvIOCCPP requirement for THIS charter (to Sept 2012) (10 mins)</b><br
+/>**********<br
+/>Proposal that pvIOCCPP should do these things in short term (by end of charter)<br
+/>&nbsp;&nbsp; i. v3Channel endpoint and access to ca on an embedded IOC<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; ii. Existing channelRPC support presently as implemented&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; iii. Gather service implementation.<br
+/>NM: iii is important but a big task.<br
+/>GS: +1. We should have a requirements spec for iii.<br
+/><br
+/><b>AI on GW by 22-July</b>: write requirements for iii to MK to get comments on effort.<br
+/><br
+/>**********<br
+/><b>NEW TOPIC: Review Diamond meeting agenda [3] (20 mins)</b><br
+/>**********<br
+/>GW: GS can you make a presentation on req for pvIOC going forward.<br
+/>GS: I can start the thread on my desires for pvIOC and also what is not needed.<br
+/><br
+/>AI on GS: write desires for pvIOC and also what is not needed, to ast as references for Diamond Meeting on pvIOC.<br
+/><br
+/>GW: Also going to write to beamline people going to Diamond to prepare material.<br
+/><br
+/>DH: Was AJ invited?<br
+/>GW: Yes, email was sent, ccing Bob<br
+/><br
+/>**********<br
+/><b>NEW TOPIC: SwissFEL modelling status, *Greg* (5 mins).</b><br
+/>**********<br
+/>GW: The roundtrip of modelling SwissFEL in matlab, uploading the model to a relational db (Oracle),<br
+/>and making available through EPICS V4 services (rdbService) has been demonstrated.&nbsp;<br
+/>GS: Is the schema portable<br
+/>GW: Yes<br
+/><br
+/>Demo next week hopefully.<br
+/><br
+/>Meeting ends<br
+/><br
+/><br
+/></body>
+</html>

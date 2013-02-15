@@ -1,0 +1,24 @@
+Also, I do not know where these are posted - could someone volunteer to put them in their proper place?
+Thanks,
+Bob
+
+
+
+AI: Matej - Release PVAccess and the spec.
+
+Guobao - Masur service side is being developed by Marty. The first one is checked in and ready to hook in Python script.
+The creation of NTArray and named value pair is ready.
+The cleint side is ready to be hooked up to the MASUR client.
+Guobao can work on the server side now.
+The client side requires some support to bind the client portion to Python.
+
+
+AI: Changing the vectors implementation goes as an enhancement item in the bug tracker.
+
+AI: Nikolay, Bob, and Guobao, review array, image and Archive and discuss next week.
+
+
+AI: JR to email group and Matej with instructions for generating doxygen from hg repository and copying generated docs to sourceforge web area, for integration with Jenkins
+
+
+

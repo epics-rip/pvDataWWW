@@ -1,0 +1,43 @@
+Colleagues,
+
+
+Please find below our agenda for the weekly meeting [1]. Minutes in Titanpad [2].
+
+0. Preliminaries, 5 mins.
+
+1. Status of core modules in Java and C++, Marty, Matej (15 mins).
+
+   Good to see pvServiceJava checked in. Is it in good status Marty?
+   *Marty* you said the clientExample still fails. Need to let
+   Ralph and I know when we should move to the new API, and where to find help.
+
+   When will we return to the situation of all CPP modules mutually compatible,
+   and all Java modules mutually compatible? Marty indicates this is dependent on Matej [3].
+
+2. RPC threading (20 mins).
+
+   Requirements. I'd like a policy for letting me implement a single threaded server.
+   At SLAC we found this necessary for integrating legacy control systems, where a single
+   threaded client (as a channelRPC server would be) is assumed by the legacy system.
+
+   Where to implement the threading.
+
+   How likely is this subproject to turn into a rabbit hole?
+
+3. SwissFEL modelling demo (20 mins).
+
+   I'll show the first pass of modelling in matlab, uploading to a Db, and how clients
+   can then get model data from the rdb service.
+
+   Next week, ezpva review.
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/
+[3] http://sourceforge.net/mailarchive/message.php?msg_id=29443920
+
+
+
+
+
+
+

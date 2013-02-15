@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$18</title>
+</head>
+<body>============= Meeting 13-Jun-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/>0. Preliminaries, 5 mins.&nbsp;<br
+/><br
+/>1. pvAccess Spec Publication status, <b>*Bob*</b>. 5 mins.<br
+/><br
+/>2. Status of unsigned/introspection changes. See last weeks minutes for last weeks estimates.<b> *Marty*</b>, <b>*Matej*</b>. 15 mins.<br
+/><ul><li>Presumably this work explains Ralph's non-compiles of java repos, though not multiple heads.</li
+><li>Any other questions on DS implementation sticking points (<b>*Ralph*</b>)</li
+><li>(Non) plan for Services framework, <b>*Greg*</b>, <b>*Ralph*</b> [3]<br/><br
+/></li></ul
+>3. Services interface definition mechanism proposal (<b>*Matej*</b>, 30 mins) [4]<br
+/>Matej, please walk us through your proposal.<br
+/>I'm most interested in how a physicist would write simple code to interact with it at the most practical level - what would one type in matlab or on the command line. Would they need an RPC compiler for instance.&nbsp;<br
+/><br
+/>[3] Services Framework Question, <a href="http://sourceforge.net/mailarchive/message.php?msg_id=29388360">http://sourceforge.net/mailarchive/message.php?msg_id=29388360</a><br
+/>[4] Service Interface Proposal, <a href="http://sourceforge.net/mailarchive/message.php?msg_id=29374311">http://sourceforge.net/mailarchive/message.php?msg_id=29374311</a><br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: BD, DH, MK, NM, MS, GS, GW<br
+/>Scribe: GS<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Meeting @DLS</b><br
+/>************<br
+/>DH suggest get hotel reservation ASAP<br
+/>4 from BNL, 4 from PSI + MS<br
+/>DH: How about AJ?<br
+/>GW: try to get him<br
+/><br
+/>BD: We're probably going to have to do a beamline requirements meeting twice.<br
+/><br
+/>DH: Mark, Daniel Meir<br
+/><br
+/>************<br
+/><b>NEW TOPIC: pvAccess Spec Announcement</b><br
+/>************<br
+/><br
+/>GW: sent out words on June 8<br
+/>BD: will announce it soon<br
+/><br
+/>Announcement text:<br
+/><a href="http://sourceforge.net/mailarchive/message.php?msg_id=29380074">http://sourceforge.net/mailarchive/message.php?msg_id=29380074</a><br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Status of unsigned/introspection changes</b><br
+/>************<br
+/>GW: if DH is not available, when can Marty start converting?<br
+/>MK: it is next step<br
+/>GW: best case: if available, next week say, when it is useful for DH to work on convert?<br
+/>MK: Nobody now is using unsigned in java. Fixing on convert on unsign can wait, does not hook anything up.<br
+/>MK: for java, everything should be compiled now except pvIOCJava<br
+/>MK: multiple heads issue, fine for all Java module, and good for pvDataCPP, pvAccessCPP<br
+/>MK: main branch: do we do on own branch or default branch?&nbsp;<br
+/><br
+/>MS: pvAccessCPP does not compile now (not yet committed and pushed). Matej expects to have it done in a day or two.<br
+/><br
+/>Each release should be a branch.<br
+/>Before we started on unsigned, etc Matej created a tag on all of:<br
+/>pvData, pvAccess, pvIOC, pvService for both Java and CPP.<br
+/>The bete release should be based on a branch created via these tags.<br
+/><br
+/><b>Conclusion:</b> DH please work with convert of the unsigned method in Java, MK is going to concentrate on upgrading pvServiceJava unless we have all java modules work again<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; next step after that is the pvIOCCPP<br
+/><br
+/>GS: Do we need a function review for pvIOC?<br
+/>GW: not on the charter, should be on next charter<br
+/>GW: For this charter, requirement should be only pvIOCCPP support the gather framework, talking to V3 IOC PVs.&nbsp;<br
+/><br
+/>GS: Why not use a gather service [at host level] rather than using a gather in the cpp pvIOC?<br
+/>MK: since one can avoid using pvAccess at a second step.<br
+/>[GW: and the IOC developer can work only in at the embedded IOC level]<br
+/><br
+/>GS: There is too much to do in gather to install gather into V3 IOC into pvIOC cpp.<br
+/>MK: [discussing what he has done for pvIOCCPP rpc. May not be possible to add RPC support without a full database].&nbsp;<br
+/>MK: Worthwhile adding channelget, channelPut &amp; monitor to pvIOCCPP.<br
+/><br
+/>GW: First alternative is to use ca provider of pvAccess. [2nd alt is to use v3Channel in V3 ioc]<br
+/>JR: MK, can you monitor a V3 record with pvAccess by running v3Channel on a V3 IOC[as well as get,put].<br
+/>MK: Yes it does, but only for single V3 record.<br
+/><br
+/>GW: That leaves the most derired fiunctionality being to get &gt;1 V3 PV at a time, ie, gather framework.<br
+/><br
+/>GS: MK, can you give us an example of using v3Channel.<br
+/>JR: Yes, example is too complicated.<br
+/>GS: First things is an example.&nbsp;<br
+/><br
+/>JR: RPC basically works on pvIOCCPP, in that you can instantiate a RPC object of PVIOCCPP. It can't connect to a database [but it can get data from a different source].&nbsp;<br
+/>JR: Check out the archiver example, that has a working pvIOCCPP RPC implementation example.<br
+/><br
+/>************<br
+/><b>AI: on JR</b> to clean up the example of v3Channel usage, to illustrate getting V3 PV data through pvAccess. Update documentation and source code. Work on branch from working version, and then attempt to merge into&nbsp;<br
+/>tip. Update Architecture document to include this.<br
+/>************<br
+/><br
+/>GS: [Still wants functional review for pvIOCCPP. Specifically what satisfies Dirk's requirements and GS's requirements]<br
+/>JR: What is it you wnat to do - monitor the progress of a gather?<br
+/>GS: yes.<br
+/>JR: There is no way to put data into a v4 structure and monitor that.<br
+/><br
+/>MK: Does want some requirements input.<br
+/><br
+/><b>Conclusion:&nbsp;</b><br
+/>&nbsp;&nbsp; All try to help MK get functional requirements for gather on embedded IOC<br
+/>&nbsp; MK start on gather before he gets functional requirements.<br
+/>&nbsp; review at Diamond meeting.<br
+/>&nbsp; JR to clean up existing eample of v3Channel<br
+/>&nbsp; Can presently use v3Channel to monitor as well as get put a v3 pv throught pvAccess now<br
+/>&nbsp;&nbsp;<br
+/>************<br
+/><b>NEW TOPIC:</b>&nbsp;<b> Services interface definition mechanism proposal</b><br
+/>************<br
+/>MS: Idea, user shouldn't pack and unpack pvStructures. A generator should compile an interface definition to a pvStructure IO.<br
+/><br
+/>DH: re the use of _META,&nbsp; was to allow getting the interface in introspection data. How is that impacted by MS' proposal.<br
+/>NM: What's the difference between Ms' approach and CORBA?<br
+/>MS: on DH's q, Well, I just think _META is ugly.<br
+/>MS: no real difference.<br
+/>JR: No actual problem with CORBA other than bloated, so maybe it is appropriate to borrow RPC idea from<br
+/>JR: At some point, pv channelPut should probably be merged with channelRpc.<br
+/><br
+/><b>Conclusion:</b><br
+/>&nbsp; It is probably not productive to change the method of rpc - that is, the method of getting named data subject<br
+/>&nbsp; to parameters, at this stage. There isn't anything we can't do now, so not worth changing.<br
+/>&nbsp; Later, we may revisit possibly merge of pv channelPutGet and channelRPC.<br
+/>&nbsp; The question of how to communicate service interfaces is open though, and it impacts Normative Types, so<br
+/>we do have to do that soon.&nbsp;&nbsp;<br
+/><br
+/>Meeting ends.<br
+/><br
+/><br
+/></body>
+</html>

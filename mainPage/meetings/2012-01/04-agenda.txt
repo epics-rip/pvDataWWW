@@ -1,0 +1,42 @@
+Hi everyone, Happy New Year,
+
+Please find below the agenda for our weekly telecon. 
+
+Bob is skiing - for which he will never be forgiven. So, we may have a little issue
+starting the call since we won't have the "EPICS V4" skype group up. I'll call everyone in manually. 
+Apologies for late sending, I was travelling today.
+
+Cheers
+Greg
+
+
+Weekly Telecon, 4-Jan-2012 
+==========================
+
+  0. Preliminaries, 10 mins.
+
+  1. Review pvAccess 2nd Public Working Draft. *Matej*, *Andrew* if he can make it, 30 mins.
+
+     Especially with respect to Andrew's comments. 
+     Decide what further work is required for 2nd public working draft publication
+
+  2. Status review, 30 mins.
+
+    We're 4 months in to a charter for 12 months. Let's review what everyone is 
+    now doing, and check that the March beta 2 plan [2] is realistic and we can start on it.
+
+    Specific commitments:
+    *Greg* - interoperable types
+    *Guobao* - Performance report
+    *Marty* Gather service framework
+    *Matej* and *Marty* "ezpva"
+    *James* Nominal Architectures.
+
+Maybe short meeting! Hm, no I don't believe it either.
+
+[1] Weekly Telecon Meeting info http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] March milestone, http://epics-pvdata.sourceforge.net/charter.html#milestones
+
+
+
+

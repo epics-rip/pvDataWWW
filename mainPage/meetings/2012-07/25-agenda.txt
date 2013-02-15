@@ -1,0 +1,73 @@
+Colleagues, 
+
+Please find below our agenda for the weekly meeting [1]. Minutes in Titanpad [2]. Please 
+also find our list of outstanding charter items, as listed in the Diamond meeting, below that.
+
+The usual Skype and Titanpad for now. If someone has a strong desire to set us up with google+
+for future meetings, please go ahead.
+
+Agenda
+------
+
+0. Preliminaries, 5 mins
+
+1. Comments on outstanding technical items, if any.
+
+2. Directory Service update (Ralph, 20 mins)
+
+  http://sourceforge.net/mailarchive/message.php?msg_id=29528187
+
+3. Normative Type self-id and self description
+
+   Review the correspondence and use cases [3].
+   Whether alarm, time and description should be in the "metadata" structure (whatever it's called)
+   Whether the name of the normative type to which the top level structure must conform,
+   can be given as the value of a Sting field, or must be given as the name of a field.
+   [I thought that was how we intended to move the identification to the introspection interface?
+   Matej says it can be done instead with an optional field in the Structure API. Does that
+   imply that NTypes are closely bound to pvAccess specifically?]
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] https://epicsv4.titanpad.com/24
+[3] http://sourceforge.net/mailarchive/forum.php?thread_name=CAJvg_wA-GkEdJwKAfSaARtHtPJ-%2BGzs79Rzop%3D%2BuhG6q6RYA4w%40mail.gmail.com&forum_name=epics-pvdata-devel
+
+
+
+Outstanding Technical Issues for this charter exit
+--------------------------------------------------
+MS 1. Asynch RPC.
+GW 2. Services API. Add services to eget.
+MS 3. Deciding provider (that is, pvAccess or CA) for a V3 PV.
+    MS: Problem is in 2 parts: Specifying the list of alternative providers. 2nd, how to use a provider. 
+    We may simply implement the solution that both providers are always tried! 
+MK: 4. "Dirk Requirement." A module on embedded IOC that can collect V3 record data and return it as V4 data.
+    Get and Put MUST be implemented. But not monitor.
+    One MUST be able to specify an ad hoc list of V3 PVs to be acquired or put to. Additionally,
+    alternatively, an IOC engineer must be able to pre-specify the list of V3 PV as a static list
+    in a file on the IOC.
+MS: 5. easyPVA RPC (in Java impl of easyPVA)
+GW/JR 6.  SupereasyPVA.
+
+Required for beta 2:
+
+MS   7. Add the relevant NT PVstructures to pvManager - those types pvmanager already understands. 
+GW 8. Mechanism for header and copyright.
+MK 9. Debug that v3Channel and pvIOCJava fail for remote access.
+MK 10. Add unsigned to v3channel 
+MS 11. pvAccessJava test server not working due to beta 2 changes.
+MK/MS 12. Upgrade documentation to beta 2. 
+MS 13. Upgrade pvAccess specification document reflect implementation.
+DH 14. Finish implementing java unsigned. 
+MS 15. Java RPC depends on record processing, c++ Doesn't. Put Java RPC into pvAccess. This is
+part of job 1 aboce, Async RPC. In Java, RPC will be multithreaded. In C++, not multithreaded.
+
+
+
+
+
+
+
+
+
+
+

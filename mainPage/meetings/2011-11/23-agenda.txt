@@ -1,0 +1,44 @@
+Colleagues,
+
+Please find below the agenda for our weekly telecon [1] 
+
+Agenda
+----------
+
+   0. Preliminaries (10 mins, if we're lucky. 2nd week of Skype)
+
+   1.  Normative types. 
+
+        Optional or non-optional metadata. Confirm it'll be optional I think.
+        Should helper classes and their functionality part of the normative spec, or later work. 
+        Completing the basic list of Ntypes (image and others from Nikolay)
+        Where should support go (pvIOC or pvUtil or where).
+
+   2.  Milestones. 
+
+        We've done a lot of work recently and we're close to a complete product. 
+         I want to propose 2 milestone dates and what they include:
+
+        Beta 1: December 20th:  First version of EPICS v4 that's easy to pick up, install and understand
+           + Second Public Working Draft of pvAccess (Matej, Greg)
+           + Channel RPC moved out of pvService (greg, Guobao)
+           + Examples in Java and C++ (Timo, James, Greg, others?)
+           + Getting started guide
+           + pvData and pvIOC documentation separate to JavaDoc (Marty, Greg).
+           + Nominal Architectures (James - can you make this?)
+
+        Beta 2: March 2012. Easier UI, support for gather.
+           + ezpva
+           + gather
+           + Doxygen doc 
+           + Normative Types specification and helper code
+           + Architectures.
+
+Cheers
+Greg
+
+[1] meeting info, http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+
+
+
+

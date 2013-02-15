@@ -1,0 +1,38 @@
+Colleagues,
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. As we did at the workshop,
+let's use Etherpad for minutes [2] (Ralph, if you have another URL for us to use, just let us know).
+
+Cheers
+Greg
+
+Agenda
+======
+1. Unsigned support review (*Marty*, 30 minutes)
+   
+   Walkthrough of Marty's proposal, see Marty's email 3-Feb-2012 [3].
+
+2. Matej's proposal for moving Field serialization to pvData (*Matej*).
+
+   May be very short if no further questions. Prioritisation w.r.t. pvAccess pub.
+
+3. Meetings coming up.
+
+   Who's going to EPICS mtg at SLAC?
+   IPAC 2012?
+   What talks have been submitted
+   Where shall we hold next developer's meeting. SLAC, New Orleans, PSI? 
+
+4. How are Feb 14th AIs looking [4]?
+
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/2?
+[3] https://sourceforge.net/mailarchive/message.php?msg_id=28781455
+[4] https://sourceforge.net/tracker/?group_id=249167&atid=2482257
+
+
+
+
+
+

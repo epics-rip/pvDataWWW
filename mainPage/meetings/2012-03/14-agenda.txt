@@ -1,0 +1,55 @@
+Colleagues, 
+
+*Note meeting time in your timezone [0]*. US is now in observance of Summer Time; but Europe
+isn't. We'll go with the Americans as usual because they're big and cumbersome and 
+everyone always has to work around them. So, we'll switch to Summer Time - 
+which puts it an hour earlier than usual for Europeans. Same next week.  
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. Minutes
+in titanpad [2]. 
+
+Agenda
+------
+0. Preliminaries (5 min)
+
+1. Normative Types (40 mins, *Greg*) [3]:
+   NTMatrix
+   NTVariantArray
+   NTNameValue (Guobao doen't like present arrangement)
+   more next week.
+
+2. Normative Types self identification review of Andrew's suggestion
+(20 minutes) [4]. 
+
+3. Version release requirement (do we need a beta 1.1 or beta 1.0.1, or not?)
+(*Guobao*, 15 mins)
+
+4. Archiver interface demo from David would be great. It's been 2 weeks David!
+
+
+Next week tentative plan:
+   pvAccess review for 2nd PWD! This is late, got to get on it and publish next week. 
+      I'll do another English review.
+   Archiver interface demo from David, if not tomorrow
+   easyPVA review and ideally a demo
+   Location of fieldName, and relation of fields to structures    
+   Normative types self identification decision
+   NTURI type (used by services).
+Soon:
+   eget review
+   Installation guide review.
+
+
+[0] http://www.timeanddate.com/worldclock/meetingdetails.html?year=2012&month=3&day=14&hour=14&min=0&sec=0&p1=37&p2=736&p3=268&p4=179&p5=1233&p6=224
+tinyURL: http://tinyurl.com/6mv99y4
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/
+[3] http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html
+[4] https://sourceforge.net/mailarchive/message.php?msg_id=28975270
+
+
+
+
+
+
+

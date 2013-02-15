@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$32</title>
+</head>
+<body>Agenda<br
+/>======<br
+/>0. Preliminaries, 5 mins<br
+/><br
+/>&nbsp; Let's restart use of the bug tracker.<br
+/>&nbsp; Normative Types bindings.<br
+/><br
+/>1. Status review of items for demo of beta 2 [1].<br
+/><br
+/>2. NTURI and Service API [2].<br
+/><br
+/>&nbsp; Should the URI form of a pvaccess RPC request that includes an entity,<br
+/>&nbsp; put the entity in the query part of the URI (i below), or in the path part (ii below).<br
+/><br
+/>&nbsp;&nbsp; normal form: $ pvget -s modelservice -a entity=swissfel/in/quads<br
+/><br
+/>&nbsp;&nbsp; i) uri form:&nbsp;&nbsp;&nbsp; $ pvget pva:///modelservice?entity=swissfel/in/quads<br
+/>&nbsp;&nbsp; or<br
+/>&nbsp;&nbsp; ii) uri form:&nbsp;&nbsp;&nbsp; $ pvget pva:///modelservice/swissfel/in/quads<br
+/><br
+/>[1] <a href="http://epicsv4.titanpad.com/ep/pad/view/27/latest">http://epicsv4.titanpad.com/ep/pad/view/27/latest</a><br
+/>[2] <a href="http://epics-pvdata.sourceforge.net/alpha/EPICS_URI.txt">http://epics-pvdata.sourceforge.net/alpha/EPICS_URI.txt</a><br
+/><br
+/>Minutes<br
+/>======<br
+/>Present: MK, BD, TK, GS, GW, DH<br
+/>Scribe: GW<br
+/><br
+/>********<br
+/><b>NEW TOPIC: Status review of items for demo of beta 2</b><br
+/>********<br
+/>1. Get the value of an V3 PV [user has no knowledge that it's V3 as opposed to V4]<br
+/>eget QUAD:34:IDES<br
+/>23.424<br
+/>----------------------Done (Matej Confirm. I confim, but only via v3Channel (V4 server on-top V3 IOC))---------------------------------------<br
+/><br
+/>*MS*<br
+/>2. Get the values of all the V3 CA standard fields (-r is pvAccess request string)<br
+/>eget QUAD:34:IDES -r 'field()'<br
+/>---------------------Done (Matej Confirm. I confim, but only via v3Channel (V4 server on-top V3 IOC)----------------------------------------<br
+/><br
+/>*MK*<br
+/>3. Get the value of an UNSIGNED V3 PV<br
+/>AI: Greg, give MK a short requirement for unsigned PVs<br
+/><br
+/>&nbsp;&nbsp;&nbsp; bpm01:x&nbsp;&nbsp; (+/-) usually in mm<br
+/>&nbsp;&nbsp;&nbsp; bpm01:y&nbsp;&nbsp; (+/-) usually in mm<br
+/>&nbsp;&nbsp;&nbsp; bpm01:tmit (+) usually in culomb, or simply number charged particles<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>AI: MK, implement an unsigned V3 demo<br
+/><br
+/><br
+/><br
+/>*MS*<br
+/>4. Get the value of a V4 scalar pv<br
+/>-----------------------Done (Matej Confrim. I confirm.)----------------<br
+/><br
+/>*MS*<br
+/>5. Get the value of a V4 array pv to the command line<br
+/>eget QAUD:LI:18:POLYOMIALS<br
+/>34.6<br
+/>19.5<br
+/>29.3<br
+/>-------------------Done (Matej Confrim. I confirm.)-------------------------<br
+/><br
+/>*MS*<br
+/>6. Put the value of a V4 scalar pv<br
+/>eput -v 34.4 XCOR:LI:34:IDES<br
+/>------------------Done (Matej Confirm. I confirm, can be done using pvput)--------------------------<br
+/><br
+/>*MS*<br
+/>7. Put the value of a V4 array PV<br
+/>eput -v 34.4 19.6 29.3 XCOR:LI:34:IDES<br
+/>-----------------Done (Matej Confirm. I confirm, can be done using pvput)---------------------------<br
+/><br
+/>*MS*<br
+/>8. Put the value of a V3 waveform [(!!!) is this possible?]<br
+/>eput -v 34.4 19.6 29.3 QUAD:34:POLY<br
+/>----------------Done (Matej Confirm. I confim, but only via v3Channel (V4 server on-top V3 IOC) using pvput)------------------------------<br
+/><br
+/>*MS*<br
+/>9. Monitor the value of a simple type V4 PV<br
+/>emon BPMS:LI34:X<br
+/>[MS: says we have pvget with a special switch for monitor]<br
+/>--------------(Done, using pvget -m)--------------<br
+/><br
+/>*GW*&amp;MS<br
+/>10.&nbsp; Get a NTMarix and print as a matrix<br
+/>$ eget -a TYPE=DESIGN -a POS=MID -a RUN=LATEST QUAD:LI21:271/R<br
+/>0.23 0.1234 0.0 0.0 0.067562 0.001167<br
+/>-0.34520 0.0923 0.0 0.0 0.046981 0.001514<br
+/>0.0 0.0 1.881007 4.857304 0.0 0.0<br
+/>0.0 0.0 -1.50064 -3.862346 0.0 0.0<br
+/>-0.00132 -0.001129 0.0 0.0 0.224701 0.003894<br
+/>0.162595 0.10285 0.0 0.0 -19.603 -0.233109<br
+/>----------------- (Done, note that eget uses -p instead of -a. Easy to change, what to use?)-------------------------------------------<br
+/><br
+/>10.1 Get values according to arguments in a consistent way from any RPC service<br
+/>See examples eget -a above.<br
+/><br
+/>*DH*<br
+/>11. Get a NTTable and print as a table. Illustrate with archive service.<br
+/>$ eget -a start="3 minutes ago" -a end="now" -a p=12 QUAD34_Bfield<br
+/>------------------(<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>DH: Channel Archiver service updated for fieldname move, pointer-&gt;shared pointers and various other changes. Quiet mode (-q) added as requested. Output can be piped into other apps. Verbose mode too. Some improved output. Have some real data instead of fred and janet, will push soon. Some issues with the archiver as we've modded the data format in ours, so had to get some old data. When I've finished either someone will have to try it against the regular archiver or I'll have to build a regular one and test (former is better, good to have two pairs of eyes on it). Only works with existing tool gethist. Need to&nbsp; a bit more to get it to use eget. Output conforms to NT table in terms of fields, but doesn't use ID field yet. Will send out mail when it's all done and someone can test.<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>DH: The service takes nameofchannel and start-seconds-past-epoch and end-seconds-past-epoch.<br
+/>GW: So to use eget with it, you might use the unix date command.<br
+/>&nbsp;<br
+/>Use Cases of Directory Service<br
+/>==============================<br
+/>*RL*<br
+/>12.&nbsp; Get the names of a number of PVs (v3 or v4 potentially heterogeneous&nbsp; mix) where their names match a string, using the Directory Service.&nbsp; Ideally, sort by a tag or option. E.g.:<br
+/>eget -s DirectoryService -a pattern 'XCOR:*:BDES' -a options "sortbyz"<br
+/>-------------------(Service is turned over but the use of a NT Table is not verified)----------<br
+/><br
+/>*RL*<br
+/>13.&nbsp; As above but additionally get the values. In the case illustrated below&nbsp; done with a pipe, but better if integrated into eget.<br
+/>------------------(This is not done - but should be a short step ;)&nbsp; ---)<br
+/>AI: RL to test this through EGET<br
+/><br
+/><br
+/>*RL*<br
+/>14. Get the value of a number of PVs, where the names match the conjunction (AND) of Directory Service tags<br
+/>E.g.: Print the value of the desired B field (BDES) from all correctors in the (SwissFEL) section SINBC01<br
+/>eget -s DirectoryService -a property='section=SINBC01' -a property='type=COR' tag='BDES' -options="sortbyz" | eget -t<br
+/>sinbc01.cor01:B 23.34345<br
+/>sinbc01.cor02:B 43.47543<br
+/>-------------------(Service is turned over but the use with eget for complex query not verified)----------<br
+/><br
+/>Use Cases of Gather Service<br
+/>===========================<br
+/>*TK*<br
+/>15. Use of an ad hoc Gather to get the field value (V3 PVs) of many magnets or BPMs.<br
+/>Show use of gather service to simply give LATEST gathered values from a Gather record defined by the client:<br
+/>So this is something probably done in Matlab<br
+/>[TODO insert example]<br
+/>----------------------------------------Just started - Timo will handle this)------------------<br
+/><br
+/>*TK*<br
+/>16. Get synchronous BPM orbit data from a BPM service, that is using the gather service in combination with a SLAC/PSI<br
+/>like BPM synchronous data system. Data form is NTTable.<br
+/><br
+/>eget -a Npulses=3 SwissFELTI:sync:bpmorbit<br
+/>pulse_Id bpm_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TMIT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Status<br
+/>31330&nbsp;&nbsp;&nbsp; sinlh01.diag01.bpm&nbsp; 0.331939 -0.20821595 9.2273582E9 OK<br
+/>31690 sinlh01.diag01.bpm&nbsp; 0.343939 -0.21321534 9.3973582E9 OK<br
+/>32056 sinlh01.diag01.bpm&nbsp; 0.343939 -0.21321534 9.3973582E9 OK<br
+/>31330 sinlh02.diag01.bpm&nbsp; 0.430091 -0.19211863 9.4554767E9 OK<br
+/>31690 sinlh02.diag01.bpm&nbsp; 0.429820&nbsp; -0.18054654&nbsp;&nbsp;&nbsp; 9.3577114E9 OK<br
+/>32056 sinlh02.diag01.bpm&nbsp; 0.476549&nbsp; -0.23452345&nbsp;&nbsp;&nbsp; 9.3245235E9 OK<br
+/>... snipped many more<br
+/>Total number of rows printed would be M bpms in the gather record named SwissFELTI:sync:bpmorbit, times<br
+/>N pulses<br
+/>BD: Maybe we should shelve this because pvManager can do it.<br
+/>What would be nice to put a service on top of pvmanager.<br
+/>TK: Have an idea of how to do it.<br
+/>GW: In the context of BNL the pvManager is sensible. But for PSI, they don't have pvmanager,<br
+/>so it's sensible for them to implement their server side independently.<br
+/><br
+/>Consensus: Synchronous BPM service is not the highest priority. But should be done soon.<br
+/><br
+/>*MK*<br
+/>17. Get the values of a number of V3 PV (fields) from one V3 IOC, through a V4 record on V3 IOC PVA<br
+/>[ie, "The Dirk Requirement" ].<br
+/>Ideally a heterogenous structure of V3 scalar and waveforms.<br
+/>E.g. Get a summary of the PVs relating to a QUAD from an IOC. In this example the V4 PV<br
+/>is QUAD35:SUMMARY, to illustrate that one might use the "physics" name (QUAD35) for such summary<br
+/>PVs, and their values might be composed of a structure of V3 PVs named with engineering names and their values:<br
+/><br
+/>eget QUAD35:SUMMARY<br
+/>QUAD:SECT02:13:B 42.3<br
+/>QUAD:SECT02:13:POLY 23234.2342 5435.34 753.3 4.34234 5.32E-23<br
+/>QUAD:SECT02:13:E 4.454<br
+/><br
+/>MK trying it.<br
+/>TK: tried it and it seems to work!<br
+/>TK: When service is running, can use pvput to put the waveform, but caput didn't work!!<br
+/><br
+/>AI: MK, check use of caput to a waveform that is one of those channels aggregated by a V4 IOC.<br
+/><br
+/><br
+/>EasyPVA, Model Service and Directory Service from Matlab.<br
+/>=========================================================<br
+/><br
+/>Overall *GW*, from input from RL and TK.<br
+/><br
+/>18.&nbsp; Example of orbit correction from Matlab, done using easyPVA<br
+/>Illustrates requirements for:<br
+/>1. EasyPVA understanding request for PVStructure<br
+/>2. EasyPVA understanding arguments as part of request for data<br
+/>3. EasyPVA understanding that an argument TO a service may be an array<br
+/>&nbsp;&nbsp; (in the example a table of magnet names and B field values)<br
+/>Also assumes the Directory Service requirement articulated above to get Corrector and BPM names<br
+/>-------------------------------<br
+/>% SwissFEL orbit correction in 1/2 page of matlab<br
+/>% The following is syntactically valid Matlab, but need to see from Ralph how it is actually done.<br
+/>%<br
+/>import org.epics.ca.easyPVA.*;<br
+/>easyPVA = EasyPVAFactory.get();<br
+/><br
+/><b>*******</b><br
+/><b>NEW TOPIC: Use of Bug Tracker</b><br
+/><b>*******</b><br
+/>BD: sounds like apple pie.<br
+/>GW: Right, let's start using it.<br
+/><br
+/><br
+/>*<b>******</b><br
+/><b>NEW TOPIC: BNL Meeting</b><br
+/><b>*******</b><br
+/>BD: A db meeting will be on Mon, Tue and Wed morning. EPICS V4 will come after.<br
+/>BD: Mon is db technology<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tue is db applications. Egs Inventory, cable management, op logs.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Wed morning: DS, Masar, physics db eg models. Maybe Archive service.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Wed afternoon EPICS v4 status review demos.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thursday will be beamline<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/><br
+/><br
+/><br
+/></body>
+</html>

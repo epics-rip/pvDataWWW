@@ -1,0 +1,45 @@
+Colleagues,
+
+Please find below the agenda for our weekly telecon [1]. Minutes
+in titanpad [2]. 
+
+Agenda
+======
+1. Activities and Action Item verification and prioritization.
+
+We are beginning to undertake 2 major new projects; call them "pvDatabase" and
+"big data handling". People are already looking at requirements, prototyping and 
+creating test data. 
+
+However, we have a lot of unfinished work outstanding. I listed some items that came to mind
+in a file I called worklist.txt [4] on our web site. It may be a bit unfair and wrong in 
+places, please forgive me, I'm trying to pick up and get a handle on where we are.
+
+Basically, I want us to finish what we started before going on to new things. I'd like a consensus on the guiding principle with which we proceed. To what extent must we finish pv core work, such as easyPVA, v3channel, v3-v4 interop documentation, and items from 2 below, before proceeding with pvDatabase. 
+
+2. Clarification of role of pvIOC Java and CPP from now (beta 2), and up to implementation of pvDatabase. 
+
+I'd like an AI on someone (lookin at you Marty) to write text clarifying what pvIOC is
+right now - what it shall be while pvDatabase is in alpha development - and what it is forseen to be 
+when a (non-alpha) pvDatabase implementation exists. By "what it is" I mean a functional description of
+its role in EPICS V4 in each of these 3 stages. An EPICS engineer looking at our web site has to be able to deduce whether pvIOC, java or c++, is pertinent to them. 
+ 
+3. "Surprising feature of PVStructureArrays" (David) [3]
+
+4. AlarmStatus. Should it be renamed AlarmCause? [5]
+
+Cheers
+Greg, for Greg and Bob
+
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epicsv4.titanpad.com/38
+[3] thread at http://sourceforge.net/mailarchive/forum.php?thread_name=5B023ECC-6692-4F66-944A-D1B3EF1FC3DE%40slac.stanford.edu&forum_name=epics-pvdata-devel
+[4] http://epics-pvdata.sourceforge.net/worklist.txt
+[5] thread at http://sourceforge.net/mailarchive/forum.php?thread_name=50BCBB2E.1050704%40comcast.net&forum_name=epics-pvdata-devel
+
+
+
+
+
+

@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$22</title>
+</head>
+<body><b>AGENDA for Thursday, July 12th</b><br
+/><b>=========================</b><br
+/><br
+/><b>Version 4 and the future direction for V4.</b><br
+/>&nbsp;<br
+/>9.15 Morning<br
+/>------------<br
+/>9.15 Functional requirements for scan engines and data rates as services, *Daron Chabot*<br
+/>[Anyone else from PSI or Diamond?]<br
+/><br
+/>10.00 *Bob Dalesio* V3 limitations with respect to scanning.<br
+/><br
+/>10.30 Break<br
+/><br
+/>10.45 *Markus* (for MJ and DM), on PSI thoughts on EPICS and IOC<br
+/><br
+/>11.15 Discussion on V3 IOC limitations with respect to scanning and other beamline requirements<br
+/>[*Bob Dalesio* leads]<br
+/>&nbsp;<br
+/>12.15 Lunch<br
+/><br
+/>1.30 Afternoon<br
+/>--------------<br
+/>1.30 Thoughts on requirements for leveraging the combined V3/V4 system&nbsp; (*Greg*, 30 min)<br
+/>&nbsp;&nbsp; IOC getting static data, IOC publishing structured data, IOC fast feedback support,&nbsp;<br
+/>&nbsp;&nbsp; EPICS system instrumentation, Directory Service search and data acq integration, V4 IOC<br
+/>&nbsp;&nbsp; SNL (I'm lookin' at you Ben!), Web Services<br
+/>&nbsp;<br
+/>2.00 pm Data Analysis Requirements&nbsp;&nbsp;<br
+/>[Would prefer to hear this form a PSI or diamond guy – kind of data – results of analysis]<br
+/><br
+/>Break<br
+/><br
+/>3.00 Visualization requirements and solutions<br
+/>*Everyone*, - inventory – what exists – what kind of interface? HDF5?&nbsp;<br
+/><br
+/>3.30 Discussion to formulate what is sensible for the EPICS embedded IOC in the short and medium term.<br
+/>Outcomes and recommendations of this discussion would used in friday's session to build objectives<br
+/>for the coming year.&nbsp;<br
+/>[*Bob Dalesio* leads]<br
+/>&nbsp;<br
+/><b>MINUTES</b><br
+/><b>=======</b><br
+/><br
+/><b>Present</b>: DH, Mark Heron (MH) subject to availability), BD, GS, MK, Michael Abbot (MA), JR, TK, Daniel Meyer (DM), Markus Janousch (MJ), MS, Daron Chabot (DC),Paul Gibbons, Tom Cobb<br
+/><br
+/><b>*********</b><br
+/><b>PRESENTATION: Functional requirements for scan engines and data rates as services, Daron Chabot, BNL</b><br
+/><b>*********</b><br
+/>Example beamline data rates:<br
+/>&nbsp; CSX: 8Gbps, 4 TB/day<br
+/>&nbsp; CHX, 4-40Gbps, 4 TB/day<br
+/>&nbsp; IXS: ~10 Mbps, &lt;1 GB/day<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; The experimental method very often involved "Scanning", and that most often involves physical motion.<br
+/>&nbsp; Motion is of sample, detector, optics etc.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; * Stepwise<br
+/>&nbsp;&nbsp;&nbsp; * Continuous (on-the-fly). Involves a single acceleration/deceleration cycle.<br
+/>Recently, continuous has become much more common. It requires buffering close to hw. Requires trigger distribution.<br
+/>So, need to focus on continuous scanning requirements [for future controls].<br
+/><br
+/>Places lacking in EPICS:<br
+/><br
+/><u>1. Reciprocal space. aka (q-space, k-space).&nbsp;</u><br
+/><br
+/>It's the frequency domain space. 1/distance, not 1/time.<br
+/>Crystallography defines teh space in 3 axes: [h k l]. The orientation of [h k l] maps to several physical axes.<br
+/>There is direct support of this axis space in EPICS.<br
+/>Therefore no alarm, archive, direct control in [h k l] space in EPICS.<br
+/><br
+/>Many scanning operations are defined in terms of reciprocal space operations, particularly for materials science. Eg X-ray&nbsp;<br
+/>&nbsp;photon correlation spectroscopy (XPCS).<br
+/>&nbsp;In XPCS the objective is to study the timescales of material processes. These are derived from scanned "frames", often 20K frames/s. Frame acq is very bursty. You have to aggregate each pixel in a sequence of frames.<br
+/>&nbsp;<br
+/>&nbsp;A particular difficulty is in the coordination of the frame data acquisition, and the online data analysis.&nbsp;<br
+/>&nbsp;PG: But can't any process monitor the data acq and start processing on given frame number.<br
+/>&nbsp;BD: [missed reply...?]<br
+/>&nbsp;DC: The point is there is no framework for coordination. There are solutions, but it's not supported.<br
+/>&nbsp;BD: Yes, our objective is to finish a framework.<br
+/>&nbsp;PG: Do you want this f/w on the IOC?<br
+/>&nbsp;BD: In the IOC or even lower, such as in the DAQ. Particularly for short term.&nbsp;<br
+/>&nbsp;MJ: There are limitations to the extent one can do that in different exp. setups.<br
+/>BD/MJ: Much of the data is 0s. Would be easier if formally sparsified (get rid of 0s).<br
+/>BD: Essentially, all analysis that is now below the E DB, is there because the EDB isn't presently suitable.<br
+/>MJ: Human interaction is needed to manage the coordination of data acq and analysis.<br
+/>PG: yes, but there are ways to do that coordination.<br
+/>&nbsp;<br
+/><u>Three Biggest Areas of Open Issues:</u><br
+/>1. Scanning framework. Start, stop, control of scans.&nbsp;<br
+/>2. Online data analysis frameworks (ODA)<br
+/>3. Data Formats (HDF5).<br
+/><br
+/>GW: Question about role of EPICS in data processing...<br
+/>Split between data acquisition and later analysis is not more feasible because of the data rates<br
+/><br
+/>Diamond is doing pre-analysis (visualization)<br
+/>Access to the data from user's home labs is important<br
+/>Standardization, formats, metadata etc. is important (collaborations)<br
+/><br
+/>MJ: In tomography, they need the whole data set. For visulaization you need the whole data set.<br
+/>PG: That's true.<br
+/>BD: This suggests the need for a data pipe that can give data to any client.<br
+/><br
+/>With a proper architecture, one has more freedom of selecting where the data processing takes place<br
+/><br
+/>MJ: One issue is that we store a huge amount of data for experimenters, but there are some groups that<br
+/>aren't set up to access or process that data (needs lots of computing resources).<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; NEXUS defines semantics over HDF5 format.<br
+/>&nbsp;&nbsp;<br
+/>Service for collecting metadata ("gather") would be useful<br
+/>Metadata stored in DB and used&nbsp; used for data queries<br
+/><br
+/><b>********&nbsp;&nbsp;</b><br
+/><b>PRESENTATION: Thoughts on EPICS4 on beam lines. Markus Janosh, PSI</b><br
+/><b>********</b><br
+/>&nbsp; Experimental techniques<br
+/>&nbsp; Tomography, diffraction, spectroscopy (electron, photon)<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp; Scanning of actuators and reading out detectors. Often simultaneously changing external parameter (temp, pressure,...)<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; STXM: raster scan of the sample, pixel at a time<br
+/>&nbsp; acq time a few ms<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; Synchronous scanning in 1,2,3 dimensions<br
+/>&nbsp; Data rates from KBytes/sec to 800 MBytes/sec<br
+/>&nbsp; Require metadata of machine, BL status, experiment needed<br
+/>&nbsp; Synchronization in hardware. Eg, the "whole status of the machine on a bunch-to-bunch basis, SwissFEL at 100Hz."<br
+/>&nbsp; DAQ as dedicated apps or scripts<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; (scribe disconnected for a while)<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; EIGER: 50 Gb/s for a module<br
+/>&nbsp; 8 GB RAM on module<br
+/>&nbsp; 9M: 906 Gb/s<br
+/>&nbsp; Compression on-module (data rate a few GB/sec)<br
+/>&nbsp;&nbsp;<br
+/><br
+/>How can Epics V4 Help<br
+/>----------------------------------<br
+/>* General scanning framework, like sscan record<br
+/>* General Data Acq<br
+/>* Anti-collision management<br
+/>* Simple DAQ -&gt; Sophisticated and easily configurable state machine! [BEN, you listening to this!]<br
+/>* Integration of RDB for samples<br
+/>* Data processing queues<br
+/>* Meta data of the IOC (status, health, ...)<br
+/><br
+/>Address the different programmer levels/skills:<br
+/>&nbsp; + Have a very easy and robust get, set, monitor (one usable by scientists)<br
+/>&nbsp; + Provide this in several scripting languages, and command line&nbsp;<br
+/>&nbsp; + Have an easy interface to the archiver and history<br
+/>&nbsp; + Have a tool to easily/quickly plot data and correlate them<br
+/>&nbsp;&nbsp;<br
+/>Have a plugin architecture and developer tools.<br
+/><br
+/>EPICS 4 is EPICS V3 plus a platform for (scientific) services, plus possibly a frameork for aggregating data in an embedded IOC (V3).<br
+/><br
+/>GW: propose two working groups, one for services, one for "base" EPICS 4<br
+/><br
+/><u>MJ would like:</u><br
+/>&nbsp; Collaboration provides reference services, on one platform (Linux)<br
+/>&nbsp; Client tools and the framework work on many clients<br
+/>&nbsp; Development tool: make<br
+/>&nbsp; Error logging: use the pvAccess protocol, mec<br
+/>&nbsp;&nbsp;&nbsp;<br
+/>JR: Does Ev4 aim to replace 0MQ? Would you use 0mq for high perf, and ev4 for others.<br
+/>MS: Most of the main good things in 0mq are in pvAccess<br
+/>PG: What about guaranteed delivery. I found not all messages in v4 were getting through.<br
+/>MS: In pva you may loose monitors, but you're notified about it.&nbsp;<br
+/>MS: in pva you monitor signals. If the signal changes a lot, then some notifications may be lost.<br
+/>JR: What should you use when you want to monitor data, like publish and subscribe.<br
+/>MS: Lets say you have acq, and it may be bursty, then set the queue length appropriately.<br
+/>JR: Ok, makes sense. That's functionally equivalent to 0mq.<br
+/>PG: But that's not the case in V3.<br
+/>MK: In v3 you can't set the queue length for data.<br
+/>PG: I used caput to put to a V4 ioc, and I lost some data.<br
+/>MK: Well, you should have seen all. I'd have to see.<br
+/><br
+/><b>*******</b><br
+/><b>AI on JR: Add pattern for Caput to V4 IOC to Archictures Document.</b><br
+/><b>*******</b><br
+/><br
+/><b>********</b><br
+/><b>PRESENTATION: EPICS V4 ideas in support of beamline science. Tom Cobb, Diamond</b><br
+/><b>********</b><br
+/>Beamlines are characterised by:<br
+/>* Motors, lots of motors<br
+/>&nbsp; - mainly delta-tau, with diff coord systems<br
+/>* Cameras and detectors<br
+/>*It takes longer than it should to create support for such collections of such systems<br
+/><br
+/>V3 Useful features<br
+/>---------------------------<br
+/>* rewireable links in records<br
+/>* scan rate changes in records<br
+/>* streamDevice - stops you writing boilerplate C code for comminicating with simeple devices<br
+/>* areaDetector<br
+/><br
+/>V3 annoyances<br
+/>----------------------<br
+/>* 3 fold duplication of Driver, databases, screen<br
+/>* The pain of building an IOC, undocumented template macro, etc.<br
+/>* Lack of structured data types and metadata<br
+/>* Can't create and delete records on teh fly.<br
+/>* Can't form explressions in macro substitutions.<br
+/>* Concurrency in multiple fields and multiple records<br
+/>* syncing demand and readback fields. There is no pattern for this, have to decide how<br
+/>* Only 16 fields in an mbbo and only 39 chars in a char string!!<br
+/><br
+/>V4 ideas<br
+/>-------------<br
+/>* Objects (created at init) with field list that can row and shrink.<br
+/>....<br
+/><br
+/>S: "example"<br
+/>Example of a motor high level interface would be a record composed of a conglomeration of V3 [or v4] recrords.<br
+/><br
+/>S: How would the "database" work"<br
+/>TC describes how a notional next gen EPICS database would work. Describes a 3 tier system<br
+/>&nbsp;&nbsp; soft support"/intelligent device (a pump) -&gt; streamDevice -&gt; IP port (low levelo IO)<br
+/><br
+/>JR: At Diamon, we mainly add functionality at the asyn [driver] level, rather than at record support level.&nbsp;<br
+/>TC: Therefore, you really only need one smart record, than can be used with asyn.<br
+/><br
+/>[need this discussion summarized]<br
+/><br
+/>S: Structured Data<br
+/><u>TC would like:</u><br
+/>&nbsp; Metadata that can be attached to any data [this is provided].<br
+/>&nbsp; Like to be able to choose which fields and metadata are displayed<br
+/>&nbsp; Functionality now handled by NTNDarray&nbsp;&nbsp;&nbsp;<br
+/><br
+/>S: Template<br
+/>Describes teh idea of creating device objects from parameterized templates.<br
+/><br
+/>PG: On metadata, I think that's a missuse. In the stats example, that's data too. Missue of the word.<br
+/><br
+/><b>********&nbsp;&nbsp;</b><br
+/><b>NEW TOPIC:&nbsp; Scanning Limitations. Bob Dalesio, BNL</b><br
+/><b>********</b><br
+/><br
+/>Large buffer management<br
+/><br
+/>Arrays are not supported (only one-dimensional array)<br
+/>No metadata, limited support for operations on arrays<br
+/><br
+/>Scanning&nbsp;<br
+/>Handling of large datasets<br
+/>Multi-core support in database<br
+/>Timestamping from various I/O&nbsp;<br
+/><br
+/>Requirements<br
+/>normative types for images, ndim arrays, nodes of HDF5?<br
+/>records that support operations on arrays, tables, etc.<br
+/>buffer life cycle&nbsp; from driver through communication<br
+/>thread assignment to cores<br
+/><br
+/>PG: Diamond is defining the scans in Python HL apps<br
+/><br
+/>How to provide a scan system? A service in the V4 framework?<br
+/><br
+/>Should the collaboration try to provide an IOC that is able to run a scan service?<br
+/>PG: If yes, should be flexible (with a python interface)<br
+/>GW: are the requirements general enough to make it worthwhile writing general-purpose services?<br
+/>MJ: yes; every beamline has a defined (photon) energy, the reciprocal space is well defined, etc.<br
+/><br
+/>BD: two areas: data processing (area detector) and DA/experiment control (scan)<br
+/><br
+/>DC: Presently the scan record is an interface to a scan engine... [more not recorded]&nbsp;<br
+/>PG: The service should be implemented in Python.<br
+/>DC: Only the interface to the scan engine is important, the details<br
+/>ofthe implementation of the scan engine (eg its language) is not<br
+/>important.<br
+/><br
+/>DC: What is it about the real-time OS that you use - that drives it being real-time, for beamline control?<br
+/>many: nothing.&nbsp;<br
+/>JR: In fact, we started to use Linux instead.<br
+/>TK: We probably won't use VxWorks for SwissFEL.<br
+/><br
+/>********<br
+/><br
+/>BD: Bob asks beamline group representatives do we need to form a "EPICS V4 beamline working group" (to define normative types, ...)?<br
+/>DC, PG, ... :Yes.<br
+/>BD: If we agree on normative types this would be a BIG win.<br
+/>PG: Normative types for images would be really usefull.<br
+/><br
+/>GW: Should the working group define normative types and then define scan service.<br
+/>TC: Do not push it, start with areaDetector<br
+/><br
+/>DC: Grey area: what are plans to support framework to get data from HW into the NT?&nbsp;<br
+/>BD: Nothing was done in this area. We pull the data to the service. An aggregator can pull data from V3 and provide it in a form of a NT.<br
+/>Ralph: What about areaDetector plugin for NT.<br
+/>JR: We've aready done this. AD serializes images into NT and sends it over the sockets (pvAccess was not ready then).<br
+/>PG: GDA receives data/images over pure sockets (for test purposes).<br
+/><br
+/><b>********</b><br
+/><b>&nbsp;NEW TOPIC: MK: pvIOCCPP Thought about future development</b><br
+/><b>********</b><br
+/><br
+/>pvIOCCPP module currently implements/contains:<br
+/>- implemenation of V3 channel provider (no aggregation)<br
+/>- service support (RPC support)<br
+/>- obsolete header for easyPVA<br
+/><br
+/>What should pvIOCCPP provide? Most what pvIOCJava provides (3-4mm) in addition to implement Dirk's goal.<br
+/>pvIOCJava features:<br
+/>- database (set of PVRecords)<br
+/>- install (support to dynamicall install/remove PVRecords)<br
+/>- pvCopy (utility to access subset of the fields of the PVStructure)<br
+/>- pvAccess (implementation of ChannelProvider and Channel that access local PVRecords)<br
+/>- monitor (monitor support)<br
+/>- support (record processing, code attached to a field of PVRecord)<br
+/>- portDriver (V4 equvivalent of asynManager)<br
+/>- caV3 (client/server support for CAV3)<br
+/>- xml (reading XML to populate database)<br
+/>- swtshell (test GUI, ugly, used as debugging tool)<br
+/><br
+/>Features usefull for implementing Services: database, install, pvCopy, pvAccess, and monitor. In addition some subset of "support".<br
+/><br
+/>pvIOCJava implements portDriver. Attaches to the fields.<br
+/>portDriver does not know (define) anything about V4 records.<br
+/><br
+/>swtshell - no need to implement it in CPP. swtshell should be taken out of pvIOCJava and redone. Based on SWT.<br
+/><br
+/>GW: Marty do you suggest next year (after Sep) more work should be spent to fully implement CPP IOC.<br
+/>MK: Yes.<br
+/>GW/MK: Motivation is to access HW.<br
+/>GW: Is it important to run on VME/embedded IOC?<br
+/>MK: Yes. We (MK and MS) hope that V4 base will compile on VME platforms.<br
+/>GW: Would you still call it pvIOC (when coexisting with V3 IOC)?<br
+/>MK: "Marketing people" should decide.<br
+/>GS: What about "V4 engine"?<br
+/>DC: Naming should be revised (confusing for new people).<br
+/>BD: Do we have a standard record set?<br
+/>MK: I've done a standard components that build records. I've implemented something similar to ai, etc.<br
+/>GW: Let's try to make a list of items for next charter!<br
+/><br
+/><b>********</b><br
+/><b>NEW TOPIC: Beam line directed V4 working group.</b><br
+/><b>********</b><br
+/>[Group went through the basic charter deliverables that might be the remit of a new beamline oriented EPICS V4 working group]<br
+/><br
+/>1) heterogeneous data aggregator on epics V3&nbsp; - part of this charter. No normative type. MK: Not hard (when implemented as channel RPC request).<br
+/>2) connect ntimage and ndarray into v4 server&nbsp;<br
+/>3) actions on images (ala areaDetector, such as background substraction...)<br
+/>4) review normative types in light of beam line control.<br
+/>5) fully implemented pvIOCCPP for supporting beam line control<br
+/>6) prototype V4 record using V3 image-processing record<br
+/>7) scan service<br
+/><br
+/><br
+/>MK: Re 5, we can directly access V3 record data (C++ pointer) as CPP caV3 does.<br
+/>MK: Wants to spent time to implement CPP pvCopy ("nobody" wants to implement get/put/... support code).<br
+/><br
+/>GW: Re 1, Not much work if done if done in V3 IOC.<br
+/>PG: What about using directory service to build up...?<br
+/>TC: XML?!<br
+/>GW: This can be quickly done in V4 (as service) in Java. However, we want address Dirk's requirement - easy to do/deploy for V3 developer.<br
+/>TC: Wants it all done in the V3 IOC.<br
+/>MK: Feasible to do with not much of work: start V3 IOC, and within the IOC you also start a pvAccess server using caV3. There is a configuration file that specifies what fields to aggregate into PVRecord-s.<br
+/>MK: Willing to work with Dirk from start of September (done till end of September)<br
+/><br
+/>---<br
+/>PG: Interested in points 2, 3, 4<br
+/><br
+/><br
+/></body>
+</html>

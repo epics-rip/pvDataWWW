@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$5</title>
+</head>
+<body>============= Meeting 22-Feb-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/><br
+/><u>1. New pvAccess protocol spec [3] version (<b>*Matej*</u></b><u>).&nbsp;</u><br
+/><br
+/>Please check it out and email Matej with everything from typos to substantive material. Not suggesting a full review of this in the meeting, we've done that enough, but we're getting ready to publish so we should make a publication readiness decision.<br
+/><br
+/><u>2. Maturity matrix (<b>*Greg*</u></b><u>).</u><br
+/><br
+/>Would you realistically maintain a maturity matrix on the web site?<br
+/><br
+/><u>3. Troubleshooting help [4] (<b>*Greg*</u></b><u>).</u><br
+/><br
+/>Is this a good idea? To be a thing it needs to be reliable and quite complete. Is that realistic?<br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: MK, JR, DH, RL, GS, BD, MS, GW<br
+/>Scribe: BD<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b><u>New pvAccess protocol spec [3] version (<b>*Matej*</u></b><u>).&nbsp;</u><br
+/>************<br
+/>GW: We will not review the specification during this meeting.<br
+/><br
+/>************<br
+/><b>AI</b> on Matej by whenever<br
+/>Consider and propose a solution to include&nbsp; array of boolean - and a type for bit fields (which could be implemented&nbsp; as an array of boolean)&nbsp;<br
+/>************<br
+/><br
+/>Everyone - please read through the specification - typos etc.....<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b><u>Maturity matrix (<b>*Greg*</u></b><u>).</u><br
+/>************<br
+/><br
+/>********<br
+/>AI on GW by whenever: Add maturity matrix example to web site.<br
+/>********<br
+/><br
+/>Maturity Matrix will be maintained by V4 developers.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b><u>Troubleshooting help [4] (<b>*Greg*</u></b><u>).</u><br
+/>************<br
+/>GW: Troubleshooting.html (<a href="http://epics-pvdata.sourceforge.net/troubleshooting.html)">http://epics-pvdata.sourceforge.net/troubleshooting.html)</a>&nbsp;<br
+/>will continue to be the place that troubleshooting is recorded. Will split or move to Wiki when necessary.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: V4 service configuration for getting V3 data</b><br
+/>************<br
+/>GW: Can a v4 service be configured to get v3 ca data without special purpose code?<br
+/>MK: Yes, you can. There is an example in pvIOCJava/xmltest/cav3.<br
+/><b>&nbsp;</b><br
+/>************<br
+/><b>NEW TOPIC: rdbService and performance</b><br
+/>************<br
+/>MK: What is going on in services at PSI.<br
+/>GW: We have written an EPICS V4 installation guide, and followed it to install an E4 service.<br
+/>This first service gets data out of a SQL db (Oracle) on behalf of a client. Will be<br
+/>used for configuring BPM orbit services (to get list of BPMs) and for Model Service<br
+/>(basic model data, like Rmats from start of beam section to a lattice element, will be&nbsp;<br
+/>in the db).<br
+/>We have written the config files and distribution mechanism (based on yum packagae manager and puppet remote configuration tool), and are deploying and testing<br
+/>the rdb service.<br
+/>MK: What is the stability?<br
+/>GW: Very good. Only issue seen is performance. Looks like it is not as high performance as<br
+/>same code was in December.<br
+/>MK: Since then we have changed the RPC service framework to be able to receive and return different structures at each call.<br
+/><br
+/>Rdb example service written in Java, helps someone get data from Oracle. Performance tests were done in Dec and Jan and they were consistent. After the holidays, the performance went down by a factor of three. This needs to be investigated. Performance improves over time as Oracle caches data. The slower numbers are in the initial access. The performance improvements also do not achieve the same performance as before the holidays.<br
+/><br
+/>MK will look at the rdbservice code to verify that it is consistent with the present way one<br
+/>is supposed to do RPC.<br
+/><br
+/><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/RdbServiceFactory.java">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/RdbServiceFactory.java</a><br
+/><br
+/>See line 386 for getData method, whch packages up db results&nbsp;<br
+/><br
+/></body>
+</html>

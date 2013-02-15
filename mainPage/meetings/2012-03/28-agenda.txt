@@ -1,0 +1,22 @@
+============= Meeting Agenda  28-Mar-2012 =============
+Demo of the archive service - David
+
+review AIs
+ DH by 27th Mar: Add inserstions into MK's proposed changes document
+ to illustrate the alternative for moving the introspection interface.
+
+MS/GW by Fri 23: Tag all pv*Java and pv*CPP repos beta.1.1.
+alphaJava and alphaCPP tagged too. 
+
+Test results
+easyPVA review (*Marty*)
+
+Open Issue.....
+structures should  consist of members which consist of name plus a s a type object. This  isn't incoconsistent with PVs knowing there own name - resolve
+
+
+
+
+
+
+

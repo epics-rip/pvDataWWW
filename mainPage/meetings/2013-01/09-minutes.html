@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$40</title>
+</head>
+<body><br
+/>AGENDA<br
+/>=======<br
+/><br
+/>agenda is to review the agenda of the Jan 2013 PSI meeting, draft below<br
+/><br
+/>1st draft agenda for comments.<br
+/>&nbsp;<br
+/>Monday<br
+/>======<br
+/><br
+/>Morning - Demos of Beta 2 and administration<br
+/><br
+/>&nbsp; * Demos of bpm orbit and model services (*Timo*, *Greg*)<br
+/>&nbsp; * Demo all normative types to pvget and eget (*Matej*)<br
+/>&nbsp; * 2012-2013 charter review (*Greg*)<br
+/><br
+/>Afternoon - EPICS V4 control database &amp; IOC requirements and design references<br
+/><br
+/>&nbsp; * Marty's review of the existing pvDatabase,&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; [Please forward title to greg] *Marty*.<br
+/>&nbsp; * Marty's Ideas on memory, multithreading and locking from Marty's&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; email of Dec 12 *Marty*.<br
+/>&nbsp; * Bob's review of V4 IOC requirements&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; [Please forward talk title to greg] *Andrew Johnson*<br
+/>&nbsp; * Andrew's review of V4 IOC requirements&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; [Please forward talk title to greg] *Bob Dalesio*<br
+/>&nbsp; * Michael's review of V4 IOC requirements&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; [Please forward talk title to greg]&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *Michael Davidsaver or substitute*<br
+/>&nbsp;<br
+/>Tuesday<br
+/>=======<br
+/><br
+/>Morning - Beta 2 continued<br
+/><br
+/>&nbsp; * Microbenchmark testbench design and initial performance&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; breakdown report (*Matej*)<br
+/>&nbsp; * v3Channel review (*Marty*. Summary of the converation and outcomes from&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; Marty and Andrew's discussion around mid november in the thread "multichannel puts")<br
+/>&nbsp;&nbsp;&nbsp; Status breaking v3Channel out of pvIOCCPP (*Ralph*) and&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; testing by Andrew.<br
+/>&nbsp; * Impressions of getting started with vxWorks and v3Channel&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; compilation *Dirk Zimock*&nbsp;<br
+/><br
+/>Afternoon - IOC image processing requirements and support plans<br
+/><br
+/>&nbsp; * Make a real plan for the compression support of NTImage.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; Who can talk to this, *Nikolay?*<br
+/>&nbsp; * NDarray / image server - David?<br
+/><br
+/>&nbsp; What else can move us along here?<br
+/><br
+/><br
+/>Wednesday<br
+/>=========<br
+/><br
+/>Talk to beamline specialists at PSI. Timo and Bob to coordinate.<br
+/><br
+/>MINUTES<br
+/>=======<br
+/>Present: BD, TK, MK, RL, MS, GS, GW, NM, DH<br
+/>Scribe: GW<br
+/><br
+/><b>*******</b><br
+/><b>NEW TOPIC: Use of CI servics&nbsp;</b><br
+/><b>*******</b><br
+/>RL: There is now cloudbees [for Java]<br
+/>RL: For Gabriele, it may be that c/c++ compilers can be supported. Will not be easily possible to create the full env for compiling EPICS stuff or vxWorks cross-builds though, since it's only linux (F17) on the amazon cloud.<br
+/>RL: We will need the EPICS base (makefile system, libraries) for instance to do our CI. RL can try to install EPICS base, but does't know.<br
+/>GW: Seems hard for linux c/c++ and since impossible for vxWorks how about BNL's Jenkins<br
+/>RL: Gabriele was the support person at Jenkins, and the Jenkins BNL machine is probably going to die.<br
+/>GS: Irmis is also on SF. In summary, jenkins not needed for IRMIS at BNL any more, so Jenkins is not going to be supported any more.<br
+/>MS: I have an account, and have set up projects on BNL's Jenkins, so if it's available, then I can configure it. However I would also need some login access.<br
+/>GW: Can it be that the BNL system manager takes care of sys admin, and MS takes care of config.<br
+/>BD: We can't support that service anymore.<br
+/>MS: We can ask CosyLab to set it up<br
+/><br
+/><b>AI on MS:</b> Get CosyLab to make a Jenkins server available for EPICS V4, and configure it for Java and Linux C++ builds. BNL will pay.<br
+/><br
+/>MS: Do we have an official Linix distro target?<br
+/>GW: no<br
+/>RL: Maybe target Debian or RHEL to be able to use binary installs for EPICS base and such. Maybe best have 2 machines, one for 32 bit and one for 64.<br
+/><br
+/>GW: Would like vxWorks "port"<br
+/>TK: PSI has vxWorks licenses. In the meeting, we can try to convince Dirk to do the vxWorks CI.<br
+/><br
+/>-- Add vxWorks CI and other matters to the agenda --.<br
+/><br
+/><br
+/>RL is also going to try to set up the C++ support of CI for EPICS V4 core on Cloudbees.&nbsp;<br
+/>However, it won't be able to do multi-machine or cross-platform client-server tests<br
+/>MS: Well, we need client-server tests, that's what's most important.<br
+/>RL: I can do client-server if I use localhost.&nbsp;<br
+/>RL: The client server tests of the Java builds [of the core pv modules] are working now.&nbsp;<br
+/>We just have one test that is failing - issue has been raised in SF tracker.<br
+/><br
+/><b>*******</b><br
+/><b>NEW TOPIC: Confirming Agenda for PSI meeting 21-23 Jan</b><br
+/><b>*******</b><br
+/><br
+/>Morning - Demos of Beta 2 and administration<br
+/><br
+/>&nbsp; * Demos of bpm orbit and model services (*Timo*, *Greg*)<br
+/>&nbsp;&nbsp;&nbsp; TK says yes he'll try.<br
+/>&nbsp; * Demo all normative types to pvget and eget (*Matej*)<br
+/>&nbsp; * 2012-2013 charter review (*Greg*)<br
+/><br
+/>Afternoon - EPICS V4 control database &amp; IOC requirements and design references<br
+/><br
+/>&nbsp; * Marty's review of the existing pvDatabase,&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; [Please forward title to greg] *Marty*.<br
+/>&nbsp;&nbsp;&nbsp; MK<br
+/>I will not attend the upcoming workshop at PSI.<br
+/>I am having more and more difficulty walking.<br
+/>This Saturday I will have an MRI on my spine and brain.<br
+/>Next week Tuesday I will have a followup exam with my neurologist.<br
+/>Maybe then I can find out what is causing my problems.<br
+/><br
+/>&nbsp; * Marty's Ideas on memory, multithreading and locking from Marty's&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; email of Dec 12 *Marty*.<br
+/>&nbsp;&nbsp;&nbsp; pvDataCPP<br
+/><br
+/>Michael Davidsaver:<br
+/>1) has pointed out that the existing implementation of PVArrayData results in an array copy evertime PVValueArray::get is callled.<br
+/>2) has convinced me to consider modeling&nbsp; PVValueArray as a C++ STL container rather than following&nbsp; the Java model.<br
+/>Look at repository pvDataCPP-md to see his work in progress.<br
+/>&nbsp; * Bob will talk on broad matters of high throughput large dataset.<br
+/>&nbsp; * Andrew's review of V4 IOC requirements&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; [Please forward talk title to greg] *Bob Dalesio*<br
+/>&nbsp; * Michael's review of V4 IOC requirements&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; [Please forward talk title to greg]&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *Michael Davidsaver or substitute*<br
+/>&nbsp;<br
+/>&nbsp;BD: Are we going to meet on Thurs before?<br
+/>&nbsp;TK: Mainly on Wed<br
+/>&nbsp;BD: Is Marcus goign to be there<br
+/>&nbsp;TK: At least on Wednesday. I am going to invite SwissFEL<br
+/>&nbsp;BD: Imageserver, multidimentional array service, ar what we want to talk to them about.<br
+/>&nbsp;BD: Is there some time where we can talk to SwissFEL abotu what we plan to do for beamlines?<br
+/>&nbsp;GW/TK: Yes absolutely.<br
+/>&nbsp;BD: I can give a talk on&nbsp;<br
+/>&nbsp;<br
+/>&nbsp;Tuesday<br
+/>=======<br
+/><br
+/>Morning - Beta 2 continued<br
+/><br
+/>&nbsp; * Microbenchmark testbench design and initial performance&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; breakdown report (*Matej*). yes<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp; * v3Channel review (*Marty*. Summary of the converation and outcomes from&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; Marty and Andrew's discussion around mid november in the thread "multichannel puts")<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; From pvIOCCPP.html<br
+/><br
+/>It&nbsp; also provides the ability to get and put a set of V3 records. Only data&nbsp; from field VAL is allowed and all the V3 records must have the same&nbsp; scalar numeric type. The data appears as a scalarArray. The records can&nbsp; be processed. If all V3 records are in the same lockSet then each get or&nbsp; put is an atomic operation, i. e. dbScanLock is called only once. If&nbsp; the records are not in the same lockSet each record is individually&nbsp; locked.<br
+/><br
+/>&nbsp;&nbsp;&nbsp; Status breaking v3Channel out of pvIOCCPP (*Ralph*) and&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; testing by Andrew, plus Demo.<br
+/>&nbsp;<br
+/>&nbsp; * Impressions of getting started with vxWorks and v3Channel&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; compilation *Dirk Zimoch*&nbsp;<br
+/><br
+/>Afternoon - IOC image processing requirements and support plans<br
+/><br
+/>&nbsp; * Make a real plan for the compression support of NTImage.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; Who can talk to this, *Nikolay?*&nbsp;<br
+/>&nbsp; * NDarray / image server - David? yes. one serves periodic image<br
+/>&nbsp;&nbsp;&nbsp; Possibly also that as an areaDetector plugin! That is, NDarray inserted into the image.<br
+/>&nbsp;&nbsp;&nbsp; Demo included.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp; * CSS and PvManager status (Gabriele). Ralph will manage connection to Gabriele.<br
+/>&nbsp; * Plans for CSS/pvAccess integation.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/><br
+/>Wednesday<br
+/>=========<br
+/><br
+/>Morning<br
+/>------------<br
+/>Talk to beamline specialists at PSI. Timo and Bob to coordinate.<br
+/>Bob is going to give a talk on BNL's - sending it to me.<br
+/><br
+/>Afternoon<br
+/>--------------<br
+/>Versioning, release procedure(Ralph)<br
+/><br
+/><br
+/></body>
+</html>

@@ -1,0 +1,154 @@
+Colleagues,
+
+Please find below a draft of the agenda for our EPICS V4 Working Group face-to-face meeting
+at Diamond. This is based on the basic subjects oriented one Bob sent out [1].
+
+Peoples' names marked *name* are expected to give a short talk, or lead a discussion if so stated.
+So please be prepared. 
+
+As usual, this agenda should be considered the agenda until I decide to change it according to
+circumstances in the meeting. 
+
+Please let me know if anything's wrong or missing. 
+
+Please be ready to take good complete minutes during the meeting. We should do better at minutes 
+in general, and we have to do well this time because the outcome of discussion will be used in 
+writing proposals.
+ 
+Cheers, and see you at Diamond.
+Greg
+
+
+Wednesday, July 11th
+====================
+
+9.15 Morning
+------------
+Preliminaries. Getting wired up, scribe hit list, making the projector work etc.
+  
+9.30 Status. Timeline planning and firm commitments.
+
+1. Charter and status.  Briefly go over our charter success criteria and deliverables. 
+  Get status on all of the work that has been done relative to the charter.
+  
+2. Proposal for how to present the deliverables at charter end in September/the next EPICS meeting: 
+   A list of small use cases and functionalities should be shown, and how you would do those with EPICS V4.
+   (*Greg*, 30 minutes) 
+
+10.15 Status of Core PV* modules, Java and C++, with respect to the charter.
+  
+   3.1 *Marty* status report, 15 mins.
+
+   3.2 *Matej*, status report, 15 mins. 
+
+11.00 - 12.15 Discussion and writing objectives
+
+Be definitive about charter exit objectives *for each Deliverable individually*, and timeline to charter exit. 
+  That is, what must be in late BETA by September, as a finer level of detail than the Charter deliverables list.
+  Greg 
+    Normative Types. 
+  Marty 
+    pvDataJava, pvIOCJava, pvDataC++, pvIOCC++. 
+      In particular, pvIOC C++ on embedded IOC, for mediating V3 I/O ("Dirk's Use Case")
+      What will this take, is it possible by September? Should it form basis for next year?
+    easyPVA. Will this include RPC and PVStructure?
+  Matej 
+    pvAccessJava, 
+    pvAccessCPP
+    eget - will this include channelRPC? Confirm only waiting on Normative Types?
+  Ralph (although won't be there)
+    Will the Charter DS deliverables be met?
+ 
+1.30 Afternoon
+--------------
+1.30 Data Services,  Programming Clients, and High Level Data Types
+
+* Status and demos of applications and services.
+
+  Diamond archiver demo (*David*, 20 mins)
+
+  PSI orbit acquisition, (*Timo* 30 mins)
+
+  PSI modelling (*Greg*, 30 mins)
+
+  EasyPVA review (*Greg*, 30 mins)
+     First review, what's still required, plus lessons for architecture of EPICS V4 w.r.t. the Directory
+     Service and its relation to services and clients from writing a practical orbit correction application 
+     in matlab using EPICS V4.
+      
+  BNL physics status and demos (*Guobao*, 20 mins)
+
+3.30 pm Normative Types.
+
+  Return to the matter of self identification of Normative Types, and their programming interface
+  (Greg, 60 mins)        
+   
+ 
+Thursday, July 12th
+===================
+Version 4 and the future direction for V4.
+ 
+9.15 Morning
+------------
+9.15 Functional requirements for scan engines and data rates as services, *Daron Chabot*
+[Anyone else from PSI or Diamond?]
+
+10.00 *Bob Dalesio* V3 limitations with respect to scanning.
+
+10.30 Break
+
+10.45 *Markus* on PSI thoughts on EPICS and IOC
+
+11.00 *Daniel* on PSI thoughts on EPICS and IOC
+
+11.15 Discussion on V3 IOC limitations with respect to scanning and other beamline requirements
+[*Bob Dalesio* leads]
+ 
+12.15 Lunch
+
+1.30 Afternoon
+--------------
+1.30 Thoughts on requirements for leveraging the combined V3/V4 system  (*Greg*, 30 min)
+   IOC getting static data, IOC publishing structured data, IOC fast feedback support, 
+   EPICS system instrumentation, Directory Service search and data acq integration, V4 IOC
+   SNL (I'm lookin' at you Ben!), Web Services
+ 
+2.00 pm Data Analysis Requirements  
+[Would prefer to hear this form a PSI or diamond guy – kind of data – results of analysis]
+
+Break
+
+3.00 Visualization requirements and solutions
+*Everyone*, - inventory – what exists – what kind of interface? HDF5? 
+
+3.30 Discussion to formulate what is sensible for the EPICS embedded IOC in the short and medium term.
+Outcomes and recommendations of this discussion would used in friday's session to build objectives
+for the coming year. 
+[*Bob Dalesio* leads]
+ 
+
+Friday, July 13th
+=================
+9.15 Proposal for an Accelerator Applications Group next year (*Greg*, 30 mins).
+  What might the charter deliverables of a Working Group for accelerator services and applications be?
+
+* Decide whether we proceed after the present EPICS V4 charter. 
+  If so, what would the next working group do (using items from day 1 about our present status, and from day 2 about 
+  short term things)?
+  [Discussion lead *Bob Dalesio*] 
+
+* What should be the long term plan for the EPICS IOC?  
+  Objective is not to decide this definitively, but to articulate enough of the points that a serious 
+  proposal can be written to the EPICS community, and the managers and labs that would have to support it.
+  [Need very good minutes for this!!!!!]
+  
+* Catch up items that we never got to in the previous schedule.
+
+
+[1] http://sourceforge.net/mailarchive/message.php?msg_id=29399717
+
+
+
+
+
+

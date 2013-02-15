@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$8</title>
+</head>
+<body>============= Meeting 21-Mar-2012 =============<br
+/><br
+/>For agenda see below minutes.<br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: BD, MK, GW, MS, GS, TK, DH<br
+/>Scribe: GW<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b><u>Getting past some sticking points</u><br
+/>************<br
+/><br
+/>************<br
+/><b>RESOLUTION:&nbsp;</b><br
+/>&nbsp;&nbsp;&nbsp;&nbsp; a. Re "Move location of fieldName from Field to Structure":&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; FieldName will go with *Structure* [so, following this change the&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; same introspection interface will be usable for the same Field].&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; b. In Normative Types, re identification of optional fields using "Traits":&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; We stay with simple introspection to determine whether optional fields we given.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; c. In Normative Types, re whether pvAccess itself is aware of Ntype id:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; No, pvAccess will have no special understanding of a Structure that expresses<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a NType from a Structure that expresses any other system of Fields<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; d. Re Unsigned API.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; To reiterate, unsigned will be developed first as Marty's solution [5],&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; after which David can propose API modifications.<br
+/>************<br
+/>DH: Nikolay and myself have proposed structures should consist of members which consist of name plus a s a type object. This isn't incoconsistent with PVs knowing there own name.<br
+/>&nbsp;<br
+/>MK: <a href="http://epics-pvdata.sourceforge.net/alpha/pvDataPVAccessChanges.html">http://epics-pvdata.sourceforge.net/alpha/pvDataPVAccessChanges.html</a><br
+/><br
+/>************&nbsp;<br
+/>&nbsp;<b>AI on DH by 27th Mar</b>: Add inserstions into MK's proposed changes document<br
+/>&nbsp;to illustrate the alternative for moving the introspection interface.<br
+/>&nbsp;************<br
+/>&nbsp;<br
+/>************<br
+/><b>NEW TOPIC: </b><u>Development and Integration of unsigned work</u><br
+/>************<br
+/>************<br
+/><b>RESOLUTION: </b>We will create a tag for all sw repos called "beta.1.1", prior to&nbsp;<br
+/>beginning work on unsigned and moving Field work.&nbsp;&nbsp;<br
+/>************<br
+/>If someone really wants to release sw prior to completion of the unsigned and&nbsp;<br
+/>FieldName move work, then they would branch from tag beta.1.1.<br
+/><br
+/>************<br
+/><b>AI</b> on MS/GW by Fri 23: Tag all pv*Java and pv*CPP repos beta.1.1.<br
+/>alphaJava and alphaCPP tagged too.&nbsp;<br
+/>************<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b><u>Starting the V4-V3 interop guide</u><br
+/>************<br
+/>GS: Suggests David<br
+/>MS: his English is great.<br
+/>BD: Although David's American is awful.<br
+/><br
+/>David nominated.<br
+/>Timo can add example of use of gather.<br
+/>Greg will write email to them.<br
+/><br
+/>GW: Marty is ready to be used?<br
+/>MK: Yes, note though that it only collects double data [though this is what people<br
+/>will mostly want]<br
+/>GW: What's the problem with MASER?<br
+/>MK: MASER has to be able to save configs of all V4 records [ and it would have<br
+/>been&nbsp; convenient to use gather ].<br
+/>GW: What's the plan for MASER w.r.t gather then?<br
+/>MK: I'd like to see experience with the gather service before we decide on upgrades.<br
+/><br
+/>GW: What's proportion of int type PVs in V3?<br
+/>MK: very few<br
+/>GS: Image is an example<br
+/><br
+/>GW: Let's leave gather at collecting double for now until we gain experience.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b><u>easyPVA review (<b>*Marty*)</u></b><br
+/>************<br
+/>MK: Did anyone manage to run tests?<br
+/>no, no one did.<br
+/><br
+/>GW: Why does intro say "synchronous" interface when EasyMonitor is a method?<br
+/>MK: I think it can be written so that it works either way.&nbsp;<br
+/>There may be two alternatives:<br
+/>&nbsp; 1. The EasyPVA client provides a callback for monitors<br
+/>&nbsp; 2. Alternative is to use EasyMonitor setRequester.<br
+/>&nbsp;<br
+/>&nbsp;MK: Better wording for the Abstract would remove words "is a synchronous" and replace it<br
+/>&nbsp;with an indication that callbacks specifically do not have to be used.&nbsp;<br
+/><br
+/>TOPIC WILL CONTINUE NEXT WEEK, AFTER PEOPLE HAVE TESTED EASYPVA.<br
+/><br
+/>*********<br
+/>TOPIC: <u>Archiver interface demo (<b>*David*</u></b><u>, 15 mins)</u><br
+/>*********<br
+/>[postponed to next week, gives David time to find out how to share screen on skype]<br
+/><br
+/>Meeting ends.<br
+/><br
+/><br
+/>Agenda<br
+/>-----------<br
+/><br
+/><u>0. Preliminaries (5 mins).</u><br
+/><br
+/><u>1. Getting past some sticking points (15 mins).&nbsp;</u><br
+/><br
+/>&nbsp; Like to propose the following short term assumptions so work can proceed. I think we should<br
+/>&nbsp; consider these as working resolutions until we change our minds. Making these assumptions<br
+/>&nbsp; allow pvAccess and Normative Types specification publications to proceed:<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp; a. Re "Move location of fieldName from Field to Structure":&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; Fieldname will go with Field, not Structure - ie, as it is now.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; b. In Normative Types, re identification of optional fields using "Traits":&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; We stay with simple introspection to determine whether optional fields we given.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; c. In Normative Types, re whether pvAccess itself is aware of Ntype id:<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; No, pvAccess will have no special understanding of a Structure that expresses<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a NType from a Structure that expresses any other system of Fields<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; d. Re Unsigned API.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; To reiterate, unsigned will be developed first as Marty's solution [5],&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; after which David can propose API modifications.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp; If possible let's just discuss whether we can accept these working assumptions<br
+/>&nbsp; rather than trying to formulate alternative decisions.<br
+/><br
+/><u>2. Development and Integration of unsigned work (15 mins).</u><br
+/>&nbsp;<br
+/>&nbsp;&nbsp; Should Unsigned changes be made on a branch or&nbsp;<br
+/>&nbsp;&nbsp; other work made on branches. Do we need a beta 1.1 release prior to unsigned changes integration?<br
+/><br
+/><u>3. Starting the V4-V3 interop guide (15 mins).</u><br
+/><br
+/>&nbsp; Charter deliverable #10 [3]. Really want a document ready by the EPICS meeting, that lays<br
+/>&nbsp; out the mechanisms of V4 &lt;-&gt; V3 interop supported now, "medm" solutions, GUI solutions etc.&nbsp;<br
+/>&nbsp; Volunteers needed. I'm lookin at you James.<br
+/><br
+/><u>4. easyPVA review (<b>*Marty*</u></b><u>, 30 mins)</u><br
+/><br
+/>&nbsp; See API proposal [4]<br
+/>&nbsp; *Everyone, please check out easyPVA, run examples etc, before meeting.*<br
+/><br
+/><u>5. Archiver interface demo (<b>*David*</u></b><u>, 15 mins)</u><br
+/><br
+/><br
+/></body>
+</html>

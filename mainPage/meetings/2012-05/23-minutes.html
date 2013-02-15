@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$16</title>
+</head>
+<body>============= Meeting 23-May-2012 =============<br
+/><br
+/>Agenda<br
+/>======<br
+/>0. Preliminaries (5 mins)<br
+/><br
+/>1. Announcement text review [3] (10 mins)&nbsp;<br
+/><br
+/>&nbsp;&nbsp; Check announcement text for completeness, grammar etc.<br
+/>&nbsp;&nbsp; <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html</a><br
+/><br
+/>2. Normative Type self id and meta data outline proposal [4] <b>*Greg*</b> (30 mins)<br
+/><br
+/>&nbsp;&nbsp; Whether the outline proposal looks reasonable.<br
+/><br
+/>3. NTQuery and services interface <b>*Greg*</b>&nbsp;<br
+/><br
+/>&nbsp;&nbsp; I'm thinking of using the original idea (James' I think) for querying for the<br
+/>&nbsp;&nbsp; introspection interface of a service. So we'd be replacing the name/value<br
+/>&nbsp;&nbsp; system with full typed parameters. This is necessary for set operations.&nbsp;&nbsp;<br
+/><br
+/>4. Gather service implementations cleanup. <b>*Guoabao*</b>, <b>*Marty*</b>.<br
+/><br
+/>[1] <a href="http://epics-pvdata.sourceforge.net/home.html#usefulinfo">http://epics-pvdata.sourceforge.net/home.html#usefulinfo</a><br
+/>[2] <a href="http://epicsv4.titanpad.com">http://epicsv4.titanpad.com</a>&nbsp;&nbsp;<br
+/>[3] <a href="http://sourceforge.net/mailarchive/message.php?msg_id=29298140">http://sourceforge.net/mailarchive/message.php?msg_id=29298140</a><br
+/>[4] <a href="http://sourceforge.net/mailarchive/message.php?msg_id=29298388">http://sourceforge.net/mailarchive/message.php?msg_id=29298388</a><br
+/>[5] <a href="http://sourceforge.net/mailarchive/forum.php?thread_name=D9BC25F6F7EF9346B862834BA05ECEDD0F9812DB%40EXCHMBX03.fed.cclrc.ac.uk&forum_name=epics-pvdata-devel">http://sourceforge.net/mailarchive/forum.php?thread_name=D9BC25F6F7EF9346B862834BA05ECEDD0F9812DB%40EXCHMBX03.fed.cclrc.ac.uk&amp;forum_name=epics-pvdata-devel</a><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: DH, JR, TK, MK, MS, GS, GW, RL (titanpad)&nbsp;<br
+/>Scribe: MK<br
+/><br
+/>************<br
+/><b>NEW TOPIC:</b> <b>Announcement text review&nbsp;</b><br
+/>************<br
+/>GW any comments?<br
+/>MS looks good.<br
+/><br
+/>CONCLUSION: Announcement text is good. Fire when ready.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Normative Type self id and meta data outline proposal<br
+/>************<br
+/><br
+/>GW brief summary<br
+/><br
+/>GW concern about namespace .<br
+/>Should we have xml namespace?<br
+/><br
+/>GW will comment that xml namespace not resolved.<br
+/><br
+/>DH GW discussion of how to define namespace.<br
+/><br
+/>GW reason for bringing up topic is to see if anyone knows what to do.<br
+/>answer NO<br
+/><br
+/>GW Will use idea for self id via meta data but without name spaces.<br
+/>namespace later.<br
+/><br
+/>DH instead of boolean what about structure with no fields?<br
+/>GW&nbsp;&nbsp; boolean it is more intuitive.<br
+/><br
+/>DH why is boolean true?<br
+/>GW If can be false than confusing.<br
+/><br
+/>[CONCLUSION: seemed that the proposal in [4] was basically accepted. We'll proceed with it.<br
+/>The initial version will probably not include stuff on namespaces and their interaction with<br
+/>Normative Types, because that's a bigger question relating to our use of namespaces in XML,<br
+/>CPP nad maybe Java generally.]<br
+/><br
+/><br
+/>**********<br
+/><b>NEW TOPIC:&nbsp; </b>NTQuery and services interface<br
+/>************<br
+/><br
+/>GW&nbsp;<br
+/>proposal. service request is made via NTQuery.<br
+/>It asks what service provides.<br
+/><br
+/>GS and GW discussion about what NTQuery is.<br
+/><br
+/>2 possible ways of doing service interface:<br
+/>a) A new normative type, called say NT Query<br
+/><br
+/>&nbsp; Eg:<br
+/>&nbsp; structure NTQuery<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; *string entity*<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; string[] parameterNames<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; string[] parameterValues<br
+/>&nbsp;&nbsp; --<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; string URL eg "bpm324:twiss?modelType=design?run=gold"&nbsp;<br
+/>&nbsp; ---<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>b) Use the introspection interface directly<br
+/>&nbsp;&nbsp;&nbsp; (use combination of existing NT types)<br
+/><br
+/>GW: If b)&nbsp; then how to pass to a service a table in addition to name,value?<br
+/><br
+/>MK, GS Can do it now.<br
+/><br
+/>[CONCLUSION: The basic question that motivated the topic - whether it is&nbsp;<br
+/>possible to indicate the non-supply of a structure argument to a service, was kind of answered.<br
+/>Marty said (I think) it's possible not to supply a field of a structure (that itself may be a structure). I'm still not sure it's possible to define in a channelRPC record definition, that an argument is optional.]<br
+/>&nbsp;<br
+/>***********<br
+/><b>NEW TOPIC: David requests Greg's SLAC meeting notes</b><br
+/>************<br
+/><br
+/>pasted in:<br
+/><br
+/>EPICS V4 Meeting notes<br
+/><br
+/>NORMATIVE TYPES<br
+/><br
+/>1. Include in the spec why NTVariantArray has to exist with functionally the definition it has.<br
+/>&nbsp;&nbsp; [Ask your dad why it's called variant array - also it's a tagged union]<br
+/><br
+/><br
+/>structure NTMultiChannelVariantArray<br
+/>&nbsp; NTVariantArray[] value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // The channel values<br
+/><br
+/>&nbsp; string[]&nbsp;&nbsp;&nbsp; PVnames&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Process Variable names<br
+/>&nbsp; time_t timeStamp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Base value time stamp&nbsp;<br
+/>&nbsp; int[]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; severities&nbsp;&nbsp;&nbsp;&nbsp; :opt // Alarm severity associated with each value<br
+/>&nbsp; double[]&nbsp;&nbsp;&nbsp; positions&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :opt // The position of each value element<br
+/>&nbsp; double[]&nbsp;&nbsp;&nbsp; deltaTimes&nbsp;&nbsp;&nbsp;&nbsp; :opt // The time relative to the timeStamp<br
+/>&nbsp; string&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; descriptor&nbsp;&nbsp;&nbsp;&nbsp; :opt<br
+/>&nbsp; alarm_t&nbsp;&nbsp;&nbsp;&nbsp; alarm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :opt<br
+/><br
+/><br
+/><i>scalar_t</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // a simple numerical, boolean, or string value<br
+/>| <i>scalar_t[]</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // an array of simple values<br
+/>| <i>enum_t</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // an enumeration<br
+/>| <i>enum_t[]</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // an array of enumerations&nbsp;<br
+/>| <i>time_t</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // a point in time, used for timestamps<br
+/>| <i>time_t[]</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // an array of points in time<br
+/><br
+/>Put these in an appendix to 1pwd, and say they may be in the next draft.<br
+/><br
+/><br
+/>anydata_t<br
+/>structure&nbsp;<br
+/>&nbsp; {&nbsp; <i>scalar_t</i>[] &lt;colname&gt; | <i>structure_t</i>[] &lt;colname&gt; }0+&nbsp;&nbsp;<br
+/><br
+/>Normative Types<br
+/>structure NTRaggedTable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // any data<br
+/>&nbsp; string&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; function&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : opt<br
+/>&nbsp; time_t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; timeStamp&nbsp;&nbsp;&nbsp;&nbsp; : opt<br
+/>&nbsp; alarm_t&nbsp;&nbsp;&nbsp;&nbsp; alarm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : opt<br
+/>&nbsp; string[]&nbsp;&nbsp;&nbsp; label&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : opt<br
+/>&nbsp; anydata_t value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>// Potentially any, but in practice&nbsp; users must only&nbsp;<br
+/>utilize the scalar or array of scalar.<br
+/><br
+/><br
+/>structure NTSnapshotData&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // snapshot data [that may inc waveform ]<br
+/>&nbsp;&nbsp; time_t timeStamp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // time of snapshot<br
+/>&nbsp;&nbsp; alarm_t alarm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Alarm of the snapshot as a whole [TBD]<br
+/>&nbsp;&nbsp; string[] channelNames<br
+/>&nbsp;&nbsp; time_t[] timeStamps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Timestamp of each datum<br
+/>&nbsp;&nbsp; alarm_t[] alarms&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Alarm of each data value<br
+/>&nbsp;&nbsp; anydata_t value<br
+/>// Potentially any, but in practice&nbsp; users must only&nbsp;<br
+/>utilize the scalar or array of scalar.<br
+/><br
+/>structure NTArchivedata<br
+/>&nbsp;&nbsp; string channelName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // EPICS channel name<br
+/>&nbsp;&nbsp; time_t[] timeStamps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Timestamps of each sample<br
+/>&nbsp;&nbsp; alarm_t[] alarms&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp; anydata_t value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp;<br
+/>NTArchiveData Normative Type is defined only to transport scalar and array of scalar type. So, it is intended to handle all V3 data, and that subset of V4 that is scalar or array of scalar.<br
+/><br
+/>[CONCLUSION: Discussion around whether use of an ANY type in Normative Types may make it&nbsp;<br
+/>too complicated for physicists to get at data easily. No conclusion on this, only<br
+/>that it's a danger. ezpva must make it easy to traverse complex objects.]<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Gather service implementations&nbsp;</b><br
+/>************<br
+/>GS/MK: The gather service itself is in pvServiceJava. There is a client side in pvServiceCPP.&nbsp;<br
+/>GS: thinks there is a gather library, that uses ca, in masarService.&nbsp;<br
+/>MK: Presently there is CPP client side support that calls the java implementation of the gather service.<br
+/>MK: So, you can talk to the gather service (implemented in java) in either CPP or Java.<br
+/><br
+/>GS: Where should we put general libraries like the gather library?<br
+/><br
+/>Locations of general purpose code should be a topic for next week.<br
+/><br
+/>[CONCLUSION: The present gather service and gather library locations were recorded (above).<br
+/>We still have to "break-out" the gather library now privately in masarService, and make it "public".<br
+/>For that, GS and MK would like to know where to put it. And that brings up the more general<br
+/>question of where general purpsose utilities should go. [GW: I think the gather library should also go in pvService].]<br
+/><br
+/><br
+/><br
+/></body>
+</html>

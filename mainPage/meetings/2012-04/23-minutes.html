@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$12</title>
+</head>
+<body>============= Meeting 23-Apr-2012 =============<br
+/><br
+/>Agenda: <a href="http://sourceforge.net/mailarchive/message.php?msg_id=29152072">http://sourceforge.net/mailarchive/message.php?msg_id=29152072</a><br
+/>======<br
+/><br
+/><br
+/>------------------------ Minutes ----------------------------<br
+/><br
+/>Present: BD, DH, GW, MK, GJ,&nbsp; TK, AM, AJ,DC,RL,MD<br
+/>Scribe: DH<br
+/><br
+/>************<br
+/><b>NEW TOPIC: </b>Status of unsigned and Field move, and V3/V4 interoperability changes <b>*Marty*</b><br
+/>************<br
+/><br
+/>MK:<br
+/>Java<br
+/>====<br
+/>&nbsp;pvData: The remaining tasks are:<br
+/>Convert tMust check carefully.<br
+/>pvAccess:<br
+/>I have not asked Matej for the status but he is moving the caV3 client support from pvIOC to pvAccess. I will guess that he wants to do more testing.<br
+/>pvIOC:<br
+/>The main task is to redo pvCopy, which is the code that allows a client to access an arbitrary subset&nbsp;<br
+/><br
+/>&nbsp;of the fields in a PVRecord.<br
+/><br
+/>Matej has to implement new code for c++ for regular version 3 channel access calls on client side in version 4.<br
+/><br
+/>GW: Can version 4 client use v3 IOC using channel access with no changes to Version 3?<br
+/><br
+/>MK: Yes.<br
+/>AJ: Additional functionality MK wrote 2008 is going to be merged into 3.15 which allows "put process get" operations in V3.&nbsp; The V4 server and the V4 client over CA layers could be modified to take advantage of this (but won't support it without changes)<br
+/><br
+/>GW: What's status of unsigned and field move?<br
+/>MK: Other than checking convert and redoing pvCopy, pvAccess ready for Java.<br
+/>Matej to move CAV3 move from pvIOC to pvIOC in progress. Not till done that&nbsp;<br
+/>will&nbsp; we be able for version4 client to talk to version 3 IOC without change to v3.<br
+/><br
+/>If client and server both JAVA now ready need swap new API to new one.<br
+/>Although need more testing.<br
+/>GW: Concern that new user will download latest and examples won't work.<br
+/>Can we do it now in meeting?<br
+/>MK: Not done documentation.<br
+/><br
+/>MK; Don't want to everything.<br
+/>DH: Happy to do hello world.<br
+/>GW: MK, GW, DH sit round and make changes to hello world and maybe rdb example.<br
+/><br
+/>C++<br
+/>====<br
+/>pvData:<br
+/>This is the current focus of my attention. The effort to move fieldName from Field to Structure is about the same as for Java.&nbsp;<br
+/>For implemention unsigned the effort is similar to that for Java. C++ templates ARE a big help. But Convert was not implemented via templates. It is being reimplemented via templates. I think this is nearly done but completion delayed because of std::vector discused below. When std::vector is done Convert should only take a day or so.<br
+/>What is taking some additional effort is:<br
+/>size_t<br
+/>This is for array: size, capacity, and indexes.&nbsp;<br
+/>There are lots of changes but easy changes<br
+/><br
+/>std::vector. This is a <b>BIG</b> change.&nbsp;&nbsp;&nbsp;&nbsp; It is the current focus of my effort.<br
+/><br
+/>pvAccess<br
+/>Waiting for pvData<br
+/>pvIOC<br
+/>Waiting for pvData<br
+/><br
+/><br
+/>MK: size_t change will allow C++ to handle really big arrays, like image data.<br
+/>GW; How will a Java client talk to 64 bit C++ server? (Interop issues).<br
+/>MK: Throw exception.<br
+/>GW: What's exception? Interop issues cross language?<br
+/>MK: Going to run into these issues cross languages.s to<br
+/>GW: Need a "gotchas" document. Have existing doc called troubleshooting.<br
+/><br
+/>AI: On ?? Add interoperability to architectures document, particualrly unsigned and arrays size on 64 bit architectures on Java and C++.<br
+/><br
+/>MK: std::vector change is big change. Jossutis - if you put objects in vector must use smart pointers. MK tried to put raw pointers get's into trouble. Everything has to be vectors and smartpointers.<br
+/><br
+/>MD: Is there way of hiding the exact type of iterator&nbsp; from client, so doesn't know its vector::iterator.<br
+/><br
+/>GW: What's situation with VxWorks<br
+/>MK: If have tr1 then should be ok.<br
+/>AJ: Will need version 6.<br
+/>GW: To be clear v4 IOC will not be targetted at vXworks v5 then?<br
+/>MK: Not till support tr1::smart_pointer.<br
+/>MD: On behalf of Gubbao python picky about tr1 impl.<br
+/>MK: Using boost::python.<br
+/>AJ: Not impossible on older versions of GCC but may have to do some work [to make V4 work on vxWorks v5].<br
+/><br
+/>MK: MK reckons about a week (not this week) on pvDataCPP then Matej can pvAccessCPP- MK can work on pvIOC++ in parrallel.<br
+/><br
+/>GW: Head is incomplete and will be for several weeks.<br
+/><br
+/>AI: On GW to put note on web page and read me to say head incomplete.<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Normative Types</b><br
+/>************<br
+/>Normative Types are Applicaiton Level data types which will have a binding to an API. The Normative Types specification document allows these types to be interoperable between pvAccess endpoints. Instances of the data types that will be transported to PVAccess agents over pvAccess. They are implemeted in PVData.&nbsp;<br
+/>&nbsp;<br
+/>&nbsp;Time Domain Arrays&nbsp;<br
+/><br
+/>RL: What are NTs [in context of Time Domain data]?<br
+/>GW: Application level structure definitions. In most cases types of fields are fixed, in some cases the value can be of one of the basic types.<br
+/>E.g.: Samples from a digitizer do not have a timestamp for each of the samples, but a fix delta time between samples. Missing/broken samples could be marked by NaN values.<br
+/><br
+/>MD: Must include engineering units to make sense for general purpose clients.<br
+/><br
+/>NTFrequencyDomainArray needs two value arrays (I/Q, value/angle).<br
+/><br
+/>BD: Asks MD/DC to make a proposal on how to represent both use cases in one NT.<br
+/>Will NTMatrix or a similar NT be able to serve this case?<br
+/><br
+/>************<br
+/><b>RESOLUTION: NTTimeDomainArray and NTFrequencyDomainArray are dropped in favor of NTContinuum</b><br
+/>************<br
+/><br
+/>MK: MASAR needs a different normative type to handle waveform data.&nbsp; Not NTMultichannelArray because different channels have different types and the value array can only hold one particular data type.<br
+/><br
+/>************<br
+/><b>NEW TOPIC:&nbsp; NT Self-identification</b><br
+/>************<br
+/><br
+/>GW: NT Self-identification.&nbsp; Greg's proposal is:<br
+/><br
+/>NORMATIVE TYPE SELF IDENTIFICATION<br
+/><br
+/>Requirements<br
+/>------------<br
+/>1. Very quickly establish WHETHER the structure purports to carry an Ntype<br
+/><br
+/>2. Very quickly thereafter establish WHICH Ntype the structure purports to carry<br
+/><br
+/>3. User / institutional reserved bits. Say an institute wants to say "the structure carries EPICS V4 Normative type "MultichannelArray" but clients should expect it to additionally carry PSI defined fields<br
+/><br
+/>4. Ntype specialisation. Field value should indicate generally that the structure is a specialisation of a given nytpe. This should be interpreted as MUST carry all the required fields, may carry the defined optional fields.<br
+/><br
+/>5. Extensible, so new Ntypes may be added in future<br
+/><br
+/>6. Identifies which version of the Normative Types specification the carried normative type must conform to.<br
+/>&nbsp;<br
+/>Proposal<br
+/>--------<br
+/>Firstly: Given an arbitrary pvData Structure, the joint condition of presence of a Field named "_NTYPE" and<br
+/>whose type is uint (unsigned 32 bit integer) is necessary and sufficient to identify that the given<br
+/>structure is intended to conform to one of the Normative Types.&nbsp;<br
+/><br
+/>Secondly, value of the uint, that is named "_NTYPE", identifies the normative type, by the method:<br
+/><br
+/>xF F F F F F F F&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | | | |-- Type id, int<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | | |----&nbsp;&nbsp;&nbsp; "<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | |------ Specialization&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | -------&nbsp;&nbsp;&nbsp; "<br
+/>&nbsp;| | | |---------- Reserved for future expansion of basic types.&nbsp;<br
+/>&nbsp;| | |------------ Reserved for future use.<br
+/>&nbsp;| |-------------- Institutional Nibble. Each institution can decide values and interp.<br
+/>&nbsp;|---------------- Draft number compliance and expansion.&nbsp;<br
+/><br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; N&nbsp; Type Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; x0000 FFFF mask of _NTYPE to identify type.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&nbsp; --------------------&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --------------------------------------------<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 1&nbsp; NTScalar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0001 0x1&nbsp; 2^(1-1) = 1&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 2&nbsp; NTEnum&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0010 0x2&nbsp; 2^(2-1) = 2&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 3&nbsp; NTMatrix&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0100 0x4&nbsp; 2^(3-1) = 4<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 4&nbsp; NTVariantArray&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1000 0x8&nbsp; 2^(4-1) = 8<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 5&nbsp; NTNameValue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0001 0000 0x10 ...<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 6&nbsp; NTTable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0010 0000<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 7&nbsp; NTMultichannelArray&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0100 0000&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 8&nbsp; NTTimeDomainArray&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1000 0000&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 9&nbsp; NTFrequencyDomainArray&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0001 0000 0000&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 10 NTHistogram&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0010 0000 0000&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 11 NTAggregate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0100 0000 0000 0x400 2^(11-1)= 1024<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • 12 NTImage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1000 0000 0000 0x800 2^(12-1)= 2048<br
+/><br
+/><br
+/>The Draft number compliance and expansion nibble<br
+/>------------------------------------------------<br
+/>0x7000 0000 mask used to identify Normative Types specification draft (that is, so long<br
+/>as 0x8000 0000 is down - see below). That is, 3 bits are taken to identify the<br
+/>Normative Types draft, giving 8 drafts in all (including use of 000). Do we only need 2 bits, giving 4 drafts?<br
+/><br
+/>0x8000 0000 reserved for future use by EPICS V4 WG,&nbsp;<br
+/>and such used may change interpretation of 0x7000 0000 mask. That is, 3 bits are taken to identify the<br
+/>Normative Types draft, giving 8 drafts in all (including use of 000). Do we only need 2 bits, giving 4 drafts?<br
+/><br
+/>The Normative Types specification draft identification number, 0-7 (base 10) will be included<br
+/>in each draft of the Normative Types document. This number identifies the version of the specification to&nbsp;<br
+/>which the types defined in that document comprise.<br
+/><br
+/>Clients SHOULD be written to handle Normative Types of the draft for which they were written, and all previous drafts.<br
+/><br
+/>Servers MUST include a draft number in the 0x7000 0000 mask.&nbsp;<br
+/>Clients SHOULD check for draft number at least once, for each server agent to which the connect. If it is greater than the draft number with which they were written to be compliant, they SHOULD issue a warning at least.&nbsp;<br
+/><br
+/><br
+/>Implementation.<br
+/>---------------<br
+/>In some class, probably in pvService or pvData, there is a public class NormativeTypes.java<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PVUInt normativetypeField = pvResult.getUIntField("_NTTPE");<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( normativetypeField == null )&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.err.println("Unable to get data:"+<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " unexpected data structure returned from "+ SERVICE_NAME +"."+&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Expected field member named '_NTYPE' but no such Field is present.");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.err.println(pvResult);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.exit(-1);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int type = normativetypeField.get();<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (type &amp; 0x0000FFFF != NTTABLE_TYPE_NAME )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.err.println("Unable to get data: "+<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "unexpected data structure value returned from "+SERVICE_NAME + ".");<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.err.println("Expected normativetype member value NTTABLE_TYPE_NAME ("+<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NTTABLE_TYPE_NAME+"), but found type = " + type);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.exit(-2);<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Ok, you got an NTTable. */<br
+/><br
+/><br
+/>GW: Wants it to be able to say "this is a NT, but also express that this represents a subtype of it (i.e. plus these extra fields), which may be site-specific"<br
+/><br
+/>Withdraw the idea of using highest set bit to indicate the NT, replace it with 8 bits for an NT ID number plus 8 bits for specialization.<br
+/><br
+/>MK: Don't need to include institutional-specific info in the _NTYPE field.<br
+/><br
+/>MD: Why not make it a string?<br
+/><br
+/>RL: Does a client/server have to support multiple NT spec versions at the same time?<br
+/><br
+/>LD: Include a major and minor version number, incompatibility requires a new Major number.<br
+/><br
+/>DH: Why can't we identify the normative type using the introspection interface. E.g. field name starting with '_' is for NT Type ID purposes.<br
+/>GW: Because you'd have to look for fields named _NTScalar, _NTEnum, etc...<br
+/><br
+/>Major Question: Should we use introspection data to get the NT type, or use value data.<br
+/><br
+/>RL: We need to know the type before we get the data.<br
+/>AJ: It is possible to just ask for the _NTYPE field without the rest of the item, although that is another round-trip.<br
+/><br
+/>MK: First thing connect to the channel.&nbsp; Then request the introspection data for it (separate round-trip, after connection).<br
+/>LD: Optmise for the most common case, which is connect to service and get data.&nbsp; Archiver with huge number of channels.<br
+/><br
+/>MD: Compares CA with PVA for round-trips on connection and finding the underlying NType.<br
+/><br
+/><b>AI: on Marty by 25-Apr</b>. Ask Matej whether an NType string/ID can be returned&nbsp; with the channel connection response. Also ask functionally, what is the most efficient way to establish whether a structure is an ntype.<br
+/><br
+/>Spec Versions: Still have to have any client version be able to talk to any server version, every server somehow has to tell the client the oldest and newest spec versions that this type is compliant with.<br
+/><br
+/>RL: If an NType is not backward-compatible with an older version of the spec, it MUST be a new type.<br
+/><br
+/>AJ: So we could use a uint32 for the NType ID, because a new type implies a new ID number.&nbsp; The spec should list all type IDs.<br
+/><br
+/>Conclusion:&nbsp;<br
+/>1. Need input from MS on how to efficiently establish ntype of a PV<br
+/>2. type conformance will be by specification document, not by individual type.<br
+/><br
+/><br
+/>-- Coffee Break --<br
+/><br
+/>************<br
+/><b>NEW TOPIC: Directory service</b><br
+/>************<br
+/>RL:&nbsp;&nbsp; Considerable amount of time was spent changing the way this service is being packaged. There are bash scripts running the service and the client in the reference design, which are setting up the classpath in a non-portable way. The pvIOCJava loads XML files from withing the source directory structure to configure. The project was changed using a maven plug-in to create distribution tars.This is at the point of being able to get the distribution, but it is not connecting on the pvAccess layer. This does not connect error is&nbsp; not a sufficient piece of information.<br
+/><br
+/>AI Matej: Exceptions on the server side should log the exception on the server. Additionally,&nbsp; we need work to send back a reasonable error to the client. Connection error is given when a connection was made and any error occurred on the server. (In this case the server did not find the class that was needed to run the service - was the root cause of the original problem.) Different systematic errors are throwing the same exception: version incompatibilty, the name in XML does not match the name, and more causes - the client just shows "cannot connect".<br
+/><br
+/><b>ISSUE:</b> - V4 development team: We need to have an error handling framework/policy for the server and client.<br
+/><br
+/>After getting the mechanism in place, completion of the Directory Service should be straight forward.&nbsp;<br
+/><br
+/>Ralph will create a top level project for creating a distribution tar of the JAVA stuff (most of the needed works was already done as part of the directory service project).<br
+/><br
+/>When David, Marty and Greg finish the new release of the reference services, PV service dependencies now in existence should clean up.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Support for save sets of scalars or vector of different types</b><br
+/>************<br
+/><br
+/><b>AI: on Greg / Marty 25-Apr-2012</b> - make the new NT type - MultiChannelVariantArray which is a small variation of multichannel array that supports a list of PVs that can be either scalar or vector.<br
+/><br
+/><br
+/>************<br
+/><b>NEW TOPIC: Archive service demonstration</b><br
+/>************<br
+/>The data being returned is serveral arrays: timestamp, alarm serverity, alarm status, and values. This could be a normative type - with just a little more metadata.<br
+/><br
+/>The server connects to the archiver&nbsp;<br
+/><br
+/>AI - David: Ready to publish now.&nbsp;<br
+/><br
+/><br
+/>AI: on&nbsp; DH by : Publish this as the first C++ service available.<br
+/><br
+/><br
+/><br
+/></body>
+</html>

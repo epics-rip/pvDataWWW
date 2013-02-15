@@ -1,0 +1,49 @@
+Colleagues,
+
+Please find below the agenda for our 28-Sep-2011 meeting.
+
+Time: UTC (GMT) Wednesdays, 14:00. 
+URL: https://collab.switch.ch/r73247618/ [1]
+
+*Timo* or *Michael* up to scribe.
+
+Cheers
+Greg
+--------
+
+0. Preliminaries (10 mins)
+
+1. EPICS meeting EPICS v4 session agenda (15 mins)
+
+2. pvAccess Specification review and readiness for First Public Working Draft
+   *Matej* (50 minutes)
+
+   Please read pvAccess_Protocol_Specifcation [3] prior to the meeting.
+   *Matej*, as comment before the meeting, please put the normative document
+    header [2] on it prior to the meeting. We have a lot of catchup to do with
+    communicating the context of work. Thanks.
+ 
+   Resolution for publication date.
+
+Cheers
+Greg
+
+[1] http://epics-pvdata.sourceforge.net/home.html
+[2] http://epics-pvdata.sourceforge.net/normative_header.html
+[3] http://epics-pvdata.sourceforge.net/doc/pvAccess_Protocol_Specification.docx
+
+
+
+
+
+
+------------------------------------------------------------------------------
+All the data continuously generated in your IT infrastructure contains a
+definitive record of customers, application performance, security
+threats, fraudulent activity and more. Splunk takes this data and makes
+sense of it. Business sense. IT sense. Common sense.
+http://p.sf.net/sfu/splunk-d2dcopy1
+
+
+
+

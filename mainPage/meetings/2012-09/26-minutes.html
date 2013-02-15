@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$30</title>
+</head>
+<body>Agenda<br
+/>======<br
+/>0. Preliminaries, 5 mins<br
+/><br
+/>1. Status. Review of core module status w.r.t. Beta 2. *Marty*, *Matej*, 10 mins<br
+/><br
+/>2. Normative Types self-id [1]. *Greg*, 10 mins<br
+/><br
+/>3. NTURI and Service API [2]. *Greg*, duration - until we can't stand it anymore, and &lt; 50 mins<br
+/><br
+/>[1]&nbsp;&nbsp; <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html#normative_type_instance_self_identification">http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html#normative_type_instance_self_identification</a><br
+/>[2] <a href="http://epics-pvdata.sourceforge.net/alpha/EPICS_URI.txt">http://epics-pvdata.sourceforge.net/alpha/EPICS_URI.txt</a><br
+/><br
+/><br
+/>Minutes<br
+/>======<br
+/><br
+/>Present: MK, TK, NM, GS, JR, DH, BD, GW, RL<br
+/>Scribe: TK<br
+/><br
+/><b>*******</b><br
+/><b>NEW TOPIC: Review of core module status w.r.t. Beta 2</b><br
+/><b>*******</b><br
+/><br
+/>Matej wrote:<br
+/><br
+/>Pending:<br
+/>- demo use-cases<br
+/>&nbsp;&nbsp; - update eget to new Service API, new ID strings (now I use "NTTable" strings for IDs)<br
+/>- update RPC documentation<br
+/>- rename ServiceClient to RPCClient<br
+/><br
+/>Will not go into beta2:<br
+/>- revise BaseChannel to be moved to pvAccessCPP<br
+/><br
+/>MK:<br
+/><br
+/>Working on doc for pvIOCCPP (incl. Dirk Requirement)<br
+/>Still have a problem with arrays for v3Channel put.<br
+/><br
+/>GW: priority on demos for the next meeting.&nbsp;<br
+/>prioritize work for demos and functionality to be packaged for the next release.<br
+/><br
+/><b>======</b><br
+/><b>New topic: Normative Types self-id</b><br
+/><b>======</b><br
+/><br
+/>Comment from Matej: namespace is long<br
+/><br
+/>Matej said<br
+/><br
+/>We use "String Field.getID()" as an ID.<br
+/>pvAccess won't do any parsing/processing/etc on this ID; and won't be<br
+/>bound to XSD (in future). It's just "a string".<br
+/><br
+/>GW: looking for possibilities to shorten that<br
+/><br
+/>use URI to do namespacing (like XML)<br
+/>pvAccess will not force any schema binding<br
+/><br
+/>GW: we have a formalism to identify the normative types that seems to work in practice<br
+/><br
+/><b>======</b><br
+/><b>New topic: service API</b><br
+/><b>======</b><br
+/><br
+/>Matej said<br
+/><br
+/>Allow server-based authority.<br
+/><br
+/>Service API is basically "pass parameters as strings" in an NTURI. If<br
+/>string parameters are OK, I'm fine with that.<br
+/>(Note that programers will complain that the need to do parsing.)<br
+/><br
+/>Define a standard request that gets you a "service help" back.<br
+/><br
+/>Matej<br
+/><br
+/>---<br
+/><br
+/>Keep in mind:<br
+/>- Service API is build on-top pvAccess RPC (it just standardizes pvArguments)<br
+/>- NT types are build on-top pvData/pvAccess (it just standardizes Structure-s)<br
+/>- pvData/pvAccess won't contain any NT/Service API related code<br
+/>(all the proposals above are OK with the notes).<br
+/><br
+/>GW: What would identify an authority. Write and ask Matej the details more clearly<br
+/><br
+/>Has anybody seen any obvious things in the URI proposal? ....silence....<br
+/><br
+/><a href="http://epics-pvdata.sourceforge.net/alpha/EPICS_URI_proposal.html">http://epics-pvdata.sourceforge.net/alpha/EPICS_URI_proposal.html</a><br
+/><br
+/>RL: how about escapes in the query strings&nbsp;<br
+/>MK: is there a simple way to put the queries in quotes.<br
+/>Answer: No,&nbsp; escaping should be used<br
+/><br
+/>JR: are we supposed to send array-like arguments to services<br
+/>GW: Yes<br
+/>Example: setting a bunch of magnets in one go.<br
+/>JR: Will pvget tools then support array parameters<br
+/>GW: you can upload small arrays as parameters, but it will be clumsy<br
+/><br
+/>JR: Are you proposing that pvget and so on allow one to use URI syntax?<br
+/>GW: Yes, I think that would be good, but not necessary.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; GW: Gives examples of pvget command lines, to show show that one might support "URI syntax" or "regular" syntax, and they are equivalent:<br
+/><br
+/>pvget quad34:bdes<br
+/>==<br
+/>pvget -u pva://quad34:bdes<br
+/><br
+/>pvget -u pva://archiveservice/quad34:bdes;history?starttime=2011-09-16T02.12.55&amp;endtime=2011-09-16T10.01.03<br
+/>==<br
+/>pvget archiveservice -path quad34:bdes;history -a starttime 2011-09-16T02.12.55 -a endtime 2011-09-16T10.01.03&nbsp;<br
+/><br
+/>RL: escape the timespecs so that they are standard<br
+/>GW: Bear in mind that this proposal does not say what should validyly go into a query. It only gives a syntax for queries.&nbsp;<br
+/>So, saying "escape the timespecs [so that one doesn't have to use .]" is a comment about the example, it's not a<br
+/>comment about the proposal.<br
+/>RL: syntax to specify a service:&nbsp;&nbsp; &lt;service&gt;?&lt;arguments&gt;<br
+/>RL: I do not like the use of fragments. Explicitly using a part that is intended for client only is not spec-compliant<br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/></body>
+</html>

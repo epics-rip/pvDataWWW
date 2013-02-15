@@ -1,0 +1,22 @@
+Colleagues,
+
+Please find below the agenda for our weekly telecon, 26-Sep-2012.
+
+Agenda
+======
+0. Preliminaries, 5 mins
+
+1. Status. Review of core module status w.r.t. Beta 2. *Marty*, *Matej*, 10 mins
+
+2. Normative Types self-id [1]. *Greg*, 10 mins
+
+3. NTURI and Service API [2]. *Greg*, duration - until we can't stand it anymore, and < 50 mins
+
+
+[1]   http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html#normative_type_instance_self_identification
+
+[2] http://epics-pvdata.sourceforge.net/alpha/EPICS_URI.txt
+
+
+
+

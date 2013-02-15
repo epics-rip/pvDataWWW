@@ -1,0 +1,331 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$23</title>
+</head>
+<body><b>Friday, July 13th</b><br
+/><b>=================</b><br
+/><br
+/>Agenda<br
+/>-----------<br
+/>9.15 Morning: Plans for EPICS V4 WG:<br
+/>------------------------------------<br
+/>* Decide whether we proceed after the present EPICS V4 charter.&nbsp;<br
+/>If so, what would the next working group do (using items from day 1 about our present status, and from day 2 about&nbsp;<br
+/>short term things)?<br
+/>[Discussion lead *Bob Dalesio*]&nbsp;<br
+/><br
+/>* What should be the long term plan for the EPICS IOC?&nbsp;&nbsp;<br
+/>Objective is not to decide this definitively, but to articulate enough of the points that a serious&nbsp;<br
+/>proposal can be written to the EPICS community, and the managers and labs that would have to support it.<br
+/>[Need very good minutes for this!!!!!]<br
+/><br
+/>*** Diamond Tour ***<br
+/><br
+/>Afternoon: Plans for other WG, and any overflow<br
+/>-----------------------------------------------<br
+/>* Proposal for an Accelerator Applications Group next year (*Greg*, 30 mins).<br
+/>What might the charter deliverables of a Working Group for accelerator services and applications be?<br
+/><br
+/>* Catch up items that we never got to in the previous schedule.<br
+/><br
+/>* Prototype Normative Type self-identification and introspection interfaces.<br
+/>*Greg*, *Matej*, *Marty* and anyone else who wants to join.<br
+/><br
+/><b>MINUTES</b><br
+/><b>=======</b><br
+/><br
+/><b>Present</b>: DH, Mark Heron (MH) subject to availability), BD, GS, MK, Michael Abbot (MA), JR, TK, Daniel Meyer (DM), Markus Janousch (MJ), MS, Daron Chabot (DC),Paul Gibbons, Tom Cobb<br
+/><br
+/>Scribe: GW<br
+/>BD: Before we proceed, what is feedback from last year.<br
+/>MK: I'm more opptmistic about future than a year ago.<br
+/>BD: +1<br
+/><br
+/>BD: Going forward: Is there anything that the physics team needs, requirements, that have not been handled. Eg NTs?<br
+/>GW: NTs need some more work, but I think we're going to get 1PWD in 2 or 3 weeks.<br
+/><br
+/>BD: What is status of helpers for NTs?<br
+/>GW:&nbsp; the people who have immediate requirements (=BNL people) should write the helper classes<br
+/>GS: worries about people writing helpers in diverse ways (no standardization)<br
+/>MK: set up a mercurial repo for helper classes (e.g. normativeTypesCPP)<br
+/>BD: GS has responsibility for the BNL implementation of the NTs wrappers.<br
+/>BD: GW will do the self-id specification.<br
+/><br
+/>BD: Can't do dirk req without ragged table, so it has to go into NT specification.<br
+/>[GW add Ragged table, self-id, decision on introspection. Also need better NTContinuum.]<br
+/><br
+/>BD: Need alos to update pvAccess documentation.<br
+/>MK: Also pvIOC and pvData. MS is resp for specification.&nbsp;<br
+/>MS: There will be other additions.<br
+/>MS: Also we need a short document that defines the difference between the reference implementation and the specification, eg -ve offsets.<br
+/><br
+/><b>********</b><br
+/><b>NEW TOPIC: Charter review of outstanding items:</b><br
+/><b>********</b><br
+/><br
+/>List of items outstanding.<br
+/>==================<br
+/><br
+/>Charter Deliverables status review w.r.t. charter exit in Sept.:<br
+/><br
+/>* A normative document of the pvAccess protocol<br
+/>-&gt; 95%. Needs update for "beta2"<br
+/>MS.<br
+/><br
+/>* A normative document of the pvData protocol. The document must include&nbsp;<br
+/>the user API - how a programmer creates data objects for the wire, and extracts them on the other side<br
+/>-&gt; 90%. Needs update for "beta2".&nbsp;<br
+/>MK. needs a few weeks.<br
+/><br
+/>* A normative document of the EPICS V4 IOC processing pipeline<br
+/>-&gt; Punted. Next year, as part of beamline oriented work.<br
+/><br
+/>A reference implementation of pvAccess in each of C++ and Java language bindings<br
+/>-&gt; Done. ST beta2 work.<br
+/><br
+/>A reference implementation of pvData in each of C++ and Java language bindings<br
+/>-&gt; Done. ST beta2 work.<br
+/><br
+/>A reference implementation of the EPICS V4 IOC in each of C++ and Java language bindings. The Java version has high priority.<br
+/>-&gt; Java one Done. ST beta2 work. CPP punted to next charter. CPP IOC side will only consist of v3Channel (connecting to V3 Pvs) and channelRPC will be moved to pvAccess.<br
+/><br
+/>A normative document of the EPICS V4 interoperable data types. These data types must be universally understood by every client and service which claims EPICS V4 compatibility. The requirement for this deliverable is distinct from the pvData document deliverable, since pvData can encode any type, this deliverable recommends the confined set of data objects that will be used by EPICS V4 interoperable services<br
+/>-&gt; 85% done. See above for additions outstanding.<br
+/><br
+/>A directory service accessible through the EPICS V4 API itself, from which can be found at least PV and entity names, and associated service names<br
+/>-&gt; BD: RL is 85%. Should finish without waiting for asynch RPC.<br
+/><br
+/>A normative document of the EPICS V4 services API. This defines the form for encoding parameters and status descriptions between clients and services and back<br
+/>-&gt; GW, JR, MS. 20% done. But short.<br
+/><br
+/>A report of interoperability of the EPICS V4 IOC with EPICS v3 record processing<br
+/>-&gt; MK: There may be material in the overview docs.&nbsp;<br
+/>MK: Where do I put thsi on the web? [addressed offline]<br
+/><br
+/>A performance report, comparing EPICS v3 to EPICS V4 for some common EPICS v3 control and read tasks, plus report of the expected performance of EPICS V4 service support. For instance, round trip time for network encoding/deserialization of results of 4 or 5 common service queries such as archive data, orbit data, whole beamline model etc. Comparisons to at least 2 other common high performance data interconnects should be made, eg ICE, ASN.1, EXI Web Service.<br
+/>-&gt; BD: as far as I'm concerned we have a performance report. But we should re-run the performance measures after beta 2 completed. So, it's 100% done.<br
+/><br
+/>A "Getting Started" document for EPICS V4 Service developers<br
+/>-&gt; 100%. Will be updated after "Dirk Req" is completed.<br
+/><br
+/>A User Guide for EPICS V4 IOC control application developers<br
+/>-&gt; Punted to next charter, since control is getting attention in that charter, not this.<br
+/><br
+/>A command line tool similar to caget (call it say pvget), which understands all the interoperable data typesabove, and conforms to the EPICS V4 services API above.<br
+/>-&gt; 60%. Needs NT decoding. Understanding RPC w.r.t. the services API. So, dependent on services API.<br
+/>At least scalar and array types, NTTable, NTHisogram, NTcontinuum. If plottable then plot with gnuplot.<br
+/><br
+/>A normative document of the EPICS V4 Directory Service function, API, and unix command line tool.<br
+/>-&gt; On RL. 85% done. The DS doc needs to be put into the EPICS V4 document collection.&nbsp;<br
+/><br
+/>A reference implementation of the EPICS V4 Directory Service.<br
+/>-&gt; See above.<br
+/><br
+/>Outside scope but expected.<br
+/>pvManager, a framework and client side application software library for managing sets of EPICS V4 PV acquisitions.<br
+/>-&gt; 0% BD: We need to connect pvAccess &amp; NTs to pvManger.&nbsp;<br
+/><br
+/>-&gt; An archive data retrieval service. Only the EPICS service endpoint is in scope, not the archiver architecture itself. This may be modified in a future charter amendment.<br
+/>-&gt; Completed.<br
+/><br
+/>**********<br
+/><b>NEW TOPIC: What is the remit of the next Working Group</b><br
+/>**********<br
+/>BD: Yesterday we seemed to decide that there will be a next working group, and it will&nbsp;<br
+/>concentrate on beamlines, not physics services. Is that right?<br
+/>GW: I'd suggest that there be 2 groups going forward: the EPICS V4 WG to concentrate on beamline,<br
+/>and also a WG to concentrate on physics applications.<br
+/>&lt;apparent concensus&gt;<br
+/>&lt;discussion of people who may be involved in these groups&gt;<br
+/><br
+/>BD: Next step in that is then to try to get the group together.<br
+/>BD: Also be more specific about the charter of the next WG.<br
+/>BD: The 8 topics for the next WG discussed yesterday, should be fleshed out...<br
+/><br
+/>From yesterday: Possible subjects of the Beam line directed V4 working group.<br
+/><br
+/>1) Heterogeneous data aggregator on epics V3&nbsp; - part of this charter. No normative type. MK: Not hard (when implemented as channel RPC request).<br
+/>2) Connect ntimage and ndarray into v4 server&nbsp;<br
+/>3) Actions on images (ala areaDetector, such as background substraction...)<br
+/>4) Review normative types in light of beam line control.<br
+/><br
+/>5) Fully implemented pvIOCCPP for supporting beam line control<br
+/>6) Prototype V4 record using V3 image-processing record.<br
+/>&nbsp;&nbsp;&nbsp; Including large buffer management<br
+/>7) scan service<br
+/>8) Demonstrate the suitability of a control architecture in which all client-server interaction<br
+/>is mediated by pvAccess.&nbsp;<br
+/>Make sure HDF5 is properly integrated into the services and processing pipeline. May be handled as a service.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>Longer term plan<br
+/>------------------------<br
+/>8) as above<br
+/>9) Demonstrated architecture of the combined V3 record processing with V4 services in the embedded IOC.<br
+/>10) Implement pvData and portMapper on v3 IOC (essentially port driver) run as a v4 service.<br
+/>11) Chunked transmission.&nbsp;<br
+/>12) Multicast.<br
+/><br
+/>MH: Marty demoed portMapper as the external interface. Is there any sense in using that to<br
+/>do device control on the network? That is, can I use pvIOCJava for conrtol?<br
+/>MK: There is really only the basis for device control.&nbsp;<br
+/>BD: If we had a portDriver that handled ethernet and ... we could do 95% of device control.<br
+/>MH: That assertion is not true on a pulsed machine.<br
+/>BD: true. But still [it's a reasonable goal]<br
+/><br
+/>MS: What is large buffer management?<br
+/>BD: Make it so driver can bring in a large buffer, and process it, and the protocol can transmit it.<br
+/>That is, maximize 0-copy.<br
+/>BD: In general we should better take advantage of multi-core machines.<br
+/>BD: Things which are now done in the client, as a work around, should be architected to the appropriate place.<br
+/><br
+/>*******<br
+/><b>NEW TOPIC: Outstanding Technical Issues for this charter exit</b><br
+/>*******<br
+/>MS 1. Asynch RPC.<br
+/>GW 2. Services API. Add services to eget.<br
+/>MS 3. Deciding provider (that is, pvAccess or CA) for a V3 PV.<br
+/>&nbsp;&nbsp;&nbsp; MS: Problem is in 2 parts: Specifying the list of alternative providers. 2nd, how to use a provider.&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; We may simply implement the solution that both providers are always tried!&nbsp;<br
+/>MK: 4. "Dirk Requirement." A module on embedded IOC that can collect V3 record data and return it as V4 data.<br
+/>&nbsp;&nbsp;&nbsp; Get and Put MUST be implemented. But not monitor.<br
+/>&nbsp;&nbsp;&nbsp; One MUST be able to specify an ad hoc list of V3 PVs to be acquired or put to. Additionally,<br
+/>&nbsp;&nbsp;&nbsp; alternatively, an IOC engineer must be able to pre-specify the list of V3 PV as a static list<br
+/>&nbsp;&nbsp;&nbsp; in a file on the IOC.<br
+/>MK: Please no more requests until end of July, so I can get this working.<br
+/>MS: 5. easyPVA RPC (in Java impl of easyPVA)<br
+/>GW/JR 6.&nbsp; SupereasyPVA.<br
+/><br
+/>Required for beta 2:<br
+/><br
+/>MS&nbsp;&nbsp; 7. Add the relevant NT PVstructures to pvManager - those types pvmanager already understands.&nbsp;<br
+/>GW 8. Mechanism for header and copyright.<br
+/>MK 9. Bug that v3Channel and pvIOCJava fail for remote access.<br
+/>MK 10. Add unsigned to v3channel&nbsp;<br
+/>MS 11. pvAccessJava test server not working due to beta 2 changes.<br
+/>MK/MS 12. Upgrade documentation to beta 2.&nbsp;<br
+/>MS 13. Upgrade pvAccess specification document reflect implementation.<br
+/>DH 14. Finish implementing java unsigned.&nbsp;<br
+/>MS 15. Java RPC depends on record processing, c++ Doesn't. Put Java RPC into pvAccess. This is<br
+/>part of job 1 aboce, Async RPC. In Java, RPC will be multithreaded. In C++, not multithreaded.<br
+/><br
+/><b>******</b><br
+/><b>NEW TOPIC:&nbsp; ACCELERATOR APPLICATIONS ACTIVITY PROPOSAL</b><br
+/><b>******</b><br
+/>&lt;pasted into minutes&gt;<br
+/>Greg White, SLAC/PSI, 7-July-2012<br
+/><br
+/>This document lists proposed objectives for an activity in the EPICS V4 sphere,<br
+/>towards a software platform and software services for online accelerator physics.&nbsp;<br
+/><br
+/>Since name mapping and name acquisition depends on modelling. And applications and physics services depend on modelling, names, and unit conversion. Therefore, we have to create the reference system as a whole. The proposed major parts of the working group activity are described below.<br
+/><br
+/>1. Engineer, develop and provide reference implementations for "GUI" online operations accelerator physics applications, using the ecosystem of services defined below.<br
+/><br
+/>Example charter deliverables:&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; + Correlations plots<br
+/>&nbsp;&nbsp;&nbsp; + Wire scan<br
+/>&nbsp;&nbsp;&nbsp; + Emittance measurement<br
+/>&nbsp;&nbsp;&nbsp; + Archive data analysis<br
+/><br
+/><br
+/>2. Unit Conversion.&nbsp;<br
+/><br
+/>Engineer, document and provide a reference implementation for,<br
+/>the problem of magnetic field and power unit conversion (energy independent field/ energy dependent bending gradient/ power supply current), that is general enough to be applicable and easily applied by a number of labs.&nbsp;<br
+/><br
+/>Example charter deliverables:<br
+/><br
+/>This project is probably as much a documented design pattern as it is software. The solution is probably composed of:<br
+/>&nbsp;&nbsp; i) a reference document for the basic equations aimed at providing a&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; common "data dictionary" for software engineers and physicists<br
+/>&nbsp;&nbsp; ii) a reference (relational) database schema for associating K from model,&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to magnet&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; measurement hysteresis records<br
+/>&nbsp;&nbsp; iii) and a reference implementation of a V3 magnet control with magnet&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; polynomials acquired from the database (through the combined&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EPICS V3/V3 IOC described in [1].<br
+/><br
+/><br
+/>2. Accelerator part Name Mapping.&nbsp;<br
+/><br
+/>Engineer, document and provide a reference implementation for,<br
+/>the problem of the mappings and associations between accelerator parts. That is,<br
+/>between beampaths and modelling sections, lattice elements, composite devices, devices and process channels.<br
+/><br
+/>This would provide a documented taxonomy for those issues which are often poorly dealt with in control systems, such as the association of beampaths at different energies and timing profiles, to devices; from devices to lattice elements (such as klystrons to cavities and split quadrupoles to modelled lattice "slices"), and associating devices to their composite process control PVs.<br
+/><br
+/>Example charter deliverables: probably a document, database schema, V4 Directory Service config files, and work in unison with the model service below.<br
+/>&nbsp;<br
+/><br
+/>3. Directory Service<br
+/><br
+/>Engineer, document and provide a reference implementation for,<br
+/>a directory service which can combine the solutions for name mapping and modelling.<br
+/><br
+/><br
+/>4. Core Online Accelerator Physics Services.<br
+/><br
+/>Engineer, document and provide a reference implementation for,<br
+/>the basic physics services that would make online software easier to develop,&nbsp;<br
+/>and the online control system faster and richer.&nbsp;<br
+/><br
+/>Example Charter Deliverables.<br
+/>A set of first services so defined is probably quite small:<br
+/><br
+/>&nbsp;&nbsp;&nbsp; + Online model (giving design, and presently extant Twiss and R-mats, plus a&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; way to record so computed models in a database so that the same&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; model may be used by different control room software).<br
+/><br
+/>&nbsp;&nbsp;&nbsp; + BPM Orbit acquisition system. A service that combines the V4 gather&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; system, and the SLAC/PSI pattern for pulse synchronous BPM-like&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; device value acquisition, to provide a very-very-easy to use API for&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; matlab apps to get synchronous orbits. Eg:<br
+/><br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; orbit = easyPVA.createChannel(...<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'BPMORBIT:SwissFEL:GUN_to_ARAMIS').createGet().getPVStructure();<br
+/><br
+/>&nbsp;&nbsp;&nbsp; + Magnet service. A service that implements synchronous magnet field changes.<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; + LEM service. A service that can measure the difference between the&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; intended focusing field of quadrupoles, given the extant energy, and&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the desired focusing field; and can be used to correct the difference.<br
+/><br
+/>&nbsp;&nbsp;&nbsp; + Archive service. A service that makes any archiver implementation&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data avilable as a V4 service.<br
+/><br
+/><br
+/>5. Develop a web service for acquisition and return of any data.<br
+/><br
+/>Use fast web service technology for acquiring EPICS data and returning it. Probably IBM XML Screamer and EXI, or Agile Data + EXI. AJAX data binding. Possibly develop this in conjunction with the effort to put web data services in EPICS IOC as described in [1].<br
+/><br
+/>6. Prerequisite EPICS organisation.<br
+/>&nbsp;&nbsp;<br
+/>&nbsp; 1. Bob becomes Director.<br
+/>&nbsp; 2. Working Group Process becomes official mechanism for Working Groups.<br
+/>&nbsp; 3. EPICS distribution wed site hosts V4.<br
+/>&nbsp;<br
+/>References<br
+/>----------<br
+/>[1] Epics Systemic Requirements proposal (draft 1.1, 9-July-2012)&nbsp;<br
+/><a href="http://sourceforge.net/mailarchive/message.php?msg_id=29515041">http://sourceforge.net/mailarchive/message.php?msg_id=29515041</a><br
+/><br
+/>&nbsp;&lt;end paste&gt;<br
+/>&nbsp;<br
+/><br
+/><br
+/><br
+/><br
+/><br
+/><br
+/>&nbsp;&nbsp;<br
+/><br
+/><br
+/><br
+/><br
+/><br
+/>&nbsp;<br
+/><br
+/></body>
+</html>

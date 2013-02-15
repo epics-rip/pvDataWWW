@@ -1,0 +1,34 @@
+Colleagues,
+
+Please find below the agenda for our 9-Nov-2011 meeting.
+
+Time: UTC (GMT) Wednesdays, 15:00 (outside summer time, i.e. the usual time) [1]. 
+** Hosted by SKYPE ** using skypids circulated. A chair will initiate the call.   
+
+Ralph, Nikolay and Matej coming up to scribe.
+  
+Cheers
+Greg, for Greg and Bob
+
+--------
+
+Agenda
+
+0. Preliminaries (15 mins). 
+
+1. Review of present activities [2].
+   Convert some of these to AIs.
+   Assign leads.
+
+2. Build targets (if there's time after 1, otherwise in email). 
+   What shall we build and make available on sourceforge? 
+   How shall that be built (Maven, Make, Ant). Is our build different to our validation and test support?
+   How should building in an institution be supported? The same as for us or different?
+
+
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epics-pvdata.sourceforge.net/home.html#presentwork
+
+
+
+

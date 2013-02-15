@@ -1,0 +1,45 @@
+Colleagues, 
+
+Please find below the agenda for our weekly EPICS V4 telecon [1]. Timo, Ralph and I had a 
+test of the etherpad system. We decided to try that out NEXT week, when Ralph will be back 
+with us. For now, just Skype.
+
+We haven't got an updated version of the pvAccess protocol spec following comments made so
+far. I suggest we don't revisit that until next week. 
+ 
+Agenda
+======
+
+0. Preliminaries
+
+1. Architectures document comments (30 minutes)
+
+   *All* please check out the architectures document [2] as it is so far. We'll review comments
+   made in email or verbally in the meeting, so *James* gets some feedback.
+ 
+2. MASER status update (*Guobao* 15 minutes)
+
+3. Performance measurement planning (20 minutes)
+
+   *Matej* - how does Japex look.
+   Shall we implement a japex measurement system?
+      - Measure against a jca/caj driver?
+      - What data to measure?
+      - Who will lead this? 
+      - When?
+      - How sophisticated? - part of Jenkins?
+   Shall we use Japex for CPP measurement?
+      - Vs ca?
+
+   *Bob* made a suggestion that we should measure our implementation of 
+   pvAccess against ASN.1 BER and or PER encodings of a test suite,
+   by asking for volunteers on tech-talk. 
+ 
+[1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
+[2] http://epics-pvdata.sourceforge.net/arch.html
+
+
+
+
+
+

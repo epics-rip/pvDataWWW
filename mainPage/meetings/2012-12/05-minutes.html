@@ -1,0 +1,407 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>9905$39</title>
+</head>
+<body><b>AGENDA</b><br
+/><b>=======</b><br
+/>0. Preliminaries. 10 mins<br
+/><br
+/>1. Beta 2 readiness review. 5 mins (+15).<br
+/>&nbsp;&nbsp; + CPP - all good right?<br
+/>&nbsp;&nbsp; + Java (<b>*Greg*</b>, mea culpa)<br
+/>&nbsp;&nbsp; + Beta 2 demo list (<b>*Matej*</b>)<br
+/><br
+/>2. Status and Upcoming Work Review. 20 mins (+35)<br
+/>&nbsp;&nbsp; What's important now. Help Greg and Bob restart. Other than the<br
+/>&nbsp;&nbsp; Db discussion and charter, what are people up to.<br
+/>&nbsp;&nbsp; + EasyPVA status in CPP and Java. Is this complete for now?<br
+/>&nbsp;&nbsp; + V3Channel status. Is get and set of a set of V3 channels in same lockset done [3]?<br
+/>&nbsp;&nbsp; + Benchmark testbench for EPICS V4. Do <b>*Marty*</b> and <b>*Matej*</b> concede the requirement<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; necessity and to undertake work.<br
+/>&nbsp;&nbsp; + BPM orbit service (Timo)<br
+/>&nbsp;&nbsp; + Model service (Greg)<br
+/>&nbsp;&nbsp; + V3-V4 interop (David)<br
+/>&nbsp;&nbsp; What else is presently being done? ** What's unfinished **?<br
+/><br
+/>3. January meeting agenda review (<b>*Greg*</b>) [4]. 15 mins (+50).<br
+/>&nbsp;&nbsp; + Confirm dates 21-23 Jan (note 21t Jan is Martin Luther King holiday!)<br
+/>&nbsp;&nbsp; + Will at least EPICS V4 participants agree to provide discussion documents<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; and requirements talk at the meeting (Bob, Ralph, Michael).<br
+/>&nbsp;&nbsp; + Bob invite Tim?<br
+/><br
+/>4. PVDatabase first review (<b>*Marty*</b>), [5]. 40 mins (+90)<br
+/>&nbsp;&nbsp; Let's make a read through page by page with initial comments.<br
+/>&nbsp;&nbsp; Let's try to distinguish requirements implied by pvDatabase, as opposed to<br
+/>&nbsp;&nbsp; design proposals and actual design.<br
+/>&nbsp;&nbsp; + Review of mail thread comments made so far, esp Benjamin's and Michael's.<br
+/><br
+/><br
+/><b>MEETING:</b><br
+/><b>========</b><br
+/>Present: TK, MS, MK, GS, GW, DH<br
+/>Scribe: GW<br
+/><br
+/><b>***********</b><br
+/><b>NEW TOPIC:&nbsp; Beta 2 readiness review. 5 mins (+15).</b><br
+/><b>***********</b><br
+/>&nbsp;&nbsp;&nbsp; GW: exampleJava should be released before an announcement is made to tech-talk<br
+/>&nbsp;&nbsp;&nbsp; GW has added a service giiving an example of NTTable and arguments - a quasi archive service.<br
+/>&nbsp;&nbsp;&nbsp; MS: pvAccessCPP and pvIOCCPP contain a file called "demo", which includes instructions&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; for how to start a test server. See the end of this notes.&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; MS: We should have an indenpenent party test beta 2 before making announcement.<br
+/>&nbsp;&nbsp;&nbsp; <b>AI on GW by 7-Dec:</b> Create java tar file and upload<br
+/>&nbsp;&nbsp;&nbsp; <b>AI on TK by 7-Dec</b>, for completion by 12 Dec: Get a PSI developer to independently test beta 2 prior to announcement.&nbsp; CPP and java.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; TK: Made a short test on 2 platforms (sci linux and ubuntu), cpp. Short test of pvput, pvget worked.<br
+/>&nbsp;&nbsp;&nbsp; DH: We should link the web site to exampleCPP. Has anyone else tried exampleCPP?<br
+/>&nbsp;&nbsp;&nbsp; TK: tried it briefly, but didn't get far.<br
+/>&nbsp;&nbsp;&nbsp; DH: I have concern that archive service in exampleCPP has Diamond dependencies, so we need<br
+/>&nbsp;&nbsp;&nbsp; indepedent verification of it.<br
+/>&nbsp;&nbsp;&nbsp; DH: Will change the README and would like someone to check it.<br
+/>&nbsp;<br
+/><b>&nbsp;Verifications required for beta 2</b><br
+/>&nbsp;&nbsp;&nbsp; exampleCPP nondependency on Diamond&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; README of beta 2 release&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; full cpp test including eget and pvget examples below<br
+/>&nbsp;&nbsp;&nbsp; full java test&nbsp;&nbsp;&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;<br
+/><b>*********</b><br
+/><b>NEW TOPIC: Status and Upcoming Work Review.</b><br
+/><b>*********</b><br
+/>&nbsp;&nbsp;&nbsp;<br
+/>MK:<br
+/><br
+/><i>EasyPVA status in CPP and Java. Is this complete for now?</i><br
+/><br
+/><i>For phase I yes.</i><br
+/><i>But it is not done.</i><br
+/><i>In Java lots remains to do.</i><br
+/><i>In C++ almost nothing is done.</i><br
+/><i>Is Matej assigned to finish it?</i><br
+/><i>If not who?</i><br
+/><br
+/><i>V3Channel status. Is get and set of a set of V3 channels in same lockset done [3]?</i><br
+/><br
+/><i>Yes.</i><br
+/><br
+/><i>Benchmark testbench for EPICS V4. Do *Marty* and *Matej* concede the requirement</i><br
+/><i>&nbsp;&nbsp;&nbsp;&nbsp; necessity and to undertake work.</i><br
+/><br
+/><i>I agree with necessity.</i><br
+/><i>Do not agree that I should undertake the work.</i><br
+/><i>This is a good chance for someone else to have a deeper understanding</i><br
+/><i>of what Matej and I have done.</i><br
+/><br
+/>MS: It is not sensible to make a comparative test against channel access.&nbsp;<br
+/><br
+/>After discussion: MS will create the microbenchmark test bench. Initially it will test<br
+/>only pvAccess and pvData (de)serialization (and loopback and wire). Then we will use it<br
+/>for verifying performance of pvDatabase concepts.<br
+/><br
+/><b>AI on MK by Jan 21:</b> Create a microbenchmarking test bench able to performance test<br
+/>individual aspects of the processing flow of EPICS V4 client-server interactions and processing.<br
+/><br
+/><br
+/><b>*********</b><br
+/><b>NEW TOPIC: January meeting agenda review&nbsp;</b><br
+/><b>*********</b><br
+/><b>Consensus on dates</b>: agreed.<br
+/>GW: How about the tentaive agenda:<br
+/>1. Demos of bpm orbit and model services (Timo, Greg)&nbsp;<br
+/>2. 2012-2013 charter review (Greg)<br
+/>3. EPICS V4 control database requirements and design references&nbsp;<br
+/>&nbsp; (Bob, Marty, and ideally Tim, Benjamin, Ralph, Andrew, and Michael hopefully)<br
+/>4. PVDatabase proposal (Marty), and review (above item 3 people)<br
+/>5. Demo all normative types to pvget and eget (Matej)<br
+/>6. Microbenchmark testbench design and initial performance breakdown report (Matej)<br
+/>7. V3-V4 interop user guide review (David, Marty).<br
+/><b>consensus: </b>agreed<br
+/><br
+/><b>********</b><br
+/><b>NEW TOPIC: PVDatabase first review</b><br
+/><b>********</b><br
+/>MK: Goes through initial reading of pvDatabaseCPP:<br
+/><a href="http://epics-pvdata.sourceforge.net/informative/pvDatabaseCPP.html">http://epics-pvdata.sourceforge.net/informative/pvDatabaseCPP.html</a><br
+/><br
+/>- MK emphasises that pvDatabase personifies the idea that the V4 IOC will not<br
+/>itself initially include the specialized record support that are the key parts of a V3 IOC&nbsp;<br
+/>and pvJavaIOC. Rather it's just a harness for support coming later.<br
+/><br
+/>GS: re subpackage xml: xml is too complicated and if one were to express only a V3&nbsp;<br
+/>database in V4, the XML syntax would be too complicated. You'd be making something<br
+/>simple into something complicated.<br
+/>GW: disagrees. XML 1.0 or "angle bracket syntax" is just a textual serialization of the XML Infoset,<br
+/>and one that can be confusing to view. But then you should use an XML formatter,<br
+/>an XML editor to clean up your angle-bracet XML, or use a subset of XML (MicroXML) or a<br
+/>different character encoding of XML Infoset (JSON).<br
+/>-&gt; discussion on suitability of XML followed. No concensus.<br
+/><br
+/>MK continued to review teh subpackges of pvIOCJava.<br
+/><br
+/>GW: I think some record support and drivers, such as teh functionality of asynDriver, should<br
+/>be developed in parallel with pvDatabase, in order to check the functionality of pvDatabase.<br
+/><br
+/>MK: One of the best things about V4 pvDatabase, is that we provide a clean interface. That<br
+/>way we can basically port asynDriver directly from its V3 implementation!<br
+/><br
+/>DH: Feels that it's hard to understand the association of pvAccess and pvDatabase, and<br
+/>other interfaces.&nbsp;<br
+/><br
+/>MK: likes that Dh looking closely at code. Encourages codng help<br
+/><br
+/>DH: Wants to create an image server.<br
+/>MK: Bob thinks so too.<br
+/>DH: I'm well on the way to creating an image server, including connection to a camera. But DH is<br
+/>more thinking that he'd like to be involved in the pvDatabase development. That is, be a contributor to&nbsp;<br
+/>the requirements and a co-editor.<br
+/><br
+/>GW: has 2 worries: i. that pvIOCJava, pvDatabaseCPP and pvIOCCPP, are too asymetric, and will<br
+/>be for a while. ii. That MK has no help on pvDatabase. We need more real editors in the pvDatabase<br
+/>effort.<br
+/><br
+/>DH: On i, once pvDatabase basic is done, we should pull the support parts out of pvIOCJava, and create pvDatabaseJava. On ii DH would very much like to help subject to time constraints.<br
+/><br
+/>MK: My goal for phase 1, is to get it far enough to interface to asynManager. So a user can talk to&nbsp;<br
+/>areaDetector. Then a pvAccess client can access that stuff.<br
+/><br
+/>GW:+1<br
+/><br
+/>&nbsp;<br
+/><br
+/><b>APPENDIX: pvAccess DEMO</b><br
+/>-------------------------<br
+/><br
+/><br
+/>First run a pvAccess test server (portable channel access server equvivalent) by<br
+/>running ./runTestServer in another terminal (or in background).<br
+/><br
+/>pvget, pvput and eget utilities are delivered by pvAccessCPP (caget and caput equvivalents).<br
+/>They are located in pvAccessCPP/bin/$EPICS_HOST_ARCH directory.<br
+/><br
+/>1. Get the value of a V4 scalar PV<br
+/>----------------------------------<br
+/>&gt; pvget testValue<br
+/>testValue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br
+/><br
+/><br
+/>2. Put the value of a V4 scalar PV<br
+/>----------------------------------<br
+/>&gt; pvput testValue 1.23<br
+/>Old : testValue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br
+/>New : testValue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.23<br
+/><br
+/><br
+/>3. Get the value of a V4 array PV<br
+/>----------------------------------<br
+/>&gt; pvget testArray10_1<br
+/>testArray10_1 10 0 1 2 3 4 5 6 7 8 9<br
+/><br
+/><br
+/>4. Put the value of a V4 array PV<br
+/>----------------------------------<br
+/>&gt; pvput testArray10_1 3 11 22 33<br
+/>Old : testArray10_1 10 0 1 2 3 4 5 6 7 8 9<br
+/>New : testArray10_1 3 11 22 33<br
+/><br
+/><br
+/>5. Get the values of all the fields of V4 record (-r is pvAccess request string)<br
+/>--------------------------------------------------------------------------------<br
+/>&gt; pvget -r 'field()' testValue<br
+/>testValue<br
+/>uri:ev4:nt/2012/pwd:NTScalar&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; double value 1.23<br
+/>&nbsp;&nbsp;&nbsp; alarm_t alarm<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int severity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int status 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string message&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; time_t timeStamp<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; long secondsPastEpoch 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int nanoSeconds 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int userTag 0<br
+/>&nbsp;&nbsp;&nbsp; display_t display<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double limitLow 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double limitHigh 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string description&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string format&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string units&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; control_t control<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double limitLow 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double limitHigh 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double minStep 0<br
+/>&nbsp;&nbsp;&nbsp; valueAlarm_t valueAlarm<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; boolean active false<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double lowAlarmLimit 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double lowWarningLimit 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double highWarningLimit 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double highAlarmLimit 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int lowAlarmSeverity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int lowWarningSeverity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int highWarningSeverity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int highAlarmSeverity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double hystersis 0<br
+/><br
+/><br
+/>6. Get the values of some fields of V4 record (-r is pvAccess request string)<br
+/>--------------------------------------------------------------------------------<br
+/>&gt; pvget -r 'field(value,timeStamp,alarm)' testValue<br
+/>testValue<br
+/>structure&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; double value 1.23<br
+/>&nbsp;&nbsp;&nbsp; time_t timeStamp<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; long secondsPastEpoch 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int nanoSeconds 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int userTag 0<br
+/>&nbsp;&nbsp;&nbsp; alarm_t alarm<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int severity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int status 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string message&nbsp;<br
+/><br
+/><br
+/>6. Monitor the value of a V4 scalar PV<br
+/>--------------------------------------<br
+/>&gt; pvget -m testCounter<br
+/>testCounter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 406<br
+/>testCounter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 407<br
+/>testCounter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 408<br
+/>testCounter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 409<br
+/>^C<br
+/><br
+/><br
+/>7. Get a NTMatrix and print as a matrix<br
+/>---------------------------------------<br
+/>&gt; eget -a columns=3 -a rows=5 -s testNTMatrix<br
+/>&nbsp; 0.677423&nbsp; 0.456543&nbsp;&nbsp; 0.11271<br
+/>&nbsp;&nbsp; 1.31041&nbsp;&nbsp; 1.10541&nbsp;&nbsp; 1.64136<br
+/>&nbsp;&nbsp; 2.41162&nbsp;&nbsp; 2.11947&nbsp;&nbsp; 2.01143<br
+/>&nbsp;&nbsp; 3.06775&nbsp;&nbsp; 3.67029&nbsp;&nbsp; 3.55055<br
+/>&nbsp;&nbsp;&nbsp; 4.0458&nbsp;&nbsp; 4.71389&nbsp;&nbsp; 4.38239<br
+/><br
+/><br
+/>8. Get a NTMatrix and print its transponse matrix<br
+/>-------------------------------------------------<br
+/>&gt; eget -a columns=3 -a rows=5 -t -s testNTMatrix<br
+/>&nbsp; 0.677924&nbsp;&nbsp; 1.66402&nbsp;&nbsp; 2.42248&nbsp;&nbsp;&nbsp; 3.8881&nbsp;&nbsp; 4.22758<br
+/>&nbsp; 0.874961&nbsp;&nbsp; 1.20251&nbsp;&nbsp; 2.56682&nbsp;&nbsp; 3.21442&nbsp;&nbsp; 4.92651<br
+/>&nbsp;&nbsp; 0.47145&nbsp;&nbsp; 1.65475&nbsp;&nbsp;&nbsp; 2.4864&nbsp;&nbsp; 3.79319&nbsp;&nbsp; 4.80394<br
+/><br
+/><br
+/>9. Get a NTTable and print as a table<br
+/>-------------------------------------<br
+/>&gt; eget -a columns=3 -s testNTTable<br
+/>&nbsp;&nbsp;&nbsp; column0&nbsp;&nbsp;&nbsp; column1&nbsp;&nbsp;&nbsp; column2<br
+/>&nbsp;&nbsp;&nbsp;&nbsp; 0.6783&nbsp;&nbsp;&nbsp; 1.62252&nbsp;&nbsp;&nbsp; 2.48407<br
+/>&nbsp;&nbsp; 0.188775&nbsp;&nbsp;&nbsp; 1.72518&nbsp;&nbsp;&nbsp; 2.72885<br
+/>&nbsp;&nbsp; 0.740506&nbsp;&nbsp;&nbsp; 1.11392&nbsp;&nbsp;&nbsp; 2.75991<br
+/>&nbsp;&nbsp; 0.679227&nbsp;&nbsp;&nbsp; 1.58597&nbsp;&nbsp;&nbsp; 2.80799<br
+/>&nbsp;&nbsp; 0.775342&nbsp;&nbsp;&nbsp;&nbsp; 1.3701&nbsp;&nbsp;&nbsp; 2.83385<br
+/>&nbsp;&nbsp; 0.164793&nbsp;&nbsp;&nbsp; 1.19263&nbsp;&nbsp;&nbsp; 2.52135<br
+/>&nbsp;&nbsp; 0.680618&nbsp;&nbsp;&nbsp; 1.46619&nbsp;&nbsp;&nbsp; 2.29619<br
+/>&nbsp;&nbsp; 0.152323&nbsp;&nbsp;&nbsp; 1.28396&nbsp;&nbsp;&nbsp; 2.98274<br
+/>&nbsp; 0.0926253&nbsp;&nbsp;&nbsp; 1.44459&nbsp;&nbsp;&nbsp; 2.96131<br
+/>&nbsp;&nbsp; 0.753354&nbsp;&nbsp;&nbsp; 1.23773&nbsp;&nbsp;&nbsp; 2.66854<br
+/><br
+/><br
+/>pvIOCCPP DEMO<br
+/>---------------------------<br
+/><br
+/>First run a pvAccess server providing access to EPICS V3 channels via pvAccess protocol by<br
+/>running ./runV3Channel in another terminal (or in background).<br
+/><br
+/>pvget, pvput and eget utilities are delivered by pvAccessCPP (caget and caput equvivalents).<br
+/>They are located in pvAccessCPP/bin/$EPICS_HOST_ARCH directory.<br
+/><br
+/>1. Get the value of a V3 scalar PV<br
+/>----------------------------------<br
+/>&gt; pvget double01<br
+/>double01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br
+/><br
+/><br
+/>2. Put the value of a V3 scalar PV<br
+/>----------------------------------<br
+/>&gt; pvput double01 1.23<br
+/>Old : double01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br
+/>New : double01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.23<br
+/><br
+/><br
+/>3. Get the value of a V3 array PV<br
+/>----------------------------------<br
+/>&gt; pvget doubleArray01<br
+/>doubleArray01 0<br
+/><br
+/>(returns an array with zero elements)<br
+/><br
+/><br
+/>4. Put the value of a V3 array PV<br
+/>----------------------------------<br
+/>&gt; pvput doubleArray01 3 11 22 33<br
+/>Old : doubleArray01 0<br
+/>New : doubleArray01 3 11 22 33<br
+/><br
+/><br
+/>5. Get the values of all the fields of V3 record (-r is pvAccess request string)<br
+/>--------------------------------------------------------------------------------<br
+/>&gt; pvget -r 'field()' double01<br
+/>double01<br
+/>uri:ev4:nt/2012/pwd:NTScalar&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; double value 1.23<br
+/>&nbsp;&nbsp;&nbsp; alarm_t alarm<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int severity 2<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int status 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string message LOLO<br
+/>&nbsp;&nbsp;&nbsp; time_t timeStamp<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; long secondsPastEpoch 1353588502<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int nanoSeconds 133410000<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int userTag 0<br
+/>&nbsp;&nbsp;&nbsp; display_t display<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double limitLow 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double limitHigh 10<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string description&nbsp;<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string format %f<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string units Counts<br
+/>&nbsp;&nbsp;&nbsp; control_t control<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double limitLow -0.1<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double limitHigh 9.9<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double minStep 0<br
+/>&nbsp;&nbsp;&nbsp; valueAlarm_t valueAlarm<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; boolean active false<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double lowAlarmLimit 2<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double lowWarningLimit 4<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double highWarningLimit 6<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double highAlarmLimit 8<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int lowAlarmSeverity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int lowWarningSeverity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int highWarningSeverity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int highAlarmSeverity 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double hystersis 0<br
+/><br
+/><br
+/>6. Get the values of some fields of V3 record (-r is pvAccess request string)<br
+/>--------------------------------------------------------------------------------<br
+/>&gt; pvget -r 'field(value,timeStamp,alarm)' double01<br
+/>double01<br
+/>uri:ev4:nt/2012/pwd:NTScalar&nbsp;<br
+/>&nbsp;&nbsp;&nbsp; double value 1.23<br
+/>&nbsp;&nbsp;&nbsp; alarm_t alarm<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int severity 2<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int status 0<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string message LOLO<br
+/>&nbsp;&nbsp;&nbsp; time_t timeStamp<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; long secondsPastEpoch 1353588502<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int nanoSeconds 133410000<br
+/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int userTag 0<br
+/><br
+/><br
+/>6. Monitor the value of a V3 scalar PV<br
+/>--------------------------------------<br
+/>&gt; pvget -m counter01<br
+/>counter01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4<br
+/>counter01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5<br
+/>counter01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6<br
+/><br
+/><br
+/>pvIOCJava has similar DEMO too.<br
+/><br
+/><br
+/></body>
+</html>
