@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS v4 C++ Platform Support</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <style type="text/css">
+  <![CDATA[
+    .level0 { background: #FF0000 }
+    .level1 { background: #E25822 }
+    .level2 { background: #ADFF2F }
+    .level3 { background: #00FF00 }
+  ]]></style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+ </script>
+</head>
+
+<body>
+
+<div class="head">
+<h1>EPICS v4 C++ Platform Support</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date. -->
+
+<h2 class="nocount">EPICS v4 C++ Platform Support</h2>
+<dl>
+  <!--dt>This version:</dt>
+    <dd><a
+      href="http://epics-pvdata.sourceforge.net/undef">.._20130101.html</a></dd>
+  <dt>Latest version:</dt>
+    <dd><a
+      href="http://epics-pvdata.sourceforge.net/undef">.._20130101.html</a></dd-->
+  <dt>Editors:</dt>
+    <dd>Matej Sekoranja, CosyLab</dd>
+</dl>
+</div>
+
+
+
+
+<h2>Platforms Supported</h2>
+
+<p>The following platforms are actively supported and tested:</p>
+<ul>
+  <li>GNU/Linux on x86_64</li>
+  <li>vxWorks >= 6.6 on PowerPC or Intel CPUs</li>
+</ul>
+
+<p>The following platforms we aim to support but are not actively tested by the EPICS v4 working group:</p>
+<ul>
+  <li>MacOS X (Darwin) on x86</li>
+  <li>WIN32 on x86</li>
+  <li>GNU/Linux on ARM</li>
+  <li>vxWorks 6.x on PowerPC or Intel CPUs</li>
+  <li>RTEMS >= 4.9 on any supported CPU [MC68040 (MVME167), MC68360, x86, PowerPC]</li>
+</ul>
+
+
+
+
+
+<h2>Dependencies</h2>
+
+<ul>
+  <li>EPICS Base >= 3.15.0.1 (with patches)</li>
+  <li>[currently googletest 1.6 or newer, might be replaced by Boost.Test if we take Boost]</li>
+</ul>
+
+
+
+
+<h2>C++ requirements</h2>
+
+<p>
+EPICS v4 C++ code follows C++98 standard.
+</p>
+
+<p>
+EPICS v4 C++ code depends on TR1 additions (with exception of <code>regex</code>) and some of the libraries provided by
+Boost (currently 1.53) that comes with pvCommonCPP. pvCommonCPP provides only a subset of Boost libraries 
+that EPICS v4 modules actually need: TR1 (with exception of <code>regex</code>), <code>circular_buffer</code>, <code>move</code>, <code>lockfree</code>, <code>test</code>, and <code>atomic</code>.
+</p>
+
+<p>
+Note that TR1 is already provided by recent C++ compilers. Included TR1 Boost headers will be used only if TR1
+is not supported by the compiler.
+</p>
+
+<p>
+In addition <code>move</code> and <code>atomic</code> libraries are part of C++11 (patitally supported by the latest compilers).
+</p>
+
+<p>
+EPICS v4 C++ code relies on EPICS build system.
+</p>
+
+
+
+
+
+<h2>Platform/compiler compatibility matrix</h2>
+
+<p>Level of compatibility legend:</p>
+<ul>
+<li><font color="#FF0000">fails to build (red)</font></li>
+<li><font color="#E25822">compiles but all the tests do not pass (flame)</font></li>
+<li><font color="#ADFF2F">compiles and all the tests pass (green-yellow)</font></li>
+<li><font color="#00FF00">compiles and all the tests pass and actively used (green)</font></li>
+</ul>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold; padding:1em">Platform/compiler compatibility matrix.</caption>
+  <tbody>
+    <tr>
+      <th rowspan="2">Platform/compiler</th>
+      <th colspan = "3">Level of compatibility</th>
+    </tr>
+    <tr>
+      <th>pvDataCPP</th>
+      <th>pvAccessCPP</th>
+      <th>pvSrv</th>
+    </tr>
+    <tr>
+      <td>Debian Wheezy, linux-x86_64 (Intel Core i7), gcc 4.7.1</td>
+      <td style="background:#00FF00">&#160;</td>
+      <td style="background:#00FF00">&#160;</td>
+      <td style="background:#00FF00">&#160;</td>
+    </tr>
+    <tr>
+      <td>Mac OS X 10.6.x, darwin-x86 (Intel Core Duo), gcc 4.2.1</td>
+      <td style="background:#00FF00">&#160;</td>
+      <td style="background:#00FF00">&#160;</td>
+      <td style="background:#00FF00">&#160;</td>
+    </tr>
+    <tr>
+      <td>linux-x86_64 or darwin-x86, gcc 4.6.3_7, -O2 or less</td>
+      <td style="background:#00FF00">&#160;</td>
+      <td style="background:#00FF00">&#160;</td>
+      <td style="background:#00FF00">&#160;</td>
+    </tr>
+    <tr>
+      <td>linux-x86_64 or darwin-x86, gcc 4.6.3_7, -O3</td>
+      <td style="background:#E25822">&#160;</td>
+      <td style="background:#E25822">&#160;</td>
+      <td style="background:#E25822">&#160;</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+<h2>Testing</h2>
+
+<p>
+<i>I've started preparting some scripts to will automate testing of all EPICS v4 modules and provide a report.</i>
+</p>
+
+
+</body>
+</html>
