@@ -27,11 +27,6 @@ h2 { page-break-before : always; }
   Getting Started with EPICS V4, Editors Draft, 18-Jan-2013</h2>
 <dl>
 <dt>This version:</dt>
-<!--
-<dd><a href=
-"http://epics-pvdata.sourceforge.net/gettingStarted_20121030.html">
-gettingStarted_20121030.html</a></dd>
--->
 <dd><a href=
 "gettingStarted_20130118.html">
 gettingStarted_20130118.html</a></dd>
@@ -47,6 +42,7 @@ gettingStarted_20121030.html</a>
 <dt>Editors:</dt>
 <dd>Greg White, PSI, SLAC</dd>
 <dd>Timo Korhonen, PSI</dd>
+<dd>Dave Hickin, Diamond</dd>
 </dl>
 <hr />
 </div> <!-- Header material -->
@@ -565,10 +561,9 @@ server, get data back dependent on the arguments).</p>
   <dd>In particular, you may like to start with the,  <a
 href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src/helloWorld">
 helloWorld example service</a>. HelloWorld is composed of a server and a client. The
-  server is built on top of a EPICS V4 JavaIOC, which process a single EPICS V4
-  record which shows how to define a record for taking a single argument (a persons
-  name to whom to say hello). The service returns a string which greets
-  that person. The client prints the received greeting. Start with its <a
+  server is built on top of the RPCSever framework in pvAccessJava.
+  The service returns a string which greets
+  that person and the client prints the received greeting. Start with its <a
   href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HELLOWORLD_README.txt"
   >HELLOWORLD_README.txt</a>. This demonstrates an EPICS V4 record whose value is subject to
   a user argument.
