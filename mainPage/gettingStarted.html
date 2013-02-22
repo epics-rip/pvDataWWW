@@ -24,25 +24,26 @@ h2 { page-break-before : always; }
 <h1>GETTING STARTED WITH EPICS V4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 <h2 class="nocount" >
-  Getting Started with EPICS V4, Editors Draft, 18-Jan-2013</h2>
+  Getting Started with EPICS V4, Editors Draft, 22-Jan-2013</h2>
 <dl>
 <dt>This version:</dt>
 <dd><a href=
-"gettingStarted_20130118.html">
-gettingStarted_20130118.html</a></dd>
+"http://epics-pvdata.sourceforge.net/gettingStarted_20130122.html">
+gettingStarted_20130122.html</a></dd>
 <dt>Latest version:</dt>
 <dd><a href=
 "http://epics-pvdata.sourceforge.net/gettingStarted.html">gettingStarted.html</a></dd>
 <dt>Previous version:</dt>
 <dd>
 <a href=
-"http://epics-pvdata.sourceforge.net/gettingStarted_20121030.html">
-gettingStarted_20121030.html</a>
+"http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html">
+gettingStarted_20130118.html</a>
 </dd>
 <dt>Editors:</dt>
 <dd>Greg White, PSI, SLAC<br>
     Timo Korhonen, PSI<br>
-    Dave Hickin, Diamond</dd>
+    Dave Hickin, Diamond<br>
+    Ralph Lange, HZB/BESSY II</dd>
 </dl>
 <hr />
 </div> <!-- Header material -->
@@ -58,15 +59,28 @@ included.</p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
 
-<p>This is the 18-Jan-2013 version of the Getting Started with EPICS V4. This version adds examples of C++ services and
-in addition has been brought up-to-date with respect to the BETA 2.0 release
- and reflects changes in the organization of the EPICS V4 modules prior to this release. This version is up-to-date with respect to the BETA 2.0 release and with development from
-the Mercurial tips.</p>
+<p>This is the 22-Jan-2013 version of the Getting Started with EPICS V4. This version
+contains updated instructions for building and running pvaSrv, the C++ implementation
+of EPICS V4 access to PVs on a V3 IOC over pvAccess.
 
-<p> NOTE: Subsequent to the release of BETA 2.0, development on pvIOCCPP ceased and V3Channel will be moved to its own
-module, pvaSrv. </p>
+This version is up to date with respect to the BETA 2.0 release in terms of Java
+development and also with development from the Mercurial repositories, including C++
+ implementations and pvaSrv.
+</p>
+<p>
+For C++, subsequent to the release of BETA 2.0, development on pvIOCCPP ceased and
+V3Channel has moved from pvIOCCPP to pvaSrv where it continues to be developed.
+As this document is up-to-date with the mercurial tips it is no longer applicable
+in its entirety for C++ development using the BETA 2.0 release.
+<a href= "http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html"
+>The 18-Jan-2013 version</a>
+ of the guide is applicable for BETA 2.0 for both Java and C++ development. In particular the section
+<a href= "http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html#adding_pvaccess_support_to_an_ioc"
+>Adding pvAccess support to an IOC</a> describes deploying V3Channel. 
+</p>
 
-<p>The next version should include: new instructions updated for the move of V3Channel to pvaSrv.
+<p>The next version should include: section after step-by-step like "going further"
+which points to existing documentation of the EPICS V4 core modules.
 </p>
 
 <div id="toc">
@@ -131,8 +145,8 @@ go further than this Getting Started guide. </p>
 
 <p>Since the development cycle (compile, build, etc) is significantly
 different for each language, and to match suitable language API description to
-suitable use cases, this guide is contains 2 separate major sections below - one for Java
-development and one for C++ development.
+suitable use cases, this guide is split into 2 major parts. Firstly, java
+development and secondly C++ development.
 </p>
 
 <h3>Interoperation with EPICS V3</h3>
@@ -142,8 +156,8 @@ development and one for C++ development.
 <p>In the first, an an embedded pvAccess server inside a V3 IOC accesses records directly
 through the database allowing a V4 client to communicate with the V3 records through pvAccess.
 This is provided by <a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/2.0-BETA/documentation/pvIOCCPP.html#v3channel_user%27s_guide"
->V3Channel</a>, currently part of pvIOCCPP, and implemented in C++.</p>
+ href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html"
+>pvaSrv</a> and implemented in C++.</p>
 <p>Alternatively EPICS V4 can link to EPICS V3 records using Channel Access. This is currently
 available in Java only and 
 in this case two more files, jca*.jar and caj*.jar, are necessary. There are a number 
@@ -504,13 +518,13 @@ in <code>~/.m2/</code>, you have the few you really need. Again, <strong>actual
 version tags, i.e. "2.1-SNAPSHOT" in the example below, will vary as EPICS V4 matures</strong>:</p>
 
 <pre>
-% cd ~/.m2
+% cd ~
 % find . -name "pv*SNAPSHOT.jar" -o -name "*caj*.jar" -o -name "*jca*.jar"
-./repository/epics/pvData/2.1-SNAPSHOT/pvData-2.1-SNAPSHOT.jar
-./repository/epics/jca/2.3.6/jca-2.3.6.jar
-./repository/epics/caj/1.1.10/caj-1.1.10.jar
-./repository/epics/pvAccess/2.1-SNAPSHOT/pvAccess-2.1-SNAPSHOT.jar
-./repository/epics/pvIOC/2.1-SNAPSHOT/pvIOC-2.1-SNAPSHOT.jar
+.m2/repository/epics/pvData/2.1-SNAPSHOT/pvData-2.1-SNAPSHOT.jar
+.m2/repository/epics/jca/2.3.6/jca-2.3.6.jar
+.m2/repository/epics/caj/1.1.10/caj-1.1.10.jar
+.m2/repository/epics/pvAccess/2.1-SNAPSHOT/pvAccess-2.1-SNAPSHOT.jar
+.m2/repository/epics/pvIOC/2.1-SNAPSHOT/pvIOC-2.1-SNAPSHOT.jar
 </pre>
 
 <p>Note that the results gave you not only jar files under <code>~/.m2/</code>, but the sources and
@@ -764,38 +778,46 @@ ChannelArchiverService illustrates:</P>
 
 <h4>Adding pvAccess support to an IOC</h4>
 
-<p>This section describes how to use the C++ implementation of EPICS
- V4 to access EPICS V3 PVs. That is, a version 3 IOC makes the values of V3 channels
-available through pvAccess to EPICS V4 pvAccess clients. </p> 
+<p>This section describes an example of the use of pvaSrv, the C++ implementation of EPICS
+ V4 to access EPICS V3 PVs. That is, a version 3 IOC makes the values of its V3 channels
+available through pvAccess to EPICS V4 pvAccess clients.</p> 
 
 To deploy an IOC with pvAccess support:
 
  <ol>
-   <li>   
-   The pvIOCCPP build (assuming it was successful) has created a ready-to-run example. The source code for it is in the directory <samp> pvIOCCPP/testApp/testV3Channel</samp>.
-   The build also created a boot directory in the pvIOCCPP root, named <samp>iocBoot/testV3Channel</samp>.
-   <kbd>cd</kbd> to that directory.</li>
-<li>Create or modify a file named <code>envPaths</code>. This file contains a number of epicsEnvSet commands
-to set the correct paths. For example, For Linux it might be like the following. For
-   the Mac OS example consistent with the build examples above, see <a
-href="#appendix_b:_help_with_mac_os_x_build" >Help with Mac OS X build</a>:</li>
+  <li>
+  Check out the pvaSrv module from its repository at SourceForge:
+<pre>
+% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvaSrv
+</pre>
+  and build it, similar to the EPICS V4 C++ core modules.</li>
+  <li>   
+  The pvaSrv build (assuming it was successful) has created a ready-to-run example.
+  The source code for it is in the directory <samp>pvaSrv/testApp/testV3Channel</samp>.
+  The build also created a boot directory in the pvaSrv root, named <samp>iocBoot/testV3Channel</samp>.
+  <kbd>cd</kbd> to that directory.</li>
+  <li>Create or modify a file named <code>envPaths</code>. This file contains a number of epicsEnvSet commands
+  to set the correct paths. For example, For Linux it might be like the following. For
+  the Mac OS example consistent with the build examples above, see
+  <a href="#appendix_b:_help_with_mac_os_x_build">Help with Mac OS X build</a>:</li>
 <pre>
 epicsEnvSet("ARCH","linux-x86")
 epicsEnvSet("IOC","testV3Channel")
-epicsEnvSet("TOP","/home/example/epics4/pvIOCCPP")
+epicsEnvSet("TOP","/home/example/epics4/pvaSrv")
 epicsEnvSet("EPICS_BASE","/usr/local/epics/base-3.14.12")
 epicsEnvSet("PVDATA","$(TOP)/../pvDataCPP")
 epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
+epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
 </pre>
 
 <li>From the iocBoot/testV3Channel directory you can start the test IOC (on the host, as a "soft" IOC):
 <pre>
-% ../../bin/&ltarch&gt/example st.cmd
+% ../../bin/&ltarch&gt/testV3Channel st.cmd
 </pre>
 ("arch" refers to the architecture for which you have built, e.g. linux-x86)
 </li>
 <li>
-The EPICS databases are under the pvIOCCPP root, in  <code>pvIOCCPP/db</code>. You can add db files, templates etc. there.
+The EPICS databases are under the pvaSrv root, in <code>pvaSrv/db</code>. You can add db files, templates etc. there.
 Edit the st.cmd to make it load your EPICS databases.
 </li>
 </ol>
@@ -803,7 +825,7 @@ Edit the st.cmd to make it load your EPICS databases.
 <p><strong>sample output from my test to run the IOC</strong>.</p>
 
 <pre>
-bash-3.2$ ../../bin/linux-x86/example st.cmd
+bash-3.2$ ../../bin/linux-x86/testV3Channel st.cmd
 < envPaths
 epicsEnvSet("ARCH","linux-x86")
 epicsEnvSet("IOC","testV3Channel")
@@ -811,40 +833,57 @@ epicsEnvSet("TOP","/home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP")
 epicsEnvSet("EPICS_BASE","/usr/local/epics/base-3.14.12")
 epicsEnvSet("PVDATA","/home/scratch/korhonen/EPICSv4/testbuild/pvDataCPP")
 epicsEnvSet("PVACCESS","/home/scratch/korhonen/EPICSv4/testbuild/pvAccessCPP")
-cd /home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP
+epicsEnvSet("PVIOC","/home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP")
+cd /home/scratch/korhonen/EPICSv4/testbuild/pvaSrv
 ## Register all support components
 dbLoadDatabase("dbd/example.dbd")
-example_registerRecordDeviceDriver(pdbbase)
+testV3Channel_registerRecordDeviceDriver(pdbbase)
 ## Load record instances
-dbLoadRecords("db/dbScalar.db","name=byte01,type=byte")
-dbLoadRecords("db/dbScalar.db","name=short01,type=short")
-dbLoadRecords("db/dbScalar.db","name=int01,type=longout")
-Record "int01" does not have a field "PREC"
-Error at or before ")" in file "db/dbScalar.db" line 3
-Can't set "int01.DRVH" to "9.9"
-Error at or before ")" in file "db/dbScalar.db" line 7
-Can't set "int01.DRVL" to "-0.1"
-Error at or before ")" in file "db/dbScalar.db" line 8
+dbLoadRecords("db/synchronous.db")
+dbLoadRecords("db/dbInteger.db","name=byte01,type=byte")
+dbLoadRecords("db/dbInteger.db","name=short01,type=short")
+dbLoadRecords("db/dbInteger.db","name=ubyte01,type=ubyte")
+dbLoadRecords("db/dbInteger.db","name=ushort01,type=ushort")
+dbLoadRecords("db/dbInteger.db","name=uint01,type=ulong")
+dbLoadRecords("db/dbInteger.db","name=int01,type=longout")
 dbLoadRecords("db/dbScalar.db","name=float01,type=float")
 dbLoadRecords("db/dbScalar.db","name=double01,type=ao")
 dbLoadRecords("db/dbArray.db","name=byteArray01,type=CHAR")
 dbLoadRecords("db/dbArray.db","name=shortArray01,type=SHORT")
 dbLoadRecords("db/dbArray.db","name=intArray01,type=LONG")
+dbLoadRecords("db/dbArray.db","name=ubyteArray01,type=UCHAR")
+dbLoadRecords("db/dbArray.db","name=ushortArray01,type=USHORT")
+dbLoadRecords("db/dbArray.db","name=uintArray01,type=ULONG")
 dbLoadRecords("db/dbArray.db","name=floatArray01,type=FLOAT")
 dbLoadRecords("db/dbArray.db","name=doubleArray01,type=DOUBLE")
 dbLoadRecords("db/dbString.db","name=string01")
+dbLoadRecords("db/dbBigstringin.db","name=bigstring01")
 dbLoadRecords("db/dbStringArray.db","name=stringArray01")
 dbLoadRecords("db/dbEnum.db","name=enum01")
 dbLoadRecords("db/dbCounter.db","name=counter01");
-dbLoadRecords("db/dbScalar.db","name=byte02,type=byte")
-dbLoadRecords("db/dbScalar.db","name=short02,type=short")
-dbLoadRecords("db/dbScalar.db","name=int02,type=longout")
-Record "int02" does not have a field "PREC"
-Error at or before ")" in file "db/dbScalar.db" line 3
-Can't set "int02.DRVH" to "9.9"
-Error at or before ")" in file "db/dbScalar.db" line 7
-Can't set "int02.DRVL" to "-0.1"
-Error at or before ")" in file "db/dbScalar.db" line 8
+dbLoadRecords("db/dbInteger.db","name=byte02,type=byte")
+dbLoadRecords("db/dbInteger.db","name=short02,type=short")
+dbLoadRecords("db/dbInteger.db","name=ubyte02,type=ubyte")
+dbLoadRecords("db/dbInteger.db","name=ushort02,type=ushort")
+dbLoadRecords("db/dbInteger.db","name=uint02,type=ulong")
+dbLoadRecords("db/dbInteger.db","name=int02,type=longout")
+dbLoadRecords("db/dbScalar.db","name=float02,type=float")
+dbLoadRecords("db/dbScalar.db","name=double02,type=ao")
+dbLoadRecords("db/dbArray.db","name=byteArray02,type=CHAR")
+dbLoadRecords("db/dbArray.db","name=shortArray02,type=SHORT")
+dbLoadRecords("db/dbArray.db","name=intArray02,type=LONG")
+dbLoadRecords("db/dbArray.db","name=floatArray02,type=FLOAT")
+dbLoadRecords("db/dbArray.db","name=doubleArray02,type=DOUBLE")
+dbLoadRecords("db/dbString.db","name=string02")
+dbLoadRecords("db/dbStringArray.db","name=stringArray02")
+dbLoadRecords("db/dbEnum.db","name=enum01")
+dbLoadRecords("db/dbCounter.db","name=counter01");
+dbLoadRecords("db/dbInteger.db","name=byte02,type=byte")
+dbLoadRecords("db/dbInteger.db","name=short02,type=short")
+dbLoadRecords("db/dbInteger.db","name=ubyte02,type=ubyte")
+dbLoadRecords("db/dbInteger.db","name=ushort02,type=ushort")
+dbLoadRecords("db/dbInteger.db","name=uint02,type=ulong")
+dbLoadRecords("db/dbInteger.db","name=int02,type=longout")
 dbLoadRecords("db/dbScalar.db","name=float02,type=float")
 dbLoadRecords("db/dbScalar.db","name=double02,type=ao")
 dbLoadRecords("db/dbArray.db","name=byteArray02,type=CHAR")
@@ -856,15 +895,12 @@ dbLoadRecords("db/dbString.db","name=string02")
 dbLoadRecords("db/dbStringArray.db","name=stringArray02")
 dbLoadRecords("db/dbEnum.db","name=enum02")
 dbLoadRecords("db/dbCounter.db","name=counter02");
-dbLoadRecords("db/dbScalar.db","name=byte03,type=byte")
-dbLoadRecords("db/dbScalar.db","name=short03,type=short")
-dbLoadRecords("db/dbScalar.db","name=int03,type=longout")
-Record "int03" does not have a field "PREC"
-Error at or before ")" in file "db/dbScalar.db" line 3
-Can't set "int03.DRVH" to "9.9"
-Error at or before ")" in file "db/dbScalar.db" line 7
-Can't set "int03.DRVL" to "-0.1"
-Error at or before ")" in file "db/dbScalar.db" line 8
+dbLoadRecords("db/dbInteger.db","name=byte03,type=byte")
+dbLoadRecords("db/dbInteger.db","name=short03,type=short")
+dbLoadRecords("db/dbInteger.db","name=ubyte03,type=ubyte")
+dbLoadRecords("db/dbInteger.db","name=ushort03,type=ushort")
+dbLoadRecords("db/dbInteger.db","name=uint03,type=ulong")
+dbLoadRecords("db/dbInteger.db","name=int03,type=longout")
 dbLoadRecords("db/dbScalar.db","name=float03,type=float")
 dbLoadRecords("db/dbScalar.db","name=double03,type=ao")
 dbLoadRecords("db/dbArray.db","name=byteArray03,type=CHAR")
@@ -876,7 +912,7 @@ dbLoadRecords("db/dbString.db","name=string03")
 dbLoadRecords("db/dbStringArray.db","name=stringArray03")
 dbLoadRecords("db/dbEnum.db","name=enum03")
 dbLoadRecords("db/dbCounter.db","name=counter03");
-cd /home/scratch/korhonen/EPICSv4/testbuild/pvIOCCPP/iocBoot/testV3Channel
+cd /home/lange/NetBeansProjects/V4/pvaSrv/iocBoot/testV3Channel
 iocInit()
 Starting iocInit
 ############################################################################
@@ -884,32 +920,40 @@ Starting iocInit
 ## EPICS Base built Oct 18 2011
 ############################################################################
 iocRun: All initialization complete
-epicsThreadSleep(1.0)
+epicsThreadSleep(2.0)
+casr
+Channel Access Server V4.11
+No clients connected.
+setV3ChannelDebugLevel 0
+new level 0
+setChannelBaseDebugLevel 0
+new level 0
 startV3Channel
-epicsThreadSleep(1.0)
-VERSION : CA Server v0.9.0
+VERSION : pvAccess Server v1.2-SNAPSHOT
 PROVIDER_NAMES : v3Channel
-BEACON_ADDR_LIST :
+BEACON_ADDR_LIST : 
 AUTO_BEACON_ADDR_LIST : 1
 BEACON_PERIOD : 15
-BROADCAST_PORT : 5067
-SERVER_PORT : 5066
+BROADCAST_PORT : 5076
+SERVER_PORT : 5075
 RCV_BUFFER_SIZE : 16384
-IGNORE_ADDR_LIST:
+IGNORE_ADDR_LIST: 
 STATE : INITIALIZED
-startExampleChannel exampleChannel
+startExampleService serviceRPC
 startPVServiceChannel
-2011-11-11T16:29:56.715 Using dynamically assigned TCP port 39949.
-VERSION : CA Server v0.9.0
+2013-01-22T23:32:23.390 Using dynamically assigned TCP port 48289.
+VERSION : pvAccess Server v1.2-SNAPSHOT
 PROVIDER_NAMES : pvService
-BEACON_ADDR_LIST :
+BEACON_ADDR_LIST : 
 AUTO_BEACON_ADDR_LIST : 1
 BEACON_PERIOD : 15
-BROADCAST_PORT : 5067
-SERVER_PORT : 39949
+BROADCAST_PORT : 5076
+SERVER_PORT : 48289
 RCV_BUFFER_SIZE : 16384
-IGNORE_ADDR_LIST:
+IGNORE_ADDR_LIST: 
 STATE : INITIALIZED
+dbpf string01 10.1
+DBR_STRING:          "10.1"   
 epics>
 </pre>
 
@@ -919,9 +963,17 @@ epics> dbl
 double01
 double02
 double03
+syncputa
+syncputb
+syncputc
 counter01
 counter02
 counter03
+syncgeta
+syncgetb
+syncgetc
+syncgetfanout
+syncputfanout
 int01
 int02
 int03
@@ -949,20 +1001,30 @@ shortArray03
 stringArray01
 stringArray02
 stringArray03
+ubyteArray01
+uintArray01
+ushortArray01
 byte01
 byte02
 byte03
 short01
 short02
 short03
+ubyte01
+ubyte02
+ubyte03
+ushort01
+ushort02
+ushort03
+uint01
+uint02
+uint03
 float01
 float02
 float03
+bigstring01
 epics>  
 </pre>
-
-Note: the errors in the above output like <pre>Record "int03" does not have a field "PREC"</pre>
-are due to the way the example records are loaded. They can be safely ignored in this case.
 
 <p>
 About the directory structures
@@ -1007,10 +1069,6 @@ lib              - libraries (libpvIOC etc.)
 pvIOCApp         - pvIOC source code
 testApp          - sample code for a test IOC and RPC service
 </pre>
-
-<p class="editor">
-[TODO: Are the QtC-xxx files somehow usable (with Qt Creator or similar) or is this just leftovers from a try?
-</p>
 
 <h2 class="nocount" id="appendix:a">Appendix A: Building EPICS V3 base</h3>
 <p>An example of downloading and building EPICS V3 version 3.14.12, on Mac OS X, is
@@ -1122,7 +1180,7 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 </div>
 
 <hr />
-<address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond</address>
+<address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
 <!-- hhmts start -->Last modified: Tue Oct 30 14:07:14 CET 2012 <!-- hhmts end -->
 
 </body>
