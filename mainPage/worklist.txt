@@ -1,13 +1,77 @@
 
 STATUS AND ACTIVITIES
-Last update 9-Jan-2013. 
+Last update 27-Feb-2013. 
 
-Status of this document. Presently the document lists mainly incomplete activities
-that are part of the 2011-2012 charter, rather than new activities related to
-pvDatabase, big data etc. In a future draft this document will attempt to list all
-activities, their status, and the status of the software themselves.
+HOT ACTIVITIES
+==============
+* Efficient handling of big data, esp in IOC. 
 
+    + Looking at redesign of the pvData CPP API for arrays (MD, MK, MS). 
+      27/2/13: Work for use of shared_ptr will be separated from work to support
+      discontinguous arrays. DH will review API using shared_ptr for symmetry with
+      Java, then will implement (with MK's blessing!) [27-2-13]
+    + Modifications to IOC for data pipelining (MD, AJ)
+      27/2/13: No concrete design yet. Plan to develop from pvaSrv and test image
+      server experiences.
+    + Creatign a prototype of “batched field access” (BFA) API for high performance
+      control of record locksets [27-2-13]. Plan to use in pvaSrv. MD, RL.  
 
+* pvaSrv (the pvaccess server for an "EPICS V3 IOC") hence the primary V3-V4 interop mechanism. 
+  RL now working on connection to V3.14. Connection to V3.15 will be later.
+  (RES and AIs in http://epicsv4.titanpad.com/ep/pad/view/41/latest)
+  
+* Performance measurement benchmarking testbench creation; benchmarking EPICS V4
+  beta 2.
+  MS
+  Status: Presented at PSI meeting, but output wasn't right (RMS where meant mean)
+  and only indicated mean times, not further structure like how long 1st roundtrip took. 
+ 
+* Assembling formal list of architectures and compilers tried and tested with EPICS V4 
+  MS, AJ, GW. 
+  [27-2-13] 20/2/13 First pass table for SL and vxWorks completed. 
+
+* vxWorks port, Jenkins, and establishing which versions (<6, or 6.x, or >= 6.6 [for gcc
+  4.1.2] only) we will support. 
+  DZ,MS,AJ. 
+  27/2/13: vxWorks port succeeds if microbenchmarking is not included. MS
+  working with DZ to fix.
+ 
+* Installation and deployment of EPICS V4 at PSI, and use in production PSI modelling
+  GW/TK/DZ. 
+  27/2/13: E 4.2.0-Beta and 4.2.0-snapshot installed at PSI. services and 
+  the dev & production environment of those in active development. Health excellent.
+
+* 2013 Charter 
+  GW/BD. 
+  27/2/13: New thrust for 2013 being evolved to the IOC. pvIOCCPP work being 
+  furlowed. Instead work on getting structured data in high perf pipeline from
+  exiting IOC being developmed. New Charter draft expected March 2013.
+
+* pvManager and eget integration with Ntypes
+  MS
+  20-Feb-13 eget can now disp NTImages! 
+  DH to get for MS what he needs to encode a BGR image (fourcc code and the image
+  depth & color mode)
+
+* Review of requirements for the API of monitors.
+  MK. Doc started to review present API [27-2-13] but primary audience (RL) wants
+  more detail. RL reviewing and we will take it up again in meeting soon. Required
+  for pvaSrv.
+
+Other - are these active or yet to start?
+=========================================
+* Image Processing pipeline.
+
+Forthcoming activities
+======================
+In the hopper, or looking for lead.
+* Microsoft Visual C++ compiler on Windows port. Lead not known. Est start not known.
+
+* Adding a "reflection" API to pvAccess; that is, an API for
+giving data about PVs, so that one can ask for instance, what host is hosting the
+pvaccess server which answers for the PV, what is the structure of the PV, etc.
+
+ 
 INCOMPLETE ACTIVITIES (not including AIs)
 ==========================================
 The following are ongoing activities and those required by the 2011-2012 charter,
@@ -138,3 +202,7 @@ OUT OF SCOPE BUT WE'D LOVE IF SOMEONE DID
 References
 ==========
 [1] caQtDM, http://epics.web.psi.ch/software/caqtdm/
+
+Meeting Refs
+============
+[27-2-13] https://docs.google.com/document/d/1TVlj59sHAoWRcqRFzdqYiitqMC-OvaSys6NvLxKVoMc/pub
