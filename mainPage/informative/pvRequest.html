@@ -1,0 +1,915 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS pvRequest</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+ </script>
+</head>
+
+<body>
+
+<div class="head">
+<h1>EPICS pvRequest</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date. -->
+
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 27-Feb-2013</h2>
+<dl>
+  <dt>Latest version:</dt>
+    <dd><a
+      href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/informative/pvRequest.html">
+         pvRequest.html</a>
+    </dd>
+  <dt>This version:</dt>
+    <dd><a
+      href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/informative/pvRequest_20130227.html">
+         pvRequest_20130227.html</a>
+    </dd>
+    <dt>Previous version:</dt>
+      <dd>None</dd>
+  <dt>Editors:</dt>
+    <dd>Marty Kraimer BNL</dd>
+</dl>
+</div>
+
+<h2 class="nocount">Abstract</h2>
+
+<p>Each create method of pvAccces::Channel has an argument <b>PVStructure pvRequest</b>.
+This document discusses how this argument is defined and used.
+</p>
+<p>This product is available via an <a
+href="http://epics-pvdata.sourceforge.net/LICENSE.html">open source
+license</a></p>
+<p>This document is for 
+related set of products:</p>
+<dl>
+  <dt>pvData</dt>
+    <dd>pvData (Process Variable Data) defines and implements an efficent way
+      to store, access, and transmit memory resident structured data</dd>
+  <dt>pvAccess</dt>
+    <dd>pvAccess is network support for transmitting pvData.</dd>
+  <dt>pvIOC</dt>
+    <dd>A pvIOC is a network accessable smart real time database. The database
+      consists of memory resident records. Each record has a name that is
+      unique within the local area network and contains a top level pvData
+      structure. Each field of a record can optionally have support code
+      attached to it. The support is called when a request is made to process
+      the record. The support code is what makes the record "smart". A pvAccess
+      server is provided so that the records can be accesed via the network.
+    </dd>
+  <dt>pvService</dt>
+    <dd>A middle layer for implementing services.</dd>
+</dl>
+
+<p>Each of the products has a Java and a C++ implementation.</p>
+
+<p>The products are all part of the <a
+href="http://epics-pvdata.sourceforge.net/">V4</a> implementation of <a
+href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
+Control System.</a></p>
+
+<h2 class="nocount">Status of this Document</h2>
+
+<p>This is the 27-Feb-2013 version of the the description of pvRequest.</p>
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+
+<div id="contents" class="contents">
+<h2>Introduction</h2>
+
+<p><b>pvAccess</b> defines interface <b>Channel</b> which has a number of create methods,
+which have a argument <b>pvRequest</b>:</p>
+<pre>
+    ChannelProcess createChannelProcess(
+        ChannelProcessRequester channelProcessRequester,
+        PVStructure pvRequest);
+    ChannelGet createChannelGet(
+        ChannelGetRequester channelGetRequester,
+        PVStructure pvRequest);
+    ChannelPut createChannelPut(
+        ChannelPutRequester channelPutRequester,
+        PVStructure pvRequest);
+    ChannelPutGet createChannelPutGet(
+        ChannelPutGetRequester channelPutGetRequester,
+        PVStructure pvRequest);
+    ChannelRPC createChannelRPC(
+        ChannelRPCRequester channelRPCRequester,
+        PVStructure pvRequest);
+    ChannelArray createChannelArray(
+        ChannelArrayRequester channelArrayRequester,
+        PVStructure pvRequest);
+    Monitor createMonitor(
+        MonitorRequester MonitorRequester,
+        PVStructure pvRequest);
+}</pre>
+<p>A <b>Channel</b> is a connection between a client and a server.
+For each create method it is the server that determines how <b>pvRequest</b> should be defined.
+The client is expected to know what the server expects.
+If the client passes an illegal <b>pvRequest</b> to the server then the server will respond to the create method
+with an error message.</p>
+<p><b>pvAcccess</b> does <b>not</b> define the format of a <b>pvRequest</b> structure but it does
+provide a convenience method:</p>
+<pre>
+PVStructure createRequest(String request, Requester requester);
+</pre>
+This creates a <b>pvRequest</b> structure that can be used to communicate with a server that supports
+the <b>pcIOC Data Model</b> as defined in the next section.</p>
+
+<p>The pvdata project also defines a standard set of 
+<a
+href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">
+normative types</a>,
+which are used to pass data between client and server.
+The <b>pcIOC Data Model</b> supports the general normative types <b>NTScaler, NTScalarArrray,</b> and <b>NTEnum</b>
+Other normative types can define their own convenience methods for creating <b>pvRequest</b> structures to
+pass between client and server</b>
+The other normative types will not be discussed in this document.</p>
+
+<p>This document is based on material that is currently defined in
+<b>pvDataJava.html</b>, <b>pvAcccesJava.html</b>, and <b>pvIOCJava.html</b>.
+This document makes pvRequest easier to understand by bringing all the concepts into a single document.
+</p>
+
+<h2>pvIOC Data Model</h2>
+
+<h3>Quick Summary</h3>
+
+A pvIOC has a database of smart memory resident records.
+Each record has a name, which is what pvAccces calls the channel name.
+A record has a top level PVStructure, which holds data that is accessed by clients.
+A record is smart because it can be processed which results in calling code attached to the record and optionally
+to fields in the record.
+In this document the term record is used but the discussion can also apply to servers that provide
+access to a top level pvStructure that can be accessed via a channel name but do not implement records.</p>
+</p>
+<p>The Data Model supports general purpose client tools. A set of structures
+are defined that support the data model. A pvAccess server supports the data model if it
+follows a few simple guidelines.</p>
+
+<p>The model can briefly be described as follows: Clients access a field named
+<b>value</b>, which may be a field in the top level structure of a record or in a
+substructure. All other fields in the structure are considered properties of
+the value field. The fieldname is the property name. The value is usually a
+data field, i.e. a scalar type or an array with the elementType being scalar.
+All other fields of the structure support the value. The standard property fields
+are <b>timeStamp</b>, <b>alarm</b>, <b>display</b>, and <b>control</b>.</p>
+<p>A structure may also have fields other than the standard property fields but these other fields
+are normally not of interest to clients and are not used by general purpose client tools.
+These additiional fields are normally used by support code that gets called as part of record processing.
+</p>
+
+<p>For example the following record has a single <b>value</b> field. The value field
+has property fields <b>timeStamp</b>, <b>alarm</b>, and <b>display</b>.
+It also has a field <b>valueAlarm</b> which is not of interest to most clients.</p>
+<pre>
+record scalarDouble
+    double value 0.0
+    time_t 1969-12-31 19:00:00.000 userTag 0
+    alarm_t alarm
+        severity NONE status NONE
+        message 
+    display_t display
+        double limitLow 0.0
+        double limitHigh 0.0
+        string description Sample Description
+        string format %f
+        string units volts
+    valueAlarm_t valueAlarm
+        boolean active true
+        double lowAlarmLimit 2.0
+        double lowWarningLimit 4.0
+        double highWarningLimit 8.0
+        double highAlarmLimit 10.0
+        int lowAlarmSeverity 2
+        int lowWarningSeverity 1
+        int highWarningSeverity 1
+        int highAlarmSeverity 2
+        double hystersis 0.2
+</pre>
+<p>The following example has three value fields: <b>voltage.value, current.value,</b>
+and <b>power.value</b>
+The record itself has properties <b>alarm</b> and <b>timeStamp</b>
+<b>voltage.value</b> and <b>power.value</b> have no property fields.
+<b>current.value</b> has a property fields <b>alarm</b> and <b>display</b>.</p>
+<pre>
+record psSimple
+    alarm_t alarm
+        severity MAJOR status RECORD
+        message highAlarm
+    time_t 2013-02-25 10:07:46.529 userTag 0
+    structure voltage
+        double value 1.0
+    structure current
+        double value 10.0
+        alarm_t alarm
+            severity MAJOR status RECORD
+            message highAlarm
+        display_t display
+            double limitLow -10.0
+            double limitHigh 10.0
+            string description 
+            string format 
+            string units current
+    structure power
+        double value 10.0
+</pre>
+
+<p>A general purpose client tool might ask for power.value, current.value, or voltage.value.
+A more specialized client might be interested in the entire record.
+</p>
+
+<p>This data model supports existing EPICS V3 channel access clients. More
+powerful or special purpose clients can handle structured data. Such clients
+can access a structure. For example a client can ask for an entire record. An
+example is swtshell.</p>
+
+<h3>Details about pvIOC Data Model</h3>
+
+<h4>Basic Concept</h4>
+
+<p>A structure follows the pvIOC Data Model if it has a set of fields that have
+names and types that support the data model. It can have additional fields,
+that can also be considered properties. The following field names have special
+meaning, i.e. are properties for general purpose clients.</p>
+<dl>
+  <dt>value</dt>
+    <dd>This is normally defined since most general purpose clients access this
+      field. All other fields in the structure support or describe the value
+      field. The type can any supported type but is usually one of the
+      following:
+      <dl>
+        <dt>scalar</dt>
+          <dd>One of <b>boolean</b>, <b>byte</b>, <b>short</b>,
+          <b>int</b>, <b>long</b>, <b>float</b>, <b>double</b>, or <b>string</b></dd>
+        <dt>scalar array</dt>
+          <dd>An array with the element type being a scalar type</dd>
+        <dt>enumerated structure</dt>
+          <dd>A structure that has fields named <b>index</b> and
+            <b>choices</b>. <b>index</b> is an <b>int</b> that selects a choice.
+            <b>choices</b> is an array of strings that
+            defines the complete set of choices.</dd>
+        <dt>other</dt>
+          <dd>Other structures can also be defined if clients and support code
+            agree on the meaning. Some examples are: 1) A structure defining a
+            2D matrix, 2) A structure defining an image, 3) A structure that
+            simulates a remote method, ...</dd>
+      </dl>
+    </dd>
+  <dt>timeStamp</dt>
+    <dd>The timeStamp. The type MUST be a timeStamp structure. Also if the
+      javaIOC structure does not have a timeStamp then a search up the parent
+      tree is made to find a timeStamp.</dd>
+  <dt>alarm</dt>
+    <dd>The alarm. The type MUST be an alarm structure. </dd>
+  <dt>display</dt>
+    <dd>A display structure as described below. It provides display
+      characteristics for the value field.</dd>
+  <dt>control</dt>
+    <dd>A control structure as described below. It provides control
+      characteristics for the value field.</dd>
+  <dt>other</dt>
+    <dd>Other standard properties can be defined.</dd>
+</dl>
+
+<p>In addition the javaIOC structure can have additional fields that support
+the value field but are not recognized by most general purpose client tools.
+Typical examples are:</p>
+<dl>
+  <dt>input</dt>
+    <dd>A field with support that changes the value field. This can be
+      anything. It can be a channel access link. It can obtain a value from
+      hardware. Etc.</dd>
+  <dt>valueAlarm</dt>
+    <dd>A field with support that looks for alarm conditions based on the
+    value.</dd>
+  <dt>output</dt>
+    <dd>A field with support that sends the current value
+      somewhere else. This can be anything. It can be a channel access link. It
+      can write a value to hardware. Etc.</dd>
+  <dt>link, links</dt>
+    <dd>A structure field that contains one or more fields that are database or
+      channel access links to other records and that do not effect the record
+      containing the link field. Thus the database or channel access links are
+      either process or output links.</dd>
+</dl>
+
+<p>The model allows for device records. A device record has fields that are
+structures that support the javaIOC data model. For example a power supply
+record can have fields power, voltage, current that each support the javaIOC
+data model. </p>
+<h3>Definitions for Standard Properties</h3>
+
+<p>The set of structures for standard properties for general purpose client
+tools are defined in pvData. These are:</p>
+<dl>
+    <dt>alarm</dt>
+       <dd>A structure that has the fields:
+       <pre>
+structure alarm
+    int severity
+    int status
+    string message
+       </pre>
+        An alarm also has associated convenience code for processing and displaying alarms.
+        In particular the convenience code provides methods that treat <b>severity</b> and <b>status</b>
+        like enumerated values.
+       </dd>
+    <dt>timeStamp</dt>
+       <dd>A structure that has the fields:
+       <pre>
+structure timeStamp
+    long secondsPastEpoch
+    int nanoSeconds
+    int userTag
+       </pre>
+        A timeStamp also has associated convenience code for processing and displaying timeStamps..
+       </dd>
+    <dt>display</dt>
+       <dd>A structure that has the fields:
+       <pre>
+structure display
+    double limitLow
+    double limitHigh
+    string description
+    string format
+    string units
+       </pre>
+       </dd>
+    <dt>control</dt>
+       <dd>A structure that has the fields:
+       <pre>
+structure control
+    double limitLow
+    double limitHigh
+    double minStep
+       </pre>
+       </dd>
+</dl>
+<p>See the documentation for either pvDataJava or pvDataCPP for more details about property fields.</p>
+
+<h2>Create Request</h2>
+<h3>Where Defined</h3>
+<p><b>pvAccess</b> (both pvAccessJava and pvAccessCPP) have a convenience class with a method createRequest.
+For example pvAcccessJava has:</p>
+<pre>
+public class CreateRequestFactory {
+   public static PVStructure createRequest(String request,Requester requester) {
+        return CreateRequestImpl.createRequest(request,requester);
+    }
+}
+</pre>
+<h3>Purpose</h3>
+<p>The purpose is to create request structures for accesssing records in a server that supports the pvIOC
+data model.
+It allows the caller to specify the following:</p>
+<dl>
+  <dt>Global Options</dt>
+    <dd>Global options are options that apply to the record itself.</dd>
+  <dt>Desired Fields</dt>
+     <dd>An arbitrary set of subfields can be selected from the top level structure that holds the
+      data in the record.</dd>
+  <dt>Field Options</dt>
+     <dd>These are options that apply to a subfield from the top level structure that holds the
+      data in the record.</dd>
+</dl>
+<p><b>NOTE:</b> The term record is adapted from pvIOC. A pvIOC has a memory resident database of <b>smart</b>
+records. A pvAcccess channel is a connection to a record. A record has a top level PVStructure that holds the
+data for the record.
+A pvAcccess server can be implemented that does not use the pvIOC model but it must provide top level
+PVStructures to which a pvAcccess Channel can be attached.
+If the server uses that pvIOC Data Model then createRequest can also be used for this type of server.</p>
+<h3>Syntax</h3>
+<p>A request argument has the syntax:</p>
+<pre>
+record[option,...]field(fieldDef,...)putField(fieldDef,...)getField(fieldDef,...)
+OR
+fieldDef,...
+</pre>
+
+<p>Thus a request consists of record options and sets of field definitions or
+just field definitions. A record option is of the form:</p>
+<pre>
+record[name=value,...]
+</pre>
+
+<p>A field,putFeld,getField is a comma separated set of fieldDefs which are of
+the form:</p>
+<pre>
+fullFieldName
+or 
+fullFieldName[option,...]
+or 
+fullFieldName{request}     // recursive definition
+</pre>
+
+<p>A fullFieldName is the full name of a field in the PVRecord. The name in a
+generated data structure will have just the field name. If
+<b>fieldName{request}</b> is given then the generated data structure will have
+a structure field with subfields. Note that request is a recursive
+definition.</p>
+
+<p>If request is null or an empty string than the entire PVRecord is
+selected.</p>
+
+<p>The syntax was chosen to be easy to use and to parse:</p>
+<dl>
+   <dt>record[]</dt>
+      <dd>
+      Specifies a set of global options, i. e., options that apply to the record itself. 
+      </dd>
+   <dt>field()</dt>
+   <dt>putField()</dt>
+   <dt>getField()</dt>
+      <dd>
+      Each selects a set of subfields of the top level structure.
+      Each defines a comma separated set of <b>fieldDef</b>s.
+      </dd>
+   <dt>fieldDef</dt>
+     <dd>Selects a single subfield of the current structure.</dd>
+   <dt>option</dt>
+      <dd>
+      A <b>name=value</b> pair. Both <b>name</b> and <b>value</b> are character strings.
+      </dd>
+   <dt>[]</dt>
+      <dd>
+      Holds a comma separated set of <b>option</b>s.
+      </dd>
+   <dt>{}</dt>
+      <dd>
+      Selects a set of subfields of a substructure within the top level structure.
+      Each defines a comma separated set of <b>fieldDef</b>s.
+      This is a recursive definition.
+      Thus a <b>fullFieldName</b> within <b>{}</b> is relative to structure that is referenced
+      by <b>{}</b>.
+      </dd>
+</dl>
+<h3>Examples</h3>
+<p>A Java client can create a request as follows:</p>
+<pre>
+PVStructure pvRequest = CreateRequestFactory.createRequest(request,requester);
+</pre>
+
+<p><b>NOTE</b>: The full path is
+org.epics.pvaccess.client.CreateRequestFactory.</p>
+<p>A C++ client calls:</p>
+<pre>
+epics::pvData::PVStructure::shared_pointer pvRequest = getCreateRequest()-&gt;createRequest(request,requester);
+</pre>
+<p>For both Java and C++:</p>
+<dl>
+  <dt>request</dt>
+   <dd>A <b>string</b>.
+      The syntax is what is described above.
+   </dd>
+  <dt>requester</dt>
+     <dd>A <b>Requester</b> object. See <b>pvAcccesJava.html</b> or <b>pvAccessCPP.html</b> for details.
+     </dd>
+</dl>
+
+<h4>Simple Requests</h4>
+
+<p>Clients like CSS, Synoptic Displays, Alarm, and Archive tools only want access to
+some combination of the following fields: <b>value</b>, <b>alarm</b>, <b>timeStamp</b>, <b>display</b>, and
+<b>control</b>. If the request is for a record that has these all as top level fields
+the request string is just a comma separated list of the field names. For
+example:</p>
+<pre>
+"value,alarm,timeStamp"
+</pre>
+
+<p>If the record is does not have the desired field at the top level then the
+field can still be accessed. For example:</p>
+<pre>
+"alarm,timeStamp,power.value"
+</pre>
+
+<p>Will get the top level alarm and timeStamp and the value from a
+structure named power. Thus the above works for a record that is structured as
+follows:</p>
+<pre>powerSupply
+    alarm
+    timeStamp
+    power
+       value
+       display
+       ...
+    ...</pre>
+
+<p>The only option most clients want is to request that a record be processed
+as part of a get or put requests. This is done via requests like the
+following:</p>
+<pre>
+"record[process=true]field(value,alarm,timeStamp)"
+</pre>
+
+<h4>Power Supply Example</h4>
+
+<p>The following examples are for a power supply record:</p>
+<pre>
+powerSupply
+    alarm
+    timeStamp
+    power
+       value
+       alarm
+       .. other fields
+    voltage
+       value
+       alarm
+       .. other fields
+    current
+       value
+       alarm
+       .. other fields
+    .. other fields
+</pre>
+
+
+<p>The following request:</p>
+<pre>
+"field(alarm,timeStamp,power.value)"
+</pre>
+
+<p>Will return to the client the following:</p>
+<pre>
+record psSimple
+    alarm_t alarm
+        severity NONE status NONE
+        message null
+    time_t 2013-02-27 06:04:30.997 userTag 0
+    double value 10.0
+</pre>
+
+<p>Note that if the actual record does not have a requested field than it will
+not be present in the structure returned to the client.</p>
+
+<p>The following is the same except that a record option and an option for the
+value field will be given.</p>
+<pre>
+"record[process=true]field(alarm,timeStamp,power.value[shareData=true])"
+</pre>
+
+<p>The options are to process the record and to share the value data with the
+power.value field in the PVRecord.</p>
+
+
+<p>The following:</p>
+<pre>
+"field(alarm,timeStamp,power{value,alarm},current{value,alarm},voltage{value,alarm})"
+</pre>
+
+<p>Will return to the client the following:</p>
+<pre>
+record psEmbeded
+    alarm_t alarm
+        severity NONE status NONE
+        message 
+    time_t 1969-12-31 19:00:00.000 userTag 0
+    structure power
+        double value 0.0
+    structure current
+        double value 0.0
+        alarm_t alarm
+            severity NONE status NONE
+            message 
+    structure voltage
+        double value 0.0
+        alarm_t alarm
+            severity NONE status NONE
+            message 
+</pre>
+
+<h2>pvIOCJava: pvAccessServer</h2>
+<p>This section describes how <b>org.epics.pvioc.pvAccess.ChannelServerFactory</b>
+implements the create methods of the <b>pvAccess Channel</b> interface.
+This is the code that allows a client to access records in a pvIOC.
+In particular it describes how it interpets the <b>PVRequest request</b> argument of the various
+create methods.
+Thus section can also be used as an example for other pvAccess servers.
+</p>
+<p>Before discussing the various channel methods it is first necessary to discuss two other
+facilities provided by pvIOCJava: <b>pvCopy</b> and <b>monitor</b>.
+After these are discussed the various channel create methods are discussed.
+
+<h3>pvCopy</h3>
+
+<p>This package provides support for copying data between a client and
+server. It allows a client to access an arbitrary set of fields of a
+record that exists on the server. This package does not itself
+transfer the data between client and server but provides support for code
+that does, e. g. it is used by <b>ChannelServerFactory</b>.</p>
+
+<p>pvCopy supports the complete <b>fieldDef</b> syntax described above,
+i. e. it supports:</p>
+<dl>
+  <dt>A copy of fields from a record</dt>
+    <dd>It creates a top level structure that holds a copy of an arbitrary
+    set of fields in the top level structure of a record.
+    It provides methods to copy values between the two structures.
+    It copies only the values that have changed since the last copy request.
+    </dd>
+  <dt>field options</dt>
+    <dd>
+    It supports field options. It directly supports the option <b>shareData=true</b>,
+    which can be used to share the raw data for scalar arrays rather than creating storage
+    for a copy.
+    It also makes other field options available to other code, e. g. monitor.
+    </dd>
+    
+</dl>
+
+<h3>monitor</h3>
+<p>This is a facility used to monitor changes in a record.
+It uses the pvCopy facility and also provides two additional features:</p>
+<dl>
+   <dt>Monitor Queue</dt>
+    <dd>It can keep a queue of structures maintained by pvCopy.
+    The client can specify the queue size via a record option, e. g.
+   <b>record[queueSize=2]</b>.
+   <dt>Monitor Algorithms</dt>
+    <dd>It supports the ability to implement monitor algorithms. It has an implementation
+     of the following: <b>onPut</b>, <b>onChange</b>, <b>deadband</b>, and <b>periodic</b>. 
+    For <b>periodic</b> it supports the record option <b>record[periodicRate=rate]</b>.
+    It also supports the creation of other monitoring algorithms.
+    It supports field options to specify values for monitor algorithms.
+    For example <b>value[algorithm=onChange,causeMonitor=true]</b>
+    See pvIOCJava for details.
+    </dd>
+</dl>
+
+
+<h3>ChannelProcess</h3>
+<p>The request argument is ignored.</p>
+
+
+<h3>ChannelGet and ChannelPut</h3>
+<p>The request string has the form:</p>
+<pre>
+"record[options]field(fieldOptions)"
+</pre>
+<p>An example of a record option is <b>process=true</b>.
+The fieldOptions are as defined by pvCopy.</p>
+
+<h3>ChannelPutGet</h3>
+<p>The request string has the form:</p>
+<pre>
+"record[options]putField(fieldOptions)getField(fieldOptions)"
+</pre>
+<p>An example of a record option is <b>process=true</b>.
+The fieldOptions are as defined by pvCopy.</p>
+<p><b>pvIOCJava</b> has a set of records with associated support that implement a remote procedure
+model intended to be accessed via channelPutGet.
+These records have a substructure <b>arguments</b> and a substructure <b>result</b>.
+The client is expected to use the request string:</p>
+<pre>
+"record[process=true]putField(arguments)getField(result)"
+</pre>
+<p>The details of <b>arguments</b> and <b>result</b> depend on the support.
+The client makes a putGet request by setting values in <b>arguments</b> and gets the result from <b>result</b>.
+</p>
+<p>An example is a record that has support for getting a string array where each element is the
+name of a record in the IOC. The argument has a single subfield named <b>regularExpression</b>,
+which is a grep style string.
+An example record is:</p>
+<pre>
+record laptoprecordListPGRPC
+    structure arguments
+        string regularExpression .*Double
+    structure result
+        string status success
+        string[] names [scalarDouble,arrayDouble]
+</pre>
+<p>In this case the client gave an expression <b>.*Double</b>
+which found all records with names that ended with <b>Double</b>.
+For this IOC there were two records <b>scalarDouble</b> and <b>arrayDouble</b>.
+
+<h3>ChannelRPC</h3>
+<p>pvIOCJava has only a simple example of support for <b>channelRPC</b>, which does not use pvRequest.
+<p>channelRPC is mostly used to implement services.
+Most services use normative types for both the argument passed to request and for the structure
+returned by a request. For example a <b>NTNameValue</b> for the argument and <b>NTTable</b> for the result.
+Thus createRequest will not normally be used by channelRPC services.</p>
+
+<h3>ChannelArray</h3>
+<p>The request string has the form:</p>
+<pre>
+"field(fieldDef)"
+</pre>
+<p>FieldDef must refer to a subfield of the top level structure that has type <b>scalarArray</b>
+or <b>structureArray</b>.
+It it does not then an error is returned to the client.</p>
+
+<h3>Monitor</h3>
+<p>The request string has the form:</p>
+<pre>
+"record[options]field(fieldOptions)"
+</pre>
+<p><b>options</b> and <b>fieldOptions</b> are those defined above for monitor.</p>
+
+<h2>pvaSrv</h2>
+<p><b>NOTE:</b> pvaSrv is under development by Ralph Lange.
+Thus this is just some comments about how pvRequest could be handled by pvaSrv.
+Details <b>will</b> change. For example Ralph already has plans to rename multiChannel
+and change it's functionality.
+</p>
+<p>pvaSrv currently has two pvAcccess servers: v3Channel and multiChannel.</p>
+<h3>v3Channel</h3>
+<p>This is a pvAcccess server for accessing records in an EPICS base IOC.
+A channel is a single V3 record.
+v3Channel supports all the Channel create methods except ChannelPutGet and ChannelRPC.
+For the others it supports the pvIOC Data Model.
+Thus a pvRequest can be created via createRequest as described above.
+A V3 record has a "flat" structure so it appears as a structure of the following type:</p>
+<pre>
+structure
+    &lt;someType&gt; value
+    structure alarm
+    structure timeStamp
+    structure display
+    structure control
+</pre>
+<p>The v3Channel implemantation takes care of all conversions from the way V3 records are implemented
+and the pcIOC Data model.</p>
+<h3>multiChannel</h3>
+<p>Since this is a work in progress only a brief comment will be made.
+The support could be implemented so that it supports the pvIOCData Model, i. e. so that
+the client can use createRequest to create pvRequest structures.
+It is not clear if this is desirable. It may be better to provide custom support for creating
+the pvRequest structures that are easier for clients to use.</p>
+
+<h2>Syntax for pvRequest structure created by createRequest</h2>
+<p><b>NOTE:</b> This section is only of interest to someone who is implementing code that
+has to introspect a structure generated by createRequest.</p>
+
+<p>pvRequest is a PVStructure that describes 1) record options and 2) field
+requests and options. It has the following structure:</p>
+<pre>
+structure
+  structure record
+    structure _options
+      option
+      ...
+  structure field
+    structure fieldName
+      structure _options
+        option
+        ...
+      structure fieldName
+        structure _options
+          option
+          ...
+        ...  
+  structure putField
+    structure fieldName
+      structure _options
+        option
+        ...
+      structure fieldName
+        structure _options
+          option
+          ...
+        ...  
+  structure getField
+    structure fieldName
+      structure _options
+        option
+        ...
+      structure fieldName
+        structure _options
+          option
+          ...
+        ...  
+</pre>
+
+<p>where</p>
+<dl>
+  <dt>record</dt>
+    <dd>The options that apply to the entire record.</dd>
+  <dt>option</dt>
+    <dd>This is of the form 
+      <b>string &lt;name&gt; &lt;value&gt;</b>
+    </dd>
+  <dt>field</dt>
+    <dd>Definitions that select fields of the PVRecord and options for the
+      fields. This definition is recursive.</dd>
+  <dt>fieldName</dt>
+    <dd>The field name that will appear in the PVStructure that is a copy of
+      the fields selected from the PVRecord. </dd>
+</dl>
+
+<p>Note:</p>
+<ul>
+  <li>The definition is recursive , i.e. an arbitarily complex structure can be
+    defined.</li>
+  <li>If a pvRequest with no fields is specified than all fields if the target
+    PVRecord will appear in the PVCopy.</li>
+</ul>
+
+<p>Two examples of options are process and shareData.</p>
+
+<p>Process is a record option:</p>
+<pre>
+structure
+  structure record
+    structure _options
+      string process true
+   
+</pre>
+
+<p>For example if process is an option to createGet then the record will be
+processed before data is fetched. NOTE: scalarType boolean is also
+supported.</p>
+
+<p>The following is an example of a field option:</p>
+<pre>
+structure 
+    structure field
+        structure value
+            structure _options
+                string shareData true
+</pre>
+<p>This is a request to share the actual data rather than creating a copy.</p>
+
+<p>Some examples are:</p>
+<pre>
+request 
+structure 
+
+request alarm,timeStamp,power.value
+structure 
+    structure alarm
+    structure timeStamp
+    structure power
+        structure value
+
+request record[process=true]field(alarm,timeStamp,power.value)
+structure 
+    structure record
+        structure _options
+            string process true
+    structure field
+        structure alarm
+        structure timeStamp
+        structure power
+            structure value
+
+request record[process=true]field(alarm,timeStamp[algorithm=onChange,causeMonitor=false],power{value,alarm})
+structure 
+    structure record
+        structure _options
+            string process true
+    structure field
+        structure alarm
+        structure timeStamp
+            structure _options
+                string algorithm onChange
+                string causeMonitor false
+        structure power
+            structure value
+            structure alarm
+
+request record[process=true,xxx=yyy]field(alarm,timeStamp[shareData=true],power.value)
+structure 
+    structure record
+        structure _options
+            string process true
+            string xxx yyy
+    structure field
+        structure alarm
+        structure timeStamp
+            structure _options
+                string shareData true
+        structure power
+            structure value
+</pre>
+
+</div>
+</body>
+</html>
