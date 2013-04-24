@@ -3,6 +3,7 @@
    intended for display, like index.html, and those intended as documents
    like gettingStarted.html). 
  
+   Auth: Greg White, SLAC / PSI, Sep 2011.
    Based on the w3c base.css but extended and modified quite a lot.
  */
 
@@ -42,7 +43,7 @@ h1, h2, h3, h4, h5, h6 { text-align: left }
 /* EPICS V4 blue = #4C3BCA. Style all headers in that. */
 h1, h2, h3,h4 { 
     color: #4C3BCA; 
-    background: white 
+    background: white; 
     margin-bottom: 0;
     padding-bottom: 0.15em;
     font-weight: normal;
