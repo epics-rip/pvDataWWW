@@ -10,6 +10,9 @@ HOT ACTIVITIES
       27/2/13: Work for use of shared_ptr will be separated from work to support
       discontinguous arrays. DH will review API using shared_ptr for symmetry with
       Java, then will implement (with MK's blessing!) [27-2-13]
+    + Modification of the funcionality of type conversion (MD, DH). This is
+      largely split into actions for copying without type conversion (see above),
+      copying/extraction with type conversion. [3]
     + Modifications to IOC for data pipelining (MD, AJ)
       27/2/13: No concrete design yet. Plan to develop from pvaSrv and test image
       server experiences.
@@ -17,7 +20,9 @@ HOT ACTIVITIES
       control of record locksets [27-2-13]. Plan to use in pvaSrv. MD, RL.  
 
 * pvaSrv (the pvaccess server for an "EPICS V3 IOC") hence the primary V3-V4 interop mechanism. 
-  RL now working on connection to V3.14. Connection to V3.15 will be later.
+  RL now working on connection to V3.14. 
+  Interface to one pv will be done first (called dbPv, for 4.3 release), later will
+  add interface to n>1 pvs (called dbGroup) and that will target IOC code v3.15.
   (RES and AIs in http://epicsv4.titanpad.com/ep/pad/view/41/latest)
 
 * Definition of the standard image type "NTImage".
@@ -67,6 +72,7 @@ HOT ACTIVITIES
   more detail. RL reviewing and we will take it up again in meeting soon. Required
   for pvaSrv.
 
+
 * Image Processing pipeline.
   DH.
   10/3/13: This has started at a low level with a testImageServer (DH) from 
@@ -76,6 +82,16 @@ HOT ACTIVITIES
 Questions:
 * What's status of "pv" get/put clients' interface to ca? 
 * Has ChannelRPC been be made "asynchronous", or "multithreaded"? 
+
+QA Items
+========
+* X Change names of environment variables to reflect use of "PVA" rather than CA.
+  Eg EPICS4_CA_ADDR_LIST -> EPICS_PVA_...
+  COMPLETED: 16/05/13.
+* Fix pvAccess server outut now giving wrong version: VERSION : pvAccess Server v1.2-SNAPSHOT  
+* pvget, eget etc have inadequate help. pvget -h as it stands not even a line saying
+  what it does! 
+  
 
 Forthcoming or Required activities
 ==================================
@@ -121,7 +137,7 @@ x v3channel - superseded by pvaSrv.
   can give an engineer that says "this is a guide to the interoperation of EPICS V3
   and V4". Having trouble convincing WG of the necessity.
 
-x vxWorks port of pvIOC - not finished. Superseded by plan to suspend a IOC hosted 
+x vxWorks port of pvIOC - not finished. Superseded by plan to create a IOC hosted 
   pvIOC. 
 
 * Normative Types. Not finished. Waiting for comments from Michael prior to 1PWD (MD,
@@ -217,6 +233,7 @@ References
 ==========
 [1] caQtDM, http://epics.web.psi.ch/software/caqtdm/
 [2] pvRequest, http://epics-pvdata.sourceforge.net/informative/pvRequest.html
+[3] type conversion catalog, http://tinyurl.com/c92xu4u
 
 Meeting Refs
 ============
