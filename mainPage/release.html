@@ -4,22 +4,622 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 <head>
  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  <meta http-equiv="PRAGMA" content="NO-CACHE">
-  <meta http-equiv="EXPIRES" content="0">
-<meta name="keywords" content="EPICS, EPICSv4, epics release" />
+ <meta http-equiv="PRAGMA" content="NO-CACHE" />
+ <meta http-equiv="EXPIRES" content="0" />
+ <meta name="keywords" content="EPICS, EPICSv4, release process" />
  <title>EPICS Version 4 Release Guide</title>
  <!-- Include the epicsv4 base.css, and the css for epics v4 documents -->
-<link rel="stylesheet" type="text/css" href="base.css" />
-<link rel="stylesheet" type="text/css" href="epicsv4.css" />
+ <link rel="stylesheet" type="text/css" href="base.css" />
+ <link rel="stylesheet" type="text/css" href="epicsv4.css" />
+ <style type="text/css">/*<![CDATA[*/
+   ul.close li { margin-bottom: 0.1em; }
+   table.left { margin-left: 2em; }
+   /*]]>*/</style>
+ <script type="text/javascript" src="script/tocgen.js">
+   </script>
 </head>
 <body>
 
+<div class="head">
 <h1>EPICS Version 4 Release Guide</h1>
 
-<p>This is an EPICS V4 working group internal note, on the procedure for a version
-  numbered release of EPICS V4.</p>
+<h2 class="nocount">Working Group draft for version 4.3.0.0</h2>
 
-<p>Release steps:
+<dl>
+<dt>Author:</dt>
+  <dd>Andrew Johnson</dd>
+<dt>Date:</dt>
+  <dd>1 July 2013</dd>
+<dt>Latest version:</dt>
+  <dd><a href="release.html">release.html</a></dd>
+<dt>Older versions:</dt>
+  <!-- Add versions for each release here.
+  <dd><a href="release_4.3.0.0.html">release_4.3.0.0.html</a></dd> -->
+  <dd><a href="release_20130111.html">release_20130111.html</a></dd>
+</dl>
+
+<hr />
+</div>
+
+
+<h2 class="nocount">Abstract</h2>
+
+<p>This is an EPICS v4 working group internal document giving the policies and
+procedures for releasing numbered versions of EPICS v4 software modules. It also
+contains a check-list for use by the Release Coordinator during the process of
+creating a new version of the software.</p>
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+
+
+<div id="contents" class="contents">
+
+<h2>Introduction</h2>
+
+<p>This document defines the policies that apply to the release of all EPICS v4
+software modules released by the EPICS v4 Working Group, and the procedures that
+are to be followed when creating official releases of those modules.</p>
+
+<h3>Applicability</h3>
+
+<p>The policies described here have been developed for <span class="ed">and
+agreed by</span> the EPICS v4 Working Group, and apply to all core software
+modules developed for and formally published by the group.</p>
+
+<p>The procedures documented here SHOULD be followed anyone involved in making
+officially numbered releases of the EPICS v4 software modules.</p>
+
+
+<h2>Release Numbering</h2>
+
+<p>All core EPICS v4 modules are currently being released with the same version
+number at approximately the same time. The mercurial repositories of individual
+modules should be tagged with the appropriate version number at the time of
+release.</p>
+
+<p>The group may also publish non-core software modules such as the pvaSrv
+module and various example programs. These are not required to match the common
+version number of the core software, but should still follow the numbering
+format and policies given below.</p>
+
+
+<h3>Version numbers</h3>
+
+<pre>4.<i>major</i>.<i>minor</i>.<i>bugfix</i>-<i>suffix</i></pre>
+
+<ul>
+<li>The first number will always be 4.</li>
+
+<li>The second number <code><i>major</i></code> increments at every major
+release.</li>
+
+<li>The third number <code><i>minor</i></code> increments at every minor
+release, and is reset to zero whenever the major number changes.</li>
+
+<li>The fourth number <code><i>bugfix</i></code> increments at every bug-fix
+release, and is reset to zero whenever the minor number changes.</li>
+
+<!-- &#8209; is a non-breaking hyphen; not needed inside a <pre> block -->
+<li>The <code>&#8209;<i>suffix</i></code> (with its leading hyphen character) is
+never present in a final official release version number.<br />
+
+In between official releases, the <code>&#8209;<i>suffix</i></code> indicates
+the status of the code and is one of <code>&#8209;dev</code> (development),
+<code>&#8209;pre<i>n</i></code> (numbered pre-release) or
+<code>&#8209;rc<i>n</i></code> (numbered release-candidate).</li>
+
+</ul>
+
+<p>When printing or typing a particular version number, all numeric parts (and
+the suffix if relevant) MUST be used/displayed. <span class="ed">This does look
+a bit wierd for the version number 4.3.0.0 although apparently the policy was
+agreed at a WG meeting. Personally I would be in favor of dropping the
+<code>.<i>bugfix</i></code> part when that number is zero. &ndash; AJ</span></p>
+
+<p>The suffix <code>&#8209;BETA</code> that was included with some previous
+release version numbers is confusing and will not be used in the future.</p>
+
+
+<h3>Mercurial version tags</h3>
+
+<p>The leading 4 in the official version numbering is not present in the tags
+created in module mercurial repositories. Global version number tags in
+mercurial repositories should appear as follows:</p>
+
+<pre><i>major</i>.<i>minor</i>.<i>bugfix</i>-<i>suffix</i></pre>
+
+<p class="ed">See also my comment above about dropping the
+<code>.<i>bugfix</i></code> part when that number is zero. &ndash; AJ</p>
+
+<p>Tags should be created in the above format to mark each of the numbered
+pre-release and release-candidate versions of each module, and to mark the final
+official release (with no <code>&#8209;<i>suffix</i></code>).</p>
+
+
+<h2>Release Compatibility Policies</h2>
+
+<p>There are two kinds of software compatibility, at the source-code level (API)
+and the binary level (ABI). EPICS v4 releases will provide the following
+compatibility promises across release boundaries:</p>
+
+<h3>Major releases</h3>
+
+<p>Neither ABI nor API compatibilty is promised through a major release.</p>
+
+<p>Developers SHOULD list and describe all public API changes that have occurred
+since the last major release in the Release Notes for the module, and MUST
+provide full documentation for the new API (usually using Doxygen or JavaDoc).
+If an API change requires significant changes to code that calls that API, an
+example showing both before and after code should be provided in or linked from
+the Release Notes. Code using the older API SHOULD NOT successfully compile
+against the new API if it will not run properly without modification.</p>
+
+<h3>Minor releases</h3>
+
+<p>Forward API compatibility is promised through a minor release but not ABI
+compatibilty, meaning that software written against the old version MUST compile
+and run against the new one without changes; the recompilation step is required
+though. Backward API compatibility is not promised, but where there have not
+been any API changes an application written for a newer release SHOULD compile
+and run successfully against an earlier minor release version.</p>
+
+<p>Developers MUST consider these compatibility requirements during minor
+release development. Tests SHOULD be written to check forward API compatibility
+for all modules where public API changes are being made, ensuring that the older
+methods and routines remain fully functional in the modified implementation.</p>
+
+<h3>Bug-fix releases</h3>
+
+<p>Other than changes required by the bug fix, both forward and backward
+compatibility MUST be provided for both the API and ABI through a bugfix
+release. For architectures that use shared libraries, it should only be
+necessary to replace the original shared libraries with the new ones, without
+recompiling any application that uses them. For architectures that statically
+link libraries into binary executables the link step will have to be re-run,
+although in this case it may be better to just rebuild the application
+completely.</p>
+
+<p>Developers MUST consider these compatibility requirements while fixing bugs,
+and MUST NOT make any modifications to the names, call signatures or semantics
+of public API routines or methods unless those changes are needed to bring the
+implementation into line with the originally-published specification. If a bug
+cannot be fixed without making such a change, the fix requires a new minor
+release instead of a bug-fix release.</p>
+
+<p class="caption">Note: EPICS v4 developers do not have much experience of
+promising ABI compatibility. This policy may change after reviewing this
+experience for a time.</p>
+
+
+<h2>Release Process</h2>
+
+<h3>Roles and responsibilities</h3>
+
+<p>The following roles are used in the release process described below.
+Individuals may take multiple roles as necessary.</p>
+
+<ul>
+<li>Release Coordinator (RC) &ndash; a project manager for the release</li>
+<li>Module Owner (MO) &ndash; the proprietor of a one-person module</li>
+<li>Module Developers (MD) &ndash; everyone who works on the code</li>
+<li>Module Packagers (MP) &ndash; the individuals who make tar/jar files</li>
+<li>Website Editor (WE) &ndash; the publicist and website manager</li>
+</ul>
+
+<h3>Release stages</h3>
+
+<p>Software releases of operation-ready modules will go through all the stages
+below. Software that is still undergoing development may skip the release
+candidate stage and take a more liberal view of bug severity when taking the
+final release decision.</p>
+
+<h4>Release decision</h4>
+
+<p>The working group or a designated Module Owner decides that a new version of
+the software is to be released, what changes it should contain, and whether this
+is to be a major, minor or bug-fix release. The release version number is
+agreed, and a Release Coordinator is nominated to manage the release process
+(where the software to be released has a single Module Owner they would normally
+be expected to take on the role of the Release Coordinator). The dates for
+feature freeze and/or the final release may be discussed, but the process of
+finding and fixing bugs can easily thwart a specific final release deadline.</p>
+
+<h4>Release planning</h4>
+
+<p>The Release Coordinator studies the process and procedures described in this
+document, then proposes any changes desired to the working group for agreement.
+In conjunction with the Module Developers responsible for the software being
+released, the Release Coordinator will develop and publish a timetable for the
+remaining stages in the process.</p>
+
+<p>Module Developers should look for any remaining bugs that can/should be fixed
+in this release, and provide feedback to the Release Coordinator about the
+release timetable.</p>
+
+<h4>Feature freeze</h4>
+
+<p>All development work on new features for this relese must have been completed
+by this date; incomplete features should have been backed out and no additional
+feature branches should be merged afterwards. Only bug fixes and documentation
+updates should be committed during the following period (normally 2 weeks but
+this may vary) until the first pre-release.</p>
+
+<p>Module Developers are expected to complete the documentation and test the
+software to identify and fix any major bugs before the software gets published
+to a wider audience.</p>
+
+<h4>Pre-releases</h4>
+
+<p>These are tagged, built and/or packaged versions of the code created by the
+Module Packager(s) that the Website Editor publishes as such for testing by the
+wider EPICS developer community. The first pre-release version has the suffix
+<code>&#8209;pre1</code> and subsequent pre-releases if any should be numbered
+sequentially. Each pre-release version is normally left open for 2 weeks, and
+any significant bugs discovered in this time can result in an additional
+pre-release version being created after the bugs have been fixed.</p>
+
+<p>Module Developers should try to test the software in unusual configurations
+and on less common platforms during this period, and should also read through
+and fix errors and omissions in the documentation.</p>
+
+<h4>Release candidates</h4>
+
+<p>Once the group believes the software to be free of major bugs and fully
+documented, the Release Coordinator nominates the next version to be a release
+candidate, the first of which is given the suffix <code>&#8209;rc1</code>. All
+release candidate versions are publicized to the wider EPICS user community for
+testing, and will normally be left open for 2 weeks.</p>
+
+<p>If significant bugs are discovered they must be fixed, and the Module
+Developers and Release Coordinator may then agree to publish another release
+candidate version with those fixes, or may revert to a pre-release version to
+ensure the bugs have been properly fixed.</p>
+
+<h4>Final release</h4>
+
+<p>Some time (usually 2 weeks) after a release candidate has been published with
+no major bug reports for it in that period, the final release version will be
+created and published. Minor bugs that have not been fixed should be documented
+in a list of Known Problems that accompanies the release.</p>
+
+
+<h2>Release Information and Checklists</h2>
+
+<!-- The information and dates in this section will be modified by
+  -- the Release Coordinator in preparation for each new release.
+  -->
+
+<h3>Specific Responsibilities</h3>
+
+<dl>
+<dt>Release Coordinator:</dt>
+  <dd>Andrew Johnson</dd>
+<dt>Module Packagers:</dt>
+  <dd>Java Modules &ndash; Greg White<br />
+    C++ Modules &ndash; David Hickin</dd>
+<dt>Website Editor:</dt>
+  <dd>Greg White</dd>
+
+</dl>
+
+
+<h3>Module versions covered</h3>
+
+<table class="left">
+<thead><tr>
+  <th>Module</th>
+  <th>Version Number</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td>pvDataJava</td>
+  <td>4.3.0.0</td></tr>
+<tr>
+  <td>pvAccessJava</td>
+  <td>4.3.0.0</td></tr>
+<tr>
+  <td>pvIOCJava</td>
+  <td>4.3.0.0</td></tr>
+<tr>
+  <td>exampleJava</td>
+  <td>4.3.0.0</td></tr>
+<tr>
+  <td>pvCommonCPP</td>
+  <td>4.3.0.0</td></tr>
+<tr>
+  <td>pvDataCPP</td>
+  <td>4.3.0.0</td></tr>
+<tr>
+  <td>pvAccessCPP</td>
+  <td>4.3.0.0</td></tr>
+<tr>
+  <td>pvIOCCPP</td>
+  <td>4.3.0.0</td></tr>
+<tr>
+  <td>pvaSrv</td>
+  <td>0.9.1</td></tr>
+
+</tbody>
+</table>
+
+
+<h3>Special instructions</h3>
+
+<p>Develop and document these policies and procedures.</p>
+
+
+
+<h3>Time-table</h3>
+
+<table class="left">
+<thead><tr>
+  <th>Stage</th>
+  <th>Earliest Date</th>
+  <th>Length</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td>Feature freeze</td>
+  <td></td>
+  <td>2 weeks</td>
+  </tr>
+
+<tr>
+  <td>Pre-release 1</td>
+  <td></td>
+  <td>2 weeks</td>
+  </tr>
+
+<tr>
+  <td>Release Candidate</td>
+  <td></td>
+  <td>2 weeks</td>
+  </tr>
+
+<tr>
+  <td>Final Release</td>
+  <td></td>
+  <th><!-- empty --></th>
+  </tr>
+
+</tbody>
+</table>
+
+
+<h3>Checklists</h3>
+
+<p class="ed">Things missing: Edits to Getting Started and other website docs,
+Bug tracker tags, other SourceForge-specific changes.</p>
+
+<h4>Release decision</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WG/MO</td>
+  <td>Decide which modules to include and their new version numbers.</td>
+  </tr>
+
+<tr>
+  <td>2013-06-11</td>
+  <td>WG</td>
+  <td>Nominate a Release Coordinator for the release.</td>
+  </tr>
+
+</tbody>
+</table>
+
+<h4>Release planning</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Create new version of this Release Guide document for the release. Discuss
+    modifications to the process with WG and publish.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Propose the date of Feature freeze. Adjust as necessary based on feedback
+    from MDs.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Examine outstanding feature specifications and bug reports. With MDs
+    decide which ones can/should be fixed in time for this release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Remind MDs of the up-coming Feature freeze and monitor progress.</td>
+  </tr>
+
+</tbody>
+</table>
+
+<h4>Feature freeze</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Check repositories for missing documentation and release notes, notify
+    MDs of any omissions.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Examine the packaging instructions given in this document and any
+    supporting scripts in the pvDataWWW/scripts directory that are used for
+    releasing the software. Modify them as necessary for this release, commit
+    your changes and push them to SourceForge.</td>
+
+</tbody>
+</table>
+
+<h4>Pre-releases</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Cue the MPs to start packaging the <code>&#8209;pre<i>n</i></code>
+    release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Follow the appropriate packaging instructions. Inform RC and WE when
+    complete.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WE</td>
+  <td>Announce pre-release to WG and core-talk mailing lists and solicit testing
+    and feedback.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>At end of period, discuss state of release with WG, decide whether the
+    next stage should be another pre-release or a release candidate.</td>
+  </tr>
+
+</tbody>
+</table>
+
+<h4>Release candidates</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Cue the MPs to start packaging the <code>&#8209;rc<i>n</i></code>
+    release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Follow the appropriate packaging instructions. Inform RC and WE when
+    complete.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WE</td>
+  <td>Announce release candidate to tech-talk mailing list and solicit testing
+    and feedback.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>At end of period, discuss state of release with WG, decide whether the
+    next stage should be a pre-release, another release candidate or the final
+    release.</td>
+  </tr>
+
+
+</tbody>
+</table>
+
+<h4>Final release</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Cue the MPs to start packaging the final release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Follow the appropriate packaging instructions. Inform RC and WE when
+    complete.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WE</td>
+  <td>Announce release to tech-talk mailing list. Make other website edits as
+    appropriate.</td>
+  </tr>
+
+</tbody>
+</table>
+
+
+<h2>Packaging Instructions</h2>
+
+<p class="ed">Note: I have not checked or corrected these instructions or their
+associated scripts &ndash; AJ</p>
+
+<p>Release steps:</p>
 
 <ol>
 <li>Tag Mercurial repositories (currently pvData, pvAccess, pvIOC, pvService)</li>
@@ -28,34 +628,47 @@
 <li>Create release archives and upload to sourceforge file area</li>
 </ol>
 
-Release scripts are in mercurial under <a
+<p>Release scripts are in mercurial under <a
 href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
 </p>
 
-<p>
-During the release process documentation (both written and generated) is copied from the <code>documentation</code> directory in each repository to <code>epics-pvdata.sourceforge.net/docbuild/$REPO/$TAGNAME/documentation</code>.
+<p>During the release process documentation (both written and generated) is copied from the <code>documentation</code> directory in each repository to <code>epics-pvdata.sourceforge.net/docbuild/$REPO/$TAGNAME/documentation</code>.
 </p>
 
-<h2>C++</h2>
-<p><strong>Code:</strong></p>
-<p>
-<a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a>
-tags the current head of the repositories.
-Edit the script to set the tag and the user name.
-</p>
-<p>
-<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a> clones the tagged repositoties, generates the tar file, and synchronizes to the file area.
-</p>
-<p><strong>Documentation:</strong></p>
-<p>
-<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a> clones the tagged repositoties, generates the doxygen, and synchronizes to the web area.
-</p>
+<h3>Packaging C++ Modules</h3>
 
-<h2>Java</h2>
+<p>Several scripts are provided to automate the packaging process, which must be
+edited to set the correct tag and user-name for the release.</p>
 
-<p><strong>Code:</strong></p>
+<dl>
+  <dt>Code:</dt>
+  <dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a>
+  &ndash; clones the repositories, tags the current head, then pushes the
+  changes back to SF.</dd>
 
+  <dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a>
+  &ndash; clones the tagged repositories, uses <code>hg archive</code> to
+  combine the results into a new directory tree, adds the RELEASE.local file and
+  a generated tag.txt file, generates a tar.gz file, then copies that to the
+  file area.</dd>
+
+  <dt>Documentation:</dt>
+  <dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a>
+  &ndash; clones the tagged repositories, adds a copy of RELEASE.local and
+  CONFIG_SITE.local to each, compiles each module and runs doxygen, then copies
+  the generated documentation directories to the web area.</dd>
+
+</dl>
+
+<h3>Packaging Java Modules</h3>
+
+<p class="ed">This text needs updating to the new version numbering above
+&ndash; AJ</p>
+
+<dl>
+<dt>Code:</dt>
+
+<dd>
 <p>To make a versioned release of EPICS V4 core modules Java implementation:</p>
 <p>Recall the build dependencies of the EPICS v4 core modules are:</p>
 <ul>
@@ -64,6 +677,7 @@ Edit the script to set the tag and the user name.
 <li>pvIOCJava depends on pvAaccessJava and pvDataJava for build</li>
 <li>exampleJava depends on all 4 above.</li>
 </ul>
+
 <p>Edit each of the 5 pom.xml files 
 pvIOCJava, pvAaccessJava and pvDataJava, pvServiceJava plus exampleJava, to change the version name.
 Our naming convention is n.m-BETA (note caps) to designate a
@@ -149,7 +763,7 @@ hg commit pom.xml
 hg push
 </pre>
 
-<h3>Create the Source User downloadable tarball</h3>
+<h4>Create the Source User downloadable tarball</h4>
 
 <p>The download tarball is what we put in the SourceForge download files area, and
 includes all the EPICS V4 jars just created, plus
@@ -168,14 +782,18 @@ to build the tar, then run /makereleaseJars.sh from where you edited it:</p>
 % cd tmp
 % ../ev4hg/pvDataWWW/scripts/makereleaseJars.sh
 </pre>
+</dd>
 
-<p><strong>Documentation:</strong></p>
-<p>
-<a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
-clones the tagged repositoties, generates the JavaDoc, and synchronizes to the web
-area. Check it builds the set of modules you want and then execite it in a scratch
-area. You may want to comment out the rsync and do that by hand.</p>
+<dt>Documentation:</dt>
+<dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
+&ndash; clones the tagged repositoties, generates the JavaDoc, and synchronizes
+to the web area. Check it builds the set of modules you want and then execute it
+in a scratch area. You may want to comment out the rsync and do that by
+hand.</dd>
+
+</dl>
+
+</div>
 
 <hr>
 <address>EPICS V4 Working Group</address>
