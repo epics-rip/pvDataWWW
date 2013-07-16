@@ -29,7 +29,7 @@
 <dt>Author:</dt>
   <dd>Andrew Johnson</dd>
 <dt>Date:</dt>
-  <dd>3 July 2013</dd>
+  <dd>16 July 2013</dd>
 <dt>Latest version:</dt>
   <dd><a href="release.html">release.html</a></dd>
 <dt>Older versions:</dt>
@@ -46,7 +46,7 @@
 
 <p>This is an EPICS v4 working group internal document giving the policies and
 procedures for releasing numbered versions of EPICS v4 software modules. It also
-contains a check-list for use by the Release Coordinator during the process of
+contains a timetable and several check-lists for use during the process of
 creating a new version of the software.</p>
 
 <div id="toc">
@@ -72,6 +72,465 @@ formally published by the group.</p>
 officially numbered releases of the EPICS v4 software modules.</p>
 
 
+<h2>Release Information and Checklists</h2>
+
+<p>The information given in this section relates to a specific release of the
+software. More details about this data can be found in the sections below.</p>
+
+<!-- The information and dates in this section must be modified by the
+  -- Release Coordinator in preparation for and during each new release.
+  -->
+
+<h3>Individual Responsibilities</h3>
+
+<dl>
+<dt>Release Coordinator:</dt>
+  <dd>Andrew Johnson</dd>
+<dt>Module Packagers:</dt>
+  <dd>Java Modules &ndash; Greg White<br />
+    C++ Modules &ndash; David Hickin</dd>
+<dt>Website Editor:</dt>
+  <dd>Greg White</dd>
+</dl>
+
+
+<h3>Module versions covered</h3>
+
+<table class="left">
+<thead><tr>
+  <th>Package & Version</th>
+  <th>Module</th>
+  <th>Module Version</th>
+  <th>Module Owner</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td rowspan='4'>epicsJava 4.3.0</td>
+  <td>pvDataJava</td>
+  <td>3.0</td>
+  <td>Marty Kraimer</td>
+  </tr>
+<tr>
+  <td>pvAccessJava</td>
+  <td>3.0</td>
+  <td>Matej Sekoranja</td>
+  </tr>
+<tr>
+  <td>exampleJava</td>
+  <td>3.0</td>
+  <td>Greg White</td>
+  </tr>
+<tr>
+  <td>easyPVAJava</td>
+  <td>0.1</td>
+  <td>Matej Sekoranja</td>
+  </tr>
+
+<tr>
+  <td rowspan='6'>epicsCPP 4.3.0</td>
+  <td>pvCommonCPP</td>
+  <td>3.0</td>
+  <td>Matej Sekoranja</td>
+  </tr>
+<tr>
+  <td>pvDataCPP</td>
+  <td>3.0</td>
+  <td>Marty Kraimer</td>
+  </tr>
+<tr>
+  <td>pvAccessCPP</td>
+  <td>3.0</td>
+  <td>Matej Sekoranja</td>
+  </tr>
+<tr>
+  <td>pvIOCCPP</td>
+  <td>3.0</td>
+  <td>Marty Kraimer</td>
+  </tr>
+<tr>
+  <td>exampleCPP</td>
+  <td>3.0</td>
+  <td>David Hickin</td>
+  </tr>
+<tr>
+  <td>pvaSrv</td>
+  <td>0.9.1</td>
+  <td>Ralph Lange</td>
+  </tr>
+
+</tbody>
+</table>
+
+
+<h3>Special instructions</h3>
+
+<p>Develop and document these policies and procedures.</p>
+
+<h4>Dependency Relationships</h4>
+
+<p>The above modules currently have the following dependency relationships:</p>
+
+<table class="left">
+<thead><tr>
+  <th>Module</th>
+  <th>Depends on</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td>pvDataJava</td>
+  <td></td>
+  </tr>
+<tr>
+  <td>pvAccessJava</td>
+  <td>pvDataJava</td>
+  </tr>
+<tr>
+  <td>exampleJava</td>
+  <td>pvDataJava, pvAccessJava</td>
+  </tr>
+<tr>
+  <td>easyPVAJava</td>
+  <td>pvDataJava, pvAccessJava</td>
+  </tr>
+
+<tr>
+  <th colspan=2></th>
+  </tr>
+
+<tr>
+  <td>pvCommonCPP</td>
+  <td></td>
+  </tr>
+<tr>
+  <td>pvDataCPP</td>
+  <td>pvCommonCPP</td>
+  </tr>
+<tr>
+  <td>pvAccessCPP</td>
+  <td>pvCommonCPP, pvDataCPP</td>
+  </tr>
+<tr>
+  <td>pvIOCCPP</td>
+  <td>pvCommonCPP, pvDataCPP, pvAccessCPP</td>
+  </tr>
+<tr>
+  <td>exampleCPP</td>
+  <td>pvCommonCPP, pvDataCPP, pvAccessCPP</td>
+  </tr>
+<tr>
+  <td>pvaSrv</td>
+  <td>pvCommonCPP, pvDataCPP, pvAccessCPP, pvIOCCPP</td>
+  </tr>
+
+</tbody>
+</table>
+
+
+<h3>Time-table</h3>
+
+<table class="left">
+<thead><tr>
+  <th>Stage</th>
+  <th>Earliest Date</th>
+  <th>Length</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td>Feature freeze</td>
+  <td>2013-07-05</td>
+  <td>2 weeks</td>
+  </tr>
+
+<tr>
+  <td>Pre-release 1</td>
+  <td>2013-07-19</td>
+  <td>2 weeks</td>
+  </tr>
+
+<tr>
+  <td>Release Candidate</td>
+  <td>2013-08-02</td>
+  <td>2 weeks</td>
+  </tr>
+
+<tr>
+  <td>Final Release</td>
+  <td>2013-08-16</td>
+  <th><!-- leave empty --></th>
+  </tr>
+
+</tbody>
+</table>
+
+
+<h3>Checklists</h3>
+
+<h4>Release decision</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td>2013-06-11</td>
+  <td>WG</td>
+  <td>Nominate a Release Coordinator for the release.</td>
+  </tr>
+
+<tr>
+  <td>2013-07-09</td>
+  <td>WG/MO</td>
+  <td>Agree which modules to include and their new version numbers.</td>
+  </tr>
+
+</tbody>
+</table>
+
+<h4>Release planning</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td>2013-07-09</td>
+  <td>RC</td>
+  <td>Edit this Release Guide document for the release. Discuss
+    modifications to the process with WG and publish.</td>
+  </tr>
+
+<tr>
+  <td>2013-07-09</td>
+  <td>RC</td>
+  <td>Propose the date of Feature freeze. Adjust as necessary based on feedback
+    from MDs.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Examine outstanding feature specifications and bug reports. With MDs
+    decide which ones can/should be fixed in time for this release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Remind MDs of the up-coming Feature freeze and monitor progress.</td>
+  </tr>
+
+</tbody>
+</table>
+
+<h4>Features frozen</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Check repositories for missing documentation and release notes, ask MDs to
+    correct any omissions and update any Getting Started documentation.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Examine the packaging instructions in this document and any supporting
+    scripts in the pvDataWWW/scripts directory that are used for releasing the
+    software. Modify them as necessary, commit your changes and push them to
+    SourceForge.</td>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WE</td>
+  <td>Create a new version-specific folder in the "Files" area of SourceForge
+    for MPs to upload packaged files to. Edit the README file and copy it to
+    that directory.</td>
+  </tr>
+
+</tbody>
+</table>
+
+<h4>Pre-releases</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Cue the MPs to start packaging the <code>&#8209;pre<i>n</i></code>
+    release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Follow the appropriate packaging instructions. Inform RC and WE when
+    complete.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WE</td>
+  <td>Announce pre-release to WG and core-talk mailing lists and solicit testing
+    and feedback.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>ITs</td>
+  <td>Read documentation and use to build and test the software. Report bugs and
+    provide other feedback as necessary.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MDs</td>
+  <td>Fix bugs and documentation as appropriate. Inform WG about any major
+    issues that could affect the release timetable.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>At end of period, discuss state of release with WG, decide whether the
+    next stage should be another pre-release or a release candidate.</td>
+  </tr>
+
+</tbody>
+</table>
+
+<h4>Release candidates</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Cue the MPs to start packaging the <code>&#8209;rc<i>n</i></code>
+    release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Follow the appropriate packaging instructions. Inform RC when and WE
+    complete.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WE</td>
+  <td>Announce release candidate to tech-talk mailing list and solicit testing
+    and feedback.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MDs</td>
+  <td>Help users who have questions while trying out the software.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>At end of period, discuss state of release with WG, decide whether the
+    next stage should be a pre-release, another release candidate or the final
+    release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WE</td>
+  <td>Update the SourceForge Wiki page for the project.</td>
+  </tr>
+
+</tbody>
+</table>
+
+<h4>Final release</h4>
+
+<table class="left">
+<thead><tr>
+  <th>Completed</th>
+  <th>Who</th>
+  <th>Task Description</th>
+  </tr></thead>
+
+<tbody>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Cue the MPs to start packaging the final release.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>MPs</td>
+  <td>Follow the appropriate packaging instructions. Inform RC and WE when
+    complete.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>WE</td>
+  <td>Announce release to tech-talk mailing list. Make other website edits as
+    appropriate.</td>
+  </tr>
+
+<tr>
+  <td><!-- date --></td>
+  <td>RC</td>
+  <td>Complete and archive the Release Guide document for this release:
+<pre>hg cp release.html release_4.3.0.html
+hg ci release*.html
+hg push</pre>
+    </td>
+  </tr>
+
+</tbody>
+</table>
+
+
 <h2>Release Numbering</h2>
 
 <p>All core EPICS v4 modules are currently being packaged together and released
@@ -79,8 +538,8 @@ with the same version number at the same time. The mercurial repositories of
 individual modules should all be tagged with the communal version number at the
 time of release. However bug-fix releases of individual modules should be able
 to be made independently of other modules without following the full process
-described in this document. <span class="ed">To Do: Develop a quicker process
-for bug-fix releases of individual modules.</span></p>
+described in this document. <span class="ed">To Do: Modify this process to cover
+separate release schedules for individual modules.</span></p>
 
 <p>The group may also publish non-core software modules such as the pvaSrv
 module and various example programs. These are not required to match the common
@@ -318,402 +777,6 @@ created and published. Minor bugs that have not been fixed should be documented
 in a list of Known Problems that accompanies the release.</p>
 
 
-<h2>Release Information and Checklists</h2>
-
-<!-- The information and dates in this section will be modified by
-  -- the Release Coordinator in preparation for each new release.
-  -->
-
-<h3>Specific Responsibilities</h3>
-
-<dl>
-<dt>Release Coordinator:</dt>
-  <dd>Andrew Johnson</dd>
-<dt>Module Packagers:</dt>
-  <dd>Java Modules &ndash; Greg White<br />
-    C++ Modules &ndash; David Hickin</dd>
-<dt>Website Editor:</dt>
-  <dd>Greg White</dd>
-</dl>
-
-
-<h3>Module versions covered</h3>
-
-<table class="left">
-<thead><tr>
-  <th>Package & Version</th>
-  <th>Module</th>
-  <th>Module Version</th>
-  <th>Module Owner</th>
-  </tr></thead>
-
-<tbody>
-
-<tr>
-  <td rowspan='4'>epicsJava 4.3.0</td>
-  <td>pvDataJava</td>
-  <td>3.0</td>
-  <td>Marty Kraimer</td>
-  </tr>
-<tr>
-  <td>pvAccessJava</td>
-  <td>3.0</td>
-  <td>Matej Sekoranja</td>
-  </tr>
-<tr>
-  <td>exampleJava</td>
-  <td>3.0</td>
-  <td>Greg White</td>
-  </tr>
-<tr>
-  <td>easyPVAJava</td>
-  <td>0.1</td>
-  <td>Matej Sekoranja</td>
-  </tr>
-
-<tr>
-  <td rowspan='6'>epicsCPP 4.3.0</td>
-  <td>pvCommonCPP</td>
-  <td>3.0</td>
-  <td>Matej Sekoranja</td>
-  </tr>
-<tr>
-  <td>pvDataCPP</td>
-  <td>3.0</td>
-  <td>Marty Kraimer</td>
-  </tr>
-<tr>
-  <td>pvAccessCPP</td>
-  <td>3.0</td>
-  <td>Matej Sekoranja</td>
-  </tr>
-<tr>
-  <td>pvIOCCPP</td>
-  <td>3.0</td>
-  <td>Marty Kraimer</td>
-  </tr>
-<tr>
-  <td>exampleCPP</td>
-  <td>3.0</td>
-  <td>David Hickin</td>
-  </tr>
-<tr>
-  <td>pvaSrv</td>
-  <td>0.9.1</td>
-  <td>Ralph Lange</td>
-  </tr>
-
-</tbody>
-</table>
-
-
-<h3>Special instructions</h3>
-
-<p>Develop and document these policies and procedures.</p>
-
-
-
-<h3>Time-table</h3>
-
-<table class="left">
-<thead><tr>
-  <th>Stage</th>
-  <th>Earliest Date</th>
-  <th>Length</th>
-  </tr></thead>
-
-<tbody>
-
-<tr>
-  <td>Feature freeze</td>
-  <td>2013-07-05</td>
-  <td>2 weeks</td>
-  </tr>
-
-<tr>
-  <td>Pre-release 1</td>
-  <td>2013-07-19</td>
-  <td>2 weeks</td>
-  </tr>
-
-<tr>
-  <td>Release Candidate</td>
-  <td>2013-08-02</td>
-  <td>2 weeks</td>
-  </tr>
-
-<tr>
-  <td>Final Release</td>
-  <td>2013-08-16</td>
-  <th><!-- leave empty --></th>
-  </tr>
-
-</tbody>
-</table>
-
-
-<h3>Checklists</h3>
-
-<h4>Release decision</h4>
-
-<table class="left">
-<thead><tr>
-  <th>Completed</th>
-  <th>Who</th>
-  <th>Task Description</th>
-  </tr></thead>
-
-<tbody>
-
-<tr>
-  <td>2013-06-11</td>
-  <td>WG</td>
-  <td>Nominate a Release Coordinator for the release.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>WG/MO</td>
-  <td>Agree which modules to include and their new version numbers.</td>
-  </tr>
-
-</tbody>
-</table>
-
-<h4>Release planning</h4>
-
-<table class="left">
-<thead><tr>
-  <th>Completed</th>
-  <th>Who</th>
-  <th>Task Description</th>
-  </tr></thead>
-
-<tbody>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>Edit this Release Guide document for the release. Discuss
-    modifications to the process with WG and publish.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>Propose the date of Feature freeze. Adjust as necessary based on feedback
-    from MDs.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>MPs</td>
-  <td>Examine outstanding feature specifications and bug reports. With MDs
-    decide which ones can/should be fixed in time for this release.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>Remind MDs of the up-coming Feature freeze and monitor progress.</td>
-  </tr>
-
-</tbody>
-</table>
-
-<h4>Features frozen</h4>
-
-<table class="left">
-<thead><tr>
-  <th>Completed</th>
-  <th>Who</th>
-  <th>Task Description</th>
-  </tr></thead>
-
-<tbody>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>Check repositories for missing documentation and release notes, ask MDs to
-    correct any omissions and update any Getting Started documentation.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>MPs</td>
-  <td>Examine the packaging instructions in this document and any supporting
-    scripts in the pvDataWWW/scripts directory that are used for releasing the
-    software. Modify them as necessary, commit your changes and push them to
-    SourceForge.</td>
-
-<tr>
-  <td><!-- date --></td>
-  <td>WE</td>
-  <td>Create a new version-specific folder in the "Files" area of SourceForge
-    for MPs to upload packaged files to. Edit the README file and copy it to
-    that directory.</td>
-  </tr>
-
-</tbody>
-</table>
-
-<h4>Pre-releases</h4>
-
-<table class="left">
-<thead><tr>
-  <th>Completed</th>
-  <th>Who</th>
-  <th>Task Description</th>
-  </tr></thead>
-
-<tbody>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>Cue the MPs to start packaging the <code>&#8209;pre<i>n</i></code>
-    release.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>MPs</td>
-  <td>Follow the appropriate packaging instructions. Inform RC and WE when
-    complete.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>WE</td>
-  <td>Announce pre-release to WG and core-talk mailing lists and solicit testing
-    and feedback.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>ITs</td>
-  <td>Read documentation and use to build and test the software. Report bugs and
-    provide other feedback as necessary.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>MDs</td>
-  <td>Fix bugs and documentation as appropriate. Inform WG about any major
-    issues that could affect the release timetable.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>At end of period, discuss state of release with WG, decide whether the
-    next stage should be another pre-release or a release candidate.</td>
-  </tr>
-
-</tbody>
-</table>
-
-<h4>Release candidates</h4>
-
-<table class="left">
-<thead><tr>
-  <th>Completed</th>
-  <th>Who</th>
-  <th>Task Description</th>
-  </tr></thead>
-
-<tbody>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>Cue the MPs to start packaging the <code>&#8209;rc<i>n</i></code>
-    release.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>MPs</td>
-  <td>Follow the appropriate packaging instructions. Inform RC when and WE
-    complete.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>WE</td>
-  <td>Announce release candidate to tech-talk mailing list and solicit testing
-    and feedback.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>MDs</td>
-  <td>Help users who have questions while trying out the software.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>At end of period, discuss state of release with WG, decide whether the
-    next stage should be a pre-release, another release candidate or the final
-    release.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>WE</td>
-  <td>Update the SourceForge Wiki page for the project.</td>
-  </tr>
-
-</tbody>
-</table>
-
-<h4>Final release</h4>
-
-<table class="left">
-<thead><tr>
-  <th>Completed</th>
-  <th>Who</th>
-  <th>Task Description</th>
-  </tr></thead>
-
-<tbody>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>Cue the MPs to start packaging the final release.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>MPs</td>
-  <td>Follow the appropriate packaging instructions. Inform RC and WE when
-    complete.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>WE</td>
-  <td>Announce release to tech-talk mailing list. Make other website edits as
-    appropriate.</td>
-  </tr>
-
-<tr>
-  <td><!-- date --></td>
-  <td>RC</td>
-  <td>Complete and archive the Release Guide document for this release:
-<pre>hg cp release.html release_4.3.0.html
-hg ci release*.html
-hg push</pre>
-    </td>
-  </tr>
-
-</tbody>
-</table>
-
-
 <h2>Packaging Instructions</h2>
 
 <p class="ed">Note: I have not checked or corrected these instructions or their
@@ -897,6 +960,6 @@ hand.</dd>
 
 <hr>
 <address>EPICS V4 Working Group</address>
-<!-- hhmts start -->Last modified: Jul 3rd, 2013<!-- hhmts end -->
+<!-- hhmts start -->Last modified: Jul 16th, 2013<!-- hhmts end -->
 </body>
 </html>
