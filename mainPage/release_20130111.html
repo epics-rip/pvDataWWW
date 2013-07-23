@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+ <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="PRAGMA" content="NO-CACHE">
+  <meta http-equiv="EXPIRES" content="0">
+<meta name="keywords" content="EPICS, EPICSv4, epics release" />
+ <title>EPICS Version 4 Release Guide</title>
+ <!-- Include the epicsv4 base.css, and the css for epics v4 documents -->
+<link rel="stylesheet" type="text/css" href="base.css" />
+<link rel="stylesheet" type="text/css" href="epicsv4.css" />
+</head>
+<body>
+
+<h1>EPICS Version 4 Release Guide</h1>
+
+<p>This is an EPICS V4 working group internal note, on the procedure for a version
+  numbered release of EPICS V4.</p>
+
+<p>Release steps:
+
+<ol>
+<li>Tag Mercurial repositories (currently pvData, pvAccess, pvIOC, pvService)</li>
+<li>Clone tagged repositories to a build server (your local machine or Jenkins)</li>
+<li>Generate release documentation and upload to sourceforge web area</li>
+<li>Create release archives and upload to sourceforge file area</li>
+</ol>
+
+Release scripts are in mercurial under <a
+href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
+</p>
+
+<p>
+During the release process documentation (both written and generated) is copied from the <code>documentation</code> directory in each repository to <code>epics-pvdata.sourceforge.net/docbuild/$REPO/$TAGNAME/documentation</code>.
+</p>
+
+<h2>C++</h2>
+<p><strong>Code:</strong></p>
+<p>
+<a
+href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a>
+tags the current head of the repositories.
+Edit the script to set the tag and the user name.
+</p>
+<p>
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a> clones the tagged repositoties, generates the tar file, and synchronizes to the file area.
+</p>
+<p><strong>Documentation:</strong></p>
+<p>
+<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a> clones the tagged repositoties, generates the doxygen, and synchronizes to the web area.
+</p>
+
+<h2>Java</h2>
+
+<p><strong>Code:</strong></p>
+
+<p>To make a versioned release of EPICS V4 core modules Java implementation:</p>
+<p>Recall the build dependencies of the EPICS v4 core modules are:</p>
+<ul>
+<li>pvDataJava has no dependencies</li>
+<li>pvAccessJava depends on pvDataJava</li>
+<li>pvIOCJava depends on pvAaccessJava and pvDataJava for build</li>
+<li>exampleJava depends on all 4 above.</li>
+</ul>
+<p>Edit each of the 5 pom.xml files 
+pvIOCJava, pvAaccessJava and pvDataJava, pvServiceJava plus exampleJava, to change the version name.
+Our naming convention is n.m-BETA (note caps) to designate a
+BETA release, or later simply n.m. Intermediate snaphots are named
+n.m-SNAPSHOT. Therefore, the first Beta is named 1.0-BETA:</p>
+<pre>
+Clone the repo, eg:
+
+hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
+
+To tag and build for Java/Maven:
+
+In pom.xml you have
+
+<version>1.0-SNAPSHOT</version>
+
+change to eg 1.0-BETA in top <version></version> and also in the dependencies, so you
+build like versions against each other, starting with pvDataJava (that has no dependencies).
+
+<version>1.0-BETA</version>
+</pre>
+
+<p>Build locally to test build and test suite.</p>
+<pre>
+% pwd
+/Users/greg/Development/epicsV4/ev4hg
+
+% cd pvDataJava
+% mvn compile install
+
+% cd ../pvAccessJava
+% mvn compile install -Dmaven.test.skip=true
+
+% cd ../pvIOCJava
+% mvn compile install -DJAVAIOC=$PWD -Dmaven.test.skip=true
+
+% cd ../exampleJava/
+% mvn compile install 
+</pre>
+<p>Verify you got what you expected, you want the 3 core modules plus exampleJavas' jars:</p>
+<pre>
+% find ~/.m2 -name "pv*BETA.jar" -o -name "example*BETA.jar"
+/Users/greg/.m2/repository/epics/exampleJava/1.0-BETA/exampleJava-1.0-BETA.jar
+/Users/greg/.m2/repository/epics/pvAccess/1.0-BETA/pvAccess-1.0-BETA.jar
+/Users/greg/.m2/repository/epics/pvData/1.0-BETA/pvData-1.0-BETA.jar
+/Users/greg/.m2/repository/epics/pvIOC/1.0-BETA/pvIOC-1.0-BETA.jar
+</pre>
+
+<p>Upload the release. In each of the 4 directories, commit the pom.xml, tag the
+repo, and push.</p>
+<pre>
+hg commit -m "beta 1 version inc" pom.xml
+
+Then tag:
+
+hg tag 1.0-BETA
+
+and push:
+
+hg push
+</pre>
+
+<p>This results in remote repository that is version tagged.
+Now Jenkins will build 1.0-BETA version and deploy JARs in EPICS 4 remote maven
+products directory (see below).
+
+Before making any changes to the project (the best thing is to do it
+immediately) you need to increase version to 1.1-SNAPSHOT. This way new changes will
+not override the deployed 1.0-BETA. However, hold on a second Tex, it's a good idea
+to versify that Jenkins has built and deployed the 1.0-BETA release jar file, before
+pushing this new version, since this one will also result in a build and
+deployment. Check the Maven build products directory <a
+href="http://epics.sourceforge.net/maven2/epics/">http://epics.sourceforge.net/maven2/epics/</a>,
+then:
+</p>
+<p>So, again in each of the 4 directories above, edit pom.xml and hg commit and push:</p>
+<pre>
+&lt;version&gt;1.1-SNAPSHOT&lt;/version&gt;
+
+and
+
+hg commit pom.xml
+hg push
+</pre>
+
+<h3>Create the Source User downloadable tarball</h3>
+
+<p>The download tarball is what we put in the SourceForge download files area, and
+includes all the EPICS V4 jars just created, plus
+associated source, XMLs, scripts etc needed by someone to get going. 
+</p>
+
+<p>The tarball includes the README file, so before creating it, edit
+pvDataWWW/mainPage/README with details of the release, commit and push it. You
+need to push it, because makereleaseJars.sh takes it from the web site.</p>
+
+<p>Edit the pvDataWWW/scripts/makereleaseJars.sh file, updating the the TAG variable
+in particular. cd to some directory where you're going
+to build the tar, then run /makereleaseJars.sh from where you edited it:</p>
+<pre>
+% mkdir tmp
+% cd tmp
+% ../ev4hg/pvDataWWW/scripts/makereleaseJars.sh
+</pre>
+
+<p><strong>Documentation:</strong></p>
+<p>
+<a
+href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
+clones the tagged repositoties, generates the JavaDoc, and synchronizes to the web
+area. Check it builds the set of modules you want and then execite it in a scratch
+area. You may want to comment out the rsync and do that by hand.</p>
+
+<hr>
+<address>EPICS V4 Working Group</address>
+<!-- hhmts start -->Last modified: Fri Jan 11 18:06:58 CET 2013 <!-- hhmts end -->
+</body>
+</html>

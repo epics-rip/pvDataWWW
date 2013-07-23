@@ -61,26 +61,27 @@ included.</p>
 
 <p>This is the 22-Jan-2013 version of the Getting Started with EPICS V4. This version
 contains updated instructions for building and running pvaSrv, the C++ implementation
-of EPICS V4 access to PVs on a V3 IOC over pvAccess.
+of EPICS V4 access to PVs on a V3 IOC over pvAccess. This version is up to date with
+respect to the BETA 2.0 release in terms of Java development and also with
+development from the Mercurial repositories, including C++ implementations and
+pvaSrv.  </p>
 
-This version is up to date with respect to the BETA 2.0 release in terms of Java
-development and also with development from the Mercurial repositories, including C++
- implementations and pvaSrv.
-</p>
-<p>
-For C++, subsequent to the release of BETA 2.0, development on pvIOCCPP ceased and
-V3Channel has moved from pvIOCCPP to pvaSrv where it continues to be developed.
-As this document is up-to-date with the mercurial tips it is no longer applicable
-in its entirety for C++ development using the BETA 2.0 release.
-<a href= "http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html"
->The 18-Jan-2013 version</a>
- of the guide is applicable for BETA 2.0 for both Java and C++ development. In particular the section
-<a href= "http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html#adding_pvaccess_support_to_an_ioc"
->Adding pvAccess support to an IOC</a> describes deploying V3Channel. 
-</p>
+<p> For C++, subsequent to the release of BETA 2.0, development on
+pvIOCCPP ceased and V3Channel has moved from pvIOCCPP to pvaSrv where it continues to
+be developed.  As this document is up-to-date with the mercurial tips it is no longer
+applicable in its entirety for C++ development using the BETA 2.0 release.  <a href=
+"http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html" >The 18-Jan-2013
+version</a> of the guide is applicable for BETA 2.0 for both Java and C++
+development. In particular the section <a href=
+"http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html#adding_pvaccess_support_to_an_ioc"
+ >Adding pvAccess support to an IOC</a> describes deploying V3Channel.  </p>
 
 <p>The next version should include: section after step-by-step like "going further"
 which points to existing documentation of the EPICS V4 core modules.
+</p>
+
+<h3>Minor additions since 1st publication of this draft:</h3>
+<p>Updates to the ssh URIs following SourceForge's mercurial support changes
 </p>
 
 <div id="toc">
@@ -422,10 +423,10 @@ implementations, as above. The "common" repo is useful too, for setup files etc:
 
 <pre>
 [from ev4hg/ directory in this example, created above]
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessJava
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCJava
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/common
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvDataJava
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvAccessJava
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvIOCJava
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/common
 </pre>
 
 <p>After each of these, you should see 9 or 10 lines, ending in a line like the
@@ -439,8 +440,8 @@ following:</p>
 software.</p>
 
 <pre>
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/exampleJava
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/alpha
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/exampleJava
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/alpha
 </pre>
 
 
@@ -646,9 +647,9 @@ you may use an HTTP URL instead, see Java example above for more]: </p>
 
 <pre>
 [from ev4hg/ directory in this example, created above]
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCCPP
+% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvDataCPP
+% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvAccessCPP
+% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvIOCCPP
 </pre>
 
 <h4 id="cppbuild">EPICS V4 C++ Implementation Build</h4>
@@ -788,7 +789,7 @@ To deploy an IOC with pvAccess support:
   <li>
   Check out the pvaSrv module from its repository at SourceForge:
 <pre>
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvaSrv
+% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvaSrv
 </pre>
   and build it, similar to the EPICS V4 C++ core modules.</li>
   <li>   
@@ -1181,7 +1182,7 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Tue Oct 30 14:07:14 CET 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Fri Jul 19 13:15:17 PDT 2013 <!-- hhmts end -->
 
 </body>
 </html>
