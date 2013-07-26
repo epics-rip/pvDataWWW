@@ -14,7 +14,7 @@
 	<key>BackgroundGraphic</key>
 	<dict>
 		<key>Bounds</key>
-		<string>{{0, 0}, {756, 553}}</string>
+		<string>{{0, 0}, {756, 553.00002479553223}}</string>
 		<key>Class</key>
 		<string>SolidGraphic</string>
 		<key>ID</key>
@@ -46,11 +46,89 @@
 	<key>Creator</key>
 	<string>Greg White</string>
 	<key>DisplayScale</key>
-	<string>1 0/72 in = 1 0/72 in</string>
+	<string>1 0/72 in = 1.0000 in</string>
 	<key>GraphDocumentVersion</key>
 	<integer>8</integer>
 	<key>GraphicsList</key>
 	<array>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>50</integer>
+				<key>Info</key>
+				<integer>4</integer>
+			</dict>
+			<key>ID</key>
+			<integer>86</integer>
+			<key>Points</key>
+			<array>
+				<string>{168.15631805360317, 116.99953010730212}</string>
+				<string>{208, 117}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>Color</key>
+					<dict>
+						<key>b</key>
+						<string>0.8</string>
+						<key>g</key>
+						<string>0.8</string>
+						<key>r</key>
+						<string>0.8</string>
+					</dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Legacy</key>
+					<true/>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>85</integer>
+				<key>Position</key>
+				<real>0.1563180536031723</real>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>LineGraphic</string>
+			<key>ID</key>
+			<integer>85</integer>
+			<key>Points</key>
+			<array>
+				<string>{168, 64.789299011230469}</string>
+				<string>{169, 398.789306640625}</string>
+			</array>
+			<key>Style</key>
+			<dict>
+				<key>stroke</key>
+				<dict>
+					<key>Color</key>
+					<dict>
+						<key>b</key>
+						<string>0.8</string>
+						<key>g</key>
+						<string>0.8</string>
+						<key>r</key>
+						<string>0.8</string>
+					</dict>
+					<key>HeadArrow</key>
+					<string>0</string>
+					<key>Legacy</key>
+					<true/>
+					<key>TailArrow</key>
+					<string>0</string>
+				</dict>
+			</dict>
+		</dict>
 		<dict>
 			<key>Bounds</key>
 			<string>{{57, 26}, {654, 26}}</string>
@@ -227,7 +305,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{313, 71.671401977539062}, {134, 22}}</string>
+			<string>{{317, 83.671401977539062}, {134, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -280,7 +358,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{172.5, 160}, {133, 22}}</string>
+			<string>{{213, 153}, {73, 34}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -324,7 +402,8 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 branch "2.1"  tagged "2.1.1"}</string>
+\f0\fs20 \cf0 branch "2.1"  \
+tagged "2.1.1"}</string>
 			</dict>
 			<key>TextRelativeArea</key>
 			<string>{{0, 0}, {1, 1}}</string>
@@ -398,12 +477,19 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
+			<key>Head</key>
+			<dict>
+				<key>ID</key>
+				<integer>78</integer>
+				<key>Position</key>
+				<real>0.34833517670631409</real>
+			</dict>
 			<key>ID</key>
 			<integer>69</integer>
 			<key>Points</key>
 			<array>
 				<string>{425, 306.25}</string>
-				<string>{455.00001036610956, 303}</string>
+				<string>{461.34833517670631, 306.00366145372391}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -412,18 +498,16 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 					<key>Color</key>
 					<dict>
 						<key>b</key>
-						<string>0.701961</string>
+						<string>0.8</string>
 						<key>g</key>
-						<string>0.701961</string>
+						<string>0.8</string>
 						<key>r</key>
-						<string>0.701961</string>
+						<string>0.8</string>
 					</dict>
 					<key>HeadArrow</key>
 					<string>0</string>
 					<key>Legacy</key>
 					<true/>
-					<key>Pattern</key>
-					<integer>1</integer>
 					<key>TailArrow</key>
 					<string>0</string>
 				</dict>
@@ -450,8 +534,8 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 			<integer>67</integer>
 			<key>Points</key>
 			<array>
-				<string>{384, 201.42140507698059}</string>
-				<string>{384, 153.75}</string>
+				<string>{384, 216.25225728750229}</string>
+				<string>{384, 166.12612915039062}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -475,7 +559,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{343, 201.42140507698059}, {82, 49.578594207763672}}</string>
+			<string>{{343, 216.25225728750229}, {82, 49.578594207763672}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -512,7 +596,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{159, 146}, {142, 22}}</string>
+			<string>{{171, 63.671401977539062}, {145, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -556,7 +640,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\i\fs20 \cf0 tip of the branch named "2.1" }</string>
+\f0\i\fs20 \cf0 Tip of the branch named "2.1" }</string>
 			</dict>
 			<key>TextRelativeArea</key>
 			<string>{{0, 0}, {1, 1}}</string>
@@ -565,7 +649,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{296, 57.342803955078125}, {158, 22}}</string>
+			<string>{{303.5, 73.342803955078125}, {161, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -609,7 +693,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\i\fs20 \cf0 tip of the branch named "default" }</string>
+\f0\i\fs20 \cf0 Tip of the branch named "default" }</string>
 			</dict>
 			<key>TextRelativeArea</key>
 			<string>{{0, 0}, {1, 1}}</string>
@@ -618,7 +702,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{313, 267.5}, {141, 22}}</string>
+			<string>{{301, 267.5}, {149, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -662,7 +746,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 branch "default"  tagged "2.1"}</string>
+\f0\fs20 \cf0 branch "default"     tagged "2.1"}</string>
 			</dict>
 			<key>TextRelativeArea</key>
 			<string>{{0, 0}, {1, 1}}</string>
@@ -671,7 +755,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{317, 181.00000072127366}, {134, 22}}</string>
+			<string>{{303.5, 198.55367683319292}, {137, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -684,8 +768,10 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 			<dict>
 				<key>ID</key>
 				<integer>67</integer>
+				<key>Offset</key>
+				<real>12</real>
 				<key>Position</key>
-				<real>0.19763219356536865</real>
+				<real>0.13363450765609741</real>
 				<key>RotationType</key>
 				<integer>0</integer>
 			</dict>
@@ -724,7 +810,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 branch "default " not tagged}</string>
+\f0\fs20 \cf0 branch "default"   not tagged}</string>
 			</dict>
 			<key>TextRelativeArea</key>
 			<string>{{0, 0}, {1, 1}}</string>
@@ -744,7 +830,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 			<key>Points</key>
 			<array>
 				<string>{384, 285.5}</string>
-				<string>{384, 250.99999928474426}</string>
+				<string>{384, 265.83085149526596}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -834,7 +920,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 			<key>Points</key>
 			<array>
 				<string>{343, 306.25}</string>
-				<string>{279, 211.99014282226562}</string>
+				<string>{296, 117}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -895,7 +981,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{40.5, 118}, {159, 334}}</string>
+			<string>{{12, 64.342803955078125}, {159, 358}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -941,10 +1027,10 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\f0\b\fs20 \cf0 Iff an issue is discovered in 2.1,
-\b0  then:\
+\f0\fs20 \cf0 3) Iff an issue is discovered in 2.1, then:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\b hg clone -u 2.1
+\b \cf0 hg clone -u 2.1
 \b0 \
 Fix any issues\
 mvn compile install\
@@ -952,23 +1038,26 @@ Test\
 If good:\
 
 \b   hg branch 2.1\
-  hg tag 2.1.1\
   Edit pom.xml
 \b0  to set version \
      to 2.1.1\
-  
+
+\b   hg tag 2.1.1\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
+
+\b0 \cf0   
 \b hg commit -m 
 \b0 "2.1.1 fixes xxx"\
   
 \b hg push
-\b0  (creates changeset 4,\
+\b0  (creates changeset 5,\
   tagged 2.1.1)\
 \
 After push, Cloudbees will create\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 \cf0 http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1.1/ which will include &lt;module&gt;-2.1.1.jar. \
 \
-Subsequent fixes made on this branch should similarly be tagged e.g. 2.1.2, and the pom.xml edited again to reflect the incremented tag.\
+Subsequent fixes made on this branch should similarly have changed pom.xml to reflect the incremented version, and be re hg tagged e.g. 2.1.2, recommit and repush. The pushes will be to the 2.1 branch.\
 }</string>
 			</dict>
 			<key>TextRelativeArea</key>
@@ -976,7 +1065,7 @@ Subsequent fixes made on this branch should similarly be tagged e.g. 2.1.2, and 
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{191, 176.99014282226562}, {88, 70}}</string>
+			<string>{{208, 82}, {88, 70}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -1000,7 +1089,7 @@ Subsequent fixes made on this branch should similarly be tagged e.g. 2.1.2, and 
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 Changeset 3: is where the 2.1 version would be fixed. It would be\
+\f0\fs20 \cf0 Changeset 5: is where the 2.1 version would be fixed. It would be\
  retagged 2.1.1}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
@@ -1054,9 +1143,10 @@ Subsequent fixes made on this branch should similarly be tagged e.g. 2.1.2, and 
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs20 \cf0 2.\
+\f0\fs20 \cf0 2) Done immediately after step 1 below:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\b Edit pom.xml
+\b \cf0 Edit pom.xml
 \b0  again, \
 change &lt;version&gt; to \
 2.2-SNAPSHOT,\
@@ -1068,8 +1158,9 @@ reset versions of dependencies to \
 \cf0 their 
 \b new
 \b0  maj.min-SNAPSHOT values.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\b hg commit pom.xml
+\b \cf0 hg commit pom.xml
 \b0 \
 
 \b hg push
@@ -1090,8 +1181,8 @@ reset versions of dependencies to \
 			<integer>48</integer>
 			<key>Points</key>
 			<array>
-				<string>{473, 162}</string>
-				<string>{425, 226.21070218086243}</string>
+				<string>{478.6651254594326, 159.01938957778611}</string>
+				<string>{425, 241.04155439138412}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1100,26 +1191,31 @@ reset versions of dependencies to \
 					<key>Color</key>
 					<dict>
 						<key>b</key>
-						<string>0.701961</string>
+						<string>0.8</string>
 						<key>g</key>
-						<string>0.701961</string>
+						<string>0.8</string>
 						<key>r</key>
-						<string>0.701961</string>
+						<string>0.8</string>
 					</dict>
 					<key>HeadArrow</key>
 					<string>0</string>
 					<key>Legacy</key>
 					<true/>
-					<key>Pattern</key>
-					<integer>1</integer>
 					<key>TailArrow</key>
 					<string>0</string>
 				</dict>
 			</dict>
+			<key>Tail</key>
+			<dict>
+				<key>ID</key>
+				<integer>79</integer>
+				<key>Position</key>
+				<real>0.41536960005760193</real>
+			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{3.4986193180084229, 218.07574439048767}, {32, 22}}</string>
+			<string>{{182.99861931800842, 242.55503416061401}, {32, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1184,8 +1280,8 @@ reset versions of dependencies to \
 			<integer>41</integer>
 			<key>Points</key>
 			<array>
-				<string>{19, 437}</string>
-				<string>{20, 20}</string>
+				<string>{198.5, 454}</string>
+				<string>{199.5, 52}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1202,7 +1298,7 @@ reset versions of dependencies to \
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{343, 89.75}, {82, 64}}</string>
+			<string>{{343, 102.12612915039062}, {82, 64}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -1279,9 +1375,10 @@ reset versions of dependencies to \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs20 \cf0 1. \
+\f0\fs20 \cf0 1) Create the module release tagged version: \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\b Edit pom.xml
+\b \cf0 Edit pom.xml
 \b0  file of the module to \
     set &lt;version&gt; to 2.1. \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
@@ -1423,7 +1520,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1/ which will include
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-07-24 02:50:26 +0000</string>
+	<string>2013-07-26 19:25:21 +0000</string>
 	<key>Modifier</key>
 	<string>Greg White</string>
 	<key>NotesVisible</key>
@@ -1459,7 +1556,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1/ which will include
 		<key>NSPaperSize</key>
 		<array>
 			<string>size</string>
-			<string>{792, 612}</string>
+			<string>{792, 612.00002479553223}</string>
 		</array>
 		<key>NSPrintReverseOrientation</key>
 		<array>
@@ -1509,7 +1606,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1/ which will include
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{85, 34}, {954, 844}}</string>
+		<string>{{85, 35}, {954, 843}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
@@ -1523,7 +1620,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1/ which will include
 		<key>SidebarWidth</key>
 		<integer>120</integer>
 		<key>VisibleRegion</key>
-		<string>{{-32, -76}, {819, 705}}</string>
+		<string>{{-32, -75}, {819, 704}}</string>
 		<key>Zoom</key>
 		<real>1</real>
 		<key>ZoomValues</key>

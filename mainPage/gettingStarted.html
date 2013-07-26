@@ -24,7 +24,7 @@ h2 { page-break-before : always; }
 <h1>GETTING STARTED WITH EPICS V4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 <h2 class="nocount" >
-  Getting Started with EPICS V4, Editors Draft, 22-Jan-2013</h2>
+  Getting Started with EPICS V4, Editors Draft for V4.3.0 release, 26-Jul-2013</h2>
 <dl>
 <dt>This version:</dt>
 <dd><a href=
@@ -103,13 +103,13 @@ V4 connections.</p>
 
 <h3>The Core Modules that Comprise EPICS V4</h3>
 
-<p>EPICS V4 is comprised of 3 "core" modules: pvIOC, pvData, and
-pvAccess. You need all 3. The specifications for the function of these are (or are
+<p>Release "EPICS V4.3 beta" is comprised of 2 "core" modules: pvData, and
+pvAccess, which will always be needed for V4 functionality. The specifications for the function of these are (or are
 presently being) defined
 as <a href="http://epics-pvdata.sourceforge.net/epicsv4process.html#normative" >normative
 documents</a> of the EPICS V4 working group, and available from the
 homepage <a href="http://epics-pvdata.sourceforge.net/index.html"> the EPICS V4
-homepage</a>. There are Java and C++ implementations of each of these 3. The source
+homepage</a>. There are Java and C++ implementations of each of the core modules. The source
 code of each can be acquired from Mercurial. To use them, you can download and build
 them from the source, as described below. For java, you may alternatively just
 download the Jars. This document deals with acquiring and using these 3 core modules.
@@ -181,12 +181,25 @@ sources.</p>
 <p>This section is on software development, with and of, the Java implementation of
 EPICS V4. For C++ development, see below. </p>
 
+<p>The Java implementation of the core EPICS V4 pv* modules, is made available in two
+ways. Firstly, you can download EPICS V4 as a tarball of the jar files directly from
+the EPICS V4 sourceforge site. Alternatively, you can download the Java sources and
+build it yourself.</p>
+
+<p>You would use the tar file mechanism of acquiring EPICS V4 if you only intend to
+use EPICS V4's Java implementation as a user. If you want to contribute to
+development at all, or to examine the source for other reasons, you probably want to
+acquire EPICS V4 by the method of downloading the Mercurial source, and building with
+Maven.  Each of these will be described below.  </p>
+
+
 <p>Since the minimum EPICS V4 runtime is composed of the 3 modules pvData, pvAccess
 and pvIOC, you will need at least these 3. The sections below will guide you
 through<a href="#getjars"> acquiring them from Jars</a> or<a href="#sourcedownload">
 building from the source</a>.</p>
 
-
+<p>If you intend to use EPICS V4's Java client side to talk Channel Access to EPICS base
+IOCs, then you will additionally need the following:</p>
 <table id="table2">
   <caption>Table 2: Optional components for EPICS V4 - EPICS V3 interoperability</caption>
   <tr><th>Prerequisite</th><th>Reference site</th><th>jar file</th>
@@ -196,18 +209,6 @@ building from the source</a>.</p>
   <TR><TD>caj</TD><TD><a href="http://epics-jca.sourceforge.net/caj/">http://epics-jca.sourceforge.net/caj/</a></TD><TD>caj-1.1.8.jar</TD>
  </TR>
 </table>
-
-<p>The Java implementation of the core EPICS V4 pv* modules, is made available in two
-ways. Firstly, you can download EPICS V4 as a tarball of the jar files and necessary
-XMLs, directly from the EPICS V4 sourceforge site. Alternatively, you can download
-the Java sources and build it yourself.</p>
-
-<p>You would use the tar file mechanism of acquiring EPICS V4 if you only intend to
-use EPICS V4's Java implementation (not to contribute to development at all). If this
-conditions is false, you probably want to acquire EPICS V4 by the method of
-downloading the Mercurial source, and building with Maven.
-Each of these will be described below. 
-</p>
 
 <h3 id="getjars">Getting EPICS V4 Java Implementation from the tar of the Jar Files</h3>
 
@@ -387,7 +388,7 @@ access:</p>
 only epics-pvdata members can check out or push commits, so contact any one of
 the <a href="http://epics-pvdata.sourceforge.net/home.html#membership" >participants</a> to get added first:</p>
 
-<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava</pre>
+<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvDataJava</pre>
 
 <p>See <a href="passwordlessAccessToSourceForge.html">the Cheatsheet for Passwordless
 SSH Access to SourceForge for EPICS V4 Development</a> if you'd like to set up your
@@ -401,32 +402,32 @@ needing a password from the user.</p>
 
 <p>Having installed mercurial (hg command) and decided on the URL scheme you're going
 to use (HTTP or SSH), now download the source. You'll create a local Mercurial
-"repository" <strong>for each</strong> EPICS V4 module you get. For references, see
-in particular [<a href="#hgrepoinit">hg repo init</a>].</p>
+"repository" <strong>for each</strong> EPICS V4 module you get.</p>
 
-<p>First, create a root directory in which to house your repo directories, and hg init, Eg:</p>
+<p>First, you may want to create a root directory in which to house your repo directories, Eg:</p>
 
 <pre>
 % pwd
 /Users/greg/Development/epicsV4/
-% mkdir ev4hg
-% cd ev4hg
-% hg init     &lt;- this creates a .hg file in ev4hg
+% mkdir hg
+% cd hg
 </pre>
 
 <h4 id="javadownload">Download minimum EPICSv4 Java implementation repos from epics-pvdata into local repos</h4>
 
-<p>To download the source using Mercurial, use an "hg clone" executed while in the
-directory you created and in which you executed the "hg init", i.e. "ev4hg" in the
-example above. You will need at least the 4 core "normative" module Java
-implementations, as above. The "common" repo is useful too, for setup files etc:</p>
+<p>To download the source using Mercurial, use an "hg clone" command, executed while in the
+directory you created, i.e. "hg/" in the
+example above. You will need at least the 2 core "normative" module Java
+implementations pvDataJava and pvAccessJava (the first 2 below). You may well also want
+exampleJava, which contains example servers and clients, and easyPVAJava, which
+contains an <b>alpha</b> development of a simple client side API for pvAccess.</p>
 
 <pre>
-[from ev4hg/ directory in this example, created above]
+[from hg/ directory in this example, created above]
 % hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvDataJava
 % hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvAccessJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvIOCJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/common
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/exampleJava
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/easyPVAJava
 </pre>
 
 <p>After each of these, you should see 9 or 10 lines, ending in a line like the
@@ -434,14 +435,6 @@ following:</p>
 
 <pre>
 "842 files updated, 0 files merged, 0 files removed, 0 files unresolved"
-</pre>
-
-<p>In addition to the EPICS V4 core, you may want the Java examples, or "alpha" level
-software.</p>
-
-<pre>
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/exampleJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/alpha
 </pre>
 
 
@@ -452,16 +445,12 @@ software.</p>
 <ul>
 <li>pvDataJava has no dependencies</li>
 <li>pvAccessJava depends on pvDataJava</li>
-<li>pvIOCJava depends on pvAaccessJava and pvDataJava for build. The pvIOCJava runtime
-additionally depends on CAJ.jar and JCA.jar</li>
+<li>exampleJava and easyPVAJava depend on both of the above.</li>
 </ul>
 
-<p>CAJ and JCA's jars will be downloaded by maven during your build below; no need to get
-them manually, as long as maven can see SourceForge's web site during the build.</p>
-
-<p>When building you will see warnings, but should not see any errors if the
-build is successful. Warnings come from both source compiles and many from
-javadoc compiles. At the end of each "mvn compile install" process, you should
+<p>When building (instructions below) you will see warnings, but should not see any
+errors if the build is successful. Warnings come from both source compiles and many
+from javadoc compiles. At the end of each "mvn compile install" process, you should
 see:</p>
 
 <pre>
@@ -482,37 +471,44 @@ then pvIOCJava.
 below will result in 2 things; Firstly, it will create your local "m2 repo" (in ~/.m2
 by default). Then it will initiate <strong>many</strong> downloads from sourceForge,
 plus from Maven and prerequisites of Maven. But if you chose this path to EPICS v4,
-you probably knew that.]
+you probably knew that! 
 </p>
 
 <pre>
 % pwd
-/Users/greg/Development/epicsV4/ev4hg
+/Users/greg/Development/epicsV4/hg             [in this example]
 
-% cd pvDataJava
+% cd pvDataJava/
 % mvn compile install
 
-% cd ../pvAccessJava
+% cd ../pvAccessJava/
 % mvn compile install -Dmaven.test.skip=true
-
-% cd ../pvIOCJava
-% mvn compile install -DJAVAIOC=$PWD -Dmaven.test.skip=true
 </pre>
 
-<p>The above 4 complete the build of the EPICS v4 core. To compile and install
-EPICS v4 examples as well, if you cloned examplesJava above, then build it with
-the following:</p>
+<p> Note that as written here, the <kbd>mvn compile install</kbd> commands skip the
+post compilation tests. <i>These tests would include exception handling tests, the
+output of which look like errors, because the tests are specifically to test for
+correctly dealing with runtime errors.</i> If you you would like to include the
+tests, remove the maven option <kbd>-Dmaven.test.skip=true</kbd>.  </p>
 
-<p>cd to your exampleJava, probably <code>cd ../examplesJava</code></p>
+
+<p>The above 2 complete the build of the EPICS v4 core. You may also want to try the
+examples which are in the exampleJava module, and a somewhat simplified pvAccess API
+namd easyPVA. exampleJava uses easyPVAJava, so get them both and build it with the
+following:</p>
 
 <pre>
+% cd ../easyPVAJava/
+% mvn compile install -Dmaven.test.skip=true
+
+% cd ../examplesJava
 % mvn compile install
 </pre>
 
 <p>The outcome of these builds is that you should see all of the build products
-in your local Maven repository (~/.m2 by default).</p>
+in your local Maven repository (<kbd>~/.m2/repository/</kbd> by default).</p>
 
-<p>The minimum EPICS V4 runtime is composed of only 3 Jars, for the core, plus
+<p>The minimum EPICS V4 runtime is composed of only 2 Jars, for the core, plus
 2 if you want to access EPICS V3 IOCs, so you can
 check the outcome of the builds with the find command below, to verify that from the 100s now
 in <code>~/.m2/</code>, you have the few you really need. Again, <strong>actual
@@ -1182,7 +1178,7 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Fri Jul 19 13:15:17 PDT 2013 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Fri Jul 26 15:16:15 PDT 2013 <!-- hhmts end -->
 
 </body>
 </html>
