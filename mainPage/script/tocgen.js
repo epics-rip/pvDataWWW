@@ -61,7 +61,7 @@ window.onload = function () {
 
 	document.getElementById("contents").innerHTML =
 		document.getElementById("contents").innerHTML.replace(
-			/<h([\d]).*>([^<]+)<\/h([\d])>/gi,
+			/<h([23]).*>([^<]+)<\/h([\d])>/gi,
 			function (str, openLevel, titleText, closeLevel) {
 				if (openLevel != closeLevel) {
 					return str;
@@ -78,11 +78,11 @@ window.onload = function () {
 				level = parseInt(openLevel);
 
 				var anchor = titleText.replace(/ /g, "_").toLowerCase();
-				toc += "<li><a href=\"#" + anchor + "\">"
+				toc += "<li><a href='#" + anchor + "'>"
                                        + titleText + "</a></li>";
 
-				return "<h" + openLevel + "><a name=\"" + anchor
-                                       + "\">" + titleText + "</a></h" + closeLevel
+				return "<h" + openLevel + " id='" + anchor
+                                       + "'>" + titleText + "</h" + closeLevel
                                        + ">";
 			}
 		);
