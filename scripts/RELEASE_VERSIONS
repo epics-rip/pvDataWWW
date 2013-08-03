@@ -1,0 +1,6 @@
+# Ev4 Release name           Hg repo name   Hg tag & Maven version
+# ------------------         ------------   ----------------------
+EPICS-Java-4.3.0-pre1        pvDataJava     3.0.0
+EPICS-Java-4.3.0-pre1        pvAccessJava   3.0.0
+EPICS-Java-4.3.0-pre1        easyPVAJava    0.1.1
+EPICS-Java-4.3.0-pre1        exampleJava    2.0.1
