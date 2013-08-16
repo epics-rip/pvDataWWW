@@ -387,7 +387,7 @@ software. More details about this data can be found in the sections below.</p>
 <tbody>
 
 <tr>
-  <td><!-- date --></td>
+  <td>2013-07-22</td>
   <td>RC</td>
   <td>Cue the MPs to start packaging the <code>&#8209;pre<i>n</i></code>
     release.</td>
@@ -792,7 +792,7 @@ associated scripts &ndash; AJ</p>
 </ol>
 
 <p>Release scripts are in mercurial under <a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
+href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
 </p>
 
 <p>During the release process documentation (both written and generated) is copied from the <code>documentation</code> directory in each repository to <code>epics-pvdata.sourceforge.net/docbuild/$REPO/$TAGNAME/documentation</code>.
@@ -805,18 +805,18 @@ edited to set the correct tag and user-name for the release.</p>
 
 <dl>
   <dt>Code:</dt>
-  <dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a>
+  <dd><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a>
   &ndash; clones the repositories, tags the current head, then pushes the
   changes back to SF.</dd>
 
-  <dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a>
+  <dd><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a>
   &ndash; clones the tagged repositories, uses <code>hg archive</code> to
   combine the results into a new directory tree, adds the RELEASE.local file and
   a generated tag.txt file, generates a tar.gz file, then copies that to the
   file area.</dd>
 
   <dt>Documentation:</dt>
-  <dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a>
+  <dd><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a>
   &ndash; clones the tagged repositories, adds a copy of RELEASE.local and
   CONFIG_SITE.local to each, compiles each module and runs doxygen, then copies
   the generated documentation directories to the web area.</dd>
@@ -948,7 +948,7 @@ to build the tar, then run /makereleaseJars.sh from where you edited it:</p>
 </dd>
 
 <dt>Documentation:</dt>
-<dd><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
+<dd><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
 &ndash; clones the tagged repositoties, generates the JavaDoc, and synchronizes
 to the web area. Check it builds the set of modules you want and then execute it
 in a scratch area. You may want to comment out the rsync and do that by

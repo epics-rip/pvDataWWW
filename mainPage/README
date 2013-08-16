@@ -128,21 +128,21 @@ http://www.aps.anl.gov/epics/base/R3-14/8-docs/CAref.html
 [6] pvAccess Specification, 
 http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html
 [7] pvAccess Java documentation,
- http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html
+ http://epics-pvdata.sourceforge.net/hgweb/pvAccessJava/raw-file/tip/documentation/pvAccessJava.html
 [8] pvData Java documentation,
-http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html
+http://epics-pvdata.sourceforge.net/hgweb/pvDataJava/raw-file/tip/documentation/pvDataJava.html
 [9] pvIOC Java documentation, 
-http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/raw-file/tip/documentation/pvIOCJava.html
+http://epics-pvdata.sourceforge.net/hgweb/pvIOCJava/raw-file/tip/documentation/pvIOCJava.html
 [10] RemoteTeo implementation of ONC/RPC, 
 https://sourceforge.net/apps/trac/remotetea/wiki/WikiStart
 [11] SWTShell for pvIOC, 
 http://epics-pvdata.sourceforge.net/doc/pvIOCJava/swtshell.html
 [12] SWT: Standard Widget Toolkit, http://www.eclipse.org/swt/
 [13] helloWorld runtime setup script, 
-http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src/helloWorld/helloWorld_setup.bash
+http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/576e59c105e9/src/helloWorld/helloWorld_setup.bash
 [14] exampleJava, examples of use of EPICS V4 java binding, 
-http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src
+http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/tip/src
 [15] ChannelRPC facility javadoc in pvIOC, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/rpcSupport.html
 [16] Getting Started with EPICS V4, http://epics-pvdata.sourceforge.net/gettingStarted.html
 [17] pvaSrv documentation, http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html
-[18] exampleCPP, examples of use of EPICS V4 C++ binding, http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/
+[18] exampleCPP, examples of use of EPICS V4 C++ binding, http://epics-pvdata.sourceforge.net/hgweb/exampleCPP/
