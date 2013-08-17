@@ -45,20 +45,32 @@ echo "
    an EPICS V4 release. 
 
    Usage:
-       ./makereleaseJars.sh -n <releaseName> [-l <hgrepodirname>] [-r <SFusername>]
 
-   -n <releaseName>  The string identifying the release. This is the key used to search
-                     RELEASE_VERSIONS to find the modules in the release
+       makereleaseJars.sh -n <releaseName> [-l <hgrepodirname>] [-r <SFusername>]
 
-   -l <hgrepodirname>  Use local files. A local RELEASE_VERSIONS file will be sought in
-                     ./<hgrepodirname>/pvDataWWW/scripts/RELEASE_VERSIONS, and the local 
-                     maven repository will be sought in ~/.m2/repository/epics/. If -l is 
-                     not given, the SourceForge hosted files will be used. 
+       -n <releaseName>   The string identifying the release. This is the key used to
+                          search RELEASE_VERSIONS to find the modules in the release
 
-   -r <SFusername>   Use remote files. The argument SFusername is the SourceForge 
-                     username to be used for upload. 
+       -l <hgrepodirname> Use local files. A local RELEASE_VERSIONS file will be
+                          sought in
+                          ./<hgrepodirname>/pvDataWWW/scripts/RELEASE_VERSIONS, and
+                          the local maven repository will be sought in
+                          ~/.m2/repository/epics/. If -l is not given, the
+                          SourceForge hosted files will be used.
 
-   Note that use of -l and -r are mutually exclusive.  
+       -r <SFusername>   Use remote files. The argument SFusername is the SourceForge
+                         username to be used for upload.
+
+       Note that use of -l and -r are mutually exclusive.  
+
+   Example:
+ 
+       $ hg/pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre1 -l hg
+     
+       In this example, makereleaseJara.sh packaged the jar files for release named
+       EPICS-Java-4.3.0-pre1, as specified in a RELEASE_VERSIONS file it must find in
+       hg/pvDataWWW/scripts/RELEASE_VERSIONS. The command was executed from the parent
+       of hg/ so that the tar file did not pollute any repos.
 "
 }
 
@@ -105,58 +117,68 @@ tarfile="${releaseName}.tar.gz"
 if [ ${localfiles} -eq 1 ]; then
     release_versions_pathname=${hgrepodirname}/pvDataWWW/scripts/RELEASE_VERSIONS
 else
-    wget RELEASE_VERSIONS_URL
+    wget ${RELEASE_VERSIONS_URL}
     release_versions_pathname=${PWD}/RELEASE_VERSIONS 
 fi
 if [ ! -f ${release_versions_pathname} ]; then
     echo "Failed to locate or use the RELEASE_VERSIONS file."
     exit 2
 fi
+file=$release_versions_pathname
+release_versions_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
+
 modulesa=(`awk -v relname=${releaseName} '$1 ~ relname {print $2}' < $release_versions_pathname`)
 if [ ${#modulesa[@]} -lt 1 ]; then
     echo "Failed to find modules for release ${releaseName}"
     exit 2
 fi
+echo ${releaseName} is composed of ${modulesa[*]}
 
 # Create the directory whose contents we'll tar, and populate it. 
 #
 mkdir -p ${outdir}
 cd ${outdir}
-release_versions_pathname=../${release_versions_pathname}
-for modulei in $modulesa
+
+for modulei in ${modulesa[*]}
 do
     tag=`awk -v relname=${releaseName} -v modulename=${modulei} \
           '$1 ~ relname && $2 ~ modulename {print $3}' < $release_versions_pathname`
 
     if [ $? -eq 0 ]; then
 
-       # If no SourceForge user name was given, assume we're packaging from files 
-    # in a local maven repository, and further assume it's in ~./m2/repository/
-    #
-    if [ ${localfiles} -eq 1 ]; then
-	cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}.jar .
-	cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}.pom .
-	cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar .
-	cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar .
-    else
-	wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}.jar
-	wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}.pom
-	wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar
-	wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar
-        wget http://epics-pvdata.sourceforge.net/README
-    fi
-    else
+        # If no SourceForge user name was given, assume we're packaging from files 
+        # in a local maven repository, and further assume it's in ~./m2/repository/
+        #
+        echo Adding ${modulei} ${tag} to ${releaseName} tar directory 
+        if [ ${localfiles} -eq 1 ]; then
+	    set -x
+	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}.jar .
+	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}.pom .
+	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar .
+	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar .
+        else
+            set -x
+	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}.jar
+	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}.pom
+	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar
+	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar
+            wget http://epics-pvdata.sourceforge.net/README
+        fi
+        set +x
+     else
 	echo "Could not get module version for ${modulei}, exiting"
 	exit 3
-    fi
+     fi
 done
 
 cd ..
 
+echo Tarring  $outdir to $tarfile
 tar czf $tarfile $outdir
 
-if [ ${uploadtar} -eq 1 ]; then
-   rsync -a * $SFusername,epics-pvdata@frs.sourceforge.net:/home/frs/project/e/ep/epics-pvdata/$tag
-fi
+# Needs work
+# if [ ${uploadtar} -eq 1 ]; then
+#    rsync -a * $SFusername,epics-pvdata@frs.sourceforge.net:/home/frs/project/e/ep/epics-pvdata/$tag
+# fi
 
 exit 0
