@@ -1,6 +1,19 @@
-# Ev4 Release name           Hg repo name   Hg tag & Maven version
+# EPICS release package specification table.
+#
+# Note that for Java, the Repo name refers to the maven repo, and the
+# version refers to the maven version; though these should relate strongly
+# to their hg equivalents.
+#
+# -----------------------------------------------------------------
+# Auth: Greg White, 15-Aug-2013.
+# Mod: 
+# =================================================================
+# Ev4 Release name           Repo name      Tag/version
 # ------------------         ------------   ----------------------
-EPICS-Java-4.3.0-pre1        pvDataJava     3.0.0
-EPICS-Java-4.3.0-pre1        pvAccessJava   3.0.0
-EPICS-Java-4.3.0-pre1        easyPVAJava    0.1.1
-EPICS-Java-4.3.0-pre1        exampleJava    2.0.1
+EPICS-Java-4.3.0-pre1        pvData         2.1-SNAPSHOT
+EPICS-Java-4.3.0-pre1        pvAccess       2.1-SNAPSHOT
+EPICS-Java-4.3.0-pre1        easyPVAJava    2.1-SNAPSHOT
+EPICS-Java-4.3.0-pre1        exampleJava    2.1-SNAPSHOT
+EPICS-Java-4.3.0-pre1        caj            1.1.10
+EPICS-Java-4.3.0-pre1        jca            2.3.6
+
