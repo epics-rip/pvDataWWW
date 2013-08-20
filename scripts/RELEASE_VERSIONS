@@ -21,3 +21,11 @@ EPICS-Java-4.3.0-pre1        exampleJava    2.1.0
 EPICS-Java-4.3.0-pre1        caj            1.1.10
 EPICS-Java-4.3.0-pre1        jca            2.3.6
 
+EPICS-CPP-4.3.0-pre1         pvCommonCPP    3.0-pre1
+EPICS-CPP-4.3.0-pre1         pvDataCPP      3.0-pre1
+EPICS-CPP-4.3.0-pre1         pvAccessCPP    3.0-pre1
+EPICS-CPP-4.3.0-pre1         pvIOCCPP       3.0-pre1    
+EPICS-CPP-4.3.0-pre1         exampleCPP     3.0-pre1    
+EPICS-CPP-4.3.0-pre1         pvaSrv         0.9.1        
+         
+
