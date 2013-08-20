@@ -1,24 +1,25 @@
 #!/bin/bash
 #!-*- sh -*-
 # 
-# Summary:     
-#      ./makereleaseJars.sh -n <releaseName> [-l <hgrepodirname>] [-r <SFusername>]  
-#
-# Abstract: 
 #      makereleaseJars is a bash source script to manage the release of jar files and 
 #      associated deliverables for a version tagged release of the Java implementation 
 #      of EPICS v4. 
 #
-# Usage: 
+# Usage:     
+#      ./makereleaseJars.sh -n <releaseName> [-l <hgrepodirname>] [-r <SFusername>]  
+# 
 #      Following a tagged release of ALL of the V4 core pv*Java modules (pvDataJava, pvAccessJava etc),
 #      as described in release.html, hg checkout pvDataWWW. Edit pvDataWWW/configure/RELEASE_VERSIONS 
-#      to define the modules of the release and their Mercurial (hg) tags. Note that 
-#      ** formally, the release is defined by specification of a set of module names and their 
-#      hg tag values, although for Java, we assume that there will be maven products for those
-#      tags at the time this script is run. This script actually packages the jar files in 
+#      to define the modules of the release and their Mercurial (hg) tags. 
+#
+#      NOTE that 
+#      ** formally, the release is defined by specification of a set of module names and 
+#      specifically their Source Version Control System (VCS) (Mercurial in our present case) 
+#      tag values. Therefore, for Java, the maven products and maven versions MUST be
+#      identical. This script actually packages the jar files in 
 #      the maven repo, it does not package from the hg repo directly!
 #
-# Examples:
+#      For examples see Usage function below.
 #
 #      A user should unpack the resulting tar.gz with, for instance:
 #            tar zxvf EPICSv4-Java-1.0-BETA.tar.gz
@@ -27,16 +28,11 @@
 #
 # ----------------------------------------------------------------------------
 # Auth: 20-Dec-2011, Greg White (greg@slac.stanford.edu) 
-# Mod:  11-Jan-2013, Greg White (greg@slac.stanford.edu)
+# Mod:  19-Aug-2013, Greg White (greg@slac.stanford.edu)
+#       Re-write for supporting file driven release packaging.
+#       11-Jan-2013, Greg White (greg@slac.stanford.edu)
 #       Updated TAG so as to build first beta 2 release. Also, removed references to pvService.
-#       07-Feb-2012, Greg White (greg@slac.stanford.edu)
-#       Added bundling pvService, since that's no again required after stuff 
-#       removed from pvData.
-#       09-Jan-2011, Greg White (greg@slac.stanford.edu) 
-#       Added creating a tar.gz, converted upload of exampleJava.jar to only 
-#       including its source in the tar.gz (more useful than the jar for examples)
-#       and also include the common dir in the tar.gz. 
-
+#       
 # ============================================================================
 
 function usage { 
@@ -61,16 +57,33 @@ echo "
        -r <SFusername>   Use remote files. The argument SFusername is the SourceForge
                          username to be used for upload.
 
-       Note that use of -l and -r are mutually exclusive.  
+       NOTE: Use of -l and -r are mutually exclusive.  
+
+       NOTE: The versions in RELEASE_VERSIONS, MUST not be SNAPSHOT versions. That is
+       contrary to release policy, and the script won't work in the expected way anyway
+       because maven snapshots have timestamps in their name,not recogized by this script.
 
    Example:
+
+       Package from local files example:
  
-       $ hg/pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre1 -l hg
+         $ hg/pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre1 -l hg
      
-       In this example, makereleaseJara.sh packaged the jar files for release named
+       In this example, makereleaseJara.sh packaged the jar files for a release named
        EPICS-Java-4.3.0-pre1, as specified in a RELEASE_VERSIONS file it must find in
        hg/pvDataWWW/scripts/RELEASE_VERSIONS. The command was executed from the parent
        of hg/ so that the tar file did not pollute any repos.
+
+       Package from remote files example:
+
+         $ makereleaseJars.sh -n EPICS-Java-4.3.0-pre1 -r gregorywhite 
+
+       In this example, makereleaseJara.sh packaged the jar files for a release named
+       EPICS-Java-4.3.0-pre1, as specified in the RELEASE_VERSIONS file it finds on the
+       web (see URL in source of this script).
+       It will first download the files it finds in the maven repo at 
+       http://epics.sourceforge.net/maven2/epics/, and package them into a tar file.
+
 "
 }
 
@@ -82,9 +95,9 @@ RELEASE_VERSIONS_URL=\
 http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS
 
 SFusername=
-releaseName=
+releaseName= 
 localfiles=0
-uploadtar=0
+remotefiles=0
 if [ $# -lt 1 ]; then
    echo "Not enough arguments, at least the -n releaseName must be given. " \
         "See makereleaseJars.sh -h for help";
@@ -93,7 +106,7 @@ fi
 while getopts hr:l:n: opt; do
    case "$opt" in
        h) usage; exit 0 ;;
-       r) uploadtar=1 
+       r) remotefiles=1 
           SFusername=${OPTARG} ;;
        l) localfiles=1
           hgrepodirname=${OPTARG} ;;
@@ -127,6 +140,8 @@ fi
 file=$release_versions_pathname
 release_versions_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
+# Read the repos and versions that the release tar must be composed of, from the
+# RELEASE_VERSIONS file.
 modulesa=(`awk -v relname=${releaseName} '$1 ~ relname {print $2}' < $release_versions_pathname`)
 if [ ${#modulesa[@]} -lt 1 ]; then
     echo "Failed to find modules for release ${releaseName}"
@@ -151,7 +166,6 @@ do
         #
         echo Adding ${modulei} ${tag} to ${releaseName} tar directory 
         if [ ${localfiles} -eq 1 ]; then
-	    set -x
 	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}.jar .
 	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}.pom .
 	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar .
@@ -175,10 +189,5 @@ cd ..
 
 echo Tarring  $outdir to $tarfile
 tar czf $tarfile $outdir
-
-# Needs work
-# if [ ${uploadtar} -eq 1 ]; then
-#    rsync -a * $SFusername,epics-pvdata@frs.sourceforge.net:/home/frs/project/e/ep/epics-pvdata/$tag
-# fi
 
 exit 0

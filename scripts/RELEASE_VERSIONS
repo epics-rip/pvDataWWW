@@ -1,8 +1,12 @@
 # EPICS release package specification table.
 #
-# Note that for Java, the Repo name refers to the maven repo, and the
+# NOTE: For Java, the Repo name refers to the maven repo, and the
 # version refers to the maven version; though these should relate strongly
 # to their hg equivalents.
+#
+# For local testing packaging, prior to building a elease from remote
+# files, the tag may be a SNAPHOT. Bear in mind that local SNAPHOT files
+# typically have filename of the form 
 #
 # -----------------------------------------------------------------
 # Auth: Greg White, 15-Aug-2013.
@@ -10,10 +14,10 @@
 # =================================================================
 # Ev4 Release name           Repo name      Tag/version
 # ------------------         ------------   ----------------------
-EPICS-Java-4.3.0-pre1        pvData         2.1-SNAPSHOT
-EPICS-Java-4.3.0-pre1        pvAccess       2.1-SNAPSHOT
+EPICS-Java-4.3.0-pre1        pvDataJava     3.0.0
+EPICS-Java-4.3.0-pre1        pvAccessJava   3.0.0
 EPICS-Java-4.3.0-pre1        easyPVAJava    2.1-SNAPSHOT
-EPICS-Java-4.3.0-pre1        exampleJava    2.1-SNAPSHOT
+EPICS-Java-4.3.0-pre1        exampleJava    2.1.0
 EPICS-Java-4.3.0-pre1        caj            1.1.10
 EPICS-Java-4.3.0-pre1        jca            2.3.6
 

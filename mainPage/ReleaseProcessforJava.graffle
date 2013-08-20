@@ -52,6 +52,59 @@
 	<key>GraphicsList</key>
 	<array>
 		<dict>
+			<key>Bounds</key>
+			<string>{{32, 514.00002479553223}, {462, 22}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>87</integer>
+			<key>Magnets</key>
+			<array>
+				<string>{0, 1}</string>
+				<string>{0, -1}</string>
+				<string>{1, 0}</string>
+				<string>{-1, 0}</string>
+			</array>
+			<key>Shape</key>
+			<string>DisplayShape</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Align</key>
+				<integer>0</integer>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf390
+\cocoascreenfonts1{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
+
+\f0\fs20 \cf0 [1] EPICS V4 Release Process, http://epics-pvdata.sourceforge.net/release.html}</string>
+			</dict>
+			<key>TextRelativeArea</key>
+			<string>{{0, 0}, {1, 1}}</string>
+		</dict>
+		<dict>
 			<key>Class</key>
 			<string>LineGraphic</string>
 			<key>Head</key>
@@ -65,7 +118,7 @@
 			<integer>86</integer>
 			<key>Points</key>
 			<array>
-				<string>{168.15631805360317, 116.99953010730212}</string>
+				<string>{170.15631805360317, 116.55303505114978}</string>
 				<string>{208, 117}</string>
 			</array>
 			<key>Style</key>
@@ -104,8 +157,8 @@
 			<integer>85</integer>
 			<key>Points</key>
 			<array>
-				<string>{168, 64.789299011230469}</string>
-				<string>{169, 398.789306640625}</string>
+				<string>{170, 64.342803955078125}</string>
+				<string>{171, 398.34281158447266}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -186,7 +239,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{32, 462.75}, {646, 46}}</string>
+			<string>{{32, 439.5}, {646, 46}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -243,7 +296,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{317, 363.00000062584877}, {134, 22}}</string>
+			<string>{{317, 366.57907006144524}, {134, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -358,7 +411,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{213, 153}, {73, 34}}</string>
+			<string>{{208.5, 153}, {82, 34}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -402,8 +455,8 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 branch "2.1"  \
-tagged "2.1.1"}</string>
+\f0\fs20 \cf0 branch "2.1.0"  \
+tagged "2.1.0.1"}</string>
 			</dict>
 			<key>TextRelativeArea</key>
 			<string>{{0, 0}, {1, 1}}</string>
@@ -488,7 +541,7 @@ tagged "2.1.1"}</string>
 			<integer>69</integer>
 			<key>Points</key>
 			<array>
-				<string>{425, 306.25}</string>
+				<string>{425, 320.5}</string>
 				<string>{461.34833517670631, 306.00366145372391}</string>
 			</array>
 			<key>Style</key>
@@ -534,7 +587,7 @@ tagged "2.1.1"}</string>
 			<integer>67</integer>
 			<key>Points</key>
 			<array>
-				<string>{384, 216.25225728750229}</string>
+				<string>{384, 202.25225728750229}</string>
 				<string>{384, 166.12612915039062}</string>
 			</array>
 			<key>Style</key>
@@ -559,7 +612,7 @@ tagged "2.1.1"}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{343, 216.25225728750229}, {82, 49.578594207763672}}</string>
+			<string>{{343, 202.25225728750229}, {82, 49.578594207763672}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -596,7 +649,7 @@ tagged "2.1.1"}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{171, 63.671401977539062}, {145, 22}}</string>
+			<string>{{163.5, 63.671401977539062}, {160, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -640,7 +693,7 @@ tagged "2.1.1"}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\i\fs20 \cf0 Tip of the branch named "2.1" }</string>
+\f0\i\fs20 \cf0 Tip of the branch named "B2.1.0" }</string>
 			</dict>
 			<key>TextRelativeArea</key>
 			<string>{{0, 0}, {1, 1}}</string>
@@ -746,7 +799,7 @@ tagged "2.1.1"}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 branch "default"     tagged "2.1"}</string>
+\f0\fs20 \cf0 branch "default"     tag it "2.1.0"}</string>
 			</dict>
 			<key>TextRelativeArea</key>
 			<string>{{0, 0}, {1, 1}}</string>
@@ -755,7 +808,7 @@ tagged "2.1.1"}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{303.5, 198.55367683319292}, {137, 22}}</string>
+			<string>{{304.5, 183.42455962598055}, {137, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -769,9 +822,9 @@ tagged "2.1.1"}</string>
 				<key>ID</key>
 				<integer>67</integer>
 				<key>Offset</key>
-				<real>12</real>
+				<real>11</real>
 				<key>Position</key>
-				<real>0.13363450765609741</real>
+				<real>0.21667690575122833</real>
 				<key>RotationType</key>
 				<integer>0</integer>
 			</dict>
@@ -830,7 +883,7 @@ tagged "2.1.1"}</string>
 			<key>Points</key>
 			<array>
 				<string>{384, 285.5}</string>
-				<string>{384, 265.83085149526596}</string>
+				<string>{384, 251.83085149526596}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -854,7 +907,7 @@ tagged "2.1.1"}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{32, 505.5}, {462, 34}}</string>
+			<string>{{32, 483}, {462, 34}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -919,7 +972,7 @@ tagged "2.1.1"}</string>
 			<integer>56</integer>
 			<key>Points</key>
 			<array>
-				<string>{343, 306.25}</string>
+				<string>{343, 320.5}</string>
 				<string>{296, 117}</string>
 			</array>
 			<key>Style</key>
@@ -957,7 +1010,7 @@ tagged "2.1.1"}</string>
 			<key>Points</key>
 			<array>
 				<string>{384, 380.75}</string>
-				<string>{384, 327}</string>
+				<string>{384, 355.5}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -981,7 +1034,7 @@ tagged "2.1.1"}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{12, 64.342803955078125}, {159, 358}}</string>
+			<string>{{12, 64.342803955078125}, {165, 358}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1027,37 +1080,37 @@ tagged "2.1.1"}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\f0\fs20 \cf0 3) Iff an issue is discovered in 2.1, then:\
+\f0\fs20 \cf0 3) Iff an issue is discovered in 2.1.0, then:\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\b \cf0 hg clone -u 2.1
+\b \cf0 hg clone -u 2.1.0
 \b0 \
 Fix any issues\
 mvn compile install\
 Test\
 If good:\
 
-\b   hg branch 2.1\
+\b   hg branch B2.1.0\
   Edit pom.xml
 \b0  to set version \
-     to 2.1.1\
+     to 2.1.0.1\
 
-\b   hg tag 2.1.1\
+\b   hg tag 2.1.0.1\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
 \b0 \cf0   
 \b hg commit -m 
-\b0 "2.1.1 fixes xxx"\
+\b0 "2.1.0.1 fixes xxx"\
   
 \b hg push
 \b0  (creates changeset 5,\
-  tagged 2.1.1)\
+  tagged 2.1.0.1)\
 \
 After push, Cloudbees will create\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
-\cf0 http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1.1/ which will include &lt;module&gt;-2.1.1.jar. \
+\cf0 http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1.0.1/ which will include &lt;module&gt;-2.1.0.1.jar. \
 \
-Subsequent fixes made on this branch should similarly have changed pom.xml to reflect the incremented version, and be re hg tagged e.g. 2.1.2, recommit and repush. The pushes will be to the 2.1 branch.\
+Subsequent fixes made on this branch should similarly have changed pom.xml to reflect the incremented version, and be re hg tagged e.g. 2.1.0.2, recommit and repush. The pushes will be to the 2.1.0 branch.\
 }</string>
 			</dict>
 			<key>TextRelativeArea</key>
@@ -1089,15 +1142,15 @@ Subsequent fixes made on this branch should similarly have changed pom.xml to re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 Changeset 5: is where the 2.1 version would be fixed. It would be\
- retagged 2.1.1}</string>
+\f0\fs20 \cf0 Changeset 5: is where the 2.1.0 version would be fixed. It would be\
+ retagged 2.1.0.1}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{483.6248779296875, 99.421401977539062}, {220, 130}}</string>
+			<string>{{483.6248779296875, 80.421401977539062}, {225, 142}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1143,13 +1196,14 @@ Subsequent fixes made on this branch should similarly have changed pom.xml to re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\fs20 \cf0 2) Done immediately after step 1 below:\
+\f0\fs20 \cf0 2) Done after step 1 below, at the point at which \
+you want to continue development on the trunk:\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
 \b \cf0 Edit pom.xml
 \b0  again, \
 change &lt;version&gt; to \
-2.2-SNAPSHOT,\
+2.1.1-SNAPSHOT,\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 \cf0 and if module is above pvDataJava (the lowest \
 antecedent) then also  \
@@ -1164,7 +1218,7 @@ reset versions of dependencies to \
 \b0 \
 
 \b hg push
-\b0  (creates changeset 3 in SF repo). }</string>
+\b0  (creates changeset 2 in SF repo). }</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -1182,7 +1236,7 @@ reset versions of dependencies to \
 			<key>Points</key>
 			<array>
 				<string>{478.6651254594326, 159.01938957778611}</string>
-				<string>{425, 241.04155439138412}</string>
+				<string>{425, 227.04155439138412}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1215,7 +1269,7 @@ reset versions of dependencies to \
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{182.99861931800842, 242.55503416061401}, {32, 22}}</string>
+			<string>{{182.99861931800842, 229.51913642883301}, {32, 22}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1280,7 +1334,7 @@ reset versions of dependencies to \
 			<integer>41</integer>
 			<key>Points</key>
 			<array>
-				<string>{198.5, 454}</string>
+				<string>{198.5, 428}</string>
 				<string>{199.5, 52}</string>
 			</array>
 			<key>Style</key>
@@ -1322,14 +1376,14 @@ reset versions of dependencies to \
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 Chageset 4: First real addition after the version is tagged}</string>
+\f0\fs20 \cf0 Chageset 3: First real addition after the version is tagged}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{466.00001036610956, 234}, {255.24977111816406, 190}}</string>
+			<string>{{466.00001036610956, 234}, {255.24977111816406, 202}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1380,7 +1434,7 @@ reset versions of dependencies to \
 
 \b \cf0 Edit pom.xml
 \b0  file of the module to \
-    set &lt;version&gt; to 2.1. \
+    set &lt;version&gt; to 2.1.0. \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 \cf0 If module is above pvDataJava, then set \
 explicit version dependencies \
@@ -1390,23 +1444,23 @@ in pom.xml\
 \b \cf0 hg commit pom.xml
 \b0 \
 
-\b hg tag 2.1
+\b hg tag 2.1.0
 \b0 \
 
-\b hg commit -m "v2.1"
+\b hg commit -m "Version 2.1.0"
 \b0 \
 
 \b hg push
-\b0  (creates changeset 1, tagged 2.1, in SF repo)\
+\b0  (creates changeset 1, tagged 2.1.0, in SF repo)\
 \
 After the push, Cloudbees \
 will create \
-http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1/ which will include &lt;module&gt;-2.1.jar.}</string>
+http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1.0/ which will include &lt;module&gt;-2.1.0.jar.}</string>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{343, 285.5}, {82, 41.5}}</string>
+			<string>{{343, 285.5}, {82, 70}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -1436,7 +1490,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1/ which will include
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 Changeset 1: is a tip you think is noteworthy}</string>
+\f0\fs20 \cf0 Changeset 1: changes compatibility. Tag it according to major/minor rules in ref [1]}</string>
 				<key>VerticalPad</key>
 				<integer>0</integer>
 			</dict>
@@ -1520,7 +1574,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1/ which will include
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-07-26 19:25:21 +0000</string>
+	<string>2013-08-20 01:43:37 +0000</string>
 	<key>Modifier</key>
 	<string>Greg White</string>
 	<key>NotesVisible</key>
