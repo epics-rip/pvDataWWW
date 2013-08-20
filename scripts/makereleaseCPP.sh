@@ -42,41 +42,43 @@ echo "
 
    Usage:
 
-       makereleaseCPP.sh -n <releaseName> -r <SFusername> [-V <version_filename>] 
+       makereleaseCPP.sh -n <releaseName> -r <SFusername> [-f ] [-V <version_filename>] 
 
-       -n <releaseName>   The string identifying the release. This is the key used to
-                          search RELEASE_VERSIONS to find the modules in the release
+       -n <releaseName>      The string identifying the release. This is the
+                             key used to search RELEASE_VERSIONS to find the
+                             modules in the release.
 
-       -r <SFusername>    Use remote files. The argument SFusername is the SourceForge
-                          username to be used for upload.
+       -r <SFusername>       Uses remote files. The argument SFusername is the
+                             SourceForge username to be used for upload.
 
-       -t                 Checked modules are named with tag as well as module name.
+       -V <version_filename> Uses the specified local release versions file
+                             instead of RELEASE_VERSIONS in pvDataWWW/scripts
 
-       -T                 Checked modules are named with module name only (default).
-
-
-       NOTE: Use of -t and -T are mutually exclusive.  
-
-       NOTE: The versions in RELEASE_VERSIONS, MUST not be SNAPSHOT versions. That is
-       contrary to release policy, and the script won't work in the expected way anyway
-       because maven snapshots have timestamps in their name,not recogized by this script.
+       -f                    Removes any files from running the script
+                             previously.
 
    Example:
 
-       Package from remote files example:
-
          $ makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre1 -r dhickin
 
-       In this example, makereleaseCPP.sh packaged the jar files for a release named
-       EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file it finds on the
-       web (see URL in source of this script).
-       It will first download the files it finds in the maven repo at 
-       http://epics.sourceforge.net/maven2/epics/, and package them into a tar file.
+       In this example, makereleaseCPP.sh packages a tar for a release named
+       EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file it 
+       finds on the web (see URL in source of this script).
+       It will first clone the files it finds in the mercurial repo and
+       package them into a tar file.
 
 "
 }
 
 declare -a modulesa
+
+thisdir=${PWD}
+
+function Exit {
+    cd ${thisdir}
+    exit $1
+}
+
 
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release.
@@ -86,43 +88,49 @@ http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_
 SFusername=
 releaseName= 
 localversionsfile=0
-remotefiles=0
-namemoduleswithtag=0
+force=0
 
-if [ $# -lt 1 ]; then
-   echo "Not enough arguments, at least the -n releaseName must be given. " \
-        "See makereleaseCPP.sh -h for help";
-   exit 1;
-fi
-
-while getopts htTr:V:n: opt; do
+while getopts hfr:V:n: opt; do
    case "$opt" in
-       h) usage; exit 0 ;;
-       t) namemoduleswithtag=1 ;;
-       T) namemoduleswithtag=0 ;;
-       r) remotefiles=1 
-          SFusername=${OPTARG} ;;
+       h) usage; Exit 0 ;;
+       f) force=1 ;;
+       r) SFusername=${OPTARG} ;;
        V) localversionsfile=1
           localversionsfilename=${OPTARG} ;;
        n) releaseName=${OPTARG} ;; 
-       *) echo "Unknown Argument, see makereleaseCPP.sh -h"; exit 1;;
+       *) echo "Unknown Argument, see makereleaseCPP.sh -h"; Exit 1;;
    esac
 done
 shift $((OPTIND-1));
 
 if [ -z ${releaseName} ]; then
-    echo "The release name is a required argument, see makereleaseCPP.sh -h"
-    exit 1
+    echo "The release name is a required argument, (specify with -n)"
+    echo "See makereleaseCPP.sh -h"
+    Exit 1
 fi
+
+
+if [ -z ${SFusername} ]; then
+	echo "User name is a required argument (specify with -r)."
+    echo "See makereleaseCPP.sh -h"
+    Exit 2
+fi
+
 
 outdir=${releaseName}
 tarfile="${releaseName}.tar.gz"
 
+
 # Check the directory whose contents we'll tar doesn't already exist
 if [ -e ${outdir} ]; then
-	echo "${outdir} already exists. Remove/move before trying again."
-    exit 5
+    if [ ${force} -eq 1 ]; then
+        rm -rf ${outdir}
+    else
+	    echo "${outdir} already exists. Remove/move before trying again."
+        Exit 3
+    fi
 fi
+
 
 # Locate the RELEASE_VERSIONS file, to tell use which modules must be in the release
 # build, and from it find out which modules are in the release. Check we got at 
@@ -131,30 +139,35 @@ fi
 if [ ${localversionsfile} -eq 1 ]; then
     release_versions_pathname=${localversionsfilename}
 else
+    if [ -e RELEASE_VERSIONS ]; then
+        rm -rf RELEASE_VERSIONS
+    fi
     wget ${RELEASE_VERSIONS_URL}
     release_versions_pathname=${PWD}/RELEASE_VERSIONS 
 fi
 
 
 if [ ! -f ${release_versions_pathname} ]; then
-    echo "Failed to locate or use the RELEASE_VERSIONS file."
-    exit 2
+    echo "Failed to locate the release versions file ${release_versions_pathname}"
+    Exit 4
 fi
+
 
 file=$release_versions_pathname
 release_versions_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
 # Read the repos and versions that the release tar must be composed of, from the
 # RELEASE_VERSIONS file.
+
 modulesa=(`awk -v relname=${releaseName} '$1 ~ relname {print $2}' < $release_versions_pathname`)
 if [ ${#modulesa[@]} -lt 1 ]; then
     echo "Failed to find modules for release ${releaseName}"
-    exit 2
+    Exit 5
 fi
 echo ${releaseName} is composed of ${modulesa[*]}
 
 
-# Create the directory, and populate it. 
+# Create the directory source and populate it. 
 #
 mkdir -p ${outdir}
 cd ${outdir}
@@ -167,27 +180,34 @@ do
 
     if [ $? -ne 0 ]; then
 	    echo "Could not get module version for ${modulei}, exiting"
-	    exit 3
+	    Exit 6
     fi
 
+    echo Adding ${modulei} ${tag} to ${releaseName} tar directory
 
-    if [ $? -eq 0 ]; then
-        echo Adding ${modulei} ${tag} to ${releaseName} tar directory
-        if [ ${remotefiles} -ne 1 ]; then
-	        echo "remote  implemented"
-            exit 4
-        fi
+    checkoutname=${modulei}
 
-        if [ ${namemoduleswithtag} -eq 1 ]; then
-            checkoutname=${modulei}-${tag}
-        else
-            checkoutname=${modulei}
-        fi
-        hg clone -u ${tag} ssh://${SFusername}@hg.code.sf.net/p/epics-pvdata/${modulei} ${checkoutname}
-    else
-	    echo "Could not get module version for ${modulei}, exiting"
-	exit 3
+    hg clone ssh://${SFusername}@hg.code.sf.net/p/epics-pvdata/${modulei} ${checkoutname}
+    if [ $? -ne 0 ]; then
+	    echo "hg clone failed. Exiting."
+        Exit 7            
     fi
+
+    # update separately. "hg clone -u non-existent-tag" does return error status! 
+    cd ${checkoutname}
+    hg update -r ${tag}
+    if [ $? -ne 0 ]; then
+	    echo "hg update failed. Exiting"
+	    Exit 8
+    fi
+
+    # Remove mercurial metadata
+    rm -rf .hg*
+    cd .. 
+
+
+
+
 done
 
 cd ..
@@ -195,4 +215,4 @@ cd ..
 echo Tarring  $outdir to $tarfile
 tar czf $tarfile $outdir
 
-exit 0
+Exit 0
