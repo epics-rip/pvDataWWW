@@ -26,6 +26,6 @@ EPICS-CPP-4.3.0-pre1         pvDataCPP      3.0-pre1
 EPICS-CPP-4.3.0-pre1         pvAccessCPP    3.0-pre1
 EPICS-CPP-4.3.0-pre1         pvIOCCPP       3.0-pre1    
 EPICS-CPP-4.3.0-pre1         exampleCPP     3.0-pre1    
-EPICS-CPP-4.3.0-pre1         pvaSrv         0.9.1        
+EPICS-CPP-4.3.0-pre1         pvaSrv         v0.9.1        
          
 
