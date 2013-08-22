@@ -12,20 +12,21 @@
 # Auth: Greg White, 15-Aug-2013.
 # Mod: 
 # =================================================================
-# Ev4 Release name           Repo name      Tag/version
-# ------------------         ------------   ----------------------
-EPICS-Java-4.3.0-pre1        pvDataJava     3.0.0
-EPICS-Java-4.3.0-pre1        pvAccessJava   3.0.0
-EPICS-Java-4.3.0-pre1        easyPVAJava    2.1-SNAPSHOT
-EPICS-Java-4.3.0-pre1        exampleJava    2.1.0
-EPICS-Java-4.3.0-pre1        caj            1.1.10
-EPICS-Java-4.3.0-pre1        jca            2.3.6
+# Ev4 Release name           Repo name        Tag/version
+# ------------------         ------------      --------------------
+EPICS-Java-4.3.0-pre1        pvDataJava        3.0.0
+EPICS-Java-4.3.0-pre1        pvAccessJava      3.0.0
+EPICS-Java-4.3.0-pre1        easyPVAJava       0.2.1
+EPICS-Java-4.3.0-pre1        exampleJava       2.1.0
+EPICS-Java-4.3.0-pre1        caj               1.1.10
+EPICS-Java-4.3.0-pre1        jca               2.3.6
+EPICS-Java-4.3.0-pre1        directoryService  0.2.1
 
-EPICS-CPP-4.3.0-pre1         pvCommonCPP    3.0-pre1
-EPICS-CPP-4.3.0-pre1         pvDataCPP      3.0-pre1
-EPICS-CPP-4.3.0-pre1         pvAccessCPP    3.0-pre1
-EPICS-CPP-4.3.0-pre1         pvIOCCPP       3.0-pre1    
-EPICS-CPP-4.3.0-pre1         exampleCPP     3.0-pre1    
-EPICS-CPP-4.3.0-pre1         pvaSrv         v0.9.1        
+EPICS-CPP-4.3.0-pre1         pvCommonCPP       3.0-pre1
+EPICS-CPP-4.3.0-pre1         pvDataCPP         3.0-pre1
+EPICS-CPP-4.3.0-pre1         pvAccessCPP       3.0-pre1
+EPICS-CPP-4.3.0-pre1         pvIOCCPP          3.0-pre1    
+EPICS-CPP-4.3.0-pre1         exampleCPP        3.0-pre1    
+EPICS-CPP-4.3.0-pre1         pvaSrv            v0.9.1        
          
 
