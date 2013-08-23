@@ -90,9 +90,11 @@ echo "
 declare -a modulesa
 
 # Remote location of the file which defines the versions of each package going into
-# tar file for the given release.
+# tar file for the given release, and the README.
 RELEASE_VERSIONS_URL=\
-http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE_VERSIONS
+README_URL=\
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/README
 
 SFusername=
 releaseName= 
@@ -129,16 +131,22 @@ tarfile="${releaseName}.tar.gz"
 #
 if [ ${localfiles} -eq 1 ]; then
     release_versions_pathname=${hgrepodirname}/pvDataWWW/scripts/RELEASE_VERSIONS
+    readme_pathname=${hgrepodirname}/pvDataWWW/mainPage/README
 else
     wget ${RELEASE_VERSIONS_URL}
-    release_versions_pathname=${PWD}/RELEASE_VERSIONS 
+    release_versions_pathname=${PWD}/RELEASE_VERSIONS
+    wget ${README_URL}
+    readme_pathname=${PWD}/README
 fi
 if [ ! -f ${release_versions_pathname} ]; then
     echo "Failed to locate or use the RELEASE_VERSIONS file."
     exit 2
 fi
+# Construct fully qualified pathname of RELEASE_VERSIONS and REAMDE files
 file=$release_versions_pathname
 release_versions_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
+file=$readme_pathname
+readme_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
 # Read the repos and versions that the release tar must be composed of, from the
 # RELEASE_VERSIONS file.
@@ -176,7 +184,6 @@ do
 	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}.pom
 	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar
 	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar
-            wget http://epics-pvdata.sourceforge.net/README
         fi
         set +x
      else
@@ -184,9 +191,13 @@ do
 	exit 3
      fi
 done
+# Add RELEASE_VERSIONS and README to the bundle
+echo Adding RELEASE_VERSIONS and README
+cp $release_versions_pathname .
+cp $readme_pathname .
 
+# Finally pop up to parent directory and tar the bundle
 cd ..
-
 echo Tarring  $outdir to $tarfile
 tar czf $tarfile $outdir
 
