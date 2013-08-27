@@ -10,7 +10,8 @@
 #
 # -----------------------------------------------------------------
 # Auth: Greg White, 15-Aug-2013.
-# Mod: 
+# Mod:
+#     27-Aug-2013, Dave Hickin, Added 4.3.0 CPP.
 # =================================================================
 # Ev4 Release name           Repo name        Tag/version
 # ------------------         ------------      --------------------
@@ -22,11 +23,11 @@ EPICS-Java-4.3.0-pre1        caj               1.1.10
 EPICS-Java-4.3.0-pre1        jca               2.3.6
 EPICS-Java-4.3.0-pre1        directoryService  0.2.1
 
-EPICS-CPP-4.3.0-pre1         pvCommonCPP       3.0-pre1
-EPICS-CPP-4.3.0-pre1         pvDataCPP         3.0-pre1
-EPICS-CPP-4.3.0-pre1         pvAccessCPP       3.0-pre1
-EPICS-CPP-4.3.0-pre1         pvIOCCPP          3.0-pre1    
-EPICS-CPP-4.3.0-pre1         exampleCPP        3.0-pre1    
-EPICS-CPP-4.3.0-pre1         pvaSrv            v0.9.1        
+EPICS-CPP-4.3.0-pre1         pvCommonCPP       3.0.0
+EPICS-CPP-4.3.0-pre1         pvDataCPP         3.0.0
+EPICS-CPP-4.3.0-pre1         pvAccessCPP       3.0.0
+EPICS-CPP-4.3.0-pre1         pvIOCCPP          3.0.0    
+EPICS-CPP-4.3.0-pre1         exampleCPP        3.0.0    
+EPICS-CPP-4.3.0-pre1         pvaSrv            0.9.1        
          
 
