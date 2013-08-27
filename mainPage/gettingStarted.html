@@ -15,6 +15,8 @@
 /*<![CDATA[*/
 h2 { page-break-before : always; }
 /*]]>*/
+body { font: 12px/18px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif; background-color: transparent; color: #222; -webkit-font-smoothing: antialiased;  }
+
 </style>
 <!-- Script that generates the Table of Contents -->
   <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
@@ -53,35 +55,26 @@ gettingStarted_20130118.html</a>
 <p>This document describes how to start to develop software using the EPICS V4
 toolkit. It's a step by step guide to downloading the appropriate EPICS V4 products
 and associated software, and to using them to create programs. Presently, the
-document concentrates on developing middleware EPICS data services, in Java, and on
-interfacing to EPICS V3 control data, in C++. Programming illustrations are
+document concentrates on interfacing to EPICS Base IOC control data, through the C++ bindings of new EPICS V4
+modules pvAccess and pvData, and on developing middleware EPICS data services using
+the RPC capability of pvAccess, illustrated in Java. 
+Programming illustrations are
 included.</p>
 
 <h2 class="nocount" id="status">Status of this Document</h2>
 
-<p>This is the 22-Jan-2013 version of the Getting Started with EPICS V4. This version
-contains updated instructions for building and running pvaSrv, the C++ implementation
-of EPICS V4 access to PVs on a V3 IOC over pvAccess. This version is up to date with
-respect to the BETA 2.0 release in terms of Java development and also with
-development from the Mercurial repositories, including C++ implementations and
-pvaSrv.  </p>
-
-<p> For C++, subsequent to the release of BETA 2.0, development on
-pvIOCCPP ceased and V3Channel has moved from pvIOCCPP to pvaSrv where it continues to
-be developed.  As this document is up-to-date with the mercurial tips it is no longer
-applicable in its entirety for C++ development using the BETA 2.0 release.  <a href=
-"http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html" >The 18-Jan-2013
-version</a> of the guide is applicable for BETA 2.0 for both Java and C++
-development. In particular the section <a href=
-"http://epics-pvdata.sourceforge.net/gettingStarted_20130118.html#adding_pvaccess_support_to_an_ioc"
- >Adding pvAccess support to an IOC</a> describes deploying V3Channel.  </p>
+<p>This is the 22-Jan-2013 version of the Getting Started with EPICS
+V4. This version is up to date with
+respect to EPICS V4.3. Specifically, it
+contains instructions for building and running pvaSrv, the revised method
+of EPICS V4 access to PVs on Base IOCs accessed over pvAccess.  </p>
 
 <p>The next version should include: section after step-by-step like "going further"
 which points to existing documentation of the EPICS V4 core modules.
 </p>
 
 <h3>Minor additions since 1st publication of this draft:</h3>
-<p>Updates to the ssh URIs following SourceForge's mercurial support changes
+<p>None so far.
 </p>
 
 <div id="toc">
@@ -104,7 +97,11 @@ V4 connections.</p>
 <h3>The Core Modules that Comprise EPICS V4</h3>
 
 <p>Release "EPICS V4.3 beta" is comprised of 2 "core" modules: pvData, and
-pvAccess, which will always be needed for V4 functionality. The specifications for the function of these are (or are
+pvAccess, which will always be needed for V4 functionality, plus a number of others
+  which are only pertinent depending on whether you're working in C++ or Java, or at
+  the IOC level or higher. </p>
+
+  <p>The specifications for the function of these are (or are
 presently being) defined
 as <a href="http://epics-pvdata.sourceforge.net/epicsv4process.html#normative" >normative
 documents</a> of the EPICS V4 working group, and available from the
@@ -112,69 +109,77 @@ homepage <a href="http://epics-pvdata.sourceforge.net/index.html"> the EPICS V4
 homepage</a>. There are Java and C++ implementations of each of the core modules. The source
 code of each can be acquired from Mercurial. To use them, you can download and build
 them from the source, as described below. For java, you may alternatively just
-download the Jars. This document deals with acquiring and using these 3 core modules.
+download the Jars. This document deals with acquiring and using the core modules,
+  plus pvaSrv to connect to EPICS Base IOCs.
 However, there are many more pieces of software in the EPICS V4 "ecosphere", please
 see the homepage, and
 the <a href="http://epics-pvdata.sourceforge.net/hgweb/">EPICS V4
 Mercurial web site</a>.</p>
 
-<p> Also, the levels of maturity and completeness of the core modules, is different
-with respect to their C++ and Java implementations. That will be important when you
-go further than this Getting Started guide. </p>
+<p>A table in the <a class="bib" href="#downloadsite">EPICS V4 download site</a> the README details the modules of EPICS V4.3. Part of it is
+  reproduced here:
+  <pre>
+C++ Module Summary:
 
-<table id="table1">
-  <caption>Table 1: The core modules of EPICS V4</caption>
-  <tr>
-  <th>Module</th><th>SourceForge Hg repo for Java</th><th>Java jar
-  file</th><th>SourceForge Hg repo for C++</th>
-  </tr>
-  <TR><TD>pvData</TD><TD><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataJava/" >pvDataJava</a></TD><TD>pvData-2.1-SNAPSHOT.jar</TD><TD><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataCPP/" >pvDataCPP</a></TD>
- </TR>
-   <TR><TD>pvAccess</TD><TD><a href="http://epics-pvdata.sourceforge.net/hgweb/pvAccessJava/" >pvAccessJava</a></TD><TD>pvAccess-2.1-SNAPSHOT.jar</TD><TD><a href="http://epics-pvdata.sourceforge.net/hgweb/pvAccessCPP/" >pvAccessCPP</a></TD>
- </TR>
-   <TR><TD>pvIOC</TD><TD><a href="http://epics-pvdata.sourceforge.net/hgweb/pvIOCJava/" >pvIOCJava</a></TD><TD>pvIOC-2.1-SNAPSHOT.jar</TD><TD><a href="http://epics-pvdata.sourceforge.net/hgweb/pvIOCCPP/" >pvIOCCPP</a></TD>
- </TR>
-</table>
+pvAccessCPP      The EPICS V4 "wire protocol". Supports pvData.
+pvDataCPP        The EPICS V4 support for high performance data interchange.
+pvCommonCPP      Utility libraries.
+pvIOCCPP         Deprecated. Only included in distribution for one part needed by pvaSrv. 
+exampleCPP       Code examples, including use of pvData containers, RPC, demo servers. 
+pvaSrv           An EPICS Base IOC plugin for interfacing CA data to pvAccess. 
+
+Java Module Summary:
+
+pvAccessJava     The EPICS V4 "wire protocol". Supports pvData. 
+pvDataJava       The EPICS V4 support for high performance data interchange.
+easyPVA          A somewhat easier to use Java API to the facilities of pvAccess. 
+exampleJava      Code examples, including use of pvData containers, RPC, demo servers. 
+directoryService EPICS V4 interface to classic EPICS directoryService.
+caj              An all java implementation of the Channel Access protocol.
+jca              A Java API and wrapper interface to the C++ implementation of
+                 the Channel Access protocol.
+</pre>
+<p>The specific versions of these modules that comprise the EPICS V4.3 suite, are
+formally listed in <a href="https://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS">RELEASE_VERSIONS</a>.</p>  
 
 <p>The dependency hierarchy between the above is the following: pvData is
-  independent; pvAccess depends only on pvData; pvIOC depends on both of the
-  above. Builds in which only one of these is built, must of course take this
-  interdependency into account.</p>
+  independent; pvAccess depends only on pvData; pvIOC and pvaSrv depend on both of
+  the above, as do the other associated utility modules. Builds in which only one of
+  these is built, must of course take this interdependency into account.</p>
 
-<p><i>The version number and designation may change as versions are released. At the
-  time of BETA 2.0 release, these were pvData-2.0-BETA.jar etc.</i></p>
+<h3>Interoperation with EPICS Base (aka V3)</h3>
 
-<p>Since the development cycle (compile, build, etc) is significantly
-different for each language, and to match suitable language API description to
-suitable use cases, this guide is split into 2 major parts. Firstly, java
-development and secondly C++ development.
-</p>
+<p>To link the new EPICS V4 modules to EPICS Base IOC records, two basic approaches are possible.</p>
 
-<h3>Interoperation with EPICS V3</h3>
-
-<p>To link EPICS V4 to EPICS V3 records two basic approaches are possible.</p>
-
-<p>In the first, an an embedded pvAccess server inside a V3 IOC accesses records directly
-through the database allowing a V4 client to communicate with the V3 records through pvAccess.
+<p>In the first, an an embedded pvAccess server inside a Base IOC (say running EPICS
+V3.14) accesses records directly
+through the database, allowing a V4 client to communicate with the "V3" records through pvAccess.
 This is provided by <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html"
 >pvaSrv</a> and implemented in C++.</p>
-<p>Alternatively EPICS V4 can link to EPICS V3 records using Channel Access. This is currently
-available in Java only and 
-in this case two more files, jca*.jar and caj*.jar, are necessary. There are a number 
+<p>Alternatively EPICS V4 can link to the Base IOC records using Channel Access. As
+of V4.3, this may be done in both Java and C++ implementations of pvAccess, though
+for java, jca*.jar and caj*.jar, are prerequisites. There are a number 
 of modes of such interoperation. Firstly, an embedded Channel Access client inside the
-pvAccess server allows the pvIOC to communicate with an EPICS V3 server, i.e. a
-pvIOC database can access records in a V3 IOC database. Secondly, the pvAccess
-client can be configured to use the Channel Access protocol of V3 when accessing V3
+pvAccess server allows a pvIOC to communicate with an EPICS Base IOC, i.e. a
+pvIOC database can access records in a Base IOC database. Secondly, the pvAccess
+client can be configured to use the Channel Access protocol of Base (3.14) when
+accessing Base IOC
 channels. Thirdly, the pvAccess server (part of pvAccess above) allows an existing
-EPICS V3 Channel Access client to access a pvIOC database. These interoperability
+EPICS Base Channel Access client to access a pvIOC database. These interoperability
 functions require JCA and CAJ <a class="bib" href="#bib:jca">jcaandcaj</a>. These are
 available from the EPICS V4 download
 site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
 http://sourceforge.net/projects/epics-pvdata/files/</a> or from their reference
 sources.</p>
 
-<p>When we say "EPICS V3" in general we mean EPICS 3.14.</p>
+<p>When we say "EPICS Base", or loosely "V3", in general we mean EPICS Base version 3.14.</p>
+
+<p>Since the development cycle (compile, build, etc) is significantly
+different for each language, and to match suitable language API description to
+suitable use cases, this guide is split into 2 major parts. Firstly, java
+development and secondly C++ development.
+</p>
 
 <h2>Java Development</h2>
 
@@ -193,41 +198,32 @@ acquire EPICS V4 by the method of downloading the Mercurial source, and building
 Maven.  Each of these will be described below.  </p>
 
 
-<p>Since the minimum EPICS V4 runtime is composed of the 3 modules pvData, pvAccess
-and pvIOC, you will need at least these 3. The sections below will guide you
+<p>Since the minimum EPICS V4 runtime is composed of the 2 modules pvData and
+pvAccess,
+you will need at least those two. The sections below will guide you
 through<a href="#getjars"> acquiring them from Jars</a> or<a href="#sourcedownload">
 building from the source</a>.</p>
 
 <p>If you intend to use EPICS V4's Java client side to talk Channel Access to EPICS base
-IOCs, then you will additionally need the following:</p>
-<table id="table2">
-  <caption>Table 2: Optional components for EPICS V4 - EPICS V3 interoperability</caption>
-  <tr><th>Prerequisite</th><th>Reference site</th><th>jar file</th>
-  </tr>
-  <TR><TD>jca</TD><TD><a href="http://epics-jca.sourceforge.net/jca/">http://epics-jca.sourceforge.net/jca/</a></TD><TD>jca-2.3.5.jar</TD>
- </TR>
-  <TR><TD>caj</TD><TD><a href="http://epics-jca.sourceforge.net/caj/">http://epics-jca.sourceforge.net/caj/</a></TD><TD>caj-1.1.8.jar</TD>
- </TR>
-</table>
+IOCs, then you will additionally need caj and jca. Those two are bundeled in the
+java tar file.</p>
 
 <h3 id="getjars">Getting EPICS V4 Java Implementation from the tar of the Jar Files</h3>
 
 <p>The simplest way to acquire EPICS V4's java implementation is to download the tar
-file of the jars and necessary XML files, from the EPICS V4 sourceforge download
+file of the jars, from the EPICS V4 sourceforge download
 site, <a
 href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.net/projects/epics-pvdata/files/</a>
 <a href="#downloadsite">[downloadsite]</a>. See in particular the README file at the
-site. </p>
+site..</p>
 
-<p>There are presently 5 jars files available. The 3 named pvIOC*.jar, pvAccess*.jar
-and pvData*.jar make up the core of EPICS V4. For each version release of EPICS V4,
-these 3 are bundled into a single tar.gz file for download. You'll need at least
-what's in the tar.gz. You may additionally want caj*.jar and jca*.jar if you want to
-attach to EPICS V3. NOTE: The versions of these may have changed since publication of
-this document, but that should not make a significant difference to these
-instructions.</p>
+<p>The table above lists the modules that comprise the Java implementation of the
+EPICS V4 suite. The 2 modules named pvAccess*.jar
+and pvData*.jar make up the core of EPICS V4  The tar file
+contains these and others. You'll need at least
+what's in the tar.gz. </p>
 
-<img src="image/sfdownloadfiles.png">
+<img src="image/sfdownloadfiles4_3.png" width="638" height="198">
 
 <p>To get off the ground using java download, see the examples in the
 epics-pvdata <a href="http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/tip/src/" >exampleJava Mercurial repo</a> [<a href="#ev4examples-java" ></a>ev4examples-java]. <em>The setup files of those examples
@@ -244,85 +240,89 @@ tar.gz. For illustration we test successful execution of the helloWorld client/s
 <li>Download the tar.gz from SF <a
 href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.net/projects/epics-pvdata/files/</a></li>
 
-<li>Untar it
+<li>Untar it,
 <pre>
-% tar xvfz EPICSv4-Java-2.0-BETA.tar.gz
+% tar xvfz EPICS-Java-4.3.0.tar.gz  [if you got it compressed]
+% tar xvf EPICS-Java-4.3.0.tar      [if you got it uncompressed]
 </pre>
-You should see:
+You should see about 30 jar files, of executable, source and javadoc. The 1st 10 or so
+are listed below for illustration:
 <pre>
-% cd EPICSv4-Java-2.0-BETA
+% cd EPICS-Java-4.3.0
 % ls -l
-total 1808   
-drwxr-xr-x. 4 greg  staff    4096 Jan 11 16:40 exampleJava
--rw-r--r--. 1 greg  staff  377900 Jan 11 15:01 pvAccess-2.0-BETA.jar
--rw-r--r--. 1 greg  staff  247291 Jan 11 14:58 pvData-2.0-BETA.jar
--rw-r--r--. 1 greg  staff 1021199 Jan 11 15:04 pvIOC-2.0-BETA.jar
-drwxr-xr-x. 5 greg  staff      55 Jan 11 16:40 pvIOCJava
--rw-r--r--. 1 greg  staff    6824 Jan 11 16:40 README
--rw-r--r--. 1 greg  staff       9 Jan 11 16:40 tag.txt   
+total 12272
+   0 drwxr-xr-x   32 greg  staff     1088 Aug 22 19:17 ./
+   0 drwx-wx---@ 108 greg  staff     3672 Aug 26 18:35 ../
+  24 -rw-r--r--    1 greg  staff    11539 Aug 22 19:17 README
+   8 -rw-r--r--    1 greg  staff     1438 Aug 22 19:17 RELEASE_VERSIONS
+1600 -rw-r--r--    1 greg  staff   815711 Jun 14  2012 caj-1.1.10-javadoc.jar
+ 456 -rw-r--r--    1 greg  staff   230655 Jun 14  2012 caj-1.1.10-sources.jar
+ 480 -rw-r--r--    1 greg  staff   244094 Jun 14  2012 caj-1.1.10.jar
+  16 -rw-r--r--    1 greg  staff     6272 Jun 14  2012 caj-1.1.10.pom
+  88 -rw-r--r--    1 greg  staff    44334 Aug 21 03:35 directoryService-0.2.1-javadoc.jar
+  24 -rw-r--r--    1 greg  staff     9620 Aug 21 03:35 directoryService-0.2.1-sources.jar
+...
 </pre>
 </li>
 
-
-
-<li>Modify common/source/pvCommon_setup.bash. Change the value of JAVAIOC to be the
-name of the directory containing the xml/ directory of the pvIOC structures. eg, in
-this example:
-
+<li>To play with exampleJava, you'll need to edit setup files. So create an exampleJava
+subdirectory and extract exampleJava
+from its sources jar file into it: 
 <pre>
-export JAVAIOC=/Users/greg/Development/epicsV4/releasetest/EPICSv4-Java-2.0-BETA/pvIOCJava
+% mkdir exampleJava
+% cd exampleJava
+% jar xf ../exampleJava-2.1.0-sources.jar
+% ls -l
+total 8
+0 drwxr-xr-x   6 greg  staff   204 Aug 26 18:43 ./
+0 drwxr-xr-x  37 greg  staff  1258 Aug 26 18:43 ../
+0 drwxr-xr-x   3 greg  staff   102 Aug 21 03:49 META-INF/
+0 drwxr-xr-x   3 greg  staff   102 Aug 21 03:42 illustrations/
+8 -rw-r--r--   1 greg  staff  1211 Aug 21 03:42 overview.html
+0 drwxr-xr-x   4 greg  staff   136 Aug 21 03:42 services/
 </pre>
 </li>
 
 <li>Modify helloWorld_setup.bash
 <ol>
 
-  <li>Set your location of pvCommon_setup.bash, e.g.:
-  <pre>
-   source $HOME/Development/epicsV4/releasetest/EPICSv4-Java-2.0-BETA/common/source/pvCommon_setup.bash
-  </pre>
-  </li>
-
   <li>Set the root dir of the EPICS V4 stuff (ie, the directory created by the untar):
     <pre>
-   WORKSPACE=$HOME/Development/epicsV4/releasetest/EPICSv4-Java-2.0-BETA
+WORKSPACE=$HOME/Temporary/EPICS-Java-4.3.0
   </pre>
   </li>
 
-  <li>Edit CLASSPATH to point to where your examples code class files should end
-  up; and to point to the downloaded jars, rather than,
-  as shipped, the locations where maven development using the source would leave
-  things:
+  <li>Edit CLASSPATH to point to where your examples code class files are, or will
+  be;
+  and to point to the downloaded jars, rather than,
+  as shipped. You have some choices here. You could just point to the exampleJava jar
+  file, though persumably you want to test your own compiles. So, assuming you will
+  compile helloClient.java and helloService.java yourself, but use the downloaded
+  jars for the EPICS version 4 infrastructure modules, you might want to edit the
+  CLASSPATH definition in helloWorld_setup.bash so it reads like this.
 
   <pre>
-  CLASSPATH=${EXAMPLES}/target/classes
-  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvData-2.0-BETA.jar
-  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvIOC-2.0-BETA.jar
-  CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvAccess-2.0-BETA.jar
+CLASSPATH=${EXAMPLES}
+CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvDataJava-3.0.0.jar
+CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvAccessJava-3.0.0.jar
   </pre>
   </li>
 </ol>
 
-<li>Compile examples. This can be done with Maven (driven by the pom.xml included in
-exampleJava/),or simply with javac (after you've used helloWorld_setup.bash to set
-the CLASSPATH):
+<li>Compile examples. This can be done simply with javac (after you've used
+helloWorld_setup.bash to set the CLASSPATH):
 <pre>
-cd to exampleJava/, then
-$ mvn compile
-or
-cd to exampleJava/, then
-$ source src/helloWorld/hellowWorld_setup.bash
-$ (mkdir target; cd target; mkdir classes)    # since javac won't mkdir -d dir
-$ javac -sourcepath src src/helloWorld/*.java -d target/classes
+cd to exampleJava/services/helloWorld, then
+$ source helloWorld_setup.bash
+$ javac *.java
 </pre>
-Either of these should result in class files in exampleJava/target/classes/*.class
 </li>
 
 <li>Start the server (you'll see quite a lot of output. Check there are no complaints
-of file-not-found).
+of file-not-found). First, just once, you'll need to chmod +x the runner scripts:
 
 <pre>
-cd to exampleJava/src/helloWorld/
+$ chmod +x helloServerRunner helloClientRunner 
 % ./helloServerRunner
 </pre>
 
@@ -1178,7 +1178,7 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Fri Jul 26 15:16:15 PDT 2013 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Aug 26 20:06:07 PDT 2013 <!-- hhmts end -->
 
 </body>
 </html>

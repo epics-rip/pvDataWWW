@@ -27,7 +27,7 @@
 
 <!-- Very top date banner -->
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Tue Jan 22 23:59:59 CET 2013 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Aug 26 12:16:46 PDT 2013 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
     <tr>
@@ -73,7 +73,7 @@
 
 <p style="margin-top:30px">This page lists and briefly describes all the main
 documents, of the EPICS V4 Working Group.</p>
-<p>The documentation includes programmers references, Normative track documents of
+<p>The documentation includes programmers references, <a href="http://en.wikipedia.org/wiki/Normative#Standards_documents" >Normative</a> track documents of
 the Working Group, Internal documents, Alpha level software documentation, proposal
 documents, talks and papers.</p>
 <hr />
@@ -91,8 +91,8 @@ documents, talks and papers.</p>
     data modelling and data manipulation APIs of EPICS V4. A developer using EPICS V4
   uses pvData as their interface to data, which itself may be acquired or otherwise processed elsewhere,
   such as on an Input Output Controller (IOC) computer. <em>Status of Software and Documentation is Complete Beta</em>:
-     <a
-    href="http://epics-pvdata.sourceforge.net/hgweb/pvDataJava/raw-file/tip/documentation/pvDataJava.html"> 
+     <a target="_top"
+    href="http://hg.code.sf.net/p/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html"> 
     Latest version, <a
     href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/2.0-BETA/documentation/pvDataJava.html">
     2.0-BETA Release version 
@@ -181,60 +181,25 @@ documents, talks and papers.</p>
     Doxygen of 1.0-BETA Release</a>,
     <a href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessCPP/2.0-BETA/documentation/html/index.html">
     Doxygen of 2.0-BETA Release</a>
-    </li>
+    </li> 
 
-    <!-- pvIOC -->
-     <li><b>pvIOC Java Reference Documentation</b>. Detailed documentation of the Java
-    implementation of pvIOC. pvIOC is a high performance data server optimized for
-     control and "<a
-     href="http://en.wikipedia.org/wiki/Dataflow#Software_architecture">data-flow</a>"
-     processing, that works with the above EPICS V4 modules to implemented a shared
-     memory data network. pvIOC is the EPICS V4 evolution of preceding EPICS Input
-     Output Controller (IOC) platforms. 
-    <em>Status of
-    Software and Reference Documentation is Complete Beta</em>:
-    
-    <a
-    href="http://epics-pvdata.sourceforge.net/hgweb/pvIOCJava/raw-file/tip/documentation/pvIOCJava.html">
-    Latest version</a>,
-    <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/2.0-BETA/documentation/pvIOCJava.html"> 2.0-BETA Release version</a>
-    <br />
-    
-    JavaDoc:
-    <a href="https://openepics.ci.cloudbees.com/view/EPICS%20V4/job/pvIOC%20-%20Build/ws/target/apidocs/index.html">JavaDoc of Latest</a>,
-    <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/1.0-BETA/documentation/html/index.html">JavaDoc
-    of 1.0-BETA Release</a>,
-    <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/2.0-BETA/documentation/html/index.html">JavaDoc of 2.0-BETA Release</a>
-    </li>
-    
-    <li><b>pvIOC C++ Reference Documentation</b>.  Detailed documentation of the C++
-    implementation of pvIOC. <em>Status of Software is Alpha, development has been halted</em>:
+    <li><b>pvaSrv Reference Documentation</b>. Detailed documentation of the pvAccess server for V3 IOCs.
+    <em>Status of Software is Beta.</em>:
      <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/tip/documentation/pvIOCCPP.html">Latest
-     version</a>,
-    <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/pvIOCCPP.html">1.0-BETA
-    Release version</a>,
-    <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/2.0-BETA/documentation/pvIOCCPP.html">2.0-BETA
-    Release version</a>
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html">Latest
+     version</a>
     
     <br >Doxygen: 
     <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/tip/documentation/html/index.html">
-    Doxygen of Latest</a>,
-    <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/html/index.html">
-    Doxygen of 1.0-BETA Release</a>,
-    <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/2.0-BETA/documentation/html/index.html">
-    Doxygen of 2.0-BETA Release</a>
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/html/index.html">
+    Doxygen of Latest</a>
     </li>
-    
+
   </ul>
   
     
 <h2 id="normativedocs">Normative Track Documents</h2>
-<p>The following are normative works of the EPICS V4 Working Group. That is, these
+<p>The following are<a href="http://en.wikipedia.org/wiki/Normative#Standards_documents" > normative</a> works of the EPICS V4 Working Group. That is, these
 contain formal descriptions of
   algorithms and methods. In general they represent core deliverables of the working group. These are proposals for standards
 on which implementations of EPICS V4 should be based. As such, these documents go
@@ -320,9 +285,8 @@ recommendations for EPICS Version 4:</p>
   href=
 "http://epics-pvdata.sourceforge.net/hgweb/alphaJava/raw-file/tip/easyPVA/documentation/easyPVA.html"
 >Easy PvAccess (easyPVA)</a>. Programmers guide to a simple API for exchanging
-    pvData defined data across the pvAccess protocol. <em>Status: the
-     software is still in alpha and can be found in mercurial repo <a
-    href="http://epics-pvdata.sourceforge.net/hgweb/alphaCPP/file/tip">alphaCPP</a>;
+    pvData defined data across the pvAccess protocol. <em>Status: Usable alpha <a
+    href="https://sourceforge.net/p/epics-pvdata/easyPVAJava/ci/default/tree/">easyPVAJava</a>;
     status of the documentation is Editors Draft.</em> See also <a href="#easyAPI" >Easy
     API - Proposal</a> below  
   </li>
@@ -375,17 +339,6 @@ recommendations for EPICS Version 4:</p>
   is that the document formed the basis for the NTURI Normative Type, but that type
   is presently different from as it was initially made in the proposal document.</em> </li>
 
-    <li><b>pvaSrv Reference Documentation</b>. Detailed documentation of the pvAccess server for V3 IOCs.
-    <em>Status of Software is Beta.</em>:
-     <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html">Latest
-     version</a>
-    
-    <br >Doxygen: 
-    <a
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/html/index.html">
-    Doxygen of Latest</a>
-    </li>
 
     <li><b>swtshellJava Reference Documentation</b>. Detailed documentation of <b>swtshell</b>, which is a remote GUI
      tool for communicating with a pvAccess server.
@@ -404,13 +357,61 @@ recommendations for EPICS Version 4:</p>
      Latest version</a>
     
     </li>
-<li><a
+
+    <li><a
  href="http://epics-pvdata.sourceforge.net/hgweb/pvDatabaseCPP/raw-file/tip/documentation/pvDatabaseCPP.html">pvDatabaseCPP.html</a>
    This document
    describes a phased implementation of pvDatabaseCPP.
    The functionality is a subset of what pvIOCJava provides.
    The subset is the features required to implement complete Channel Provider as defined
-   by pvAccess.</li>
+   by pvAccess.
+    </li>
+
+      <!-- pvIOC -->
+     <li><b>pvIOC</b> is a research software project to create high performance data
+     processor and server optimized for
+     control. It operates as a pipeline processor using the "<a
+     href="http://en.wikipedia.org/wiki/Dataflow#Software_architecture">data-flow</a>"
+     architecture. It is planned to with EPICS Base and the EPICS V4 modules above to implemented a shared
+     memory data network for high performance DAQ post processing, particularly the
+     sorts of image
+     processing required in Free Electron Laser and Synchrotron Light experiments. 
+    <em>Status of the Java 
+    Software and Reference Documentation is Beta, though the CPP implementation has
+     yet to be started in earnest.</em>:
+    
+    
+    <b>pvIOC Java Reference Documentation:</b><a
+    href="http://epics-pvdata.sourceforge.net/hgweb/pvIOCJava/raw-file/tip/documentation/pvIOCJava.html"> Latest version</a>,
+    <a href="http://epics-pvdata.sourceforg>.net/docbuild/pvIOCJava/2.0-BETA/documentation/pvIOCJava.html"> 2.0-BETA Release version.</a>
+    
+    JavaDoc:
+    <a href="https://openepics.ci.cloudbees.com/view/EPICS%20V4/job/pvIOC%20-%20Build/ws/target/apidocs/index.html">JavaDoc of Latest</a>,
+    <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/1.0-BETA/documentation/html/index.html">JavaDoc
+    of 1.0-BETA Release</a>,
+    <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCJava/2.0-BETA/documentation/html/index.html">JavaDoc of 2.0-BETA Release</a>.
+    <b>pvIOC C++ Reference Documentation</b>, <em>Status of Software is pre-alpha:</em>:
+     <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/tip/documentation/pvIOCCPP.html">Latest
+     version</a>,
+    <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/pvIOCCPP.html">1.0-BETA
+    Release version</a>,
+    <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/2.0-BETA/documentation/pvIOCCPP.html">2.0-BETA
+    Release version</a>
+    
+    <br >Doxygen: 
+    <a
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/tip/documentation/html/index.html">
+    Doxygen of Latest</a>,
+    <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/1.0-BETA/documentation/html/index.html">
+    Doxygen of 1.0-BETA Release</a>,
+    <a href="http://epics-pvdata.sourceforge.net/docbuild/pvIOCCPP/2.0-BETA/documentation/html/index.html">
+    Doxygen of 2.0-BETA Release</a>
+    </li>
+  
 </ul>
 
   

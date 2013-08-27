@@ -1,10 +1,16 @@
 /*
   epicsv4.css is the StyleSheet for EPICS V4 Working Group web pages. 
 
-  See also base.css (should preceed this StyleSheet), and epicsv4doc.css (used instead for documents).
-  Auth: Greg White, 27-Dec-2011 for EPICS V4.
+  See also base.css (should preceed this StyleSheet), and 
+  epicsv4doc.css (used instead for documents).
 
+  Auth: Greg White, 27-Dec-2011 for EPICS V4.
+  Mod:  Greg White 26-Aug-2013, 
+        Added a basic body style 
 */
+
+/* Basic body style for web pages */
+body { font: 12px/18px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif; background-color: transparent; color: #333; -webkit-font-smoothing: antialiased;  }
 
 /* We don't presently use a masthead banner */
 table.masthead_banner {

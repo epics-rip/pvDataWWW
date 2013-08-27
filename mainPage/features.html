@@ -28,7 +28,7 @@
 <body>
 <!-- Very top date banner -->
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Thu May  3 17:21:25 CEST 2012 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Aug 21 11:59:31 PDT 2013 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>      
@@ -81,6 +81,64 @@ EPICS V4 may be used to solve various architectural problems of modern control s
 <p>This section lists some of the features of EPICS V4, which make it suitable as 
 a platform for a unified controls and services environment for large experimental facilities:</p> 
 
+<p>Using EPICS 4.3, an EPICS V4 client can interact with the Process Variables (PV)
+       in an Input Output Controller (IOC) more effectively and faster than was
+       previosuly possible. Additionally, data services for PV data processing,
+       intensive computation or mediating enterprise data, can be implemented right
+       in the EPICS suite.  </p>
+
+<p>
+       
+       Version
+       adds a data interaction layer, called pvData, and a new protocol, called
+       pvAccess,
+       to EPICS Base IOC communications. 
+       
+       In an EPICS installation it is expected that control and module support would
+       be done with EPICS V3 IOCs, while middle layer and SOA operations would be done with
+       EPICS V4. V4 includes support for protocol
+       interoperability with V3. In short, EPICS V4 includes EPICS V3. </p>
+
+      
+       <p> EPICS V4 is composed of a number of core standards and APIs, reference
+implementations of those standards in C++ and Java, plus associated other components
+and tools. The intention is for the standards and APIs to go through a public review
+process, leading to published protocols and APIs that may be independently
+implemented.</p>
+
+       <p> The work adds support for "structured" data to EPICS records. That is, a
+PV's value need no longer be a simple type or a waveform, but potentially an
+arbitrarily complex structure. A <a
+ href="http://en.wikipedia.org/wiki/Remote_procedure_call">"Remote Procedure
+Call"</a> like processing pattern has been added, which supports passing arguments
+within the context of asynchronous record processing. In this way services may be
+defined. A new IOC design supports the protocol and new record architecture for high
+efficiency services and controls.  </p>
+
+<h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
+
+<p>This section outlines how one might use EPICS V4 right now, given its present
+status</p>
+
+<p>Unlike EPICS 4 versions 4.1 and 4.2, EPICS V4.3 is essentially a suite of
+modules that run above an EPICS IOC running Base 3.14. EPICS Base is still presently separately
+distributed from these additional EPICS V4 modules, however in the near future
+that is expected to change. The new modules of EPICS Version 4 concentrate on so
+called "high level" software services. It provides a platform for fast Service
+Oriented Architecture and distributed message passing. Its programming model is
+optimized for efficient distributed synchronous or asynchronous processes
+communicating by essential a shared-memory system based on data introspection.  </p>
+
+
+<p> Although record processing is presently part of EPICS V4, it is not mature enough
+to supplant EPICS V3 record processing and device support for controls.  This is
+expected to be undertaken in the next year. Contact Bob Dalesio (BNL), Marty Kramer
+(BNL) or Matej Sekornaja (COSYLAB) for more details and estimates. However, note that
+EPICS V4 clients can interface to EPICS V3 IOC record processing via pvAccess through
+use of the pvAccess Server (PAS). See worked example in <a
+ href="gettingStarted.html">Getting Started with EPICS V4.</a> </p>
+
+ 
 <dl>
   <dt>Structured Data</dt>
     <dd>pvData (Process Variable Data) defines and implements an efficient way
