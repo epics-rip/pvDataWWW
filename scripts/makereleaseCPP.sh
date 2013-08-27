@@ -1,76 +1,78 @@
 #!/bin/bash
 #!-*- sh -*-
 # 
-#      makereleaseJars is a bash source script to manage the release of jar files and 
-#      associated deliverables for a version tagged release of the Java implementation 
+#      makereleaseCPP is a bash source script to manage the release of source files and 
+#      associated deliverables for a version tagged release of the CPP implementation 
 #      of EPICS v4. 
 #
 # Usage:     
-#      ./makereleaseCPP.sh -n <releaseName> [-l <hgrepodirname>] [-r <SFusername>]  
+#      ./makereleaseCPP.sh -n <releaseName> [-f] [-V] -u <SFusername>  
 # 
-#      Following a tagged release of ALL of the V4 core pv*Java modules (pvDataJava, pvAccessJava etc),
-#      as described in release.html, hg checkout pvDataWWW. Edit pvDataWWW/configure/RELEASE_VERSIONS 
+#      Once all of the V4 core C++ modules have been tagged
+#      (pvDataCPP, pvAccessCPP etc), as described in release.html,
+#      hg checkout pvDataWWW. Edit pvDataWWW/configure/RELEASE_VERSIONS 
 #      to define the modules of the release and their Mercurial (hg) tags. 
-#
-#      NOTE that 
-#      ** formally, the release is defined by specification of a set of module names and 
-#      specifically their Source Version Control System (VCS) (Mercurial in our present case) 
-#      tag values. Therefore, for Java, the maven products and maven versions MUST be
-#      identical. This script actually packages the jar files in 
-#      the maven repo, it does not package from the hg repo directly!
 #
 #      For examples see Usage function below.
 #
 #      A user should unpack the resulting tar.gz with, for instance:
-#            tar zxvf EPICSv4-Java-1.0-BETA.tar.gz
+#            tar zxvf EPICS-CPP-4.3.0.tar.gz
 #
 # Ref: http://epics-pvdata.sourceforge.net/release.html
 #
 # ----------------------------------------------------------------------------
-# Auth: 20-Dec-2011, Greg White (greg@slac.stanford.edu) 
-# Mod:  19-Aug-2013, Greg White (greg@slac.stanford.edu)
-#       Re-write for supporting file driven release packaging.
-#       11-Jan-2013, Greg White (greg@slac.stanford.edu)
-#       Updated TAG so as to build first beta 2 release. Also, removed references to pvService.
+#
+# Auth: Dave Hickin
 #       
 # ============================================================================
 
 function usage { 
 echo "
-   makereleaseCPP.sh creates the tar file of the CPP modules collection of 
-   an EPICS V4 release. 
+   makereleaseCPP.sh creates the tar file of the CPP modules, together with
+   other relevant files, of an EPICS V4 release. 
 
    Usage:
 
-       makereleaseCPP.sh -n <releaseName> -r <SFusername> [-f ] [-V <version_filename>] 
+       makereleaseCPP.sh -n <releaseName> -u <SFusername> [-f ] [-V] 
 
        -n <releaseName>      The string identifying the release. This is the
                              key used to search RELEASE_VERSIONS to find the
                              modules in the release.
 
-       -r <SFusername>       Uses remote files. The argument SFusername is the
-                             SourceForge username to be used for upload.
+       -u <SFusername>       The argument SFusername is the SourceForge
+                             username to be used cloning the repos.
 
-       -V <version_filename> Uses the specified local release versions file
-                             instead of RELEASE_VERSIONS in pvDataWWW/scripts
+       -V                    Uses the specified release versions file
+                             RELEASE_VERSIONS in the pvDataWWW/scripts dir and
+                             the README file in pvDataWWW/mainPage of the copy
+                             of pvDataWWW which contains the version of this
+                             script which has been run.
 
-       -f                    Removes any files from running the script
+       -f                    Removes any files left from running the script
                              previously.
 
-   Example:
+   Examples:
+
+         $ makereleaseCPP.sh -V -n EPICS-CPP-4.3.0-pre1 -r dhickin
+
+       In this example, makereleaseCPP.sh packages a tar for a release named
+       EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file in the 
+       copy of pvDataWWW which contains the version of this script which has
+       been executed.
+       It will first clone the files it finds in the mercurial repo and
+       package them into a tar file along with the copy of README found in the
+       copy of pvDataWWW
 
          $ makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre1 -r dhickin
 
-       In this example, makereleaseCPP.sh packages a tar for a release named
+       This time makereleaseCPP.sh packages a tar for the release
        EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file it 
        finds on the web (see URL in source of this script).
-       It will first clone the files it finds in the mercurial repo and
-       package them into a tar file.
+       Again it clones the files and adds the README from the web.
 
 "
 }
 
-declare -a modulesa
 
 thisdir=${PWD}
 
@@ -80,40 +82,50 @@ function Exit {
 }
 
 
+declare -a modulesa
+
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release.
 RELEASE_VERSIONS_URL=\
-http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE_VERSIONS
+
+# Remote location of the README file
+README_URL=\
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/README
+
+file=$0
+scriptdir=$( readlink -f "$( dirname "${file}" )" )
+
 
 SFusername=
 releaseName= 
-localversionsfile=0
+localreleaseinfo=0
 force=0
 
-while getopts hfr:V:n: opt; do
+while getopts hfu:Vn: opt; do
    case "$opt" in
        h) usage; Exit 0 ;;
        f) force=1 ;;
-       r) SFusername=${OPTARG} ;;
-       V) localversionsfile=1
-          localversionsfilename=${OPTARG} ;;
+       u) SFusername=${OPTARG} ;;
+       V) localreleaseinfo=1 ;;
        n) releaseName=${OPTARG} ;; 
        *) echo "Unknown Argument, see makereleaseCPP.sh -h"; Exit 1;;
    esac
 done
 shift $((OPTIND-1));
 
+
 if [ -z ${releaseName} ]; then
     echo "The release name is a required argument, (specify with -n)"
     echo "See makereleaseCPP.sh -h"
-    Exit 1
+    Exit 2
 fi
 
 
 if [ -z ${SFusername} ]; then
-	echo "User name is a required argument (specify with -r)."
+	echo "Username is a required argument (specify with -u)."
     echo "See makereleaseCPP.sh -h"
-    Exit 2
+    Exit 3
 fi
 
 
@@ -126,44 +138,79 @@ if [ -e ${outdir} ]; then
     if [ ${force} -eq 1 ]; then
         rm -rf ${outdir}
     else
-	    echo "${outdir} already exists. Remove/move before trying again."
-        Exit 3
+	    echo "${outdir} already exists. Remove/move before trying again or use
+the force option (-f)."
+        Exit 4
     fi
 fi
 
 
-# Locate the RELEASE_VERSIONS file, to tell use which modules must be in the release
-# build, and from it find out which modules are in the release. Check we got at 
-# least 1 module.
+# Check the tar doesn't exit either
+if [ -e ${tarfile} ]; then
+    if [ ${force} -eq 1 ]; then
+        rm -rf ${tarfile}
+    else
+	    echo "${tarfile} already exists. Remove/move before trying again or use
+the force option (-f)."
+        Exit 5
+    fi
+fi
+
+# Locate the RELEASE_VERSIONS file, to tell which modules are in the release,
+# and the README file to be added to the bundle
 #
-if [ ${localversionsfile} -eq 1 ]; then
-    release_versions_pathname=${localversionsfilename}
+if [ ${localreleaseinfo} -eq 1 ]; then
+    release_versions_pathname=${scriptdir}/RELEASE_VERSIONS
+    readme_pathname=${scriptdir}/../mainPage/README
 else
+    # Get the remote version file.
+    # Delete the existing file first if it's already there.
     if [ -e RELEASE_VERSIONS ]; then
         rm -rf RELEASE_VERSIONS
     fi
     wget ${RELEASE_VERSIONS_URL}
-    release_versions_pathname=${PWD}/RELEASE_VERSIONS 
-fi
+    release_versions_pathname=${PWD}/RELEASE_VERSIONS
 
+    # Get the remote readme file.
+    # Delete the existing file first if it's already there.
+    if [ -e README ]; then
+        rm -rf README
+    fi
+    wget ${README_URL}
+    readme_pathname=${PWD}/README 
+fi
 
 if [ ! -f ${release_versions_pathname} ]; then
     echo "Failed to locate the release versions file ${release_versions_pathname}"
-    Exit 4
+    Exit 6
+fi
+
+if [ ! -f ${readme_pathname} ]; then
+    echo "Failed to locate the README file ${readme_versions_pathname}"
+    Exit 7
 fi
 
 
+# Construct fully qualified pathname of RELEASE_VERSIONS file
 file=$release_versions_pathname
 release_versions_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
-# Read the repos and versions that the release tar must be composed of, from the
-# RELEASE_VERSIONS file.
+# Construct fully qualified pathname of REAMDE file
+file=$readme_pathname
+readme_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
+
+# Read the repos and versions that the release tar must be composed of from the
+# RELEASE_VERSIONS file.
 modulesa=(`awk -v relname=${releaseName} '$1 ~ relname {print $2}' < $release_versions_pathname`)
+
+
+# Check we got at least 1 module.
 if [ ${#modulesa[@]} -lt 1 ]; then
     echo "Failed to find modules for release ${releaseName}"
-    Exit 5
+    Exit 8
 fi
+
 echo ${releaseName} is composed of ${modulesa[*]}
 
 
@@ -172,7 +219,6 @@ echo ${releaseName} is composed of ${modulesa[*]}
 mkdir -p ${outdir}
 cd ${outdir}
 
-
 for modulei in ${modulesa[*]}
 do
     tag=`awk -v relname=${releaseName} -v modulename=${modulei} \
@@ -180,39 +226,54 @@ do
 
     if [ $? -ne 0 ]; then
 	    echo "Could not get module version for ${modulei}, exiting"
-	    Exit 6
+	    Exit 9
     fi
 
     echo Adding ${modulei} ${tag} to ${releaseName} tar directory
 
+    # clone module from sourceforge
     checkoutname=${modulei}
-
-    hg clone ssh://${SFusername}@hg.code.sf.net/p/epics-pvdata/${modulei} ${checkoutname}
+    hg clone -u ${tag} ssh://${SFusername}@hg.code.sf.net/p/epics-pvdata/${modulei} ${checkoutname}
     if [ $? -ne 0 ]; then
-	    echo "hg clone failed. Exiting."
-        Exit 7            
+	    echo "hg clone failed."
+        Exit 10            
     fi
 
-    # update separately. "hg clone -u non-existent-tag" does return error status! 
+    # update separately. "hg clone -u <tag>" does not return an error status
+    # for a non existent tag! 
     cd ${checkoutname}
     hg update -r ${tag}
     if [ $? -ne 0 ]; then
-	    echo "hg update failed. Exiting"
-	    Exit 8
+	    echo "hg update failed."
+	    Exit 11
     fi
+
+    echo "tags for ${modulei}:"
+    hg id -t
+
 
     # Remove mercurial metadata
     rm -rf .hg*
+
     cd .. 
-
-
-
 
 done
 
+
+# Add RELEASE_VERSIONS and README to the bundle
+echo Adding RELEASE_VERSIONS and README
+cp $release_versions_pathname .
+cp $readme_pathname .
+
 cd ..
 
+
+# Create tarball
 echo Tarring  $outdir to $tarfile
 tar czf $tarfile $outdir
+
+if [ $? -ne 0 ]; then
+    Exit 12
+fi
 
 Exit 0
