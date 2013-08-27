@@ -5,7 +5,7 @@ This README file describes the download files available for EPICS V4.
 EPICS V4 [1] is a software toolkit for developing advanced control
 systems on top of EPICS [2], and fast service oriented architectures.
 
-epics-pvdata is a sourceForge project for managing the development of
+epics-pvdata is a SourceForge project for managing the development of
 EPICS version 4. 
 
 -----------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ As of 22-Aug-2013, the latest version of EPICS V4 is 4.3.0.
 
 SUMMARY
 -------
-4.3.0 concnetrates on making it easy to work with the existing features of EPICS V4, while using
+4.3.0 concentrates on making it easy to work with the existing features of EPICS V4, while using
 EPICS Base V3.14/15 IOCs as the control system foundation. These include two new interfaces to 
 Base IOC data, including over Channel Access, enabling many options for configuring a high 
 performance and highly functional scientific instrument control environment. Other features include 
@@ -209,7 +209,7 @@ the javaIOC to communicate with a Version 3 server, i.e. a javaIOC
 database can have links to records in a V3 IOC database. For these
 functions you will need the following files:
 
-These are available from the epics-pvdata sourceforge download site,
+These are available from the epics-pvdata SourceForge download site,
 or you can get them from the references provided.
 
 caj-1.1.8.jar        The native java Channel Access [5] library [3] 
@@ -219,7 +219,7 @@ jca-2.3.5.jar        The API for the Java code interaction with
 
 USEFUL EXTERNAL SOFTWARE
 ------------------------
-These are NOT available from the epics-pvdata sourceforge download
+These are NOT available from the epics-pvdata SourceForge download
 site.
 
 1. oncrpc is an implementation of sun rpc which is required for VXI11
