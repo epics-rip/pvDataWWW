@@ -14,7 +14,7 @@
 	<key>BackgroundGraphic</key>
 	<dict>
 		<key>Bounds</key>
-		<string>{{0, 0}, {756, 553.00002479553223}}</string>
+		<string>{{0, 0}, {756, 553}}</string>
 		<key>Class</key>
 		<string>SolidGraphic</string>
 		<key>ID</key>
@@ -411,7 +411,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{208.5, 153}, {82, 34}}</string>
+			<string>{{207, 153}, {85, 34}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -455,7 +455,7 @@ Only creating changesets 1 and  2 comprise the process of a "release". If the re
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc
 
-\f0\fs20 \cf0 branch "2.1.0"  \
+\f0\fs20 \cf0 branch "B2.1.0"  \
 tagged "2.1.0.1"}</string>
 			</dict>
 			<key>TextRelativeArea</key>
@@ -1574,7 +1574,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1.0/ which will inclu
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-08-20 01:43:37 +0000</string>
+	<string>2013-08-27 21:45:08 +0000</string>
 	<key>Modifier</key>
 	<string>Greg White</string>
 	<key>NotesVisible</key>
@@ -1610,7 +1610,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1.0/ which will inclu
 		<key>NSPaperSize</key>
 		<array>
 			<string>size</string>
-			<string>{792, 612.00002479553223}</string>
+			<string>{792, 612}</string>
 		</array>
 		<key>NSPrintReverseOrientation</key>
 		<array>
