@@ -27,7 +27,7 @@
 
 <!-- Very top date banner -->
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Mon Aug 26 12:16:46 PDT 2013 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Aug 28 16:29:29 PDT 2013 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
     <tr>
@@ -82,8 +82,7 @@ documents, talks and papers.</p>
 <h2 id="swdoc">Programmers Reference Documentation</h2>
 
   <p>The following are links to the reference documentation and programmers guides of
-  the reference implementations of the core modules of EPICS V4 (pvData, pvAccess and
-  pvIOC):</p>
+  the reference implementations of the core modules of EPICS V4 (pvData, pvAccess and pvaSrv):</p>
   <ul>
     <li><b>pvData Java Reference Documentation</b>. Detailed documentation of the Java
     implementation of pvData,
@@ -199,12 +198,15 @@ documents, talks and papers.</p>
   
     
 <h2 id="normativedocs">Normative Track Documents</h2>
-<p>The following are<a href="http://en.wikipedia.org/wiki/Normative#Standards_documents" > normative</a> works of the EPICS V4 Working Group. That is, these
-contain formal descriptions of
-  algorithms and methods. In general they represent core deliverables of the working group. These are proposals for standards
-on which implementations of EPICS V4 should be based. As such, these documents go
-through a long term iterative public review process. The status given is an
-  indication of the maturity of the work. </p>
+
+<p>EPICS V4 is a body of core specifications, reference implementations, and some
+associated tools. The core specifications, we
+call <a href="charter.html#normativedocs">"normative"</a>. The normative specifications
+are open, collaboratively defined, and may be implemented and extended by any
+interested party. We provide reference implementations for adopters of EPICS V4, and
+to test the specifications' performance and effectiveness. Associated other documents
+are "non-normative" and no guarantees will be made about them. </p>
+
   <ul>
   <li><b><a
   href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess
@@ -232,13 +234,13 @@ recommendations for EPICS Version 4:</p>
 <ul>
   <li id="gettingstarted"><b><a href="gettingStarted.html">Getting Started with EPICS V4</a></b>. This is
   a first steps introduction to downloading EPICS V4, writing your first data
-  server, and connecting to V3 IOC PVs. Java and C++ steps are given. <em>Status is Complete</em>
+  server, and connecting to Base IOCs through pvAccess and writing RPC servers. Java and C++ steps are given. <em>Status is Complete and up to date with respect to V4.3</em>
   </li>
   <li id="v3v4overview"><a href="informative/epicsV3epicsV4Overview.html">Overview of
-  EPICS version 3 and EPICS version 4</a>. This document compares EPICS V3 and V4 in
-  terms of the kinds of data types on which they operate. It also describes the
+  EPICS version 3 and EPICS version 4</a>. This document was a comparison of EPICS V3 and V4 as
+  they existed prior to EPICS V4.3. It also describes the
   straw man V4 IOC framework called pvIOC in comparison to the in V3. <em>Status is
-  Editors draft</em>.
+  describes deprecated software, though useful as a reference for future work</em>.
   </li>
   <li id="exampleinstall"><a href="http://epics-pvdata.sourceforge.net/exampleinstall.txt" >PSI EPICS
   Installation Example</a>. This is a PSI internal design document for how EPICS V4 Java
@@ -362,7 +364,7 @@ recommendations for EPICS Version 4:</p>
  href="http://epics-pvdata.sourceforge.net/hgweb/pvDatabaseCPP/raw-file/tip/documentation/pvDatabaseCPP.html">pvDatabaseCPP.html</a>
    This document
    describes a phased implementation of pvDatabaseCPP.
-   The functionality is a subset of what pvIOCJava provides.
+   The functionality is a subset of what pvIOCJava provided up to V4.3 (pvIOCJava was deprecated as of V4.3, and moved to being an unbundled software research project - see below).
    The subset is the features required to implement complete Channel Provider as defined
    by pvAccess.
     </li>

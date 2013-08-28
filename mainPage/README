@@ -27,8 +27,9 @@ Mod:
      11-Jan-2012, Greg White, for EPICSv4-Java-1.0-BETA.tar.gz
      08-Feb-2012, Greg White, for EPICSv4-Java-1.0-1-BETA.tar.gz
 -----------------------------------------------------------------------------
-4.3.0
-=====
+
+VERSION 4.3.0
+=============
 As of 22-Aug-2013, the latest version of EPICS V4 is 4.3.0. 
 
 SUMMARY
@@ -153,10 +154,12 @@ how to build the Java distribution from sources downloaded from the
 Mercurial repositories at SourceForge, and the alternative of downloading
 the tar.gz.
 
------------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-2.0-BETA  (aka V4.2)
-====================
+VERSION 2.0-BETA  (aka V4.2) 
+============================
+
+[** NOTE: Version 2.0-BETA has been superceeded by versions above **]
 
 SUMMARY
 -------
