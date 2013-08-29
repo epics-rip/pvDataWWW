@@ -28,7 +28,7 @@
 <body>
 <!-- Very top date banner -->
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Wed Aug 21 11:59:31 PDT 2013 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Aug 28 17:08:04 PDT 2013 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>      
@@ -76,30 +76,22 @@
 EPICS V4 may be used to solve various architectural problems of modern control systems.<p>
 <hr />
 
-<h2 id="features">EPICS V4 Features</h2>
+<h2 id="features">What EPICS V4 adds to EPICS Base</h2>
 
 <p>This section lists some of the features of EPICS V4, which make it suitable as 
 a platform for a unified controls and services environment for large experimental facilities:</p> 
 
-<p>Using EPICS 4.3, an EPICS V4 client can interact with the Process Variables (PV)
-       in an Input Output Controller (IOC) more effectively and faster than was
-       previosuly possible. Additionally, data services for PV data processing,
-       intensive computation or mediating enterprise data, can be implemented right
-       in the EPICS suite.  </p>
-
 <p>
-       
-       Version
+       Version 4
        adds a data interaction layer, called pvData, and a new protocol, called
        pvAccess,
-       to EPICS Base IOC communications. 
-       
+       to EPICS Base IOC communications.</p>  
+       <p>
        In an EPICS installation it is expected that control and module support would
-       be done with EPICS V3 IOCs, while middle layer and SOA operations would be done with
-       EPICS V4. V4 includes support for protocol
-       interoperability with V3. In short, EPICS V4 includes EPICS V3. </p>
+       be done with EPICS Base IOCs, while middle layer and SOA operations would be done with
+       the new facilities of EPICS V4. V4 includes support for protocol
+       interoperability with Base IOCs. </p>
 
-      
        <p> EPICS V4 is composed of a number of core standards and APIs, reference
 implementations of those standards in C++ and Java, plus associated other components
 and tools. The intention is for the standards and APIs to go through a public review
@@ -112,118 +104,49 @@ arbitrarily complex structure. A <a
  href="http://en.wikipedia.org/wiki/Remote_procedure_call">"Remote Procedure
 Call"</a> like processing pattern has been added, which supports passing arguments
 within the context of asynchronous record processing. In this way services may be
-defined. A new IOC design supports the protocol and new record architecture for high
-efficiency services and controls.  </p>
+defined.  </p>
 
-<h2 id="summary">Summary Usage Contexts of EPICS V4 Given Present Status</h2>
+<p>Using EPICS 4.3, an EPICS V4 client can interact with the Process Variables (PV)
+       in an Input Output Controller (IOC) more effectively and faster than was
+       previously possible. Additionally, data services for PV data processing,
+       intensive computation or mediating enterprise data, can be implemented right
+       in the EPICS suite.  </p>
 
-<p>This section outlines how one might use EPICS V4 right now, given its present
-status</p>
+<h2>New Features of EPICS V4 added in V4.3</h2>
 
-<p>Unlike EPICS 4 versions 4.1 and 4.2, EPICS V4.3 is essentially a suite of
-modules that run above an EPICS IOC running Base 3.14. EPICS Base is still presently separately
-distributed from these additional EPICS V4 modules, however in the near future
-that is expected to change. The new modules of EPICS Version 4 concentrate on so
-called "high level" software services. It provides a platform for fast Service
-Oriented Architecture and distributed message passing. Its programming model is
-optimized for efficient distributed synchronous or asynchronous processes
-communicating by essential a shared-memory system based on data introspection.  </p>
+<p>Note that V4.3 is presently in <em>pre</em> release. Please post comments to the
+EPICS V4 Working Group.</p>
+<ul>
+  <li>You can access Base IOC PV data over pvAccess. This gives the speed and
+facilities of pvAccess to accesses of Base IOCs, and provides the basis for
+coming work to allow data of a group of IOC channels to be get or set as a
+  single call through pvAccess. See pvaSrv.</li>
+   
+  <li> PV value I/O can now be done over the Channel Access protocol using only
+the pvAccess client. pvAccess contains Channel Access, as a "provider". This
+is now available in both C++ and Java implementations of pvAccess. This is
+useful if you want to do all your client side PV access (both Base IOC and
+  services, through a single client side, pvAccess). See pvAccess.</li>
 
+  <li>vxWorks is directly supported. That is, a pvaSrv module may be loaded
+  into a vxWorks IOC.</li>
 
-<p> Although record processing is presently part of EPICS V4, it is not mature enough
-to supplant EPICS V3 record processing and device support for controls.  This is
-expected to be undertaken in the next year. Contact Bob Dalesio (BNL), Marty Kramer
-(BNL) or Matej Sekornaja (COSYLAB) for more details and estimates. However, note that
-EPICS V4 clients can interface to EPICS V3 IOC record processing via pvAccess through
-use of the pvAccess Server (PAS). See worked example in <a
- href="gettingStarted.html">Getting Started with EPICS V4.</a> </p>
+  <li>An easy to use API, "easyPVA", has been added.</li>
 
+  <li>The support for RPC PVs (PV value subject to arguments) has been much
+simplified and extended. There is now a client side library for RPC as well
+as the server side framework, and the server side is now very easy indeed.
+  These extensions have been made in both, C++ and Java.</li>
+
+  <li>C++ Examples. exampleCPP contains examples of coding both simple
+  (helloWorld) and more complex services (EPICS Archiver access).</li>
  
-<dl>
-  <dt>Structured Data</dt>
-    <dd>pvData (Process Variable Data) defines and implements an efficient way
-      to store and remotely interact with structured data</dd>
-  <dt>Open, well defined, channel access protocol</dt>
-    <dd>pvAccess implements a version of channel access that provides network support
-      for transferring PVData, is documented and may be independently implemented and
-      developed</dd>
-  <dt>Well defined interface definitions</dt>
-    <dd>The Java package org.epics.pvData.pv has Java interface definitions
-      that define pvData. Package org.epics.pvaccess.client has java interface
-      definitions that define channelAccess. pvDataCPP provides the C++
-      definitions</dd>
-  <dt>Implementation interop</dt>
-    <dd>Projects pvData and pvDataCPP each provide a complete implementation of
-      pvData. Projects pvAccess and pvAccessCPP provides network support for
-      pvData. The network protocol for the two languages is identical. Project
-      pvIOC implements a smart memory resident soft real time database. Each
-      field of each record can optionally have attached support code which is
-      called when a record is processed. The java version (javaIOC) has much
-      more functionality than pvIOCCP, which is in its early stages of
-      development </dd>
-  <dt>Efficient</dt>
-    <dd>Small memory footprint, low cpu overhead, and concise code base</dd>
-  <dt>Efficient Complex Data Interconnect </dt>
-    <dd>PVData defines separate introspection and data interfaces. The
-      introspection interfaces provide access to immutable objects, which
-      allows introspection instances to be freely shared. The introspection
-      interface for a process variable can be accessed without requiring access
-      to the data, and what data is transferred is done efficiently because 
-      the metadata of the data need not also be transferred</dd>
-  <dt>Functional Data Types</dt>
-    <dd>Client code can access PVData via the introspection and data
-      interfaces. For "well known" data, such as timeStamp, or table of orbit data, 
-      specialised interfaces can be provided without requiring any changes 
-      to the core software</dd>
-</dl>
-
-<h2 id="solutions">EPICS V4 Solutions</h2>
-
-<p>This section outlines some general "solutions" provided by EPICS Version 4 (in
-marketing-speak - basically, what might you use EPICS version 4, for):</p>
-
-<dl>
-  <dt>Scientific or "high level" Services</dt>
-    <dd>This is the current emphasis. An example is the gather service. It
-      allows a gather client to get/put/monitor the values of a set of V3
-      records. The data is given to the client as an array. Another example might be a 
-      accelerator modelling service, in which the optics of an entire accelerator may be
-      computed and returned as a single table to the client. Other examples are
-      synchronised beam orbit acquisition, synchronised magnet setting, relational database I/O.
-      Such services are characterised by two things: large payload I/O (eg whole tables),
-      and the need to ask for the value of a "PV" subject to arguments. These two characteristics 
-      are supported by pvData and pvAccess. 
-   </dd>
-  <dt>I/O Controller</dt>
-    <dd>The pvIOC can be used as a soft real-time Input/Output controller. It
-      implements portDriver, which is a facility for accessing hardware I/O
-      devices such as Analog, Digital, Serial, GPIB, etc. However, much work remains on
-      implementing low level drivers.</dd>
-  <dt>Distributed Control System</dt>
-    <dd>EPICS PvData provides a toolkit for building a DCS.</dd>
-  <dt>SCADA</dt>
-    <dd>EPICS PVData can be used to implement Supervisory Control And Data
-      Acquisition (SCADA) applications.</dd>
-  <dt>Data Server</dt>
-    <dd>An application can use the pvIOC or just channelAccess/pvData to serve
-      data to network clients.</dd>
-  <dt>Gateway</dt>
-    <dd>A pvIOC can be the basis for transferring data between different types
-      of control systems. </dd>
-  <dt>Separation of Time Domains</dt>
-  <dd>A pvIOC hosted service, or pvManager, can be used to make acquisitions at a
-rate suitable for one component, such as a client display, independently of the
-refresh or change rate of the events.</dd>
-  <dt>Aggregated Data Acquisition</dt>
-  <dd>A pvIOC hosted service may be used to collect data from a large number of PVs in
-a coordinated way, process it as a whole, such as fitting, or tabulating, and pass these
-data on to consumers</dd>
-  <dt>OLAP, OLTP, ETL</dt>
-  <dd>In general, EPICS V4 services allow the EPICS site to include host level architecture patterns. </dd>
-</dl>
-
-
+  <li>Get lists of PVs in an IOC, or many other kinds of other systemwide
+meta-data, all within the pvAccess protocol. This is provided by a new
+simple pvAccess server instance called directoryService , that
+  interfaces to the EPICS Channel Finder.</li>
+</ul>
 
 <hr>
-<address>Marty Kraimer for EPICS V4 Working Group</address>
+<address>Greg White and Marty Kraimer for EPICS V4 Working Group</address>
 </body> </html>
