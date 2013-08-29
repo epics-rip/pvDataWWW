@@ -5,7 +5,8 @@ gettingStarted.html etc.
  
 ---------------------------------------------------------------------------------------
 Auth: Greg White, greg@slac.stanford.edu.
-Mod:  17-Sep-2012, Greg White. Added toc. Added page-break-before to (non nocount) h2.
+Mod:  28-Aug-2013, Greg White. Changed basic body font.
+      17-Sep-2012, Greg White. Added toc. Added page-break-before to (non nocount) h2.
                    So, Abstract and Status will be on frnt page, all other sections
                    will be started on a new page in printouts. 
       11-Apr-2012, Greg White, added div.contents, to fix bug in Chrome support
@@ -13,6 +14,9 @@ Mod:  17-Sep-2012, Greg White. Added toc. Added page-break-before to (non nocoun
       21-Feb-2012, Greg White, greg@slac.stanford.edu, added page break control.
        
 ======================================================================================*/
+
+/* Basic body style for documentation */
+body { font: 12px/18px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif; color: #222; -webkit-font-smoothing: antialiased;  }
 
 /* Support for headers. Assume h1 is the title, so doesn't have a counter. Put counters
    on h2 and h3, but not h4 or further. 
