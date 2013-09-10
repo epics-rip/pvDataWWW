@@ -1,3 +1,21 @@
 #!/bin/bash
 #!-*-sh-*-
-makereleaseJars.sh -n EPICS-Java-4.3.0-pre1 -r gregorywhite
+# 
+# publishRelease is a script which builds one or more named releases of 
+# EPICS V4, and publishes it or them to the distribution web site.
+#
+# Use:
+#        ./publishRelease 
+# 
+# Rem: This script was developed with the intention that it may be used by
+# the EPICS V4 SCM process to build and publish not only version releases, but
+# also snaphots. However, at the tme of writing, it has not been implemented.
+#
+# Ref: See also makereleaseJars.sh, RELEASE_VERSIONS
+# ---------------------------------------------------------------------------
+# Auth: Greg White, greg@slac.stanford.edu, 28-Aug-2013
+# Mod:  Greg White, greg@slac.stanford.edu, 10-Sep-2013
+#       Changed java to 4.3.0-pre2
+# ===========================================================================
+
+makereleaseJars.sh -n EPICS-Java-4.3.0-pre2 -r gregorywhite
