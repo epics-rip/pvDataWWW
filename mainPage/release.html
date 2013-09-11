@@ -21,15 +21,16 @@
 <body>
 
 <div class="head">
-<h1>EPICS Version 4 Release Guide</h1>
+<h1>EPICS Version 4 Core Module Development and Release Guide</h1>
 
 <h2 class="nocount">Working Group draft for version 4.3.0</h2>
 
 <dl>
 <dt>Author:</dt>
   <dd>Andrew Johnson</dd>
+  <dd>Greg White</dd>
 <dt>Date:</dt>
-  <dd>16 July 2013</dd>
+  <dd>10 September 2013</dd>
 <dt>Latest version:</dt>
   <dd><a href="release.html">release.html</a></dd>
 <dt>Older versions:</dt>
@@ -45,7 +46,8 @@
 <h2 class="nocount">Abstract</h2>
 
 <p>This is an EPICS v4 working group internal document giving the policies and
-procedures for releasing numbered versions of EPICS v4 software modules. It also
+procedures for releasing numbered versions of EPICS v4 software modules, and
+the process of release. It also
 contains a timetable and several check-lists for use during the process of
 creating a new version of the software.</p>
 
@@ -53,8 +55,19 @@ creating a new version of the software.</p>
 <h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
 </div>
 
-
 <div id="contents" class="contents">
+<h2 class="nocount" id="status">Status of this Document</h2>
+<!-- Statement about why this version exists -->
+
+<p>This is the 10 September 2013 version of the EPICS V4 Core Module Development and Release Guide. </p>
+  <p>This version includes a much expanded guide to the mechanical process of release.</p>
+<!-- Please always include this statement of terms, unless it's really silly -->
+<p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
+highlighted (through style sheets, and in uppercase in the source) are used in
+accordance with <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a> [<a
+href="refs.html#ref-RFC2119">RFC2119</a>]. The term NOT REQUIRED (not defined
+in RFC 2119) indicates exemption. </p>
+
 
 <h2>Introduction</h2>
 
@@ -776,190 +789,179 @@ no major bug reports for it in that period, the final release version will be
 created and published. Minor bugs that have not been fixed should be documented
 in a list of Known Problems that accompanies the release.</p>
 
+<h2>Mercurial workflow for versioning</h2>
+<p>The workflow given below shows how Mercurial tags are used to indicate module
+versions (as defined above). It includes what to do when a change must be made to
+a module after it has been included in a suite release (see below). The change is
+made on a branch. Note the naming of the branch, and the numbering of the tag
+(or tags) on that branch.</p>
+
+<p>The process is described for java, though CPP is a simple subset. Simply omit
+those aspects which refer to maven operations, such as editing the pom.xmls.</p>
+
+<img src="ReleaseProcessforJava.png" alt="The Mercurial workflow for EPICS V4"/>
+
 
 <h2>Packaging Instructions</h2>
 
-<p class="ed">Note: I have not checked or corrected these instructions or their
-associated scripts &ndash; AJ</p>
-
-<p>Release steps:</p>
-
+<p>There are basically 3 steps to the mechanics of doing a release:</p>
 <ol>
-<li>Tag Mercurial repositories (currently pvData, pvAccess, pvIOC, pvService)</li>
-<li>Clone tagged repositories to a build server (your local machine or Jenkins)</li>
-<li>Generate release documentation and upload to sourceforge web area</li>
-<li>Create release archives and upload to sourceforge file area</li>
+  <li>Module Mercurial (and Maven) taging for version numbers</li>
+  <li>Packaging a tar from local files</li>
+  <li>Packaging from remote files, and uploading the tar to SourceForge.</li>
 </ol>
 
-<p>Release scripts are in mercurial under <a
-href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
+<p>The key to the automatic packaging, is that a file in pvDataWWW named RELEASE_VERSIONS
+specifies the Mercurial (hg) tag value of each module for each suite release package (the tar
+file that may be downloaded from SourceForge). In addition, for Java modules, the code to be
+included in the version MUST have a Maven version whose value is identical to the Mercurial tag.
+That is, this identity must hold:
+</p>
+<pre>
+    [mercurial tag ==] RELEASE_VERSIONS entry == hg tag
+</pre>
+<p>The mercurial part optional because it applies only to all java modules, not the cpp ones.
 </p>
 
-<p>During the release process documentation (both written and generated) is copied from the <code>documentation</code> directory in each repository to <code>epics-pvdata.sourceforge.net/docbuild/$REPO/$TAGNAME/documentation</code>.
+<h3>Module Mercurial (and Maven) taging</h3>
+
+<p>If the module is Java, set the the module's own &lt;version&gt; in pom.xml of module
+   Do not yet push, first test it with a local maven build.</p>
+
+<pre>
+   Eg set to &lt;version&gt;3.0.0&lt;version&gt;   [This example must have been a MAJOR release, 
+                                         since minor and patch
+                                         numbers are 0] 
+</pre>
+
+<p>For all modules above pvData, you will need also to set the &lt;version&gt; of their
+   dependencies. Eg pvAccess depends on pvData, so you will have also to increment
+   the &lt;version&gt; specified in the pvDataJava &lt;dependency&gt; element.</p>
+
+<p>Set the hg tag according to the API compatibility rules for version "numbering".
+    That is, if the module is neither forward nor backward compatible (eg ABI change)
+    that's a major update, so increment the left most number. If it's API has been 
+    changed (that is, if the signature of an entry point (ie method) has changed, 
+    that's a minor change (increment the middle number). Otherwise (neither of the 
+    above 2, then it's a patch release, increment the rightmost number). That's all, there
+    is no subjective leway here. Even if you've done lots of work but no ABI or API 
+    change - it's still a patch release. Eg</p>
+
+ <pre>   % hg tag 2.1.0
+    % hg commit
+    % hg push
+ </pre>
+
+<p>
+<kbd>mvn compile install [-Dmaven.test.skip=true]</kbd>
+   Verify compile and that correct LOCAL maven repo version was created.
+</p>
+<pre>
+   Eg % pwd
+      /Users/greg/Development/epicsV4/hg             [in this example]
+      % cd pvDataJava/
+      % mvn compile install
+</pre>
+<p>Test local version of module.
+   Run local tests, if any over and above those unit tests in the maven.
 </p>
 
-<h3>Packaging C++ Modules</h3>
+<h3>Packaging a tar from local files</h3>
 
-<p>Several scripts are provided to automate the packaging process, which must be
-edited to set the correct tag and user-name for the release.</p>
-
-<dl>
-  <dt>Code:</dt>
-  <dd><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a>
-  &ndash; clones the repositories, tags the current head, then pushes the
-  changes back to SF.</dd>
-
-  <dd><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a>
-  &ndash; clones the tagged repositories, uses <code>hg archive</code> to
-  combine the results into a new directory tree, adds the RELEASE.local file and
-  a generated tag.txt file, generates a tar.gz file, then copies that to the
-  file area.</dd>
-
-  <dt>Documentation:</dt>
-  <dd><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a>
-  &ndash; clones the tagged repositories, adds a copy of RELEASE.local and
-  CONFIG_SITE.local to each, compiles each module and runs doxygen, then copies
-  the generated documentation directories to the web area.</dd>
-
-</dl>
-
-<h3>Packaging Java Modules</h3>
-
-<p class="ed">This text needs updating to the new version numbering above
-&ndash; AJ</p>
-
-<dl>
-<dt>Code:</dt>
-
-<dd>
-<p>To make a versioned release of EPICS V4 core modules Java implementation:</p>
-<p>Recall the build dependencies of the EPICS v4 core modules are:</p>
-<ul>
-<li>pvDataJava has no dependencies</li>
-<li>pvAccessJava depends on pvDataJava</li>
-<li>pvIOCJava depends on pvAaccessJava and pvDataJava for build</li>
-<li>exampleJava depends on all 4 above.</li>
-</ul>
-
-<p>Edit each of the 5 pom.xml files 
-pvIOCJava, pvAaccessJava and pvDataJava, pvServiceJava plus exampleJava, to change the version name.
-Our naming convention is n.m-BETA (note caps) to designate a
-BETA release, or later simply n.m. Intermediate snaphots are named
-n.m-SNAPSHOT. Therefore, the first Beta is named 1.0-BETA:</p>
-<pre>
-Clone the repo, eg:
-
-hg clone ssh://gregorywhite@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
-
-To tag and build for Java/Maven:
-
-In pom.xml you have
-
-<version>1.0-SNAPSHOT</version>
-
-change to eg 1.0-BETA in top <version></version> and also in the dependencies, so you
-build like versions against each other, starting with pvDataJava (that has no dependencies).
-
-<version>1.0-BETA</version>
-</pre>
-
-<p>Build locally to test build and test suite.</p>
-<pre>
-% pwd
-/Users/greg/Development/epicsV4/ev4hg
-
-% cd pvDataJava
-% mvn compile install
-
-% cd ../pvAccessJava
-% mvn compile install -Dmaven.test.skip=true
-
-% cd ../pvIOCJava
-% mvn compile install -DJAVAIOC=$PWD -Dmaven.test.skip=true
-
-% cd ../exampleJava/
-% mvn compile install 
-</pre>
-<p>Verify you got what you expected, you want the 3 core modules plus exampleJavas' jars:</p>
-<pre>
-% find ~/.m2 -name "pv*BETA.jar" -o -name "example*BETA.jar"
-/Users/greg/.m2/repository/epics/exampleJava/1.0-BETA/exampleJava-1.0-BETA.jar
-/Users/greg/.m2/repository/epics/pvAccess/1.0-BETA/pvAccess-1.0-BETA.jar
-/Users/greg/.m2/repository/epics/pvData/1.0-BETA/pvData-1.0-BETA.jar
-/Users/greg/.m2/repository/epics/pvIOC/1.0-BETA/pvIOC-1.0-BETA.jar
-</pre>
-
-<p>Upload the release. In each of the 4 directories, commit the pom.xml, tag the
-repo, and push.</p>
-<pre>
-hg commit -m "beta 1 version inc" pom.xml
-
-Then tag:
-
-hg tag 1.0-BETA
-
-and push:
-
-hg push
-</pre>
-
-<p>This results in remote repository that is version tagged.
-Now Jenkins will build 1.0-BETA version and deploy JARs in EPICS 4 remote maven
-products directory (see below).
-
-Before making any changes to the project (the best thing is to do it
-immediately) you need to increase version to 1.1-SNAPSHOT. This way new changes will
-not override the deployed 1.0-BETA. However, hold on a second Tex, it's a good idea
-to versify that Jenkins has built and deployed the 1.0-BETA release jar file, before
-pushing this new version, since this one will also result in a build and
-deployment. Check the Maven build products directory <a
-href="http://epics.sourceforge.net/maven2/epics/">http://epics.sourceforge.net/maven2/epics/</a>,
-then:
-</p>
-<p>So, again in each of the 4 directories above, edit pom.xml and hg commit and push:</p>
-<pre>
-&lt;version&gt;1.1-SNAPSHOT&lt;/version&gt;
-
-and
-
-hg commit pom.xml
-hg push
-</pre>
-
-<h4>Create the Source User downloadable tarball</h4>
-
-<p>The download tarball is what we put in the SourceForge download files area, and
-includes all the EPICS V4 jars just created, plus
-associated source, XMLs, scripts etc needed by someone to get going. 
+<p>If your local packaging is to include other people's module changes, first hg pull and
+hg update each repository you want to include. 
 </p>
 
-<p>The tarball includes the README file, so before creating it, edit
-pvDataWWW/mainPage/README with details of the release, commit and push it. You
-need to push it, because makereleaseJars.sh takes it from the web site.</p>
-
-<p>Edit the pvDataWWW/scripts/makereleaseJars.sh file, updating the the TAG variable
-in particular. cd to some directory where you're going
-to build the tar, then run /makereleaseJars.sh from where you edited it:</p>
-<pre>
-% mkdir tmp
-% cd tmp
-% ../ev4hg/pvDataWWW/scripts/makereleaseJars.sh
+<pre>   eg % cd hg/pvDataJava
+      % hg pull
+      % pg update
+      % mvn compile install
 </pre>
-</dd>
+<p>Then repeat steps above for those changed repos.
+</p>
 
-<dt>Documentation:</dt>
-<dd><a href="http://epics-pvdata.sourceforge.net/hgweb/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
-&ndash; clones the tagged repositoties, generates the JavaDoc, and synchronizes
-to the web area. Check it builds the set of modules you want and then execute it
-in a scratch area. You may want to comment out the rsync and do that by
-hand.</dd>
+<p>Verify/edit maven repo version numbers in your local pvDataWWW/scripts/RELEASE_VERSIONS.
+</p>
 
-</dl>
+<p>   Check whether other people have changed the RELEASE_VERSIONS, if so, hg pull and 
+   hg update to get a new version.
+</p>
+
+ <p>  In the case of Java, verify that the hg tag number of the actual repo exists, and there 
+   really is a matching local maven repo version of the same name (eg pvAccessData/3.0.3) in
+   ~/.m2/repository/epics/.
+</p>
+
+<pre>Extract of pvDataWWW/scripts/RELEASE_VERSIONS, showing what is in
+EPICS-Java-4.3.0-pre2:
+
+# =================================================================
+# Ev4 Release name           Repo name      Tag/version
+# ------------------         ------------   ----------------------
+EPICS-Java-4.3.0-pre2        pvDataJava        3.0.2
+EPICS-Java-4.3.0-pre2        pvAccessJava      3.0.3
+EPICS-Java-4.3.0-pre2        easyPVAJava       0.2.1
+EPICS-Java-4.3.0-pre2        exampleJava       2.1.0
+EPICS-Java-4.3.0-pre2        caj               1.1.10
+EPICS-Java-4.3.0-pre2        jca               2.3.6
+EPICS-Java-4.3.0-pre2        directoryService  0.2.1
+</pre>
+
+<p>Run packaging from local maven repos:
+</p>
+   <p>Find some directory on your computer where you can create the tar.gz file.
+   Then execute makereleaseJars.sh from there. makereleaseJars.sh is in 
+   pvDataWWW/scripts, so you migh execute it from the parent of that path.
+   E.g.:  </p>  
+
+   <pre>% hg/pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre1 -l hg.
+   ...
+   % ls *.tar.gz
+   EPICS-Java-4.3.0-pre2.tar.gz
+</pre>
+   <p>Check your tar.gz contains what you expected (just ls the dir from which it
+   was constructed). Check in particular the included directories, jars etc.</p>
+<pre>
+   % ls -1 EPICS-Java-4.3.0-pre2
+</pre>    
+ 
+
+<h3>Packaging from Remote files, and uploading the tar to SourceForge</h3>
+
+<p>First, check in cloudbees to verify that all the remote modules you want to include 
+have completed their build and have no unexpcted issues.
+</p>
+
+<p>Now re-run the packager to package from the remote files. This guarantees consistency
+better than packaging from local files. Here are 2 examples, the first for Java, the
+second for CPP.
+</p>
+
+<pre>pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre2 -u <sfusername>
+
+and/or
+
+../hg/pvDataWWW/scripts/makereleaseCPP.sh -V -n EPICS-CPP-4.3.0-pre2 -u gregorywhite
+</pre>
+
+<p>Upload the tar file created in the step above:
+</p>
+
+<pre> % rsync -a &lt;tarfilename&gt; \
+ &lt;SFusername&gt;,epics-pvdata@frs.sourceforge.net:/home/frs/project/e/ep/epics-pvdata/&lt;EV4-version-num&gt;/
+
+Eg 
+ % rsync -a EPICS-Java-4.3.0-pre2.tar.gz \
+ gregorywhite,epics-pvdata@frs.sourceforge.net:/home/frs/project/e/ep/epics-pvdata/4.3.0/
+</pre>
+
+<p>Verify the file made it to our SF project files, at: <a href="https://sourceforge.net/projects/epics-pvdata/files/?source=navbar">https://sourceforge.net/projects/epics-pvdata/files/?source=navbar</a>.
+</p>
 
 </div>
 
 <hr>
 <address>EPICS V4 Working Group</address>
-<!-- hhmts start -->Last modified: Jul 16th, 2013<!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Sep 10 17:40:12 PDT 2013 <!-- hhmts end -->
 </body>
 </html>
