@@ -52,6 +52,6 @@ EPICS-CPP-4.3.0-pre3         pvCommonCPP       3.0.2
 EPICS-CPP-4.3.0-pre3         pvDataCPP         3.0.2
 EPICS-CPP-4.3.0-pre3         pvAccessCPP       3.0.3
 EPICS-CPP-4.3.0-pre3         pvIOCCPP          3.0.3
-#EPICS-CPP-4.3.0-pre3         exampleCPP        3.0.0
+EPICS-CPP-4.3.0-pre3         exampleCPP        3.0.0
 EPICS-CPP-4.3.0-pre3         pvaSrv            0.9.2
 
