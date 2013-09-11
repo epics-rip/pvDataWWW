@@ -1094,14 +1094,14 @@ If good:\
   Edit pom.xml
 \b0  to set version \
      to 2.1.0.1\
+  
+\b hg commit -m 
+\b0 "2.1.0.1 fixes xxx"\
 
 \b   hg tag 2.1.0.1\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
 \b0 \cf0   
-\b hg commit -m 
-\b0 "2.1.0.1 fixes xxx"\
-  
 \b hg push
 \b0  (creates changeset 5,\
   tagged 2.1.0.1)\
@@ -1383,7 +1383,7 @@ reset versions of dependencies to \
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{466.00001036610956, 234}, {255.24977111816406, 202}}</string>
+			<string>{{466.00001036610956, 234}, {255.24977111816406, 190}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1441,13 +1441,8 @@ explicit version dependencies \
 in pom.xml\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\b \cf0 hg commit pom.xml
-\b0 \
-
-\b hg tag 2.1.0
-\b0 \
-
-\b hg commit -m "Version 2.1.0"
+\b \cf0 hg commit -m "Version 2.1.0"\
+hg tag 2.1.0
 \b0 \
 
 \b hg push
@@ -1574,7 +1569,7 @@ http://epics.sourceforge.net/maven2/epics/&lt;module&gt;/2.1.0/ which will inclu
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-08-27 21:45:08 +0000</string>
+	<string>2013-09-11 18:11:46 +0000</string>
 	<key>Modifier</key>
 	<string>Greg White</string>
 	<key>NotesVisible</key>
