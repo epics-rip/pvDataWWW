@@ -598,7 +598,7 @@ the status of the code and is one of <code>&#8209;dev</code> (development),
 <p>When printing or discussing a particular version number, all the parts of
 <code>4.<i>major</i>.<i>minor</i></code> SHOULD always be given. The
 <code>.<i>bugfix</i></code> and/or <code>&#8209;<i>suffix</i></code> parts
-SHOULD be included if they they are needed to indentify the specific version of
+SHOULD be included if they they are needed to identify the specific version of
 the software concerned.</p>
 
 <p>The suffix <code>&#8209;BETA</code> that was included with some previous
@@ -631,7 +631,7 @@ compatibility promises across release boundaries:</p>
 
 <h3>Major releases</h3>
 
-<p>Neither ABI nor API compatibilty is promised through a major release.</p>
+<p>Neither ABI nor API compatibility is promised through a major release.</p>
 
 <p>Developers SHOULD list and describe all public API changes that have occurred
 since the last major release in the Release Notes for the module, and MUST
@@ -647,7 +647,7 @@ release of the software.</p>
 <h3>Minor releases</h3>
 
 <p>Forward API compatibility is promised through a minor release but not ABI
-compatibilty, meaning that software written against the old version MUST compile
+compatibility, meaning that software written against the old version MUST compile
 and run against the new one without changing its source code; recompilation is
 required though. Backward API compatibility is not promised, but where there
 have not been any API changes an application written for a newer release SHOULD
@@ -737,7 +737,7 @@ release timetable.</p>
 instantaneous event, not a period of time. After that moment, the software is
 said to have been frozen.</p>
 
-<p>All development work on new features for this relese must have been completed
+<p>All development work on new features for this release must have been completed
 by the freeze date; incomplete features should have been backed out and no
 additional feature branches should be merged afterwards. Only bug fixes and
 documentation updates should normally be committed between the freeze and the
@@ -796,8 +796,8 @@ a module after it has been included in a suite release (see below). The change i
 made on a branch. Note the naming of the branch, and the numbering of the tag
 (or tags) on that branch.</p>
 
-<p>The process is described for java, though CPP is a simple subset. Simply omit
-those aspects which refer to maven operations, such as editing the pom.xmls.</p>
+<p>The process is described for Java, though C++ is a simple subset. Simply omit
+those aspects which refer to Maven operations, such as editing the pom.xmls.</p>
 
 <img src="ReleaseProcessforJava.png" alt="The Mercurial workflow for EPICS V4"/>
 
@@ -806,7 +806,7 @@ those aspects which refer to maven operations, such as editing the pom.xmls.</p>
 
 <p>There are basically 3 steps to the mechanics of doing a release:</p>
 <ol>
-  <li>Module Mercurial (and Maven) taging for version numbers</li>
+  <li>Module Mercurial (and Maven) tagging for version numbers</li>
   <li>Packaging a tar from local files</li>
   <li>Packaging from remote files, and uploading the tar to SourceForge.</li>
 </ol>
@@ -820,13 +820,13 @@ That is, this identity must hold:
 <pre>
     [mercurial tag ==] RELEASE_VERSIONS entry == hg tag
 </pre>
-<p>The mercurial part optional because it applies only to all java modules, not the cpp ones.
+<p>The mercurial part is optional because it applies only to all Java modules, not the C++ ones.
 </p>
 
-<h3>Module Mercurial (and Maven) taging</h3>
+<h3>Module Mercurial (and Maven) tagging</h3>
 
 <p>If the module is Java, set the the module's own &lt;version&gt; in pom.xml of module
-   Do not yet push, first test it with a local maven build.</p>
+   Do not yet push, first test it with a local Maven build.</p>
 
 <pre>
    Eg set to &lt;version&gt;3.0.0&lt;version&gt;   [This example must have been a MAJOR release, 
@@ -844,7 +844,7 @@ That is, this identity must hold:
     changed (that is, if the signature of an entry point (ie method) has changed, 
     that's a minor change (increment the middle number). Otherwise (neither of the 
     above 2, then it's a patch release, increment the rightmost number). That's all, there
-    is no subjective leway here. Even if you've done lots of work but no ABI or API 
+    is no subjective leeway here. Even if you've done lots of work but no ABI or API 
     change - it's still a patch release. Eg</p>
 
  <pre>  
@@ -855,7 +855,7 @@ That is, this identity must hold:
 
 <p>
 <kbd>mvn compile install [-Dmaven.test.skip=true]</kbd>
-   Verify compile and that correct LOCAL maven repo version was created.
+   Verify compile and that correct LOCAL Maven repo version was created.
 </p>
 <pre>
    Eg % pwd
@@ -864,7 +864,7 @@ That is, this identity must hold:
       % mvn compile install
 </pre>
 <p>Test local version of module.
-   Run local tests, if any over and above those unit tests in the maven.
+   Run local tests, if any over and above those unit tests in the Maven.
 </p>
 
 <h3>Packaging a tar from local files</h3>
@@ -875,13 +875,13 @@ hg update each repository you want to include.
 
 <pre>   eg % cd hg/pvDataJava
       % hg pull
-      % pg update
+      % hg update
       % mvn compile install
 </pre>
 <p>Then repeat steps above for those changed repos.
 </p>
 
-<p>Verify/edit maven repo version numbers in your local pvDataWWW/scripts/RELEASE_VERSIONS.
+<p>Verify/edit Maven repo version numbers in your local pvDataWWW/scripts/RELEASE_VERSIONS.
 </p>
 
 <p>   Check whether other people have changed the RELEASE_VERSIONS, if so, hg pull and 
@@ -889,7 +889,7 @@ hg update each repository you want to include.
 </p>
 
  <p>  In the case of Java, verify that the hg tag number of the actual repo exists, and there 
-   really is a matching local maven repo version of the same name (eg pvAccessData/3.0.3) in
+   really is a matching local Maven repo version of the same name (eg pvAccessData/3.0.3) in
    ~/.m2/repository/epics/.
 </p>
 
@@ -908,14 +908,14 @@ EPICS-Java-4.3.0-pre2        jca               2.3.6
 EPICS-Java-4.3.0-pre2        directoryService  0.2.1
 </pre>
 
-<p>Run packaging from local maven repos:
+<p>Run packaging from local Maven repos:
 </p>
    <p>Find some directory on your computer where you can create the tar.gz file.
    Then execute makereleaseJars.sh from there. makereleaseJars.sh is in 
-   pvDataWWW/scripts, so you migh execute it from the parent of that path.
+   pvDataWWW/scripts, so you might execute it from the parent of that path.
    E.g.:  </p>  
 
-   <pre>% hg/pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre1 -l hg.
+   <pre>% hg/pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre2 -l hg.
    ...
    % ls *.tar.gz
    EPICS-Java-4.3.0-pre2.tar.gz
@@ -929,20 +929,20 @@ EPICS-Java-4.3.0-pre2        directoryService  0.2.1
 
 <h3>Packaging from Remote files, and uploading the tar to SourceForge</h3>
 
-<p>First, check in cloudbees to verify that all the remote modules you want to include 
-have completed their build and have no unexpcted issues.
+<p>First, check in CloudBees to verify that all the remote modules you want to include 
+have completed their build and have no unexpected issues.
 </p>
 
 <p>Now re-run the packager to package from the remote files. This guarantees consistency
 better than packaging from local files. Here are 2 examples, the first for Java, the
-second for CPP.
+second for C++.
 </p>
 
-<pre>pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre2 -u <sfusername>
+<pre>pvDataWWW/scripts/makereleaseJars.sh -n EPICS-Java-4.3.0-pre2 -u gregorywhite
 
 and/or
 
-../hg/pvDataWWW/scripts/makereleaseCPP.sh -V -n EPICS-CPP-4.3.0-pre2 -u gregorywhite
+../hg/pvDataWWW/scripts/makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre2 -u gregorywhite
 </pre>
 
 <p>Upload the tar file created in the step above:
