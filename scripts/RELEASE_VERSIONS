@@ -36,10 +36,10 @@ EPICS-Java-4.3.0-pre2        directoryService  0.2.1
 EPICS-Java-4.3.0-rc1        pvDataJava        3.0.2
 EPICS-Java-4.3.0-rc1        pvAccessJava      3.0.4
 EPICS-Java-4.3.0-rc1        easyPVAJava       0.2.2
-#EPICS-Java-4.3.0-rc1        exampleJava       2.1.0
+EPICS-Java-4.3.0-rc1        exampleJava       2.1.1
 EPICS-Java-4.3.0-rc1        caj               1.1.10
 EPICS-Java-4.3.0-rc1        jca               2.3.6
-#EPICS-Java-4.3.0-rc1        directoryService  0.2.1
+EPICS-Java-4.3.0-rc1        directoryService  0.2.2
 
 
 EPICS-CPP-4.3.0-pre1         pvCommonCPP       3.0.0
