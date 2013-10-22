@@ -23,6 +23,10 @@
 # ----------------------------------------------------------------------------
 #
 # Auth: Dave Hickin
+# Mod: 22-Oct-2013, Greg White (greg@slac.stanford.edu) 
+#       Fixed awk command for matching "full releases", eg EPICS-java-4.3.0 rather 
+#       than those with suffix. The old one matched also suffix 
+#       release lines, so modules could have been included twice.
 #       
 # ============================================================================
 
@@ -202,7 +206,7 @@ readme_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
 # Read the repos and versions that the release tar must be composed of from the
 # RELEASE_VERSIONS file.
-modulesa=(`awk -v relname=${releaseName} '$1 ~ relname {print $2}' < $release_versions_pathname`)
+modulesa=(`awk -v relname=${releaseName} 'BEGIN {relname="^" relname "$"} $1 ~ relname {print $2}' < $release_versions_pathname`)
 
 
 # Check we got at least 1 module.
@@ -222,7 +226,7 @@ cd ${outdir}
 for modulei in ${modulesa[*]}
 do
     tag=`awk -v relname=${releaseName} -v modulename=${modulei} \
-          '$1 ~ relname && $2 ~ modulename {print $3}' < $release_versions_pathname`
+          'BEGIN {relname="^" relname "$"} $1 ~ relname && $2 ~ modulename {print $3}' < $release_versions_pathname`
 
     if [ $? -ne 0 ]; then
 	    echo "Could not get module version for ${modulei}, exiting"
