@@ -28,11 +28,15 @@
 #
 # ----------------------------------------------------------------------------
 # Auth: 20-Dec-2011, Greg White (greg@slac.stanford.edu) 
-# Mod:  19-Aug-2013, Greg White (greg@slac.stanford.edu)
+# Mod:  22-Oct-2013, Greg White (greg@slac.stanford.edu) 
+#       Fixed awk command for matching "full releases", eg EPICS-java-4.3.0 rather than
+#       those with suffix. The old one was a thirsty match, so matched also suffix 
+#       release lines.
+#       19-Aug-2013, Greg White (greg@slac.stanford.edu)
 #       Re-write for supporting file driven release packaging.
 #       11-Jan-2013, Greg White (greg@slac.stanford.edu)
-#       Updated TAG so as to build first beta 2 release. Also, removed references to pvService.
-#       
+#       Updated TAG so as to build first beta 2 release. Also, removed references to 
+#       pvService.
 # ============================================================================
 
 function usage { 
@@ -150,7 +154,7 @@ readme_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
 # Read the repos and versions that the release tar must be composed of, from the
 # RELEASE_VERSIONS file.
-modulesa=(`awk -v relname=${releaseName} '$1 ~ relname {print $2}' < $release_versions_pathname`)
+modulesa=(`awk -v relname="^${releaseName}\$" '$1 ~ relname {print $2}' < $release_versions_pathname`)
 if [ ${#modulesa[@]} -lt 1 ]; then
     echo "Failed to find modules for release ${releaseName}"
     exit 2
@@ -164,7 +168,7 @@ cd ${outdir}
 
 for modulei in ${modulesa[*]}
 do
-    tag=`awk -v relname=${releaseName} -v modulename=${modulei} \
+    tag=`awk -v relname="^${releaseName}\$" -v modulename=${modulei} \
           '$1 ~ relname && $2 ~ modulename {print $3}' < $release_versions_pathname`
 
     if [ $? -eq 0 ]; then
