@@ -37,27 +37,27 @@ echo "
 
    Usage:
 
-       docReleaseCPP.sh -v <releaseName> -u <SFusername> [-f ] [-l] 
+       docReleaseCPP.sh -n <releaseName> -u <SFusername> [-f ] [-l] 
 
-       -v <versionName>      The version number of the release. This is used
-                             to create the key used to search RELEASE_VERSIONS
-                             to find the modules in the release.
+       -n <releaseName>      The string identifying the release. This is the
+                             key used to search RELEASE_VERSIONS to find the
+                             modules in the release.
 
        -u <SFusername>       The argument SFusername is the SourceForge
-                             username to be used cloning the repos.
+                             username to be used cloning the repos via ssh.
+                             If not supplied use anonymous http.
 
        -l                    Uses the specified release versions file
                              RELEASE_VERSIONS in the pvDataWWW/scripts dir
-                             in pvDataWWW/mainPage of the copy of pvDataWWW
-                             which contains the version of this script which
-                             has been run.
+                             of the copy of pvDataWWW  which contains the
+                             version of this script which has been run.
 
        -f                    Removes any files left from running the script
                              previously.
 
    Examples:
 
-         $ docReleaseCPP.sh -l -v 4.3.0 -r dhickin
+         $ docReleaseCPP.sh -l -n EPICS-CPP-4.3.0 -r dhickin
 
        In this example, docReleaseCPP.sh generates the documentation for
        version 4.3.0 as specified in the RELEASE_VERSIONS file in the 
@@ -66,12 +66,18 @@ echo "
        It will first clone the files it finds in the mercurial repo, build them
        and generate the doxygen.
 
-         $ docReleaseCPP.sh  -v 4.3.0 -r dhickin
+         $ docReleaseCPP.sh  -n EPICS-CPP-4.3.0 -r dhickin
 
        This time docReleaseCPP.sh does the same thing but using the the
        RELEASE_VERSIONS file it finds on the web (see URL in source of this
        script).
 
+         $ docReleaseCPP.sh  -n EPICS-CPP-4.3.0
+
+       Same but uses anonymous http access.
+
+       To build the script assumes that the modules are listed from least
+       derived to most derived in the RELEASE_VERSIONS file
 "
 }
 
@@ -108,39 +114,22 @@ scriptdir=$( readlink -f "$( dirname "${file}" )" )
 
 
 SFusername=
-versionName=
 releaseName= 
 localreleaseinfo=0
 force=0
 
-while getopts hfu:lv: opt; do
+while getopts hfu:ln: opt; do
    case "$opt" in
        h) usage; Exit 0 ;;
        f) force=1 ;;
        u) SFusername=${OPTARG} ;;
        l) localreleaseinfo=1 ;;
-       v) versionName=${OPTARG} ;; 
+       n) releaseName=${OPTARG} ;; 
        *) echo "Unknown Argument, see $thisscript -h"; Exit 1;;
    esac
 done
 shift $((OPTIND-1));
 
-
-if [ -z ${versionName} ]; then
-    echo "The version is a required argument, (specify with -v)"
-    echo "See $thisscript -h"
-    Exit 2
-fi
-
-releaseName="EPICS-CPP-${versionName}"
-
-
-
-if [ -z ${SFusername} ]; then
-	echo "Username is a required argument (specify with -u)."
-    echo "See $thisscript -h"
-    Exit 3
-fi
 
 
 outdir=${releaseName}
@@ -153,7 +142,7 @@ if [ -e ${outdir} ]; then
     else
 	    echo "${outdir} already exists. Remove/move before trying again or use
 the force option (-f)."
-        Exit 4
+        #Exit 4
     fi
 fi
 
@@ -204,7 +193,7 @@ echo ${releaseName} is composed of ${modulesa[*]}
 mkdir -p ${outdir}
 cd ${outdir}
 
-for modulei in ${modulesa[*]}
+for modulei in ${modulesa[@]}
 do
     tag=`awk -v relname=${releaseName} -v modulename=${modulei} \
           'BEGIN {relname="^" relname "$"} $1 ~ relname && $2 ~ modulename {print $3}' < $release_versions_pathname`
@@ -214,11 +203,18 @@ do
 	    Exit 9
     fi
 
-    echo Adding ${modulei} ${tag} to ${releaseName} tar directory
-
     # clone module from sourceforge
     checkoutname=${modulei}
-    hg clone -u ${tag} ssh://${SFusername}@hg.code.sf.net/p/epics-pvdata/${modulei} ${checkoutname}
+
+    sfv4=hg.code.sf.net/p/epics-pvdata
+    if [ -z ${SFusername} ]; then
+        urlbase=http://${sfv4}
+    else
+        urlbase=ssh://${SFusername}@${sfv4}           
+    fi
+        
+    checkoutname=${modulei}       
+    #hg clone -u ${tag} ${urlbase}/${modulei} ${checkoutname}
     if [ $? -ne 0 ]; then
 	    echo "hg clone failed."
         Exit 10            
@@ -240,36 +236,47 @@ do
 
 done
 
-echo "CROSS_COMPILER_TARGET_ARCHS=" > CONFIG.local
-echo "EPICS_BASE=$EPICS_BASE" > RELEASE.local_old
 
+
+reversed_modules=( )
 
 for modulei in ${modulesa[*]}
+do
+   reversed_modules=( "${reversed_modules[@]}" "${modulei}" )
+done
+
+for modulei in ${reversed_modules[@]}
 do
 if [ -e ${modulei} ]; then
     cd ${modulei}
 	top=${PWD}
 	echo "${modulei}=$top" > ../RELEASE.local
 	cd ..
-	RELEASE.local_old >> RELEASE.local
-	cp RELEASE.local RELEASE.local_old
 fi    
 done
 
-for modulei in ${modulesa[*]}
+echo "EPICS_BASE=$EPICS_BASE" > RELEASE.local
+echo "CROSS_COMPILER_TARGET_ARCHS=" > CONFIG.local
+
+skipped=( )
+
+for modulei in ${modulesa[@]}
 do
-if [ -e ${modulei} ]; then
+if [ -e ${modulei}/Makefile ]; then
     cd ${modulei}
     make clean uninstall
 	make
 	doxygen
 	cd ..
+else
+    skipped=("${skipped[@]}" "${modulei}" )
 fi
 done
 
 cd ..
 
-
+echo "No documentation for modules: ${skipped[@]}"
 
 
 Exit 0
+

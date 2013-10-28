@@ -133,7 +133,7 @@ missing_hgdoc=
 mkdir -p ${outdir}
 cd ${outdir}
 
-for modulei in ${modulesa[*]}
+for modulei in ${modulesa[@]}
 do
     tag=`awk -v relname=${releaseName} -v modulename=${modulei} \
           'BEGIN {relname="^" relname "$"} $1 ~ relname && $2 ~ modulename {print $3}' < $release_versions_pathname`
