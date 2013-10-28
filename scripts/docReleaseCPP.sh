@@ -142,7 +142,7 @@ if [ -e ${outdir} ]; then
     else
 	    echo "${outdir} already exists. Remove/move before trying again or use
 the force option (-f)."
-        #Exit 4
+        Exit 4
     fi
 fi
 
@@ -214,7 +214,7 @@ do
     fi
         
     checkoutname=${modulei}       
-    #hg clone -u ${tag} ${urlbase}/${modulei} ${checkoutname}
+    hg clone -u ${tag} ${urlbase}/${modulei} ${checkoutname}
     if [ $? -ne 0 ]; then
 	    echo "hg clone failed."
         Exit 10            
