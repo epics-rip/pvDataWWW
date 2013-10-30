@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>Access to the EPICS V4 Webspace on SourceForge</title>
+  <meta name="keywords" content="EPICS, EPICSv4, SourceForge, webspace">
+  <link rel="stylesheet" type="text/css" href="base.css">
+  <link rel="stylesheet" type="text/css" href="epicsv4.css">
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     editor { font-color: red }
+     body { margin-right: 10% }
+/*]]>*/</style>
+</head>
+
+<body>
+<h1>Access to the EPICS V4 Webspace on SourceForge</h1>
+
+<p>Explanation and instructions for the EPICS V4 project webspace on the
+SourceForge servers.</p>
+
+<h2>General Concept</h2>
+
+<p>The EPICS V4 project webspace contains the EPICS V4 website.</p>
+
+<h3>Content</h3>
+
+<p>Most of the manually created website content is kept in the <a
+href="https://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/"
+target="_blank">repository pvDataWWW</a>. The repository content is checked out
+and pushed to the SourceForge servers (using rsync over ssh) by a <a
+href="https://openepics.ci.cloudbees.com/view/EPICS%20V4/job/V4%20Web%20Pages%20-%20Publish/"
+target="_blank">Jenkins CI job</a> on CloudBees.</p>
+
+<p>Binary content that is not expected to change (meeting slides, images) is
+kept in the same directory structure within the webspace, but is not part of
+the content repository. Such content has to be uploaded manually.</p>
+
+<p>Automatically created content (Doxygen documentation, Javadoc) is pushed to
+the SourceForge servers (using rsync over ssh) by each software module's
+Jenkins CI job on CloudBees.</p>
+
+<h3>Scripts and Data</h3>
+
+<p>Some server-side applications and their data are also located within the
+project webspace, but outside of the website tree.</p>
+
+<h2>Webspace Directory Structure</h2>
+
+<p>When using the SourceForge <a
+href="http://sourceforge.net/p/forge/documentation/Shell%20Service/"
+target="_blank">Shell Service</a>, the webspace is mounted as
+<code>/home/project-web/epics-pvdata</code>.</p>
+
+<p>It contains:</p>
+
+<table border="0" style="width: 100%">
+  <col>
+  <col>
+  <tbody>
+    <tr>
+      <td><code>cgi-bin/</code></td>
+      <td>Server-side scripts, e.g., hgweb</td>
+    </tr>
+    <tr>
+      <td><code>python/</code></td>
+      <td rowspan="2">Installation of mercurial and extensions, needed by
+      hgweb</td>
+    </tr>
+    <tr>
+      <td><code>python2.6/</code></td>
+    </tr>
+    <tr>
+      <td><code>repos/</code></td>
+      <td>Repository instances used by hgweb</td>
+    </tr>
+    <tr>
+      <td><code>htdocs/</code></td>
+      <td>EPICS V4 website</td>
+    </tr>
+    <tr>
+      <td><code>       files/</code></td>
+      <td>Content not kept in the pvDataWWW repository</td>
+    </tr>
+    <tr>
+      <td><code>       docbuild/</code></td>
+      <td>Automatically created software documentation</td>
+    </tr>
+    <tr>
+      <td><code>       .../</code></td>
+      <td rowspan="2">Most of the remaining files and directories are content
+        from the pvDataWWW repository, plus some old stuff that needs to be
+        cleaned up</td>
+    </tr>
+    <tr>
+      <td><code>...</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Adding Content</h2>
+
+<h3>Using the pvDataWWW Repository</h3>
+<ol>
+  <li>Check out the repository
+    <p><code>hg clone
+    ssh://&lt;username&gt;@hg.code.sf.net/p/epics-pvdata/pvDataWWW</code></p>
+  </li>
+  <li>Make your changes and commit to your local repository</li>
+  <li>Push back your commits
+    <p><code>hg push</code></p>
+  </li>
+</ol>
+
+<p>The  <a
+href="https://openepics.ci.cloudbees.com/view/EPICS%20V4/job/V4%20Web%20Pages%20-%20Publish/"
+target="_blank">Jenkins CI job</a> on CloudBees will pick up your changes and
+publish them within a few minutes.</p>
+
+<h3>Manually Uploading Files</h3>
+
+<p>You can use any of the tools supported by SourceForge (<a
+href="https://sourceforge.net/p/forge/documentation/rsync/"
+target="_blank">rsync</a>, <a
+href="https://sourceforge.net/p/forge/documentation/SCP/"
+target="_blank">scp</a>, <a
+href="https://sourceforge.net/p/forge/documentation/SFTP/"
+target="_blank">sftp</a>) to access the webspace and upload your files.</p>
+
+<p>When connecting to
+<code>&lt;username&gt;,epics-pvdata@web.sourceforge.net</code>, the home
+directory will be the root directory of the webspace, so that you have full
+access to the complete structure shown above.</p>
+
+<p>Please keep manually uploaded files within the <code>htdocs/files</code>
+directory, to avoid them being overwritten by the publishing Jenkins job.</p>
+<hr>
+<address>
+  Ralph Lange, HZB / BESSY II 
+</address>
+<!-- hhmts start -->
+Last modified: Wed Oct 30 17:04:13 CET 2013<!-- hhmts end --></body>
+</html>
