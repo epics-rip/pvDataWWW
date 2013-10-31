@@ -105,17 +105,17 @@ target="_blank">Shell Service</a>, the webspace is mounted as
 
 <h3>Using the pvDataWWW Repository</h3>
 <ol>
-  <li>Check out the repository
+  <li>Check out the repository 
     <p><code>hg clone
     ssh://&lt;username&gt;@hg.code.sf.net/p/epics-pvdata/pvDataWWW</code></p>
   </li>
   <li>Make your changes and commit to your local repository</li>
-  <li>Push back your commits
+  <li>Push back your commits 
     <p><code>hg push</code></p>
   </li>
 </ol>
 
-<p>The  <a
+<p>The <a
 href="https://openepics.ci.cloudbees.com/view/EPICS%20V4/job/V4%20Web%20Pages%20-%20Publish/"
 target="_blank">Jenkins CI job</a> on CloudBees will pick up your changes and
 publish them within a few minutes.</p>
@@ -136,11 +136,33 @@ directory will be the root directory of the webspace, so that you have full
 access to the complete structure shown above.</p>
 
 <p>Please keep manually uploaded files within the <code>htdocs/files</code>
-directory, to avoid them being overwritten by the publishing Jenkins job.</p>
+directory, to avoid them being overwritten by the publishing Jenkins jobs.</p>
+
+<p>Please don't upload random files to that directory, consider creating a
+sensible subdirectory tree (e.g., <code>htdocs/files/talks/&lt;year&gt;/</code>
+for group presentations).</p>
+
+<p>Here is a commandline example using sftp:</p>
+<pre>&gt; sftp &lt;username&gt;,epics-pvdata@web.sourceforge.net
+Connected to web.sourceforge.net.
+sftp&gt; cd htdocs/files
+sftp&gt; pwd
+Remote working directory: /home/project-web/epics-pvdata/htdocs/files
+sftp&gt; ls
+talks  
+sftp&gt;</pre>
+
+<p>Personally, I prefer using a GUI (e.g., FileZilla or FireFTP) that makes
+things like selectively transferring files very easy and - at least in my
+experience - less error prone.</p>
+
+<p><img alt="Filezilla GUI" src="filezilla.png"
+style="display: block; text-align: center; margin-left: auto; margin-right: auto"
+width="1088" height="857"></p>
 <hr>
 <address>
-  Ralph Lange, HZB / BESSY II 
+  Ralph Lange, Helmholtz-Zentrum Berlin f&uuml;r Materialien und Energie / BESSY II 
 </address>
 <!-- hhmts start -->
-Last modified: Wed Oct 30 17:04:13 CET 2013<!-- hhmts end --></body>
+Last modified: Thu Oct 31 18:58:28 CET 2013<!-- hhmts end --></body>
 </html>
