@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <title>Branched Development with hg flow</title>
+  <title>EPICS V4 Branched Development with hg</title>
   <link rel="stylesheet" type="text/css"
   href="http://epics-pvdata.sourceforge.net/base.css" />
   <link rel="stylesheet" type="text/css"
@@ -35,17 +35,17 @@
 <body>
 
 <div class="head">
-<h1>Using hg flow for Branched Development</h1>
+<h1>EPICS V4 Branched Development with hg</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date. -->
 
-<h2 class="nocount">EPICS V4 Working Group, Working Draft, 28-Aug-2013</h2>
+<h2 class="nocount">EPICS V4 Working Group, Working Draft, 04-Nov-2013</h2>
 <dl>
   <dt>Latest version:</dt>
     <dd><a href="using_hgflow.html">using_hgflow.html</a></dd>
   <dt>This version:</dt>
-    <dd><a href="using_hgflow_20130828.html">using_hgflow_20130828.html</a></dd>
+    <dd><a href="using_hgflow_20131104.html">using_hgflow_20131104.html</a></dd>
   <dt>Previous version:</dt>
-    <dd>None</dd>
+    <dd><a href="using_hgflow_20130828.html">using_hgflow_20130828.html</a></dd>
   <dt>Editors:</dt>
     <dd>Ralph Lange, Helmholtz-Zentrum Berlin für Materialien und Energie /
       BESSY II</dd>
@@ -128,6 +128,11 @@ target="_blank">blog article</a> in January 2010. His original model was later
 extended with the addition of <em>support branches</em> allowing long-term
 support of older releases. The <em>stream</em> generalization allows to group
 branches in a directory-like fashion.</p>
+
+<p>When mapping this Git-based model to existing Mercurial repositories with a
+history, is seems appropriate to use the default branch (with the development
+history) as develop, and create a new branch called master for generating the
+releases.</p>
 
 <div>
 <p><a href="http://nvie.com/files/Git-branching-model.pdf"><img
@@ -284,20 +289,103 @@ present in other models:</p>
     connect CI publishing jobs to it.</li>
 </ul>
 
-<h3>Usage in the Context of EPICS V4 Development</h3>
+<h2>Simplified Branching Model for EPICS V4 Development</h2>
 
-<p>Only a small subset of the described features and streams is mandatory and
-should be used at the beginning. After explaining the <a
-href="#installation">installation and setup</a> of the hg flow plugin for
-Mercurial, the <a href="#basic_procedures">Basic Procedures</a> section covers
-the initial workflow operations. These include the mandatory
-<code>develop</code> and <code>master</code> trunks, developing on feature
-branches, and releasing on release branches.</p>
+<p>The full Driessen model seems too complicated for use in V4 development.
+Only a small subset of the described features and streams is needed to support
+the current workflow. If streams and features are considered useful at a later
+time, they can be added as needed.</p>
+
+<p>EPICS development does not follow the idea of one strict release branch that
+all releases can be created from. Usually, any EPICS release has long-time
+support and receives bugfixes as well as bugfix releases, each of which may or
+may not undergo a releasing procedure with multiple tagged pre-release
+versions.</p>
+
+<p>To support this approach, the functionalities of release, master, hotfix,
+and support branches are combined in the release branches, which are not
+closed/merged, but left open to receive bugfixes and provide bugfix
+releases.</p>
+
+<table style="width: 100%">
+  <caption>Branch Types in the Simplified Model</caption>
+  <col />
+  <col />
+  <col />
+  <col />
+  <col />
+  <thead>
+    <tr>
+      <td>Name</td>
+      <td>Purpose</td>
+      <td>Properties</td>
+      <td>Created from</td>
+      <td>Merged into</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>develop trunk</em></td>
+      <td>main line "next release" development</td>
+      <td>minor features (~2 commits or less) are done directly on
+        <code>develop</code>, major features or developments for a future
+        version are done on a feature branch</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><em>feature branches</em></td>
+      <td>feature development</td>
+      <td>each major feature uses a dedicated feature branch for
+      development</td>
+      <td>develop trunk</td>
+      <td>develop trunk</td>
+    </tr>
+    <tr>
+      <td><em>release branches</em></td>
+      <td>release preparation, bugfixes, bugfix releases</td>
+      <td>contains all changes that are necessary for a specific release,
+        through the release process, bugfixes, bug fix releases, long term
+        support</td>
+      <td>develop trunk</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This maps nicely onto the current workflow:</p>
+<ul>
+  <li>Development is done on the <code>develop</code> trunk or on feature
+    branches (for larger developments), that are merged back into the
+    <code>develop</code> trunk.</li>
+  <li>When a new release (e.g. 4.4) is to be created, a release branch is
+    created from the <code>develop</code> trunk (release/4.4). The release
+    process (tagging, bug fixing, pre-releasing, release candidates) and the
+    final release (4.4.0) are done on this branch. This branch stays open, and
+    further bugfix releases (4.4.1, 4.4.2, ...) are done as needed.</li>
+  <li>Bug fixes can be merged back any time from release branches into
+    <code>develop</code> trunk as appropriate.</li>
+</ul>
+
+<p>Advantages:</p>
+<ul>
+  <li>The release process does not block the <code>develop</code> trunk at all,
+    so that development can immediately continue.</li>
+  <li>Release tagging is done on the release branches and does not clutter up
+    the <code>develop</code> trunk.</li>
+</ul>
+
+<h2>Usage Examples</h2>
+
+<p>After explaining the <a href="#installation">installation and setup</a> of
+the hg flow plugin for Mercurial, the <a href="#basic_procedures">Basic
+Procedures</a> section covers the initial workflow operations. These include
+the mandatory <code>develop</code> trunk, developing on feature branches, and
+releasing on <code>release</code> branches.</p>
 
 <p>The <a href="#advanced_features">Advanced Features</a> section describes
-operations on that can be introduced as needed: bug fixing on hotfix branches
-and long-term support of older releases on support branches. <em
-style="color:#ff0000">This section is not complete.</em></p>
+operations on that can be introduced as needed. <em style="color:#ff0000">This
+section is not complete.</em></p>
 
 <h2>Sample Script</h2>
 
@@ -307,6 +395,8 @@ operations using a small set of text files. </p>
 
 <h2>Installation and Configuration of hg flow<a name="installation"
 id="installation"></a></h2>
+
+<p>Use of the hg flow plugin is not mandatory.</p>
 
 <p>Install hg flow (&gt;= 0.9.6) according to the <a
 href="https://bitbucket.org/yujiewu/hgflow/wiki/Home.wiki#!installation"
@@ -346,7 +436,11 @@ version_prefix = ''</pre>
   </li>
 </ul>
 
-<h2>Basic Procedures<a name="basic_procedures"></a></h2>
+<h2>Basic Procedures</h2>
+
+<p>The tables containing the command examples always show the basic hg commands
+(without using the hg flow plugin) in the left column, while the hg flow
+commands are shown in the right column. </p>
 
 <h3>Be Safe</h3>
 
@@ -357,7 +451,7 @@ operations.</p>
 
 <p>Every hg flow command takes <code>--dry-run</code> as an option to print out
 what the command would do, without changing the repository. Check if it will do
-what you intend to.</p>
+what you intend to do.</p>
 
 <p>Use the built-in help function: <code>hg flow help</code> will get you
 started.</p>
@@ -372,7 +466,20 @@ needs a small change to the default setup, as we will use the
 
 <p>In the top level of your repository, run the <code>hg flow init</code>
 command:</p>
-<pre>&gt; <strong>hg flow init</strong>
+
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr>
+      <td><pre>&gt; <strong>hg init</strong></pre>
+      </td>
+      <td><pre>&gt; <strong>hg init</strong></pre>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><pre>&gt; <strong>hg flow init</strong>
 flow: Global configuration:
 flow:   autoshelve: on
 
@@ -385,86 +492,185 @@ Branch name for support stream: [support/]
 marked working directory as branch master
 (branches are permanent and global, did you want a bookmark?)
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved</pre>
-
-<p>See the <a href="#hg_init">low-level commands</a>.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <h3>Navigate Between Branches</h3>
 
 <p>You can switch to any branch or trunk using the <code>hg flow
 &lt;stream&gt;</code> command:</p>
-<pre>&gt; <strong>hg flow develop</strong>
+
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update default</strong>
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved</pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow develop</strong>
 flow: Update workspace to &lt;develop&gt; trunk.
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 flow: &lt;develop&gt; trunk: default
 flow: Open &lt;develop&gt; branches:
 flow:   default*</pre>
-<pre>&gt; <strong>hg flow feature addFile3</strong>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update feature/addFile3</strong>
+1 files updated, 0 files merged, 0 files removed, 0 files unresolved</pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow feature addFile3</strong>
 flow: Update workspace to &lt;feature&gt; 'addFile3'.
 1 files updated, 0 files merged, 0 files removed, 0 files unresolved</pre>
-
-<p>See the <a href="#hg_develop">low-level commands</a>.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <h3>Simple Development on Develop Trunk</h3>
 
 <p>Switch to the <code>develop</code> trunk:</p>
-<pre>&gt; <strong>hg flow develop</strong>
+
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update default</strong>
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved</pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow develop</strong>
 flow: Update workspace to &lt;develop&gt; trunk.
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 flow: &lt;develop&gt; trunk: default
 flow: Open &lt;develop&gt; branches:
 flow:   default*</pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <p>Edit and commit as usual.</p>
 
 <h3>Development on a Feature Branch</h3>
 
-<p><img alt="Feature Branch" src="fb.png" style="float: right" width="133"
-height="352" /></p>
-
 <p>Create a feature branch off <code>develop</code> trunk:</p>
-<pre>&gt; <strong>hg flow feature start addFile3</strong>
+
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update default</strong>
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+&gt; <strong>hg branch feature/addFile3</strong>
+marked working directory as branch feature/addFile3
+&gt; <strong>hg commit --message "Create branch 'feature/addFile3'."</strong></pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow feature start addFile3</strong>
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved
 marked working directory as branch feature/addFile3</pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-<p>See the <a href="#hg_feature_start">low-level commands</a>.</p>
+<p><img alt="Feature Branch" src="fb.png" align="right" hspace="20" width="133"
+height="352" /></p>
 
 <p>Edit and commit as usual.</p>
 
 <p>When feature development is complete, finish the branch (first you might
 have to navigate to the branch you want to finish):</p>
-<pre>&gt; <strong>hg flow feature addFile3</strong>
-flow: You are already in &lt;feature&gt; 'addFile3'.
-&gt; <strong>hg flow feature finish</strong>
+
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update feature/addFile3</strong>
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved</pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow feature addFile3</strong>
+flow: You are already in &lt;feature&gt; 'addFile3'.</pre>
+      </td>
+    </tr>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg commit --message "Close &lt;feature&gt; 'addFile3'." --close-branch</strong>
+&gt; <strong>hg update default</strong>
+0 files updated, 0 files merged, 1 files removed, 0 files unresolved
+&gt; <strong>hg merge feature/addFile3</strong>
 1 files updated, 0 files merged, 0 files removed, 0 files unresolved
+&gt; <strong>hg commit --message "Merge &lt;feature&gt; 'addFile3' to &lt;develop&gt; ('default')."</strong></pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow feature finish</strong>
 1 files updated, 0 files merged, 0 files removed, 0 files unresolved
-(branch merge, don't forget to commit)</pre>
+1 files updated, 0 files merged, 0 files removed, 0 files unresolved</pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <p>The feature branch is closed, and merged back into the <code>develop</code>
-trunk. See the <a href="#hg_feature_finish">low-level commands</a>.</p>
+trunk.</p>
 
 <h3>Release Process</h3>
 
 <p>Create the release branch off <code>develop</code> trunk:</p>
-<pre>&gt; <strong>hg flow release start 1.0.0</strong>
+
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update default</strong>
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-marked working directory as branch release/1.0.0</pre>
+&gt; <strong>hg branch release/1.0</strong>
+marked working directory as branch release/1.0
+&gt; <strong>hg commit --message "Create branch 'release/1.0'."</strong></pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow release start 1.0</strong>
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+marked working directory as branch release/1.0</pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-<p>See the <a href="#hg_release_start">low-level commands</a>.</p>
+<p>Change, commit and tag preparing for the release on the newly created
+release branch. This includes all changes necessary for pre-release and
+release-candidate stages, up to preparing the final release. At any point,
+changes and/or bugfixes on the release branch can be merged back into
+<code>develop</code>:</p>
 
-<p>Change, commit and tag preparing for the release. This includes all changes
-necessary for pre-release and release-candidate stages, up to preparing the
-final release. Then finish the release branch:</p>
-<pre>&gt; <strong>hg flow release finish</strong>
-1 files updated, 0 files merged, 2 files removed, 0 files unresolved
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update default</strong>
+3 files updated, 0 files merged, 3 files removed, 0 files unresolved
+&gt; <strong>hg merge release/1.0</strong>
 3 files updated, 0 files merged, 0 files removed, 0 files unresolved
-(branch merge, don't forget to commit)
-2 files updated, 0 files merged, 3 files removed, 0 files unresolved
-5 files updated, 0 files merged, 0 files removed, 0 files unresolved
-(branch merge, don't forget to commit)</pre>
+&gt; <strong>hg commit --message "Promote &lt;release&gt; '1.0' (b009fb5075d1) to 'default'."</strong>
+&gt; <strong>hg update release/1.0</strong>
+2 files updated, 0 files merged, 1 files removed, 0 files unresolved</pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow release promote default</strong>
+3 files updated, 0 files merged, 3 files removed, 0 files unresolved
+3 files updated, 0 files merged, 0 files removed, 0 files unresolved
+2 files updated, 0 files merged, 1 files removed, 0 files unresolved </pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-<p>The release branch is closed, and merged back into <code>develop</code>
-trunk as well as the <code>master</code> trunk (creating the release), where it
-is tagged. See the <a href="#hg_release_finish">low-level commands</a>.</p>
+<p>The release branch is never closed, and works as a bugfix and support branch
+for this release. I.e., in this example it will carry the releases 1.0.0,
+1.0.1, 1.0.2, ...</p>
 
 <h2>Advanced Features</h2>
 
@@ -480,55 +686,22 @@ automatically shelve your uncommitted changes when you leave a branch, and
 unshelve them when you return. It tracks your uncommitted changes for each open
 branch.</p>
 
+<h3>Start Branch from Dirty Workspace</h3>
+
+<p>The <code>--dirty</code> option allows to carry uncommited changes in the
+workspace onto a newly created branch.</p>
+
+<p>Assume you have started to work on a feature on develop trunk, and at some
+point you realize you rather want to develop it in a feature branch. Using this
+option you can create a feature branch and move your changes onto the new
+branch in one step:</p>
+
 <p><span style="color:#ff0000"><span style="font-size: 14pt">This section is
 not complete.</span></span></p>
-
-<h2>Low-Level hg Commands</h2>
-
-<p>This chapter shows the 'mechanical' low-level commands that hg flow executes
-to implement the high-level commands mentioned in this document. Someone not
-using the hg flow plugin can seamlessly achieve the same results using these
-'simple' versions.</p>
-
-<h3>hg flow init<a name="hg_init"></a></h3>
-<pre>hg add .hgflow 
-hg commit --message "flow initialization: Added configuration file." .hgflow 
-hg branch master 
-hg commit --message "flow initialization: Created &lt;master&gt; trunk: master."</pre>
-
-<h3>hg flow develop<a name="hg_develop"></a></h3>
-<pre>hg update default</pre>
-
-<h3>hg flow feature<a name="hg_feature"></a></h3>
-<pre>hg update feature/addFile3</pre>
-
-<h3>hg flow feature start<a name="hg_feature_start"></a></h3>
-<pre>hg update default 
-hg branch feature/addFile3 
-hg commit --message "flow: Created branch 'feature/addFile3'."</pre>
-
-<h3>hg flow feature finish<a name="hg_feature_finish"></a></h3>
-<pre>hg commit --message "flow: Closed &lt;feature&gt; 'addFile3'." --close-branch
-hg update default 
-hg merge feature/addFile3 
-hg commit --message "flow: Merged &lt;feature&gt; 'addFile3' to &lt;develop&gt; ('default')."</pre>
-
-<h3>hg flow release start<a name="hg_release_start"></a></h3>
-<pre>hg update default 
-hg branch release/1.0.0 
-hg commit --message "flow: Created branch 'release/1.0.0'."</pre>
-
-<h3>hg flow release finish<a name="hg_release_finish"></a></h3>
-<pre>hg commit --message "flow: Closed &lt;release&gt; '1.0.0'." --close-branch
-hg update default 
-hg merge release/1.0.0 
-hg commit --message "flow: Merged &lt;release&gt; '1.0.0' to &lt;develop&gt; ('default')."
-hg update master 
-hg merge release/1.0.0 
-hg commit --message "flow: Merged &lt;release&gt; '1.0.0' to &lt;master&gt; ('master')."
-hg tag 1.0.0</pre>
-
-<p></p>
-</div>
+<hr />
+<address>
+  Ralph Lange, Helmholtz-Zentrum Berlin für Materialien und Energie / BESSY II
+</address>
+<!--$date=-->2013-11-04<!--$--></div>
 </body>
 </html>

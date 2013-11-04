@@ -31,14 +31,18 @@ grep "^[[:space:]]*flow[[:space:]]*=" $HGRC || die "hg flow extension must be in
 # Create empty repository and add a few "legacy" commits
 
 rm -fr $REPO/* $REPO/.hg*
-#mkdir $REPO
+mkdir -p $REPO
 cd $REPO
+
+hg init
+
+# Workaround for bug in programmatically called hg
+touch .hg/bookmarks
 
 cat > file1 << EOF
 This is a file called file1.
 EOF
 
-hg init
 hg add file1
 hg commit -m "Initial commit"
 
@@ -89,7 +93,7 @@ EOF
 hg commit -m "Simple development on develop trunk"
 
 ################################################################################
-# Development on a feature branch
+# Start development on a feature branch   1
 
 hg flow feature start addFile3
 
@@ -107,6 +111,21 @@ EOF
 
 hg commit -m "Updating file3 on the feature branch"
 
+################################################################################
+# Start development on a feature branch   2
+
+hg flow feature start renameFile2
+
+hg mv file2 file2b
+
+cat >> file2b << EOF
+This was renamed to 'file2b' in a feature branch called 'renameFile2'
+EOF
+hg commit -m "Renamed file2 -> file2b on a feature branch"
+
+################################################################################
+# Merging feature branch   1
+
 hg flow feature addFile3
 hg flow feature finish
 
@@ -115,7 +134,7 @@ hg flow feature finish
 
 # Start the release branch
 
-hg flow release start 1.0.0
+hg flow release start 1.0
 
 # Prepare the -pre1 release
 
@@ -128,18 +147,47 @@ hg commit -m "Add RELEASE file"
 
 hg tag 1.0.0-pre1
 
+
+################################################################################
+# During the release process, development can continue
+
+hg flow develop
+
+cat >> file3 << EOF
+Added with another development commit directly on develop trunk.
+EOF
+
+hg commit -m "Another development on develop trunk (add to file3)"
+
+################################################################################
+# Merging feature branch   2
+
+hg flow feature renameFile2
+hg flow feature finish
+
+# End of development intermezzo
+################################################################################
+
+
+hg flow release/1.0
+
 # Fix things and prepare the -rc1 release
 
-cat >> file2 << EOF
+cat >> file1 << EOF
 This was fixed for the 1.0.0-rc1 release
 EOF
 cat > RELEASE << EOF
 Release: 1.0.0-rc1
 EOF
 
-hg commit -m "Fix missing thing in file2"
+hg commit -m "Fix missing thing in file1"
 
 hg tag 1.0.0-rc1
+
+################################################################################
+# Merge bugfixes from release back to develop trunk
+
+hg flow release promote default
 
 # Prepare final release
 
@@ -151,6 +199,81 @@ hg commit -m "Prepare for release 1.0.0"
 
 # Release
 
-hg flow release finish
+hg tag 1.0.0
 
+################################################################################
+# Merge bugfixes from release back to develop trunk
+
+hg flow develop
+hg merge release/1.0
+
+hg commit -m "Merged fixes from release/1.0 (1.0.0) to <develop>"
+
+################################################################################
+# Bugfix/support: fix an urgent bug in the release
+
+hg flow release/1.0
+
+# Fix the bug
+
+sed -i -e 's/frog/dog/' file3
+hg commit -m "Fix canine issue in file3"
+
+cat > RELEASE << EOF
+Release: 1.0.1-rc1
+EOF
+
+hg commit -m "Prepare 1.0.1-rc1"
+
+hg tag 1.0.1-rc1
+
+# Prepare bugfix release
+
+cat > RELEASE << EOF
+Release: 1.0.1
+EOF
+
+hg commit -m "Prepare bugfix release 1.0.1"
+
+# Release
+
+hg tag 1.0.1
+
+################################################################################
+# Again: merge bugfixes from release back to develop trunk
+
+hg flow develop
+hg merge release/1.0
+
+hg commit -m "Merged fixes from release/1.0 (1.0.1) to <develop>"
+
+
+################################################################################
+# Start branch from dirty workspace using --dirty
+
+hg flow develop
+
+cat >> file1 << EOF
+I started adding a new feature called flumm. Should be developed in a feature branch.
+EOF
+
+hg flow feature start flumm --dirty
+
+cat >> file1 << EOF
+Continuing feature flumm.
+EOF
+
+hg commit -m "Applied the flumm changes to feature branch 'flumm'"
+
+hg flow feature finish
+
+
+
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
 ################################################################################
