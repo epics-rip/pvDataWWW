@@ -1,109 +1,116 @@
 
 STATUS AND ACTIVITIES
-Last update 10-Mar-2013. 
+Last update 9-Nov-2013, Greg White.
+Previous update 13-Oct-2013. 
 
-HOT ACTIVITIES
-==============
-* Efficient handling of big data, esp in IOC. 
 
-    + Looking at redesign of the pvData CPP API for arrays (MD, MK, MS). 
-      27/2/13: Work for use of shared_ptr will be separated from work to support
-      discontinguous arrays. DH will review API using shared_ptr for symmetry with
-      Java, then will implement (with MK's blessing!) [27-2-13]
-    + Modification of the funcionality of type conversion (MD, DH). This is
-      largely split into actions for copying without type conversion (see above),
-      copying/extraction with type conversion. [3]
-    + Modifications to IOC for data pipelining (MD, AJ)
-      27/2/13: No concrete design yet. Plan to develop from pvaSrv and test image
-      server experiences.
-    + Creating a prototype of “batched field access” (BFA) API for high performance
-      control of record locksets [27-2-13]. Plan to use in pvaSrv. MD, RL.  
 
-* pvaSrv (the pvaccess server for an "EPICS V3 IOC") hence the primary V3-V4 interop mechanism. 
-  RL now working on connection to V3.14. 
-  Interface to one pv will be done first (called dbPv, for 4.3 release), later will
-  add interface to n>1 pvs (called dbGroup) and that will target IOC code v3.15.
-  (RES and AIs in http://epicsv4.titanpad.com/ep/pad/view/41/latest)
+ACTIVITIES AND THEIR JOBS
+=========================
+Working list of present and near future activities of EPICS V4
 
-* Definition of the standard image type "NTImage".
-  DH, NM
-  Ensure that in the short term, eget can decode and display
+* Efficient handling of big data
+  + Modification of the funcionality of type conversion (MD, DH). This is
+    largely split into actions for copying without type conversion (see above),
+    copying/extraction with type conversion. [3]
+  + Modifications to IOC for data pipelining (MD, AJ)
+    27/2/13: No concrete design yet. Plan to develop from pvaSrv and test image
+    server experiences.
+  + Creating a prototype of “batched field access” (BFA) API for high performance
+    control of record locksets [27-2-13]. Plan to use in pvaSrv. MD, RL.  
+
+* APIs and Clients
+  + Start "EV4 UI Use Cases and APIs" doc, to list user interface use cases
+    - Find Editor
+  + pvRequest
+      Define requirements and syntax
+      Development of support and integration
+  + Decide Future of EasyPVA - Marty and Matej were going to discuss this. Discuss on 29th?
+  + Python pvAccess implementation
+  + Normative Types 
+    - re-write for building up from atomic, to array to structure types
+    - add units and error much more directly
+    - Get working draft of areaDetector types
+    - N-types Introspection and Data interface helper API (Many in WG seeme to want it, 
+      not conviced myself, esp if the job "Structure construction helper API" (below) is done.
+  + Review of requirements for the API of monitors.
+    MK. Doc started to review present API [27-2-13][2], but primary audience (RL) wants
+    more detail. RL reviewing and we will take it up again in meeting soon. Required
+    for pvaSrv.
+  + Complete pvManager and eget integration with Ntypes MS
+    [20-Feb-13 eget can now disp NTImages! ]
+    DH to get for MS what he needs to encode a BGR image (fourcc code and the image
+    depth & color mode)
+  + Need to verify easy asynchronous callback support in Matlab - a key shortcoming of lca.
+  + [PVData] Structure construction helper API (in progress 9-Nov-13).
+ 
+* Data Processing Support
+  + Decide in definition of the standard image types; implement in Normative Types doc.
+    DH, NM
+   Ensure that in the short term, eget can decode and display
    images produced by the test image server of areaDetctor sourced images. Decide
    whether, in the longer term, we intend to standardize a one structure definition
    for images ("NTImage"), more than one (that is, one specifically for
    areaDetector, and another more generic one), or even, one wrapper
    of an arbitrary number of encodings (like TIFF vs JPEG).
-    
+
+* Multicast
+  - Once done, use it for a logging architecture (ie replace cmlog etc, except GUI part).
+
+* Windows Port
+
+* vxWorks Port, Jenkins, and establishing which versions (<6, or 6.x, or >= 6.6 [for gcc
+  4.1.2] only) we will support. 
+  DZ,MS,AJ. 
+  27/2/13: vxWorks port succeeds if micro-benchmarking is not included. MS
+  working with DZ to fix.
+
+* pvaSrv (the pvaccess server for an "EPICS V3 IOC") hence the primary V3-V4 interop mechanism. 
+  + 1 V4 channel : 1 IOC PV (called dbPv) ( recently completed right)?
+  + 1 V4 channel : N IOC PV (called dbGroup) ie support for groups.
+  + Decision on how to management compatibility of V4 releases with core releases (most, 
+    importantly will 4.4.0 require 3.15)
+     (RES and AIs in http://epicsv4.titanpad.com/ep/pad/view/41/latest)
+
+* Development Environment and Infrastructure
+  + hg flow deployment and adoption
+  + Version numbering extension (to 4) to disambiguate ABI from protocol
+  + Automatic release package building in Jenkins
+  + Update release procedure document to include checklist approcah, not just diagram. Inc C++. 
+  + License agreement. Add proper headers referring to license.
+
+* IOC
+  + Correct the naming of modules w.r.t "PV" and "channel". My understanding (such taht it is) is that
+    in V3 many things are named "channel" but they're actually about PVs, and the opposite is also
+    true. RL
+
+* Web Site and Global Documentation
+  + Update website for 4.3.0 (remove old references and broken links from Development page)
+  + Complete FY 2014 charter
+  + Track progress on jobs and activities by Agile Dashboard (put on WG page), 
+  + Assembling formal list of architectures and compilers tried and tested with EPICS V4 
+    MS, AJ, GW. 
+    [27-2-13] 20/2/13 First pass table for SL and vxWorks completed.  
+  + Javadoc and Doxygen incomplete. Needs much better completeness. Needs to conform to
+    much stricter code documentation standards w.r.t. careful use of tense and
+    specificity (MK, MS, GW, DH to do Doxygen for CPP modules?)
+
 * Performance measurement benchmarking testbench creation; benchmarking EPICS V4
   beta 2.
   MS
   Status: Presented at PSI meeting, but output wasn't right (RMS where meant mean)
   and only indicated mean times, not further structure like how long 1st roundtrip took. 
- 
-* Assembling formal list of architectures and compilers tried and tested with EPICS V4 
-  MS, AJ, GW. 
-  [27-2-13] 20/2/13 First pass table for SL and vxWorks completed. 
 
-* vxWorks port, Jenkins, and establishing which versions (<6, or 6.x, or >= 6.6 [for gcc
-  4.1.2] only) we will support. 
-  DZ,MS,AJ. 
-  27/2/13: vxWorks port succeeds if micro-benchmarking is not included. MS
-  working with DZ to fix.
- 
-* Installation and deployment of EPICS V4 at PSI, and use in production PSI modelling
-  GW/TK/DZ. 
-  27/2/13: E 4.2.0-Beta and 4.2.0-snapshot installed at PSI. services and 
-  the dev & production environment of those in active development. Health excellent.
+KEY DEPLOYMENTS
+===============
+  + Image Processing pipeline, Diamond, DH
+  + AIDA 2 services, SLAC (model, relational database, archive, names). GW
 
-* 2013 Charter 
-  GW/BD. 
-  27/2/13: New thrust for 2013 being evolved to the IOC. pvIOCCPP work being 
-  furloughed. Instead work on getting structured data in high perf pipeline from
-  exiting IOC being developed. New Charter draft expected March 2013.
+   
+OTHER ODDS AND ENDS
+===================
 
-* pvManager and eget integration with Ntypes
-  MS
-  20-Feb-13 eget can now disp NTImages! 
-  DH to get for MS what he needs to encode a BGR image (fourcc code and the image
-  depth & color mode)
-
-* Review of requirements for the API of monitors.
-  MK. Doc started to review present API [27-2-13][2], but primary audience (RL) wants
-  more detail. RL reviewing and we will take it up again in meeting soon. Required
-  for pvaSrv.
-
-
-* Image Processing pipeline.
-  DH.
-  10/3/13: This has started at a low level with a testImageServer (DH) from 
-  which we can work and work out ideas, but its "theoretical" design basis 
-  should be worked out more strongly. Probably should invite experts.
-
-Questions:
-* What's status of "pv" get/put clients' interface to ca? 
-* Has ChannelRPC been be made "asynchronous", or "multithreaded"? 
-
-QA Items
-========
-* X Change names of environment variables to reflect use of "PVA" rather than CA.
-  Eg EPICS4_CA_ADDR_LIST -> EPICS_PVA_...
-  COMPLETED: 16/05/13.
-* Fix pvAccess server outut now giving wrong version: VERSION : pvAccess Server v1.2-SNAPSHOT  
-* pvget, eget etc have inadequate help. pvget -h as it stands not even a line saying
-  what it does! 
-  
-
-Forthcoming or Required activities
-==================================
-In the hopper, or looking for lead.
-
-* Microsoft Visual C++ compiler on Windows port. Lead not known. Est start not known.
-
-* easyPVA completion (c++ and Java) and move to pvaccess (out of alphaCPP).
-  cpp & java not equally implemented (MS)
-  Estimate: java 1 wk, cpp 3 wks. MK thinks more.
-
-* Adding a "reflection" API to pvAccess; that is, an API for giving data about PVs.
+ * Adding a "reflection" API to pvAccess; that is, an API for giving data about PVs.
   Simple example: what is the list of PVs hosted by a pvaccess
   server. More particularly, should be able to ask for info about a PV:
   > eget quad03 -info
@@ -118,11 +125,6 @@ In the hopper, or looking for lead.
   This may be put together with work on pvRequest, and may be together with
   reflection API work.
 
-* Fix homepage and pubic pages with respect to references to pvService and pvIOCCPP.
- 
-OTHER ODDS AND ENDS
-===================
- 
 * We have the ChannelFinder and a pvaccess RPC based interface, but no real nominal
   architecture for its use. I guess that should wait until we have a WG complimentary
   to the V4 WG, but for doing apps.
@@ -130,23 +132,11 @@ OTHER ODDS AND ENDS
 * gather - finished?  What is the state of the
   gather example? No bpm service. (MK)
 
-x v3channel - superseded by pvaSrv. 
-
 * v3-v4 interop user guide. Not started. We have just a kinda description from Marty
   about the difference between processing in the two of them. Nothing concrete you
   can give an engineer that says "this is a guide to the interoperation of EPICS V3
   and V4". Having trouble convincing WG of the necessity.
-
-x vxWorks port of pvIOC - not finished. Superseded by plan to create a IOC hosted 
-  pvIOC. 
-
-* Normative Types. Not finished. Waiting for comments from Michael prior to 1PWD (MD,
-  GW). Needs additions; esp MultiChannelArray, NTarchivedata. Possibly also an Any. 
  
-* Javadoc and Doxygen incomplete. Needs much better completeness. Needs to conform to
-  much stricter code documentation standards w.r.t. careful use of tense and
-  specificity (MK, MS, GW, DH to do Doxygen for CPP modules?)
-
 * Code comments in pv core modules (MK, MS)
 
 * Remove ALL warnings from all compiles of pv core code, java and c++. We have 100s
@@ -154,38 +144,14 @@ x vxWorks port of pvIOC - not finished. Superseded by plan to create a IOC hoste
 
 * Documentation. 
     
-    a. pvData and pvIOC documents need significant editing to improve readability. Eg,
+    pvData and pvIOC documents need significant editing to improve readability. Eg,
     define and provide references for "top level structure", "introspection
     interface", "channel", "record" etc. Must much better distinguish references to
     V3 items and disambiguate such terms, e.g. use of the term "channel access"
     sometimes to refer to the generic control protocol, and sometimes to refer to
     "Jeff Hill's" Channel Access. Make use of uppercase, quotes, italics
     consistently. (MK).
-
-    b. Need a table on the homepage showing the completion status of each thing we're
-    doing. (GW)
-
-* eget/pvget. 
-
-    a. Add demo of acquisition of unsigned (byte for simplicity) from V3
-    channel. (MS)
-    b. Add full support of NTURI. (MS) 
-       i.    Basic regular broadcast acquisition, eg eget pva:///quad45:bdes
-       ii.   Registry based name acquisition, eg eget pva://psihost.psi.ch/quad45:bdes
-       iii.  URI support for non-RPC and RPC; ie, use of query part of NTURI. Eg
-             eget pva:///testNTMatrix?columns=3&rows=5 to do equivalent of 
-             eget -a columns=3 -a rows=5 -s testNTMatrix
-    c. Add mechanism at pvAccess API client side for a client user to choose the
-       so-called "provider" of the data, presently planned to be either pvaccess, or
-       ca. (MS) 
-
-Recently completed
-==================
-* ChannelRPC should be made "asynchronous", or "multithreaded" (what CORBA call
-  threaded). That is, more than one client may access at a time. 
-  Notified complete 13-Mar-2012. See RPCServer() constructor that takes threads 
-  and queues argument: http://epics-pvdata.sourceforge.net/docbuild/pvAccessJava/\
-  2.0-BETA/documentation/html/index.html?org/epics/pvaccess/server/rpc/RPCServer.html
+ 
 
 
 PERIPHERY ACTIVITIES 
@@ -193,16 +159,6 @@ PERIPHERY ACTIVITIES
 The following are known activities we're tracking but are not in the scope of EPICS
 V4.
 
-*  Model service. Not finished. Needs connection to SwissFEL test injector, track extant
-   machine, GUI. GW, Bolko Beutner PSI.
- 
-*  Unit Conversion - GS, NM, Paul Chu 
-
-*  Orbit Server. Not started, probably should wait for a new WG that can define
-   a timing system on top of gather and pvaSrv. Hopefully TK/PSI and SLAC.
-
-*  Test Image service. Intended to help provide test data for development and tuning
-   the V4 IOC (2012-13 charter). Started Nov/2012. DH
 
 *  caQtDM. caQtDM is a "synoptic display manager" being used for generating the
    controls UI "screens" for PSI SLS and SwissFEL. Anton Mezger, [1]
@@ -218,7 +174,6 @@ V4.
 *  "ArchiveAppliance" expand for V4 types. Work demoed by Murali. 
 
 
-
 OUT OF SCOPE BUT WE'D LOVE IF SOMEONE DID
 =========================================
 1. Write a pva scheme plugin for a web browser, so one could do pva scheme
@@ -229,11 +184,28 @@ OUT OF SCOPE BUT WE'D LOVE IF SOMEONE DID
    to an HDF5 filesystem without intermediate layers. Maybe NM is doing this?
 
 
+QUESTIONS
+=========
+* Has ChannelRPC been be made "asynchronous", or "multithreaded"? 
+
+MANAGEMENT PRINCIPLES
+======================
+
+Be all on the same page about the role of the Charter. Bob and I agreed that
+we will still use a charter but that we can make changes every 3 months or so. 
+How will we make changes to tracking activities. Roughly I want to use the task board
+idea [4] from scrum (but without actually doing fixed period scrums). So, we would
+keep a table of the tasks presently being undertaken for each activity. We can discuss
+whether to use such a task board, and how formal to be about them (just notes in a 
+table, or actually start a new SF ticket type called "Tasks". 
+
+
 References
 ==========
 [1] caQtDM, http://epics.web.psi.ch/software/caqtdm/
 [2] pvRequest, http://epics-pvdata.sourceforge.net/informative/pvRequest.html
 [3] type conversion catalog, http://tinyurl.com/c92xu4u
+[4] http://www.mountaingoatsoftware.com/agile/scrum/task-boards
 
 Meeting Refs
 ============
