@@ -1,18 +1,27 @@
 
-STATUS AND ACTIVITIES
-Last update 9-Nov-2013, Greg White.
-Previous update 13-Oct-2013. 
+      STATUS AND ACTIVITIES OF EPICS V4 WORKING GROUP
 
+          Last update 11-Nov-2013, Greg White.
+          Previous major update 13-Oct-2013. 
 
+KEY
+===
+[date]: - meeting date reference.
+[n]: Bibref
+(XX): Initials of working group participant
+*: Activity area
+ +: Job
+X: recently completed
+->: followup remark
 
 ACTIVITIES AND THEIR JOBS
 =========================
-Working list of present and near future activities of EPICS V4
+The following is a working list of present and near future activities of EPICS V4.
 
 * Efficient handling of big data
-  + Modification of the funcionality of type conversion (MD, DH). This is
-    largely split into actions for copying without type conversion (see above),
-    copying/extraction with type conversion. [3]
+    - Modification of the funcionality of type conversion (MD, DH). This is
+      largely split into actions for copying without type conversion (see above),
+      copying/extraction with type conversion. [3]
   + Modifications to IOC for data pipelining (MD, AJ)
     27/2/13: No concrete design yet. Plan to develop from pvaSrv and test image
     server experiences.
@@ -20,29 +29,34 @@ Working list of present and near future activities of EPICS V4
     control of record locksets [27-2-13]. Plan to use in pvaSrv. MD, RL.  
 
 * APIs and Clients
-  + Start "EV4 UI Use Cases and APIs" doc, to list user interface use cases
-    - Find Editor
+  + Start "EV4 UI Use Cases and APIs" doc, to list user interface use cases (unassigned)
+    - Find Editor 
   + pvRequest
-      Define requirements and syntax
-      Development of support and integration
-  + Decide Future of EasyPVA - Marty and Matej were going to discuss this. Discuss on 29th?
-  + Python pvAccess implementation
+      Define requirements and syntax 
+      Development of support and integration 
+  + easyPVA
+      - Decide Future of EasyPVA - Marty and Matej were going to discuss this. 
+      - complete full spec implementation of easyPVA (unassigned, not started)
+  + Python pvAccess implementation (unassigned)
   + Normative Types 
-    - re-write for building up from atomic, to array to structure types
-    - add units and error much more directly
-    - Get working draft of areaDetector types
+    - Re-write for building up from atomic, to array to structure types (GW)
+    - Add units and error much more directly (GW)
+    - Get working draft of areaDetector types (BD)
     - N-types Introspection and Data interface helper API (Many in WG seeme to want it, 
       not conviced myself, esp if the job "Structure construction helper API" (below) is done.
-  + Review of requirements for the API of monitors.
-    MK. Doc started to review present API [27-2-13][2], but primary audience (RL) wants
+     (unassigned) 
+    - Add union support to Normative Types (MS, GW) 
+    - When above done, make public woking draft, send to tech talk and other stakeholders.
+  + Review of requirements for the API of monitors. (RL)
+    Doc started to review present API [27-2-13][2](ML), but primary audience (RL) wants
     more detail. RL reviewing and we will take it up again in meeting soon. Required
     for pvaSrv.
-  + Complete pvManager and eget integration with Ntypes MS
+  + Complete pvManager and eget integration with Ntypes (MS)
     [20-Feb-13 eget can now disp NTImages! ]
     DH to get for MS what he needs to encode a BGR image (fourcc code and the image
     depth & color mode)
-  + Need to verify easy asynchronous callback support in Matlab - a key shortcoming of lca.
-  + [PVData] Structure construction helper API (in progress 9-Nov-13).
+  + Need to verify easy asynchronous callback support in Matlab - a key shortcoming of lca (GW).
+  + [PVData] Structure construction helper API (in progress 9-Nov-13) (MS).
  
 * Data Processing Support
   + Decide in definition of the standard image types; implement in Normative Types doc.
@@ -55,9 +69,12 @@ Working list of present and near future activities of EPICS V4
    of an arbitrary number of encodings (like TIFF vs JPEG).
 
 * Multicast
-  - Once done, use it for a logging architecture (ie replace cmlog etc, except GUI part).
+  + Implement multicast
+  + Once done, use it for a logging architecture (ie replace cmlog etc, except GUI part).
 
-* Windows Port
+* Windows Support
+  + MS to synchronize use of decorations in V4 code
+  + AJ will accept/reject changes in Section 2; those that are necessary for 3.14 
 
 * vxWorks Port, Jenkins, and establishing which versions (<6, or 6.x, or >= 6.6 [for gcc
   4.1.2] only) we will support. 
@@ -66,7 +83,7 @@ Working list of present and near future activities of EPICS V4
   working with DZ to fix.
 
 * pvaSrv (the pvaccess server for an "EPICS V3 IOC") hence the primary V3-V4 interop mechanism. 
-  + 1 V4 channel : 1 IOC PV (called dbPv) ( recently completed right)?
+  X + 1 V4 channel : 1 IOC PV (called dbPv) ( recently completed right)?
   + 1 V4 channel : N IOC PV (called dbGroup) ie support for groups.
   + Decision on how to management compatibility of V4 releases with core releases (most, 
     importantly will 4.4.0 require 3.15)
@@ -95,22 +112,30 @@ Working list of present and near future activities of EPICS V4
     much stricter code documentation standards w.r.t. careful use of tense and
     specificity (MK, MS, GW, DH to do Doxygen for CPP modules?)
 
-* Performance measurement benchmarking testbench creation; benchmarking EPICS V4
-  beta 2.
-  MS
-  Status: Presented at PSI meeting, but output wasn't right (RMS where meant mean)
-  and only indicated mean times, not further structure like how long 1st roundtrip took. 
+FUTURE ACTIVITIES AND JOBS
+==========================
+The following activities have not yet been initiated, but will likely come soon.
 
+* Gateway for pvAccess.
+
+
+
+KEY OUTSTANDING DECISIONS
+=========================
+X * How to support 3.14 and 3.15 base. target one or the other or both.
+  -> Resolution [29-10-13], two branches, one for each base version. Only pvaSrv dbGroup shall 
+   require 3.15 
+
+ 
 KEY DEPLOYMENTS
 ===============
   + Image Processing pipeline, Diamond, DH
   + AIDA 2 services, SLAC (model, relational database, archive, names). GW
-
-   
+  
 OTHER ODDS AND ENDS
 ===================
 
- * Adding a "reflection" API to pvAccess; that is, an API for giving data about PVs.
+ * Desirable to add a "reflection" API to pvAccess; that is, an API for giving data about PVs.
   Simple example: what is the list of PVs hosted by a pvaccess
   server. More particularly, should be able to ask for info about a PV:
   > eget quad03 -info
@@ -151,8 +176,12 @@ OTHER ODDS AND ENDS
     sometimes to refer to the generic control protocol, and sometimes to refer to
     "Jeff Hill's" Channel Access. Make use of uppercase, quotes, italics
     consistently. (MK).
- 
 
+* Performance measurement benchmarking testbench creation; benchmarking EPICS V4
+  beta 2.
+  MS Presented at PSI meeting, but output wasn't right (RMS where meant mean)
+  and only indicated mean times, not further structure like how long 1st roundtrip took. 
+  Should be tidied up, summarised and published.
 
 PERIPHERY ACTIVITIES 
 ====================
@@ -210,3 +239,6 @@ References
 Meeting Refs
 ============
 [27-2-13] https://docs.google.com/document/d/1TVlj59sHAoWRcqRFzdqYiitqMC-OvaSys6NvLxKVoMc/pub
+[29-10-13] https://docs.google.com/document/d/1mxPi-_bJNkZDy7b9xfwSLhwT8gJc-SY67Sgkd1NL3Dc/pub
+
+
