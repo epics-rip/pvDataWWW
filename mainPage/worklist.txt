@@ -35,9 +35,11 @@ The following is a working list of present and near future activities of EPICS V
       Define requirements and syntax 
       Development of support and integration 
   + easyPVA
-      - Decide Future of EasyPVA - Marty and Matej were going to discuss this. 
-      - complete full spec implementation of easyPVA (unassigned, not started)
-  + Python pvAccess implementation (unassigned)
+    - Decide Future of EasyPVA - Marty and Matej were going to discuss this. 
+    - complete full spec implementation of easyPVA (unassigned, not started)
+  + Python support
+    - python wrapper for pvAccess using Boost::Python (SV)
+    - pvAccess implementation (unassigned)
   + Normative Types 
     - Re-write for building up from atomic, to array to structure types (GW)
     - Add units and error much more directly (GW)
