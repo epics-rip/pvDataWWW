@@ -1,7 +1,7 @@
 
       STATUS AND ACTIVITIES OF EPICS V4 WORKING GROUP
 
-          Last update 11-Nov-2013, Greg White.
+          Last update 12-Nov-2013, Greg White.
           Previous major update 13-Oct-2013. 
 
 KEY
@@ -13,15 +13,23 @@ KEY
  +: Job
 X: recently completed
 ->: followup remark
+Status: - the project lifecycle stage of the project when its status was last reviewed. 
+        Try to summarise with:
+        [{waiting, next, hot, active, inactive}] at 
+        [incomplete] {concept, req, design, review, coding, 
+               prototype, usable version, code complete,  
+               unit test, acceptance, deployed, in use, }. 
+
 
 ACTIVITIES AND THEIR JOBS
 =========================
 The following is a working list of present and near future activities of EPICS V4.
 
 * Efficient handling of big data
-    - Modification of the funcionality of type conversion (MD, DH). This is
-      largely split into actions for copying without type conversion (see above),
-      copying/extraction with type conversion. [3]
+--------------------------------
+  + Modification of the funcionality of type conversion (MD, DH). This is
+    largely split into actions for copying without type conversion (see above), 
+    copying/extraction with type conversion. [3]
   + Modifications to IOC for data pipelining (MD, AJ)
     27/2/13: No concrete design yet. Plan to develop from pvaSrv and test image
     server experiences.
@@ -29,36 +37,62 @@ The following is a working list of present and near future activities of EPICS V
     control of record locksets [27-2-13]. Plan to use in pvaSrv. MD, RL.  
 
 * APIs and Clients
-  + Start "EV4 UI Use Cases and APIs" doc, to list user interface use cases (unassigned)
+------------------
+  Last Reviewed in meeting [12-11-13] 
+
+  + "EV4 UI Use Cases and APIs" doc, to list user interface use cases (unassigned)
     - Find Editor 
+    Status: active at concept (12-Nov-2013), GW, MK, AJ
+
   + pvRequest
-      Define requirements and syntax 
-      Development of support and integration 
+    - Define requirements and syntax 
+    - Development of support and integration
+    - Review of requirements for the API of monitors. (RL)
+      Doc started to review present API [27-2-13][2](ML), but primary audience (RL) wants
+      more detail. RL reviewing and we will take it up again in meeting soon. Required
+      for pvaSrv.   
+    Status: active at review (12-Nov-2013), MK, AJ, GW, RL (esp re monitor algs)
+
   + easyPVA
-    - Decide Future of EasyPVA - Marty and Matej were going to discuss this. 
-    - complete full spec implementation of easyPVA (unassigned, not started)
+    - complete full spec implementation of easyPVA
+    Status: Java: inactive at usable version (12-Nov-2013) MS
+            C++: inactive at concept  (12-Nov-2013) MS
+
   + Python support
-    - python wrapper for pvAccess using Boost::Python (SV)
-    - pvAccess implementation (unassigned)
+    - python wrapper for pvAccess using Boost::Python SV
+      Status: active at prototype (12-Nov-2013)
+    - pvAccess implementation
+      Status: inactive at coding (James had only deserialization) (12-Nov-2013)
+
   + Normative Types 
     - Re-write for building up from atomic, to array to structure types (GW)
+      Status: waiting at concept (12-Nov-2013)
     - Add units and error much more directly (GW)
+      Status: waiting at concept (12-Nov-2013)
     - Get working draft of areaDetector types (BD)
-    - N-types Introspection and Data interface helper API (Many in WG seeme to want it, 
-      not conviced myself, esp if the job "Structure construction helper API" (below) is done.
-     (unassigned) 
-    - Add union support to Normative Types (MS, GW) 
-    - When above done, make public woking draft, send to tech talk and other stakeholders.
-  + Review of requirements for the API of monitors. (RL)
-    Doc started to review present API [27-2-13][2](ML), but primary audience (RL) wants
-    more detail. RL reviewing and we will take it up again in meeting soon. Required
-    for pvaSrv.
+      Status: active at req 
+    - N-types Introspection and Data interface helper API
+      Status: waiting at concept
+    - Republish 2nd PWD
+
+  + Add union support to pvAccess (MS, DH) 
+    Status: active and acceptance testing (at Diamond) (12-Nov-2013)
+ 
   + Complete pvManager and eget integration with Ntypes (MS)
     [20-Feb-13 eget can now disp NTImages! ]
-    DH to get for MS what he needs to encode a BGR image (fourcc code and the image
-    depth & color mode)
+    Status: (12-Nov-2013) inactive at working version. NTImage in use by Eric Berryman
+    for CSS. Need more input from MS.
+    
+  + Normative Image types
+    Status: (12-Nov-2013). active at req. Need input from BD.
+DH: Would like to update the definition of NTImage now that he has unions. NTImage is not designed for images, it’s designed for areaDetector.
+
   + Need to verify easy asynchronous callback support in Matlab - a key shortcoming of lca (GW).
-  + [PVData] Structure construction helper API (in progress 9-Nov-13) (MS).
+    Status: (12-Nov-2013) concept.
+
+  + [PVData] Structure construction helper API
+    Status: (12-Nov-2013) active at coding (MS).
+ 
  
 * Data Processing Support
   + Decide in definition of the standard image types; implement in Normative Types doc.
@@ -242,5 +276,6 @@ Meeting Refs
 ============
 [27-2-13] https://docs.google.com/document/d/1TVlj59sHAoWRcqRFzdqYiitqMC-OvaSys6NvLxKVoMc/pub
 [29-10-13] https://docs.google.com/document/d/1mxPi-_bJNkZDy7b9xfwSLhwT8gJc-SY67Sgkd1NL3Dc/pub
+[12-11-13] https://docs.google.com/document/d/1ZvNmt85dQXATIQfqkDzmirfiXB3uXPojW1O4ttss1k4/pub
 
 
