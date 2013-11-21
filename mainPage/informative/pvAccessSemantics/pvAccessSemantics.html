@@ -1,0 +1,1684 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS PVAccess Semantics</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+ </script>
+</head>
+
+<body>
+
+<div class="head">
+<h1>EPICS PVAccess Semantics</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date. -->
+
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 21-Nov-2013</h2>
+<dl>
+  <dt>Latest version:</dt>
+    <dd><a
+      href="pvAccessSemantics.html">
+         monitor.html</a>
+    </dd>
+  <dt>This version:</dt>
+    <dd>
+     <a href="pvAccessSemantics_20131121.html">pvAccessSemantics_20131121.html</a>
+    </dd>
+    <dt>Previous version:</dt>
+    <dd>
+       None
+    </dd>
+  <dt>Editors:</dt>
+    <dd>Marty Kraimer BNL<br />
+    Matej Sekoranja, CosyLab</dd>
+</dl>
+</div>
+
+<h2 class="nocount">Abstract</h2>
+<p>
+This document describes the recommended semantics for code that implements
+a ChannelProvider.
+This means all of the following interfaces: ChannelProvider, Channel,
+ChannelGet, ChannelPut, ChannelPutGet, ChannelArray, ChannelRPC, and Monitor.
+It also describes the interface ChannelAccess.
+These semantics are implemented by the following:</p>
+<dl>
+   <dt>pvAccessJava and pvAccessCPP</dt>
+     <dd>These have the same semantics.
+      They provide network access to a server,
+      i.e. they implement remote providers.
+     </dd>
+   <dt>pvIOCJava and pvDatabaseCPP</dt>
+     <dd>These have the similar semantics. They implement a local provider.
+     </dd>
+</dl>
+<p>Implementations for other data sources should provide similar semantics.</p>
+
+<p>This product is available via an
+<a
+href="http://epics-pvdata.sourceforge.net/LICENSE.html">open source license
+</a>
+</p>
+
+<p>This product are all part of the
+<a href="http://epics-pvdata.sourceforge.net/">V4</a>
+implementation of
+<a href="http://www.aps.anl.gov/epics/">
+Experimental Physics and Industrial Control System.
+</a>
+</p>
+
+<h2 class="nocount">Status of this Document</h2>
+
+<p>This is the 21-Nov-2013 version of the the description of pvAccess semantics.</p>
+<p>This is an alpha version of this documentation.
+The next step is for Matej to provide descriptions for things that
+Marty did not know how to describe.
+These are places that start with "???Matej".
+Unless others have generic comments,
+they should wait to give specific comments until Matej has a chance to edit this documemt.</p>
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+
+<div id="contents" class="contents">
+<h2>Introduction</h2>
+<h3>Brief Overview</h3>
+<p>PVAccess is network support for PVData.</p>
+<p>This document describes the semantics for the following:</p>
+<dl>
+   <dt>PVAccess</dt>
+      <dd>
+         <dl>
+            <dt>ChannelAccess</dt>
+              <dd>
+                A singleton class that for registering channel providers
+                and for locating providers.
+                <br /><b>???Matej</b>
+                  This name should be changed.
+                  Perhaps to <b>PVAccess</b>?
+              </dd>
+            <dt>ClientFactory</dt>
+               <dd>Creates context for client.</dd>
+            <dt>ServerFactory</dt>
+               <dd>Creates contect for servers.</dd>
+         </dl>
+      </dd>
+   <dt>ChannelProvider</dt>
+      <dd>
+        A channel provider finds and created channels.
+      </dd>
+   <dt>Channel</dt>
+      <dd>
+        A channel creates some combination of channelGet, ..., monitor.
+      </dd>
+   <dt>ChannelGet</dt>
+      <dd>
+        Get data from server.
+      </dd>
+   <dt>ChannelPut</dt>
+      <dd>
+        Put data to server.
+      </dd>
+   <dt>ChannelPutGet</dt>
+      <dd>
+        Put data, process, and get data from server as synchronous operation.
+      </dd>
+   <dt>ChannelArray</dt>
+      <dd>
+        Get/put a sub-array.
+      </dd>
+   <dt>ChannelRPC</dt>
+      <dd>
+        Like ChannelPutGet but for each request the introspaction interface for both
+       the put and get can change.
+      </dd>
+   <dt>Monitor</dt>
+      <dd>
+       Monitor data changes in the server.
+      </dd>
+</dl>
+<p>The description is somewhat language independent but code fragments are shown
+with Java syntax. The C++ implementation has similar semantics.
+</p>
+<p>This document assumes some knowledge of:</p>
+<dl>
+   <dt>pvData</dt>
+     <dd>
+        This document assumes that the reader is familiar with PVData:
+        <a
+        href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html">
+        pvDataJava
+        </a>
+        </dd>
+   <dt>pvAccess</dt>
+      <dd>
+      It also assumes that the reader has some familiarity with pvAccess:
+      <a
+      href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessJava/tip/documentation/pvAccessJava.html">
+      pvAccessJava
+      </a>
+      </dd>
+   <dt>pvAccess network protocol</dt>
+      <dd>A remote provider must implement the pvAccess network protocol.
+      See:
+      <a
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">
+      pvAccess_Protocol_Specification.html
+      </a>
+      </dd>
+   <dt>pvRequest</dt>
+      <dd>The Channel create methods have an argument pvRequest.
+      In the section that desctribes ChannelGet, ChannelPut, etc. there is a brief explaination about details of
+      what each create method expects.
+      But this requires that the reader have a understanding of how pvRequest works and
+      how a client can create a pvRequest.
+      A longer description of pvRequest is given in.
+      <a
+      href="http://epics-pvdata.sourceforge.net/informative/pvRequest.html">
+      pvRequest.html
+      </a>
+      </dd>
+</dl>
+<h3>Definitions</h3>
+<dl>
+    <dt>client</dt>
+       <dd>
+         Code that calls the ChannelProvider and Channel methods.
+       </dd>
+    <dt>provider</dt>
+       <dd>A provider is anything that implements ChannelProvider and all associated
+         interfaces, e. g. Channel, ChannelGet, ..., Monitor.
+         There are two types of provider:
+         <dl>
+            <dt>local provider</dt>
+               <dd>The provider that communicates with a server to get and put data.
+               </dd>
+            <dt>remote provider</dt>
+                <dd>The provider that accesses the server via the network.
+                  This is implemented by pvAccess itself.
+                  It consists of two components: client and server,
+                  The client side implements ChannelProvider by making network
+                  calls to the server side.
+                  If the pvAccess network protocol is used then the server side is a client of the
+                  local provider.
+                  For other network protocols, e. g. channel access, the server side depends
+                  on the protocol and the server implementation.
+                </dd>
+         </dl>
+      </dd>
+    <dt>server</dt>
+       <dd>A server has the data accessed by clients.
+      A server is  accessed by the local provider.
+      The server code makes it's data available as pvData.
+      </dd>
+    <dt>PVDatabase and PVRecord</dt>
+      <dd>Both pvDatabaseCPP and pvIOCJava
+      provide a complete local provider implementation
+      Both also implement a PVDatabase, which consists of a set of PVRecords.
+      The names of the records become the channel names for the local provider.
+      The local provider creates top level PVStructures which hold copies of
+      an arbitrary subset of the fields in a PVRecord.
+      Data is transfered between the top level structures and the associated PVRecord.
+      pvDatabaseCPP and pvIOCJava both implement the concept of smart records,
+      i. e. code can be attached to a record and the client can ask a record to process.
+     </dd>
+</dl>
+<p>Note that a client can connect either to a local or remote provider.
+Other than having to specify the provider name when calling <b>channelAccess.getProvider("name")</b>
+The client sees exactly the same API.
+If the client connects to the local provider than no network access is involved.
+</p>
+<h3>PVStructure Locking issues</h3>
+<h4>Multiple Threads Requires Locking</h4>
+<p>pvAccess transfers data between a client and server and must take care of locking
+since multiple threads are involved.
+The pvAccess data is normally a top level PVStructure.
+A local provider transfers data between
+the PVStructure and a PVRecord.
+A remote provider transfers data between a PVStructure and the network.</p>
+<h4>remote provider</h4>
+<p>For all channel types except Monitor, i. e. ChannelGet,ChannelPut,...,ChannelRPC
+the client can only have one request at a time outstanding.
+For example ChannelGet.
+When the client issues a ChannelGet::get the client can not issue another ChannelGet::get
+until the first request completes.
+Thus the rules are simple. The remote provider owns the PVStructure between the time
+the ChannelGet::get is issued and the remote provider calls ChannelGetRequester::getDone.
+The client owns the PVStructure at all other times.</p>
+<p>The remote provider must have a mutex that it uses to synchronize access to many of it's methods.
+For example ChannelGet must synchronize access to get and getDone.
+Moinitors are more complex because data may arrive while the client is using previously returned data.
+In this case the remote provider keeps a bounded queue of montor elements.
+At any given time the server transfer data from the network to a monitor element it owns,
+and the client owns a single monitor element.
+In order to make this work the queue must have a size of at least two.
+More details about monitors are given below.
+<h4>local provider</h4>
+<p>The semantics are similer to those for remote provider except now the data is tranfered between
+a PVStructure and a PVRecord.
+This is <b>always</b> done with the record locked.
+
+<h2>PVAccess</h2>
+<p>This section describes singleton classes that are implemented by PVAccess itself.
+They should not be extended or re-implemented except, possibly, for another language,
+for example C#.
+Languages like python or mathlab should only provide wrappers for
+the C++ or Java implementation.</p>
+<h3>ChannelAccess</h3>
+<p>ChannelAccess is implemented by pvAccess itself, i. e. there is a single implementation.
+It is not meant to be extended.
+ChannelAccess supports an arbitrary number of ChannelProviders
+but each must have a unique name.
+When a process starts each provider must register itself with ChannelAccess.
+Once a provider is registered then clients can connect to the provider by calling ChannelAccess.
+In Java the following class is provided:</p>
+<pre>
+public class ChannelAccessFactory {
+    public static ChannelAccess getChannelAccess();
+    public static void registerChannelProviderFactory(ChannelProviderFactory channelProviderFactory);
+    public static void unregisterChannelProviderFactory(ChannelProviderFactory channelProviderFactory);
+}
+</pre>
+where
+<dl>
+   <dt>getChannelAccess</dt>
+     <dd>Get the singleton class that implements ChannelAccess</d>
+   <dt>registerChannelProviderFactory</dt>
+      <dd>Register a channelProvider<dd>
+   <dt>unregisterChannelProviderFactory</dt>
+      <dd>Unregister a channelProvider<dd>
+</dl>
+<p>For pvAccessCPP the three methods are external functions.</p>
+<p>In Java the class definition for ChannelAccess is:</p>
+<pre>
+interface ChannelAccess {
+    ChannelProvider getProvider(String providerName);
+    ChannelProvider createProvider(String providerName);
+    String[] getProviderNames();
+}
+</pre>
+where
+<dl>
+   <dt>getProvider</dt>
+      <dd>
+       This is called to get a ChannelProvider.
+      </dd>
+   <dt>createProvider</dt>
+      <dd>
+       This is an internal detail of how providers are started when a process starts.
+       <br /><b>???Matej</b> needs better description.
+      </dd>
+   <dt>getProviderNames</dt>
+      <dd>
+       Get all the provider names.
+      </dd>
+</dl>
+<p>The following providers are currently supported:</p>
+<dl>
+   <dt>pva</dt>
+     <dd>Communicates with server via pvAccess protocol.</dd>
+   <dt>ca</dt>
+      <dd>Communicates with server via the channel access protocol as defined by epics base,</dd>
+   <dt>rpcService</dt>
+       <dd>Communicate with a server via the channelRPC interface.</dd>
+   <dt>local</dt>
+     <dd>Provides access to the PVDatabase
+      This is implemented on both pvIOCJava and pvDatabaseCPP.
+    </dd>
+   <dt>pvaSrv</dt>
+      <dd>
+       This makes iocCore records accessable via the pvAccess network protocol.
+       This can be run on any ioc based on iocCore.
+      </dd>
+</dl>
+<p><b>???Matej</b> pvAccessJava has name caV3 instead of ca.</p>
+<p>The pvAccess client and server each need a context, i. e. threads.
+These are discussed in the next two sections.
+</p>
+
+<h3>ClientFactory</h3>
+
+<p>In Java the context is created and terminated by the following methods:</p>
+<pre>
+    ClientFactory.start();  // before any client calls are issued
+    ... // until process terminates
+    ClientFactory.stop(); // This will destroy all objects created by ClientFactory
+</pre>
+<p>In C++ the context is created and terminated by the following methods:</p>
+<pre>
+    ClientFactory::start(); // before any client calls are issued.
+    ... // until process terminates
+    ClientFactory::stop(); // This will destroy all objects created by ClientFactory
+</pre>
+<h3>ServerFactory</h3>
+<p>In Java the context is created and terminated by the following methods:</p>
+<pre>
+    ... // until process terminates
+    ??? 
+</pre>
+<p><b>???Matej</b>
+<dl>
+    <dt>How can server be rundown and destroyed?</dt>
+    <dt>Why is this not like C++</dt>
+</dl>
+<p>In C++ the context is created and terminated by the following methods:</p>
+<pre>
+    ServerContext::shared_pointer pvaServer =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+    ... // until process terminates
+    pvaServer-&gt;shutdown();
+    epicsThreadSleep(1.0);
+    pvaServer-&gt;destroy();
+</pre>
+<p>The C++ description of <b>startPVAServer</b> is:
+<pre>
+extern ServerContext::shared_pointer startPVAServer(
+        epics::pvData::String const &amp; providerNames = PVACCESS_ALL_PROVIDERS,
+        int timeToRun = 0,
+        bool runInSeparateThread = false,
+        bool printInfo = false);
+</pre>
+where 
+<dl>
+   <dt>providerNames</dt>
+      <dd>A String that has a comma separated set of provider names.
+        The value "&lt;all&gt;" means all registered providers.
+      </dd>
+   <dt>timeToRun</dt>
+       <dd>How long to run. A value of 0 means run forever.</dd>
+   <dt>runInSeparateThread</dt>
+       <dd>Should server be run in separate thread or under the thread that call startPVAServer.
+       </dd>
+   <dt>printInfo</dt>
+        <dd>Should information about the server side of the network connection be displayed.
+        </dd>
+</dt>
+<p><b>???Matej</b>
+<dl>
+   <dt>timeToRun</dt>
+      <dd>This is an <b>int</b> Why?</dd>
+   <dt>epicsThreadSleep</dt>
+      <dd>How long to sleep?
+       Why is this needed?
+       </dd>
+</dl>
+<h2>ChannelProvider</h2>
+<h3>Client Interface</h3>
+<p>As mentioned in the previous section several implementations of ChannelProvider already exist.
+Providers for other data sources can also be implemented.
+The only requirment is a complete implementation of the ChannelProvider and Channel
+interfaces. Each implementation implements some combination of ChannelGet, ChannelPut,
+ChannelPutGet, ChannelArray, ChannelRPC, and Monitor.
+These all optional.
+For all that are not implemented the corresponding create method in Channel returns a Status saying
+that it is not implemented.</p>
+<p>The ChannelProvider interface is:</p>
+<pre>
+interface ChannelProvider {
+    void destroy();
+    String getProviderName();
+    ChannelFind channelFind(
+        String channelName,
+        ChannelFindRequester channelFindRequester);
+    Channel createChannel(
+        String channelName,
+        ChannelRequester channelRequester,
+        short priority);
+    Channel createChannel(
+        String channelName,
+        ChannelRequester channelRequester,
+        short priority,
+        String address);
+}
+
+interface ChannelFind {
+     ChannelProvider getChannelProvider();
+     void cancelChannelFind();
+}
+</pre>
+<p>ChannelProvider has the following methods:</p>
+<dl>
+   <dt>destroy</dt>
+     <dd>This will destroy all objects created by the channelProvider.
+     </dd>
+   <dt>getProviderName</dt>
+      <dd>Get an array of the provider names.</dd>
+   <dt>channelFind</dt>
+      <dd><b>???Matej</b> Is ChannelFind necessary?</dd>
+   <dt>createChannel</dt>
+      <dd>
+        Create a Channel.
+     </dd>
+</dl>
+<p>The arguments for the above methods are:</p>
+<dl>
+   <dt>channelName</dt>
+     <dd>The name of the channel.</dd>
+   <dt>channelFindRequester</dt>
+     <dd>See below</dd>
+   <dt>channelRequester</dt>
+      <dd>See below.</dd>
+   <dt>priority</dt>
+     <dd>
+      <b>???Matej</b> provide description
+     </dd>
+   <dt>address</dt>
+     <dd>
+      <b>???Matej</b> provide description
+     </dd>
+</dl>
+<p>A client that calls createChannel must implement interface ChannelRequester:</p>
+<pre>
+interface ChannelRequester extends Requester {
+    void channelCreated(Status status, Channel channel);
+    void void channelStateChange(Channel channel, ConnectionState connectionState);
+}
+</pre>
+where
+<dl>
+   <dt>channelCreated</dt>
+     <dd>Called when a connection to the server is created or if a server for the
+     channelName is not found. The status indicates success or the reason for failure.
+     channel is what was returned by createChannel.
+     </dd>
+   <dt>channelStateChange</dt>
+      <dd>Called everytime the connection state changes, i. e. whenever a connect
+       or disconnect occurs.
+      connectionState is one of NEVER_CONNECTED, CONNECTED, DISCONNECTED, DESTROYED.
+      </dd>
+</dl>
+<p>A client that calls channelFind must implement interface ChannelFindRequester:</p>
+<pre>
+interface ChannelFindRequester {
+    void channelFindResult(Status status,ChannelFind channelFind,boolean wasFound);
+}
+</pre>
+where
+<dl>
+   <dt>channelFindResult</dt>
+     <dd>
+     <br /><b>???Matej</b> Again is this necessary>
+     </dd>
+</dl>
+<h3>Semantics</h3>
+<p>The channel provider must have access to a list of unique channelNames ( unique within the local network).
+For the local provider (pvIOCJava and pvDatabaseCPP) this is the set of recordNames in the local PVDatabase.
+The remote provider does a network broadcast to find a server that has the channelName.
+<p>
+When the client calls createChannel and the implementation can determine immediately if the channel exists
+(local providers normally can) then it can synchronously handle the request.
+If the channelName does not exists it calls ChannelRequester::channelCreated
+with a error status and returns null.
+If the channelName does exist it creates a new Channel, calls  ChannelRequester::channelCreated with
+an OK status, and returns the newly created Channel.</p>
+<p>If the implementation can not immediatly determine if the channelName exists (a remote provider
+can not unless a client has already connected to the channelName) then it creates a new Channel,
+does not call ChannelRequester::channelCreated, and returns the newly created Channel.
+The newly created Channel will at a later time call ChannelRequester::channelCreated reporting success
+or failure.
+</p>
+<p><b>???Matej</b> is the following true?
+If false please describe correct semantics.</p>
+<p>The client must not call any of the channel methods until channelCreated is called
+with a successful status.</p>
+<h2>Channel</h2>
+<p>The Java interface is:</p>
+<pre>
+interface Channel extends Requester{
+    void destroy();
+    String getRequesterName();
+    void message(String message, MessageType messageType);
+    ChannelProvider getProvider();
+    String getRemoteAddress();
+    ConnectionState getConnectionState();
+    String getChannelName();
+    ChannelRequester getChannelRequester();
+    boolean isConnected();
+    void getField(GetFieldRequester requester,String subField);
+    AccessRights getAccessRights(PVField pvField);
+    ChannelProcess createChannelProcess(
+        ChannelProcessRequester channelProcessRequester,
+    	PVStructure pvRequest);
+    ChannelGet createChannelGet(
+        ChannelGetRequester channelGetRequester,
+        PVStructure pvRequest);
+    ChannelPut createChannelPut(
+        ChannelPutRequester channelPutRequester,
+        PVStructure pvRequest);
+    ChannelPutGet createChannelPutGet(
+        ChannelPutGetRequester channelPutGetRequester,
+        PVStructure pvRequest);
+    ChannelArray createChannelArray(
+        ChannelArrayRequester channelArrayRequester,
+        PVStructure pvRequest);
+    ChannelRPC createChannelRPC(
+        ChannelRPCRequester channelRPCRequester,
+        PVStructure pvRequest);
+    Monitor createMonitor(
+        MonitorRequester monitorRequester,
+        PVStructure pvRequest);
+</pre>
+<p>This has the methods:</p>
+<dl>
+   <dt>destroy</dt>
+     <dd>This will destroy all objects created by this Channel.
+      This means all channelGet, ..., Monitor objects.
+      The remote provider will destroy the network connection
+      after sending a destroy message to the remote server.
+      After this call all code connected with the channel should make a best effort
+      to no longer make use of the channel but also be prepared for callbacks that may
+      occur because of race conditions caused by multiple threads and, for a remote provider,
+      the network.
+     </dd>
+   <dt>getRequesterName</dt>
+      <dd>
+       <b>???Matej</b> give description.
+      </dd>
+   <dt>message</dt>
+      <dd>
+       <b>???Matej</b> give description.
+      </dd>
+   <dt>getProvider</dt>
+     <dd>get the ChannelProvider that created the Channel.</dd>
+   <dt>getRemoteAddress</dt>
+     <dd>get the remote address of the Channel.
+       A local provider will return "local"
+     </dd>
+   <dt>getConnectionState</dt>
+     <dd>Get the current connection state. This is one of NEVER_CONNECTED, CONNECTED, DISCONNECTED, DESTROYED.
+      </dd>
+   <dt>getChannelName</dt>
+      <dd>Get the name of this channel.</dd>
+   <dt>getChannelRequester</dt>
+      <dd>Get the ChannelRequester that created the Channel.</dd>
+   <dt>isConnected</dt>
+      <dd>Is the connection state CONNECTED.</dd>
+   <dt>getField</dt>
+      <dd>Get the introspection interface for the specified fieldName.
+      The fieldName can "" or of the form "name.name...".
+     </dd>
+   <dt>getAccessRights</dt>
+      <dd>Access Rights are not currently supported.</dd>
+   <dt>createChannelProcess</dt>
+      <dd>This will be described when ChannelProcess is described.
+       If ChannelProcess is not supported then null is returned.
+      </dd>
+   <dt>createChannelGet</dt>
+      <dd>This will be described when ChannelGet is described.
+       If ChannelGet is not supported then null is returned.
+      </dd>
+   <dt>createChannelPut</dt>
+      <dd>This will be described when ChannelPut is described.
+       If ChannelPut is not supported then null is returned.
+      </dd>
+   <dt>createChannelPutGet</dt>
+      <dd>This will be described when ChannelPutGet is described.
+       If ChannelPutGetrocess is not supported then null is returned.
+      </dd>
+   <dt>createChannelArray</dt>
+      <dd>This will be described when ChannelArray is described.
+       If ChannelArray is not supported then null is returned.
+      </dd>
+   <dt>createChannelRPC</dt>
+      <dd>This will be described when ChannelRPC is described.
+       If ChannelRPC is not supported then null is returned.
+      </dd>
+   <dt>createMonitor</dt>
+      <dd>This will be described when ChannelMonitor is described.
+       If Monitor is not supported then null is returned.
+      </dd>
+</dl>
+
+<h2>ChannelProcess</h2>
+<h3>Creating a ChannelProcess</h3>
+<p>A ChannelProcess is created via a call to Channel::createChannelProcess,
+which returns a ChannelProcess and has the API:</p>
+<pre>
+ChannelProcess createChannelProcess(
+       ChannelProcessRequester channelProcessRequester,
+	PVStructure pvRequest);
+</pre>
+<dl>
+   <dt>channelProcessRequester</dt>
+     <dd>
+      See next section
+     </dd>
+   <dt>pvRequest</dt>
+     <dd>
+      current implementations ignore this argument.
+      It is OK to just call createRequest with an argument of "".
+     </dd>
+</dl>
+<h3>Client Interface</h3>
+<h4>ChannelProcessRequester</h4>
+<p>The client must implement the following:</p>
+<pre>
+interface ChannelProcessRequester extends Requester{
+    void channelProcessConnect(Status status,ChannelProcess channelProcess);
+    void processDone(Status status);
+}
+</pre>
+where
+<dl>
+    <dt>channelProcessConnect</dt>
+    <dd>This is called if the createChannelProcess fails or when the client request is
+      connected to the server.
+       <dl>
+           <dt>status</dt> 
+             <dd>The result of the createChannelProcess request.
+                Unless the status is OK then the client must not call the channelProcess methods.
+             </dd>
+           <dt>channelProcess</dt>
+               <dd>The interface for the ChannelProcess.</dd>
+        </dl>
+    </dd>
+    <dt>processDone</dt>
+       <dd>This is called when a process request completes.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+</dl>
+<h4>ChannelProcess</h4>
+<p>The following is the ChannelProcess interface. All methods are called by the client.</p>
+<pre>
+    interface ChannelProcess extends Destroyable {
+    void process(boolean lastRequest);
+    void destroy()
+}
+</pre>
+
+<p>where</p>
+<dl>
+  <dt>process</dt>
+    <dd>Request that the server process.
+        lastRequest is true if this is the last process request.
+       The client must not make another process request until ChannelProcessRequester::processDone
+       is called.
+    </dd>
+   <dt>destroy</dt>
+     <dd>Destroy the channelProcess. This terminates the connection to the server.
+      Client and implementation should make the best effort to no longer make any use
+      of the channelProcess but both must be aware that methods could still be called because
+      of timing issues.
+     </dd>
+</dl>
+<h4>Life Cycle</h4>
+<p>The life cycle for channelProcess is:</p>
+<pre>
+createChannelProcess        client
+channelProcessConnect       provider
+repeat indefinitely
+    process                 client
+    processDone             provider
+destroy                     client or implementation
+</pre>
+<h2>ChannelGet</h2>
+<h3>Creating a ChannelGet</h3>
+<p>A ChannelGet is created via a call to Channel::createChannelGet,
+which returns a ChannelGet and has the API:</p>
+<pre>
+ChannelGet createChannelGet(
+       ChannelGetRequester channelGetRequester,
+       PVStructure pvRequest);
+</pre>
+<dl>
+   <dt>channelGetRequester</dt>
+     <dd>
+      See next section
+     </dd>
+   <dt>pvRequest</dt>
+     <dd>
+     The argument to createRequest has the form "record[options]field(fields)".
+     If "" is given it is that same as "field(value)"
+     Most implementations will accept a record option "process=value" where value is true or
+    false with the default being false. fields specifies the set of fields desired.
+    See the description of pvRequest for details. Most implementation ignore all field
+    options.
+     </dd>
+</dl>
+<h3>Client Interface</h3>
+<h4>ChannelGetRequester</h4>
+<p>The client must implement the following:</p>
+<pre>
+interface ChannelGetRequester extends Requester {
+    void channelGetConnect(
+        Status status,
+        ChannelGet channelGet,
+        PVStructure pvStructure,
+        BitSet bitSet);
+    void getDone(Status status);
+}
+</pre>
+where
+<dl>
+    <dt>channelGetConnect</dt>
+    <dd>This is called if the createChannelGet fails or when the client request is
+      connected to the server.
+       <dl>
+           <dt>status</dt> 
+             <dd>The result of the createChannelGet request.
+                If status is not success than the pvStructure and bitSet arguments are null.
+                Unless the status is OK then the client must not call the channelGet methods.
+             </dd>
+           <dt>channelGet</dt>
+               <dd>The interface for the ChannelGet.</dd>
+           <dt>pvStructure</dt>
+              <dd>The PVStructure that the implementation creates.
+                It has the data returned for each successful get request.
+                The implementation owns this while a get request is outstanding
+                and the client otherwise.
+               </dd>
+            <dt>bitSet</dt>
+               <dd>
+                This shows which fields have changed value since the last get request.
+                The first get will show that all fields have changed, i. e. bitSet
+                will have the value {0} which says the the top level structure has changed.
+                The implementation owns this while a get request is outstanding
+                and the client otherwise.
+               </dd>
+        </dl>
+    </dd>
+    <dt>getDone</dt>
+       <dd>This is called when a get request completes.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+</dl>
+<h4>ChannelGet</h4>
+<p>The following is the ChannelGet interface. All methods are called by the client.</p>
+<pre>
+    interface ChannelGet extends Destroyable {
+    void get(boolean lastRequest);
+    void destroy();
+}
+</pre>
+
+<p>where</p>
+<dl>
+  <dt>get</dt>
+    <dd>Get data from  that the server.
+        lastRequest is true if this is the last process request.
+       The client must not make another get request until ChanneGetsRequester::getDone
+       is called.
+    </dd>
+   <dt>destroy</dt>
+     <dd>Destroy the channelGet. This terminates the connection to the server.
+      Client and implementation should make the best effort to no longer make any use
+      of the channelGet but both must be aware that methods could still be called because
+      of timing issues.
+     </dd>
+</dl>
+<h4>Life Cycle</h4>
+<p>The life cycle for channelGet is:</p>
+<pre>
+createChannelGet        client
+channelGetConnect       provider
+repeat indefinitely
+    get                 client
+    getDone             provider
+destroy                 client or implementation
+</pre>
+<h2>ChannelPut</h2>
+<h3>Creating a ChannelPut</h3>
+<p>A ChannelPut is created via a call to Channel::createChannelPut,
+which returns a ChannelPut and has the API:</p>
+<pre>
+ChannelPut createChannelPut(
+       ChannelPutRequester channelPutRequester,
+       PVStructure pvRequest);
+</pre>
+<dl>
+   <dt>channelPutRequester</dt>
+     <dd>
+      See next section
+     </dd>
+   <dt>pvRequest</dt>
+     <dd>
+     The argument to createRequest has the form "record[options]field(fields)".
+     If "" is given it is that same as "field(value)"
+     Most implementations will accept a record option "process=value" where value is true or
+    false with the default being true. fields specifies the set of fields desired.
+    See the description of pvRequest for details. Most implementation ignore all field
+    options.
+     </dd>
+</dl>
+<h3>Client Interface</h3>
+<h4>ChannelPutRequester</h4>
+<p>The client must implement the following:</p>
+<pre>
+interface ChannelPutRequester extends Requester {
+    void channelPutConnect(
+       Status status,
+       ChannelPut channelPut,
+       PVStructure pvStructure,
+       BitSet bitSet);
+    void putDone(Status status);
+    void getDone(Status status);
+}
+</pre>
+where
+<dl>
+    <dt>channelPutConnect</dt>
+    <dd>This is called if the createChannelPut fails or when the client request is
+      connected to the server.
+       <dl>
+           <dt>status</dt> 
+             <dd>The result of the createChannelPut request.
+                If status is not success than the pvStructure and bitSet arguments are null.
+                Unless the status is OK then the client must not call the channelPut methods.
+             </dd>
+           <dt>channelPut</dt>
+               <dd>The interface for the ChannelPut.</dd>
+           <dt>pvStructure</dt>
+              <dd>The PVStructure that the implementation creates.
+                It hold the data returned by each successful put request.
+                The implementation owns this while a get request is outstanding
+                and the client otherwise.
+               </dd>
+            <dt>bitSet</dt>
+               <dd>
+                This shows which fields have changed value since the last put request.
+                The client <b>must</b> set bits for all fields that it wants to change
+                in the next put request.
+                A call to bitSet.set(0) sets the value to {0},
+                which says the the top level structure has changed.
+                This means to send all fields.
+                The implementation owns this while a get request is outstanding
+                and the client otherwise.
+               </dd>
+        </dl>
+    </dd>
+    <dt>putDone</dt>
+       <dd>This is called when a put request completes.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+    <dt>getDone</dt>
+       <dd>This is called when a get request completes.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+      This method does not change the value of bitSet.
+       </dd>
+</dl>
+<h4>ChannelPut</h4>
+<p>The following is the ChannelPut interface. All methods are called by the client.</p>
+<pre>interface ChannelPut extends Destroyable {
+    void put(boolean lastRequest);
+    void get();
+    void destroy();
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>put</dt>
+    <dd>Put data from  that the server.
+        lastRequest is true if this is the last process request.
+       The client must not make another put or get request until ChannePutRequester::putDone
+       is called.
+    </dd>
+   <dt>get</dt>
+      <dd>
+        Get the current data from the server.
+       This request will never process.
+       The client must not make another put or get request until ChannePutRequester::getDone
+       is called.
+     </dd>
+   <dt>destroy</dt>
+     <dd>Destroy the channelPut. This terminates the connection to the server.
+      Client and implementation should make the best effort to no longer make any use
+      of the channelPut but both must be aware that methods could still be called because
+      of timing issues.
+     </dd>
+</dl>
+<h4>Life Cycle</h4>
+<p>The life cycle for channelPut is:</p>
+<pre>
+createChannelPut        client
+channelPutConnect       provider
+repeat indefinitely
+    at most one of
+       put
+          put           client
+          putDone       provider
+       get
+          get           client
+          getDone       provider
+destroy                 client or implementation
+</pre>
+<h2>ChannelPutGet</h2>
+<h3>Creating a ChannelPutGet</h3>
+<p>A ChannelPutGet is created via a call to Channel::createChannelPutGet,
+which returns a ChannelPutGet and has the API:</p>
+<pre>
+ChannelPutGet createChannelPutGet(
+       ChannelPutGetRequester channelPutGetRequester,
+       PVStructure pvRequest);
+</pre>
+<dl>
+   <dt>channelPutGetRequester</dt>
+     <dd>
+      See next section
+     </dd>
+   <dt>pvRequest</dt>
+     <dd>
+     The argument to createRequest has the form "record[options]putField(fields)getField(fields)".
+    The recommended convention is "putField(argument)getField(result)".
+    <br />
+     Most implementations will accept a record option "process=value" where value is true or
+    false with the default being true. fields specifies the set of fields desired.
+    There is one set for the data to send to the server and another for the data returned
+     from the server.
+    See the description of pvRequest for details. Most implementation ignore all field
+    options.
+    <br /><b>???Marty</b> make "" mean "putField(argument)getField(result)".
+     </dd>
+</dl>
+<h3>Client Interface</h3>
+<h4>ChannelPutGetRequester</h4>
+<p>The client must implement the following:</p>
+<pre>
+interface ChannelPutGetRequester extends Requester {
+    void channelPutGetConnect(
+        Status status,
+        ChannelPutGet channelPutGet,
+        PVStructure pvPutStructure,
+        PVStructure pvGetStructure);
+    void putGetDone(Status status);
+    void getPutDone(Status status);
+    void getGetDone(Status status);
+}
+</pre>
+where
+<dl>
+    <dt>channelPutGetConnect</dt>
+    <dd>This is called if the createChannelPutGet fails or when the client request is
+      connected to the server.
+       <dl>
+           <dt>status</dt> 
+             <dd>The result of the createChannelPutGet request.
+                If status is not success than the pvStructure arguments are null.
+                Unless the status is OK then the client must not call the channelPutGet methods.
+             </dd>
+           <dt>channelPutGet</dt>
+               <dd>The interface for the ChannelPutGet.</dd>
+           <dt>pvPutStructure</dt>
+              <dd>The pvStructure that the implementation creates.
+                It has data to send to the server.
+                It also has the data returned by a getPut request.
+                The implementation owns the data while a request is outstanding
+                and the client otherwise.
+               </dd>
+           <dt>pvGetStructure</dt>
+              <dd>The pvStructure that the implementation creates.
+                It has the data returned as the result of a putGet request.
+                It also has the data returned by a getGet request.
+                The implementation owns the data while a request is outstanding
+                and the client otherwise.
+               </dd>
+        </dl>
+    </dd>
+    <dt>putGetDone</dt>
+       <dd>This is called when a putGet request completes.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+    <dt>getPutDone</dt>
+       <dd>This is called when a getPut request completes.
+       The pvPutStructure has the returned data.
+       This is called by the client to get the current put data from the server.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+    <dt>getGetDone</dt>
+       <dd>This is called when a getGet request completes.
+       The pvGetStructure has the returned data.
+       This is called by the client to get the current get data from the server.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+</dl>
+<h4>ChannelPutGet</h4>
+<p>The following is the ChannelPutGet interface. All methods are called by the client.</p>
+<pre>interface ChannelPutGet extends Destroyable {
+    void putGet(boolean lastRequest);
+    void getPut();
+    void getGet();
+    void destroy();
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>putGet</dt>
+    <dd>Put and get data to/from the server.
+        lastRequest is true if this is the last process request.
+       The client must not make another putGet or getPut or getGet request until ChannePutGetRequester::putGetDone
+       is called.
+    </dd>
+   <dt>getPut</dt>
+      <dd>
+        Get the current data for pvPutStructure from the server.
+       This request will never process.
+       The client must not make another putGet or getPut or getGet request until ChannePutGetRequester::getPutDone
+       is called.
+     </dd>
+   <dt>getGet</dt>
+      <dd>
+        Get the current data for pvGetStructure from the server.
+       This request will never process.
+       The client must not make another putGet or getPut or getGet request until ChannePutGetRequester::getGetDone
+       is called.
+     </dd>
+   <dt>destroy</dt>
+     <dd>Destroy the channelPutGet. This terminates the connection to the server.
+      Client and implementation should make the best effort to no longer make any use
+      of the channelPutGet but both must be aware that methods could still be called because
+      of timing issues.
+     </dd>
+</dl>
+<h4>Life Cycle</h4>
+<p>The life cycle for channelPutGet is:</p>
+<pre>
+createChannelPutGet        client
+channelPutGetConnect       provider
+repeat indefinitely
+    at most one of
+       putGet
+          putGet           client
+          putGetDone       provider
+       getPut
+          getPut           client
+          getPutDone       provider
+       getGet
+          getGet           client
+          getGetDone       provider
+destroy                    client or implementation
+</pre>
+<h2>ChannelArray</h2>
+<h3>Creating a ChannelArray</h3>
+<p>A ChannelArray is created via a call to Channel::createChannelArray,
+which returns a ChannelArray and has the API:</p>
+<pre>
+ChannelArray createChannelArray(
+       ChannelArrayRequester channelArrayRequester,
+       PVStructure pvRequest);
+</pre>
+<dl>
+   <dt>channelArrayRequester</dt>
+     <dd>
+      See next section
+     </dd>
+   <dt>pvRequest</dt>
+     <dd>
+      The argument to createRequest should be "fieldName" where fieldName is on the form field.field....
+      Specifing  ""  is the same as "value". The field selected must be an array field or 
+      an error status will be returned by channelArrayConnect.
+      <br />
+      <b>???Marty</b> make it also Ok to specify "value(fieldName)"
+     </dd>
+</dl>
+<h3>Client Interface</h3>
+<h4>ChannelArrayRequester</h4>
+<p>The client must implement the following:</p>
+<pre>
+interface ChannelArrayRequester extends Requester {
+    void channelArrayConnect(
+        Status status,
+        ChannelArray channelArray,
+        PVArray pvArray);
+    void putArrayDone(Status status);
+    void getArrayDone(Status status);
+}
+</pre>
+where
+<dl>
+    <dt>channelArrayConnect</dt>
+    <dd>This is called if the createChannelArray fails or when the client request is
+      connected to the server.
+       <dl>
+           <dt>status</dt> 
+             <dd>The result of the createChannelArray request.
+                If status is not success than the pvArray argument is null.
+                Unless the status is OK then the client must not call the channelArray methods.
+             </dd>
+           <dt>channelArray</dt>
+               <dd>The interface for the ChannelArray.</dd>
+           <dt>pvArray</dt>
+              <dd>The PVArray that the implementation creates.
+                It has the data to send to the server and the data returned from the server.
+                The implementation owns the data while a request is outstanding
+                and the client otherwise.
+               </dd>
+        </dl>
+    </dd>
+    <dt>putArrayDone</dt>
+       <dd>This is called when a putArray request completes.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+    <dt>getArrayDone</dt>
+       <dd>This is called when a getArray request completes.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+    <dt>setLengthDone</dt>
+       <dd>This is called when a setLength request completes.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+</dl>
+<h4>ChannelArray</h4>
+<p>The following is the ChannelArray interface. All methods are called by the client.</p>
+<pre>interface ChannelArray extends Destroyable {
+    void putArray(boolean lastRequest, int offset, int count);
+    void getArray(boolean lastRequest, int offset, int count);
+    void setLength(boolean lastRequest, int length, int capacity);
+    void destroy();
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>putArray</dt>
+    <dd>Modify a sub-array of the server.
+       No processing is involved.
+       The client must not make another request until ChanneArrayRequester::putArrayDone
+       is called.
+    </dd>
+   <dt>getArray</dt>
+      <dd>
+       Get a sub-array from the server.
+       No processing is involved.
+       The client must not make another request until ChanneArrayRequester::getArrayDone
+       is called.
+     </dd>
+   <dt>setLength</dt>
+     <dd>Set the length and capacity of the server array.
+       The client must not make another request until ChanneArrayRequester::setLengthDone
+     <br />
+     <b>???Marty</b> On C++ the arguments should be size_t. This requires a change
+      in the pva network protocol.
+     </dd>
+   <dt>destroy</dt>
+     <dd>Destroy the channelArray. This terminates the connection to the server.
+      Client and implementation should make the best effort to no longer make any use
+      of the channelArray but both must be aware that methods could still be called because
+      of timing issues.
+     </dd>
+</dl>
+<h4>Life Cycle</h4>
+<p>The life cycle for channelArray is:</p>
+<pre>
+createChannelArray           client
+channelArrayConnect          provider
+repeat indefinitely
+    at most one of
+       putArray
+          putArray           client
+          putArrayDone       provider
+       getArray
+          getArray           client
+          getArrayDone       provider
+       setLength
+          setLength          client
+          setLengthDone      provider
+destroy                      client or implementation
+</pre>
+<h2>ChannelRPC</h2>
+<h3>Creating a ChannelRPC</h3>
+<p>A ChannelRPC is created via a call to Channel::createChannelRPC,
+which returns a ChannelRPC and has the API:</p>
+<pre>
+ChannelRPC createChannelRPC(
+       ChannelRPCRequester channelRPCRequester,
+       PVStructure pvRequest);
+</pre>
+<dl>
+   <dt>channelRPCRequester</dt>
+     <dd>
+      See next section
+     </dd>
+   <dt>pvRequest</dt>
+     <dd>
+      Server implementation dependent.
+      Most current implementations ignore this argument.
+      If so it is OK to just call createRequest with an argument of "".
+      <br />
+      <b>???</b> Is this true?
+     </dd>
+</dl>
+<h3>Client Interface</h3>
+<h4>ChannelRPCRequester</h4>
+<p>The client must implement the following:</p>
+<pre>
+interface ChannelRPCRequester extends Requester {
+    void channelRPCConnect(Status status,ChannelRPC channelRPC);
+    void requestDone(Status status,PVStructure pvResponse);
+}
+</pre>
+where
+<dl>
+    <dt>channelRPCConnect</dt>
+    <dd>This is called if the createChannelRPC fails or when the client request is
+      connected to the server.
+       <dl>
+           <dt>status</dt> 
+             <dd>The result of the createChannelRPC request.
+                If status is not success than the other arguments are null.
+                Unless the status is OK then the client must not call the channelRPC methods.
+             </dd>
+           <dt>channelRPC</dt>
+               <dd>The interface for the ChannelRPC.</dd>
+        </dl>
+    </dd>
+    <dt>requestDone</dt>
+       <dd>
+      The request is done. This is always called with no locks held.
+      The pvResponse is the data returned by the server.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work.
+       </dd>
+</dl>
+<h4>ChannelRPC</h4>
+<p>The following is the ChannelRPC interface. All methods are called by the client.</p>
+<pre>interface ChannelRPC extends Destroyable {
+    void request(PVStructure pvArgument,boolean lastRequest);
+    void destroy();
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>request</dt>
+    <dd>
+       Send a request to the server.
+       pvArgument is the data to send.
+      lastRequest is true if this will be the last request.
+       The server will always process.
+       The client must not make another request until ChanneRPCRequester::requestDone
+       is called.
+    </dd>
+   <dt>destroy</dt>
+     <dd>Destroy the channelRPC. This terminates the connection to the server.
+      Client and implementation should make the best effort to no longer make any use
+      of the channelRPC but both must be aware that methods could still be called because
+      of timing issues.
+     </dd>
+</dl>
+<h4>Life Cycle</h4>
+<p>The life cycle for channelRPC is:</p>
+<pre>
+createChannelRPC           client
+channelRPCConnect          provider
+repeat indefinitely
+    request                client
+    requestDone            provider
+destroy                    client or implementation
+</pre>
+<h2>Monitor</h2>
+<h3>Creating a monitor</h3>
+<p>A monitor is created via a call to <b>Channel::createMonitor</b>,
+which has the API:</p>
+<pre>
+Monitor createMonitor(
+    MonitorRequester MonitorRequester,
+    PVStructure pvRequest);
+</pre>
+where
+<dl>
+   <dt>MonitorRequester</dt>
+     <dd>
+      See next section
+    </dd>
+   <dt>pvRequest</dt>
+     <dd>
+      The pvRequest options. For the call to createRequest the string has the form
+      <pre>record[options]field(fields)</pre>
+      The possible record options are:
+      <dl>
+        <dt>queueSize=size</dt>
+          <dd>The size for the monitorElement queue.
+          The default is 2. If a value of less than 2 is specified that it will become 2.
+          </dd>
+        <dt>periodicRate=rate</dt>
+          <dd>
+            This is supported by the local provider in pvIOCJava.
+            It means to post monitors at a maximum rate specified by rate.
+          </dd>
+        <dt>provider specific</dt>
+          <dd>A provider may support additional options.</dd>
+       </dl>
+      field specifies the subset of the fields the client wants to monitor.
+      An individual field can specify options if the server honors them. For example
+      the local provider for pvIOCJava supports the options:
+      <dl>
+         <dt>algorithm=name</dt>
+            <dd>Specifies the name of an algorithm for determining when monitors are issued.
+            Depending on the algorithm there may be additions options.
+          </dd>
+      <dl> 
+     </dd>
+</dl>
+<h3>Client Interface</h3>
+<h4>MonitorRequester</h4>
+<p>The client must implement the following:</p>
+<pre>
+interface MonitorRequester extends Requester{
+    void monitorConnect(Status status,Monitor monitor,Structure structure);
+    void monitorEvent((Monitor monitor);
+    void unlisten();
+}
+</pre>
+where
+<dl>
+    <dt>monitorConnect</dt>
+    <dd>This is called if the createMonitor fails or when the client request is
+      connected to the server.
+       <dl>
+           <dt>status</dt> 
+             <dd>The result of the createMonitor request.
+                If status is not success than the other arguments are null.
+                Unless the status is OK then the client can not call the monitor methods.
+             </dd>
+           <dt>monitor</dt>
+               <dd>The interface for the Monitor.</dd>
+           <dt>structure</dt>
+               <dd>The introspection interface for the data that will
+                be returned for each monitor event.</dd>
+        </dl>
+    </dd>
+    <dt>monitorEvent</dt>
+       <dd>This is called when a monitor occurs. The client must call
+      monitor.poll to get data for the monitor. See below.
+      The client must not block in this method.
+       If it needs to perform an operation that will block it should arrange for another
+      thread the do the work. It is OK to call <b>poll</b> and <b>release</b> from this method.
+       </dd>
+    <dt>unlisten</dt>
+      <dd>The server has issued an unlisten request.
+        The client should make a best effort to stop using the monitor.
+         The implementation must realize, however, that the client may make some calls between
+         this method being called and the client cleaning up.
+        </dd>
+</dl>
+<h4>Monitor</h4>
+<p>The following is the Monitor interface. All methods are called by the client.</p>
+<pre>interface Monitor extends Destroyable {
+    Status start();
+    Status stop();
+    MonitorElement poll();
+    void release(MonitorElement monitorElement);
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>start</dt>
+    <dd>Start monitoring.
+      If <b>status.isOK</b> is true then the request is successful.
+     Another status means either that the caller has made an illegal call
+     or the monitor is in an invalid
+     state. For example the channel may have disconnected.<br />
+     The client should not call this until monitorConnect has been
+    called with a successful status. The implementation will, however,
+   be prepared for illegal calls.
+    </dd>
+  <dt>stop</dt>
+    <dd>Stop monitoring.
+      If <b>status.isOK</b> is true then the request is successful.
+     Another status means either that the caller has made an illegal call
+     or the monitor is in an invalid
+     state. For example the channel may have disconnected.<br />
+     The client should not call this until start has been
+    called with a successful status.
+    After stop is issued the client should not call poll until it has again called start.
+    The implementation will, however, be prepared for illegal calls.
+     </dd>
+  <dt>poll</dt>
+    <dd>Poll for monitor event. Null is returned when no more events are
+      available. The client must call this method in order to get monitor
+    data.
+    </dd>
+     The client must call release for the monitorElement returned by poll
+      before making another call to poll.
+     The implementation must not modify the monitorElement between calls to poll and release.
+  <dt>release</dt>
+    <dd>When the client has processed the monitor event returned by poll the
+      client must call release before again calling poll.
+     It is OK for the client to block between calls to poll and release with the realization
+     that it may miss events.
+     </dd>
+</dl>
+<h4>Life Cycle</h4>
+<p>The life cycle for monitors is:</p>
+<pre>
+createMonitor                           client
+monitorConnected                        provider
+start                                   client
+    repeat indefinitely
+        monitorEvent                    provider
+        repeat until null is returned
+            poll                        client
+            client specific
+            release                     client
+    stop or destroy                     client
+</pre>
+<h4>MonitorElement</h4>
+
+<p>A monitor element has three fields:</p>
+<dl>
+  <dt>pvStructure</dt>
+  <dt>changedBitSet</dt>
+  <dt>overrunBitSet</dt>
+</dl>
+<p>where</p>
+<dl>
+  <dt>pvStructure</dt>
+    <dd>The data structure.</dd>
+  <dt>changedBitSet</dt>
+    <dd>A bitset which has a bit set for each field of the data structure which
+      has changed since the last monitor.</dd>
+  <dt>overrunBitSet</dt>
+    <dd>A bitset which has a bit set for each field of the data structure which
+      has changed more than once since the last monitor.</dd>
+</dl>
+<p>The monitorElement belongs to the client between calls to poll
+and release, otherwise it belongs to provider.</p>
+
+<h3>Implementation</h3>
+<p>The most important guarantee is that a monitorElement
+must not be modfied by the implementation between client calls to poll and release.
+But the provider might receive new data between the calls so it must have somewhere to
+save the data.
+It is OK if overruns occur but the changedBitSet and overrunBitSet must reflect the
+latest new data.</p>
+<p>Except for specialized implementations like a Periodic Monitor,
+which are not discussed in this section,
+the implementation must keep a bounded queue of monitorElements.
+At any given time at most one of the elements belongs to the client.
+The implementation must use another element for new data.
+Thus a monitorElement queue of at least two monitorElements must be created.</p>
+<p>The client provider  and local provider have similar implementations.
+The main difference is that the local provider receives new data via method
+dataChanged and the client via method response.
+Thus the following methods are involved:</p>
+<dl>
+   <dt>dataChanged or response</dt>
+      <dd>newly arrived data.
+      This must <b>not</b> modify a monitorElement that belongs to the client.
+      If free monitor elements are available then a new monitorElement should
+      be taken from the queue and used.
+     </dd>
+   <dt>poll</dt>
+      <dd>client call to get a monitorElement<dd>
+   <dt>release</dt>
+      <dd>client call to release monitorElement returned by call to poll</dd>
+</dl>
+<p><b>Important:</b> The above methods must all take a lock that uses a common mutex.<p>
+<p>The following applies to both client a local providers
+and, except for syntax, both Java and C++.
+If a channel provider is created for other data sources it should have similar semantics.</p>
+<p>The Monitor implementation , call it MonitorImp,
+creates an auxillary class named MultipleElementQueue.
+This class extends the Monitor interface but only takes care of the monitorElement queue.
+The MonitorImp, calls the methods of MultipleElementQueue.</p>
+<p>MultipleElementQueue has the following private varibles:</p>
+<dl>
+   <dt>monitorQueue</dt>
+     <dd>This is a bounded queue of monitorElements. pvData provides the implementation
+     of a bounded queue with the proper semantics.</dd>
+   <dt>changedBitSet</dt>
+   <dt>overrunBitSet</dt>
+      <dd>An implementation creates one of each.
+       For the local implementation these are the bitSets given to pvCopy.
+       For the remote implementation they are used to deserialize the bitSets that
+      are received over the network.
+      </dd>
+   <dt>queueIsFull</dt>
+      <dd>If this is true when new data arrives then the new data is used to
+      update latestMonitorElement. If it is false when new data arrives a free
+      monitorElement is taken from the queue. If after getting a free element there are
+      no more free queue elements queueIsFull is set true and the latestMonitorEement
+      is set equal to the newly acquired monitorElement.
+   <dt>latestMonitorEement</dt>
+      <dd>The monitorElement into which new data is stored
+        if queueIsFull is true.</dd>
+</dl>
+<p>The Monitor methods are implemented as follows:</p>
+<dl>
+  <dt>start</dt>
+    <dd>Clears the changed and overrun bitSets.
+      Sets queuIsFull false.
+      The local implementation calls PVCopyMonitor::startMonitoring.
+    </dd>
+  <dt>stop</dt>
+     <dd>Nothing to do.</dd>
+  <dt>poll</dt>
+     <dd>
+     The Java implementation for remote client is:
+<pre>
+public MonitorElement poll()
+{
+    synchronized(this) {
+      	return monitorQueue.getUsed();
+    }
+}
+</pre>
+     </dd>
+  <dt>release</dt>
+     <dd>
+       The Java implementation for remote client is:
+<pre>
+public void release(MonitorElement currentElement)
+{
+    synchronized(this) {
+        if(queueIsFull) {
+             MonitorElement monitorElement = latestMonitorElement;
+             PVStructure pvStructure = monitorElement.getPVStructure();
+             bitSetUtil.compress(monitorElement.getChangedBitSet(),pvStructure);
+             bitSetUtil.compress(monitorElement.getOverrunBitSet(),pvStructure);
+             queueIsFull = false;
+             latestMonitorElement = null;
+        }
+        monitorQueue.releaseUsed(currentElement);
+    }
+}
+</pre>
+    </dd>
+  <dt>response or dataChanged</dt>
+     <dd>
+       The Java implementation for remote client is:
+<pre>
+public void response(Transport transport, ByteBuffer payloadBuffer)
+{
+    synchronized (this)
+    {
+        if (queueIsFull) {
+            MonitorElement monitorElement = latestMonitorElement;
+            PVStructure pvStructure = monitorElement.getPVStructure();
+            changedBitSet.deserialize(payloadBuffer, transport);
+            pvStructure.deserialize(
+                 payloadBuffer,
+                 transport,
+                 changedBitSet);
+            overrunBitSet.deserialize(payloadBuffer, transport);
+            monitorElement.getChangedBitSet().or(changedBitSet);
+            monitorElement.getOverrunBitSet().or(changedBitSet);
+            changedBitSet.clear();
+            overrunBitSet.clear();
+            return;
+        }
+        MonitorElement monitorElement = monitorQueue.getFree();
+        if(monitorElement==null) {
+             throw new IllegalStateException(
+                 "RealQueue::dataChanged() logic error");
+        }
+        if(monitorQueue.getNumberFree()==0){
+             queueIsFull = true;
+             latestMonitorElement = monitorElement;
+        }
+        PVStructure pvStructure = monitorElement.getPVStructure();
+        changedBitSet.deserialize(payloadBuffer, transport);
+        pvStructure.deserialize(
+              payloadBuffer,
+              transport,
+              changedBitSet);
+        overrunBitSet.deserialize(payloadBuffer, transport);
+        bitSetUtil.compress(changedBitSet,pvStructure);
+        bitSetUtil.compress(overrunBitSet,pvStructure);
+        monitorElement.getChangedBitSet().clear();
+        monitorElement.getChangedBitSet().or(changedBitSet);
+        monitorElement.getOverrunBitSet().clear();
+        monitorElement.getOverrunBitSet().or(overrunBitSet);
+        changedBitSet.clear();
+        overrunBitSet.clear();
+        monitorQueue.setUsed(monitorElement);
+
+   }
+   // NOTE that monitorEvent is called with no lock held
+   callback.monitorEvent(this);
+}
+</pre>
+      </dd> 
+</dl>
+<p>Note that receive, poll, and release all synchronize, i. e. do not allow simultaneous access to
+each other. Since receive deserializes it may block waiting for network packets.
+Note also that receive calls monitorEvent with no lock held.
+</p>
+
+</div>
+</body>
+</html>
