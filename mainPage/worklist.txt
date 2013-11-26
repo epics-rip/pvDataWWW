@@ -146,7 +146,7 @@ The following is a working list of present and near future activities of EPICS V
     working with DZ to fix.
 
 
-* Web Site and Global Documentation
+* Documentation and Web Site
 -----------------------------------
   + Update website for 4.3.0 (remove old references and broken links from Development page)
   + Complete FY 2014 charter
