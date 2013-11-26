@@ -9,11 +9,12 @@ KEY
 [date]: - meeting date reference.
 [n]: Bibref
 (XX): Initials of working group participant
-*: Activity area
- +: Job
-X: recently completed
+*   : Activity area
+ +  : Project
+  - : AI
+(Comp): recently completed
 ->: followup remark
-Status: - the project lifecycle stage of the project when its status was last reviewed. 
+Status: Each Project or Job the project lifecycle stage of the project when its status was last reviewed. 
         Try to summarise with:
         [{waiting, next, hot, active, inactive}] at 
         [incomplete] {concept, req, design, review, coding, 
@@ -25,16 +26,33 @@ ACTIVITIES AND THEIR JOBS
 =========================
 The following is a working list of present and near future activities of EPICS V4.
 
-* Efficient handling of big data
---------------------------------
-  + Modification of the funcionality of type conversion (MD, DH). This is
-    largely split into actions for copying without type conversion (see above), 
-    copying/extraction with type conversion. [3]
-  + Modifications to IOC for data pipelining (MD, AJ)
-    27/2/13: No concrete design yet. Plan to develop from pvaSrv and test image
-    server experiences.
-  + Creating a prototype of “batched field access” (BFA) API for high performance
-    control of record locksets [27-2-13]. Plan to use in pvaSrv. MD, RL.  
+* Basic Development, Network and IOC
+------------------------------------
+  + Refactor PV/Channel. Refactor source and documentation to correct the naming of modules w.r.t 
+    "PV" and "channel". My understanding (such that it is) is that
+    in V3 many things are named "channel" but they're actually about PVs, and the opposite is also
+    true. RL
+
+  + Multicast
+    Implement multicast
+    Once done, use it for a logging architecture (ie replace cmlog etc, except GUI part).
+
+  + pvaSrv (the pvaccess server for an "EPICS V3 IOC") hence the primary V3-V4 interop mechanism. 
+    (Comp) - 1 V4 channel : 1 IOC PV (called dbPv) ( recently completed right)?
+    - 1 V4 channel : N IOC PV (called dbGroup) ie support for groups.
+    - Decision on how to management compatibility of V4 releases with core releases (most, 
+      importantly will 4.4.0 require 3.15)
+      (RES and AIs in http://epicsv4.titanpad.com/ep/pad/view/41/latest)
+
+  + Development Environment and Infrastructure
+    - hg flow deployment and adoption
+    - Version numbering extension (to 4) to disambiguate ABI from protocol
+    - Automatic release package building in Jenkins
+    - Update release procedure document to include checklist approcah, not just diagram. Inc C++. 
+
+   + Licensing. 
+     - Decide on license and text.
+     - Add headers to all source referring to license.
 
 * APIs and Clients
 ------------------
@@ -85,7 +103,8 @@ The following is a working list of present and near future activities of EPICS V
     
   + Normative Image types
     Status: (12-Nov-2013). active at req. Need input from BD.
-DH: Would like to update the definition of NTImage now that he has unions. NTImage is not designed for images, it’s designed for areaDetector.
+    DH: Would like to update the definition of NTImage now that he has unions.
+    NTImage is not designed for images, it’s designed for areaDetector.
 
   + Need to verify easy asynchronous callback support in Matlab - a key shortcoming of lca (GW).
     Status: (12-Nov-2013) concept.
@@ -94,7 +113,17 @@ DH: Would like to update the definition of NTImage now that he has unions. NTIma
     Status: (12-Nov-2013) active at coding (MS).
  
  
-* Data Processing Support
+* High Performance Data Processing
+----------------------------------
+  + Modification of the funcionality of type conversion (MD, DH). This is
+    largely split into actions for copying without type conversion (see above), 
+    copying/extraction with type conversion. [3]
+  + Modifications to IOC for data pipelining (MD, AJ)
+    27/2/13: No concrete design yet. Plan to develop from pvaSrv and test image
+    server experiences.
+  + Creating a prototype of “batched field access” (BFA) API for high performance
+    control of record locksets [27-2-13]. Plan to use in pvaSrv. MD, RL.  
+
   + Decide in definition of the standard image types; implement in Normative Types doc.
     DH, NM
    Ensure that in the short term, eget can decode and display
@@ -104,40 +133,21 @@ DH: Would like to update the definition of NTImage now that he has unions. NTIma
    areaDetector, and another more generic one), or even, one wrapper
    of an arbitrary number of encodings (like TIFF vs JPEG).
 
-* Multicast
-  + Implement multicast
-  + Once done, use it for a logging architecture (ie replace cmlog etc, except GUI part).
 
-* Windows Support
-  + MS to synchronize use of decorations in V4 code
-  + AJ will accept/reject changes in Section 2; those that are necessary for 3.14 
+* Platform Support
+------------------
+  + Windows Port
+    - MS to synchronize use of decorations in V4 code
+    - AJ will accept/reject changes in Section 2; those that are necessary for 3.14 
 
-* vxWorks Port, Jenkins, and establishing which versions (<6, or 6.x, or >= 6.6 [for gcc
-  4.1.2] only) we will support. 
-  DZ,MS,AJ. 
-  27/2/13: vxWorks port succeeds if micro-benchmarking is not included. MS
-  working with DZ to fix.
+  + vxWorks Port, Jenkins, and establishing which versions (<6, or 6.x, or >= 6.6 [for gcc
+    4.1.2] only) we will support.  DZ,MS,AJ. 
+    27/2/13: vxWorks port succeeds if micro-benchmarking is not included. MS
+    working with DZ to fix.
 
-* pvaSrv (the pvaccess server for an "EPICS V3 IOC") hence the primary V3-V4 interop mechanism. 
-  X + 1 V4 channel : 1 IOC PV (called dbPv) ( recently completed right)?
-  + 1 V4 channel : N IOC PV (called dbGroup) ie support for groups.
-  + Decision on how to management compatibility of V4 releases with core releases (most, 
-    importantly will 4.4.0 require 3.15)
-     (RES and AIs in http://epicsv4.titanpad.com/ep/pad/view/41/latest)
-
-* Development Environment and Infrastructure
-  + hg flow deployment and adoption
-  + Version numbering extension (to 4) to disambiguate ABI from protocol
-  + Automatic release package building in Jenkins
-  + Update release procedure document to include checklist approcah, not just diagram. Inc C++. 
-  + License agreement. Add proper headers referring to license.
-
-* IOC
-  + Correct the naming of modules w.r.t "PV" and "channel". My understanding (such taht it is) is that
-    in V3 many things are named "channel" but they're actually about PVs, and the opposite is also
-    true. RL
 
 * Web Site and Global Documentation
+-----------------------------------
   + Update website for 4.3.0 (remove old references and broken links from Development page)
   + Complete FY 2014 charter
   + Track progress on jobs and activities by Agile Dashboard (put on WG page), 
@@ -147,6 +157,8 @@ DH: Would like to update the definition of NTImage now that he has unions. NTIma
   + Javadoc and Doxygen incomplete. Needs much better completeness. Needs to conform to
     much stricter code documentation standards w.r.t. careful use of tense and
     specificity (MK, MS, GW, DH to do Doxygen for CPP modules?)
+  + Write licensing and append license reference to all files.
+
 
 FUTURE ACTIVITIES AND JOBS
 ==========================
@@ -154,6 +166,7 @@ The following activities have not yet been initiated, but will likely come soon.
 
 * Gateway for pvAccess.
 
+* Add streaming
 
 
 KEY OUTSTANDING DECISIONS

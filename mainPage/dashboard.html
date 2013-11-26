@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+ <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="PRAGMA" content="NO-CACHE">
+  <meta http-equiv="EXPIRES" content="0">
+ <title>EPICS v4 Working Group Home Page</title>
+ <link rel="stylesheet" type="text/css" href="base.css" />
+ <link rel="stylesheet" type="text/css" href="epicsv4web.css" />
+ <style type="text/css">
+   .pres { background:yellow; }
+   @media print {
+     body {  margin: 3em 4em 2em 4em;
+             font-size: smaller
+     }
+   }
+   @media screen {
+     body { margin: 1em 5em 2em 5em }
+   }
+   li { margin-bottom:0.9em }
+
+ </style>
+</head>
+<body>
+
+<!-- Very top date banner -->
+<div width="100%" style="font-size:70%;text-align:right;">
+<!-- hhmts start -->Last modified: Tue Nov 12 11:01:33 PST 2013 <!-- hhmts end -->
+</div>
+<table width="100%" style="border-width:1px">
+  <tr>
+    <td style="padding:4px">
+      <table id="logo" style="border-width:0px" class="image">
+	<caption
+	 style="text-align:center;letter-spacing:0.7em;font-size:70%;font-weight:lighter"
+	 align="top">EPICS V4
+	</caption>
+	<tr>
+	  <td><img align="left" src="image/logos/EV4logo_blue_sanstext_med.png"
+	    alt="EV4 logo"/>
+	  </td>
+	</tr>
+      </table>
+    </td>
+    <td width="100%"
+      style="text-align:center;letter-spacing:0.1em;font-size:200%;color:#4C3BCA">
+      EPICS V4 Project Tracking Dashboard
+    </td>
+    <td padding="0px" border-width="0px"></td>
+  </tr>
+</table>
+
+<p>The EPICS v4 Working present project Action Item statuses (AIs) by Project:</p>
+<table width="100%" class="content" id="tracker">
+  <tr>
+    <th>Project</th>
+    <th>AI</th>
+    <th>Wait/ Inactive</th>
+    <th>Next</th>
+    <th>Active</th>
+    <th>Review</th>
+    <th>Completed</th>
+  </tr>
+
+  <!-- ACTIVITY: Basic Development, Network and IOC -->
+  <!-- For each project, create a tr pair, with a th that gives the project name and rowspan
+       of the number of AIs. The first AI uses that first tr. Subsequent AIs of the same project
+       get their own tr pair. Every tr pair gets 6 tds: AI name, wait, next, active, review,
+       completed. -->
+  
+  <!-- Project: Refactor for PV/channel -->
+  <tr>
+    <th rowspan="2">Refactor PV/channel </th>
+    
+    <td>Requirements</td>
+    <td></td>
+    <td></td>
+    <td style="background:yellow"></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Refactor pvData & pvAccess RL</td>
+    <td></td>
+    <td style="background:yellow"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <!-- End Project -->
+
+  <!-- Project Multicast -->
+   <tr>
+    <th rowspan="1">Add Multicast to pvAccess</th>
+
+    <td>Implementation MS</td> <!-- AI -->
+    <td></td> <!-- Wait -->
+    <td></td> <!-- Next -->
+    <td style="background:yellow"></td> <!-- Active -->
+    <td></td> <!-- Review -->
+    <td></td> <!-- completed -->
+  </tr>
+
+  <!-- Project: pvSrv -->
+  <tr>
+    <th rowspan="2">pvaSrv </th>
+    
+    <td>Get a single pv (pvDb) RL</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td style="background:yellow"></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Get a numbe of pvs (pvGrp) RL</td>
+    <td style="background:yellow"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <!-- End Project -->
+  
+  <!-- Project: Development Environment -->
+  <tr>
+    <th rowspan="4">Development Environment </th>
+    
+    <td>Hg flow deployment RL</td>
+    <td></td>
+    <td style="background:yellow"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Version numbering extension GW</td>
+    <td style="background:yellow">Discussion on necessity incomplete (25/11/13)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Jenkins release package build GW</td>
+    <td style="background:yellow"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Add checklist to Release doc GW</td>
+    <td style="background:yellow"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+
+   <!-- Project: License -->
+  <tr>
+    <th rowspan="2">Licensing </th>
+    
+    <td>Write and agree license agreemnet BD</td>
+    <td style="background:yellow"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Add headers to all source GW</td>
+    <td style="background:yellow"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <!-- End Project -->
+
+<!-- End of Activity -->  
+</table>
+
+<hr>
+<address></address>
+<!-- hhmts start -->Last modified: Mon Nov 25 15:56:19 PST 2013 <!-- hhmts end -->
+</body> </html>
