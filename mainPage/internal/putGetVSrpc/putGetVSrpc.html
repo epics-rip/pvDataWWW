@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>channelPutGet VS channelRPC</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+ </script>
+</head>
+
+<body>
+
+
+<div class="head">
+<h1>chennelPutGet VS channelRPC</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 15-Jan-2014</h2>
+
+  <dl>
+    <dt>Latest version:</dt>
+    <dd><a
+      href="getGetVSrpc.html">getGetVSrpc.html</a>
+    </dd>
+    <dt>This version:</dt>
+     <dd>None</dd>
+    <dt>Previous version:</dt>
+     <dd>None</dd>
+    <dt>Editors:</dt>
+    <dd>Marty Kraimer, BNL</dd>
+  </dl>
+  <p class="copyright">This product is made available subject to acceptance of the <a
+href="http://epics-pvdata.sourceforge.net/LICENSE.html">EPICS open source
+license.</a></p>
+<hr />
+
+</div>
+
+<h2 class="nocount">Abstract</h2>
+
+<p>Before union and unionArray were available channelRPC was the primary method for
+implementing services.
+This document makes the argument that channelPutGet should become the primary method.
+If this argument is accepted then the information in this document should be moved
+into pvAccessJava.html. </p>
+
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+
+<div id="contents" class="contents">
+
+<h2>Introduction</h2>
+<p>A primary use of pvAccess is to implement network based services via
+a Remote Procedure Call (RPC) mechanism.
+pvAccess provides two ways to implement an RPC: channelPutGet and channelRPC.</p>
+<p>For a channelRPC a client sends a top level PVStructure to the server,
+the service accepts the sructure, processes the request, and sends the result via another
+top level structure. The top level structures can be completely different for each request.
+A convention must be established about what introspection interfaces the service uses.
+This is the main purpose of normative types.
+</p>
+<p>For a channelPutGet the service must create a PVRecord.
+A PVRecord has a record name, which is identical to the pvAccess channel name.
+The PVRecord has a top level PVStructure, which must have at least two PVStructure sub-fields:
+one for the put data for a request and one for the get data for the request.
+This the PVRecord has a top level PVStructure like the following:
+<pre>
+structure 
+     structure argument
+        // service specific
+     structure result
+        // service specific
+</pre>
+The client specifies the argument and the service specifies the result.
+</p>
+<p>Before the types union and unionArray were available channelRPC was used for most services
+because the introspection interface for the result and/or the argument could change
+from request to request.</p>
+<p>
+This document makes the argument that union and unionArray makes it possible to implement
+all services via channelPutGet instead of channelRPC.
+Using channelPutGet has the desirable feature that the other channel methods can also be used
+to access the PVRecord (channelRPC does not allow this).
+This allows the PVRecord to me introspected and montored, 
+which are both desirable features.
+</p>
+<p>The next section shows how a PVRecord can be created that provides a channelPutGet
+that completele replaces a channelRPC.
+Next are some sections that provide additional examples.
+The last section is the summary.
+</p>
+
+<h2>PVRecord for channelPutGet that relaces channelRPC</h2>
+<p>The following is the introspection interface for the top level PVStructure for the PVRecord"</p>
+<pre>
+structure 
+     structure argument
+        any value
+     structure result
+        any value
+</pre>
+<p>Note that <b>any</b> is a <b>union</b> where the value can be any valid type and
+the type can change dynamically.
+This the above allows any type of data that channelRPC allows.
+</p>
+<p>The only real advantage that this has over just using channelRPC is that the PVRecord
+can be monitored.
+</p>
+<h2>fixed type argument variable type result</h2>
+<p>The first example is:</p>
+<pre>
+structure 
+     structure argument
+        NTNameValue value
+            string[] name
+            string[] value
+     structure result
+        any value
+</pre>
+<p>The argument is normative type NTNameValue but the result can be any type.
+In additon to alowing requests to be monitored,
+this allows a client to discover and send acceptable arguments.
+This also allows for a generic tool for channelPutGet requests.
+</p>
+<p>The next example allows that server to return variable data via a more restrictive union:</p>
+<pre>
+structure 
+     structure argument
+        NTNameValue value
+            string[] name
+            string[] value
+     structure result
+        union value
+           string[] stringValue
+           double[] doubleValue
+           timeStamp[] timeStampValue
+           alarm[] alarmValue
+</pre>
+<p>In this case the client can also discover what types the service can return.</p>
+
+<h2>fixed type argument fixed type result </h2>
+<p>This is what could have been done before union has available.
+Often channelRPC was used just because it the developer was familiar with implementing channelRPC.
+An example is:</p>
+<pre>
+structure 
+     structure argument
+        NTNameValue value
+            string[] name
+            string[] value
+     structure result
+        NTTable value
+           string[] labels
+           structure
+                double[] value
+                alarm[] alarm
+                timeStamp[] timeStamp
+</pre>
+<h2>Summary</h2>
+<p>The above gives some simple examples of how channelPutGet can be used instead
+of channelRPC.
+Implenting a service via channelPutGet requests rather than channelRPC
+allows the PVRecord to be monitored.
+Also channelGet can be used to see the most recent request.
+By thinking carefully of how to define argument and result,
+a service implementer can make more details about the service available
+to the client via introspection.
+</p>
+</div>
+</body>
+</html>
