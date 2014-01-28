@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Normative Types</title>
+  <link rel="stylesheet" type="text/css" href="../../base.css" />
+  <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
+
+  <!-- Styles comments:
+   opt - Markup for standard optional fields of Normative Types
+   nterm - Non-terminal symbol, in the grammar of Normative types
+   term - Terminal symbol in the grammar of Normative Types
+   user - A replacement string in the grammar of Normative Types,
+          ie user programmer supplies value.
+   ed   - Comments included by the editor of this document.
+  -->
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     caption { font-size:smaller; font-style:italic; caption-side:bottom }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.def { font-style:bold }
+     span.opt { color: grey }            
+     span.nterm { font-style:italic }    
+     span.term { font-family:courier }   
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     span.literal { font-family:courier }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="../../script/tocgen.js"></script>
+
+</head>
+		
+<body>
+
+<div class="head">
+<h1>EPICS V4 NDArray Normative Type</h1>
+
+<!--
+
+<p>The EPICS V4 NDArray Normative Type, NTNDArray, expresses image data from cameras and detectors. In particular it is designed to effciently and losslessly transport areaDetector NDArrays accross pvAccess, so that process of encoding and decoding between the two is a relatively straightforward and unambiguous.</p>
+
+<p>The NDArray type is provided by <a
+ href="http://cars9.uchicago.edu/software/epics/areaDetector.html">areaDetector</a>.
+See the <a
+ href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/_n_d_array_8h_source.html">NDArray</a>
+class declaration for details of the NDArray properties. 
+</p>
+<p>The above requirements ensures that NTNDArray will be </p>
+
+
+
+<a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html#ntimage">NTImage</a>
+
+-->
+
+</div> <!-- head -->
+
+<div id="toc" class="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<div id="contents" class="contents">	  
+<hr />
+<h2 id="introduction">Introduction</h2>
+
+<p>
+
+The NTNDArray is a EPICS Version 4 normative type, that is, a software design for a composite data type specified in the <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">normative types specification</a>. It is designed to encode data from detectors and cameras, especially
+<a
+ href="http://cars9.uchicago.edu/software/epics/areaDetector.html">areaDetector</a> applications. The type is heavily modelled on areaDetector's <a
+ href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/class_n_d_array.html">NDArray</a>.
+
+<p>
+One NTNDArray gives one frame of data.  
+
+<p>
+This document contains a candidate definition for NTNDArray, discusses the design choices and is intended to get answers to a number of outstanding questions. The intended audience is both the V4 and areaDetector communities.
+
+<p>
+Note: NTNDArray replaces the previous <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes_20121018.html#ntimage">NTImageType</a> normative type defined by James Rowland and Ulrik Pedersen.
+
+<p>
+In this document NDArray by itself will always refer to the areaDetector type with NTNDArray refering to the EPICS version 4 normative type.
+
+<h2 id="goals">Design Goals</h2>
+
+<p>
+The NTNDArray is designed to
+<ol>
+  <li>Encode all data in an areaDetector NDArray, so that it may be transported losslessly via pvAccess and so existing areaDetector that plugins may run remotely
+  <li>Allow straightforward and unambiguous encoding/decoding of NDArrays as NTNDArrays</li>
+  <li>Minimise the resending of unmodified data</li>
+  <li>Allow efficient implementation of the area detector processing chain</li>
+</ol>
+
+<p>
+Essentially NDArrays have the following information:
+<pre>
+a) Array data,
+c) 1..* Dimension Structures (containing size, offset, binning and reverse fields)
+d) uniqueID
+e) 0..* Attribute Structures (each containing a name, value of heterogenous type, description, source and source type) 
+f) Timestamps (time, epicsTime)
+</pre>
+
+<p>
+In addition the NTNDArray might contain data which is compressed either because the image itself has been compressed using an image codec or has been compressed for transport via pvAccess. So to the above information we might add:  
+
+<p>
+<pre>
+b) Compression algorithm
+</pre>
+
+<p>
+There are also some standard optional fields for V4 PVs:
+<pre>
+g) Optional fields
+</pre>
+
+
+<h2 id="Definition">Definition</h2>
+
+<p>
+The following is a candidate defintion for NTNDArray, broken down by the categories described in the previous sections.
+
+<p>
+<span class="ed"> In some cases there are two or three sensible ways of encoding information, which will either each have their definite pros and cons or will be a matter of personal preference. In these cases I've made a choice, but I'd be happy to get other opinions. See the editor's comments in red</span> 
+
+<pre>
+structure NTNDArray
+//a) Array data
+    union  value
+        boolean[] booleanValue
+        byte[]    byteValue
+        short[]   shortValue
+        int[]     intValue
+        long[]    longValue
+        ubyte[]   ubyteValue
+        ushort[]  ushortValue
+        uint[]    uintValue
+        ulong[]   ulongValue
+        float[]   floatValue
+        double[]  doubleValue
+
+//b) Compression algorithm
+    string codec
+    int    dataType
+
+//c) Dimensions
+    int[] dim
+    int[] offset 
+    int[] binning
+    int[] reverse
+    int[] fullDim
+
+//d) uniqueId
+    int uniqueID
+
+//e) Attributes
+    string[] attributeDescriptions
+    int[]    attributeSourceTypes
+    string[] attributeSources
+    any[]     attributeValues
+
+//f,g) Timestamps, Optional fields
+    string     descriptor  :opt
+    time_t     timeStamp   :opt
+    alarm_t    alarm       :opt
+    display_t  display     :opt
+</pre>
+<p>
+<h2 id="Notes">Notes</h2>
+<p>
+This section contains a description for each part of the NTNDArray as well as a discussion of the reasons for the design and any outstanding questions relating to it. 
+<p>
+<h3 id="value">Array Data</h3> The "value" field stores the actual image data which corresponds to the data pointed to by the pData field in NDArray. In James's original this field was any one of the array types, i.e. its type was hardcoded in the introspection data. This had the drawback that it did not allow the type of data to change dynamically. The demos have used byte arrays containing pData's bytes and a int dataType field containing a value corresponding to NDArray's dataType. This has potential issues with endianness.
+<p>
+Now that we have support for unions we can use these for the data. So the value field will be one of the array types and this type can change dynamically. Note this is a union of arrays not an array of unions, so it is implemented with the data ultimately in a single scalar array.
+<p>
+Unsigned integer support has also been added since the original, earlier definition.
+<p>
+<h4 id="Notes">Uncompressed data</h4>
+
+<p>
+When the "codec" field (described more fully below) is the empty string the data in "value" is uncompressed and contains only array data.
+<p>
+In the case the "value" field will contain the values corresponding to the N-dimensional array as a single array, according to the dimension ("dim") field (described below), of the appropriate type in the usual, obvious way.
+<p>
+The size of the array MUST NOT be less than the product of the dimensions when the data is uncompressed (otherwise it won't make sense). I think also the array length in the uncompressed case SHOULD equal the product of the dimensions.
+<p>
+Note that in areaDetector the NDArray "dataSize" field may be more than the product of the all the dimensions and the size of element type (so that For the NT type length * element_size may be less than NDArray::dataSize).
+<p>
+
+<h4 id="Endianness">Endianness</h4>
+
+<p>
+As the data is stored in an array of the appropriate type the endianness of the data will be that of the host. 
+<p>
+In the majority of cases the endianness of the data in the buffer pointed to by pData in an NDArray will match that of the host. 
+<p>
+In the cases where it doesn't it is desirable to get the data matching the host endianness as soon as possible. That way plugins can be written to be agnostic of endianness. This should be done in the areaDetector driver or failing that in a plugin in the chain prior to the V4 plugin. Therefore the NTNDArray does not need to consider endianness.
+<p>
+<span class="ed">  All, but especially AD experts: Is this the appropriate approach to endianness. Would it be better to have a byte[] value field with dataType and endianness fields? Something else? </span>    
+<p>
+So assuming the endianness of the data in the buffer pointed to by pData matches that of the host the it will be possible to create a shared_vector of appropriate type around the existing void* buffer and swap into the PVXArray, helping to achieve zero-copy.
+<p>
+<span class="ed"> Matej/Michael Ds: Is this correct?</span> 
+<p>
+
+
+<h4 id="non-array">Headers and non-array data formats</h4>
+
+In nearly all areaDetector applications the data pointed to by pData is an N-d array. An exception is XMAP which produces data with a header. This is passed to a plugin as a  1-d NDArray which can parse the header and create the appropriate NDArrays.
+
+<p>
+The correct behaviour should be in general for this type of processing to be done in the driver or early in the plugin chain. So NTNDArray need not consider this case.
+
+<span class="ed">  AD experts: Are there any cases of data other than arrays? If so how would these be handled ("codec" field)</span>  
+
+<p>
+<h4 id="Compression">Compression</h4>
+
+<p>
+NTNDArray allows for the possibility that the data is compressed, in which case the enterpretation is determined by the "codec" field (described below), in conjuction with the "dim" field. I would typically expect the array in the union "value" field to be a byte array in this case, but I haven't required this. The enterpretation is given by the "codec" field and this may include the array containing the compressed data being of a type other than byte[].
+<p>
+With compression the length*element_size("value") MAY be (and typically will be) less than the product of the dimensions and the size of the element type of the uncompressed data.
+<p>
+<h3 id="codec">Compression algorithm</h3> 
+
+In an NDArray pData will typically point to a buffer containing an N-d array of data. So a 2-d monochrome image will be stored as a 2-d array and a 2-d RGB image as a NxMx3 3-d array.
+
+<p>
+However the NTNDArray allows for other possibilities.
+
+<p>
+e.g. 
+<ol>
+<li>the data is in a compressed image format (e.g. JPEG)</li>
+<li>the data has been compressed for more efficient network transport (e.g. with lz4, blosc etc).</li>
+<li>the data is in an non-array data format (e.g. includes a header) </li>
+</ol>
+<p>
+The 2nd may be particular important as in an areaDetector processing chain involving network transport and with sufficent processing power the bottleneck is likely to be the network bandwidth. even with 10Gig ethernet. The areaDetector/V4 plugin demo has already shown that we can go beyond the bandwidth using compression.
+
+<p>
+<span class="ed"> Question: Is there a use case for 1 currently or in the future? Ulrik has suggested webcams that produce JPEG data might put that directly into a NDArray and maybe Pilatus/CBF.</span>
+<p> 
+<span class="ed"> Question: Is use case 3 required. Ulrik says no - fix it in the driver!</span> 
+<p>
+<span class="ed"> Question: For case 2 is the pvData layer the correct place to do the compression and therefore is the codec field the right place to encode the compression algorithm. For example if we are transporting the image locally within a process we don't want to compress it and decompress it again. Between processes on the same host we might. If we're transporting the across to a remote client we may well. Could this be encoded in the pvAccess provider so pvData is unaware of it. Or is it possible to send the data compressed in a remote monitor update and  </span> 
+<p>
+The "codec" field is included to cater for other possibilities.
+
+<p>
+<span class="ed">  Note previously the definition included a fourcc field to encode the image format. James's intention was, I think, to include this for future-proofing, with a possibility of this replacing the area detector attributes ColorMode and BayerPattern. However fourcc proved difficult to use. For example for a uncompressed monochrome image we never worked out what the fourcc code was and with the areaDetector attributes it was superfluous. With the emphasis moving towards transport to run areaDetector plugins remotely and therefore decoding an NTNDArray back into an NDArray it was less useful. Initially I got rid of it, but I needed something to encode the compression algorithm for transporting in the but it's also not clear what the code should be if we use fourcc, so I added a more general "codec" field </span> 
+
+<p>
+If the "codec" field is the empty string then value contains uncompressed area detector as an N-d array of the type determined by the type of the array in the union "value" and of dimensions given by the "dim" field. 
+
+<p>
+Otherwise the enterpretation of the "value" field is determined by the value of the string in the "codec" field. This field should be namespace qualified. E.g. there can be a ev4 name space or a fourcc namespace. So for if we wanted to encode JEPG we might have a string
+
+<pre>
+fourcc/JPEG
+</pre>
+<p>
+<span class="ed"> Question: What should the format be here? "uri:fourcc/JPEG"? </span> 
+
+
+<p>  
+I've also included a "dataType field". In the case that "codec" is the empty string "dataType" should match the type of the array in value. Other cases are "codec"-dependent.
+
+<p>
+It is used in the case where an N-d array is compressed (e.g. by blosc) into a byte array to encode the uncompressed. This allows a single value to be used for codec (the alternative is to encode this info in the codec string)
+<p>
+<span class="ed"> Question is the "dataType" field wanted or should the info be encoded in the "codec" string. </span> 
+<p>
+<span class="ed"> Question I think there an endianness issue here if we use a compression algorithm. E.g. host compresses an int array using blosc, transports it to a client and the client decompresses it and interprets it as an int array. If so how do we encode this? As a separate field or in the "codec" field.</span> 
+
+
+<h3 id="value">Dimensions</h3>
+
+The fields "dim", "offset", "binning", "reverse" are arrays corresponding to the size, offset, binning and reverse fields of NDDimension_t[]  dims field of NDArray. These encode the following information
+
+<p>
+dim - the numbers of elements in each dimension of the array. 
+
+<p>
+offset - the offsets relative to the origin of the original data source (detector, for example). If a selected region of the detector is being read, then this value may be > 0. The offset value is cumulative, so if a plugin such as NDPluginROI further selects a subregion, the offset is relative to the first element in the detector, and not to the first element of the region passed to NDPluginROI.
+
+<p>
+binning - the binning (pixel summation, 1=no binning) for each dimension relative to original data source
+reverse - the orientation (0=normal, 1=reversed) for each dimension relative to the original data source
+
+<p>
+There is also a fullDim field which is the size for each dimension of the whole image of which the NTNDArray is a part. 
+
+<p>
+For a simple image fullDim=dim. For a ROI fullDim = dim(original image).
+In other case the detector image may be made up of multiple images, each with their own (NT)NDArray. A use case is the Excaliber detector which has a 6x8 array of 256x256 pixel photon detectors arranged into 6 strips of 8 cells each producing a 2048x256 image. In this case the sizes would be 2048x256, the fullDim would be 2048x1536 the offsets would be 0x0, 0x256, 0x512 etc. It is possible to have detectors with gaps where there are no pixels. This can be handled with appropriate sizes, offsets and values. In the current set up a plugin converting an NDArray to an NTNDArray would need to know the geometry and be configured to input the correct fullDim.
+
+<p>
+<span class="ed">  Question (areaDetector): Should NDDimension_t have a fullDim field </span>     
+
+
+<p>
+Note the dimensions of these arrays MUST all be the same (i.e. equivalent to the ndim field of NDArray.
+ndim should be at least 1. I haven't prohibited that the number of dimensions of the NTNDArray be 0. A well-designed client should check the number of dims. This allows a default NTNDArray PV to be created (e.g. prior to receiving it's first NDArray). 
+
+<p>
+Traditionally the V4 working group have not used deep structures and arrays of structures over structures of arrays. I've followed the convention here. Two alternatives are to encode place these fields inside a structure e.g.
+
+<pre>
+structure NTNDArray
+    // ...
+    structure 
+        int[] size
+        int[] reverse
+        int[] binning
+        int[] offset
+        int[] fullDim
+</pre>
+<p>
+or to encode using a structure array
+<pre>
+structure[] NTNDArray
+    // ...
+    structure[] dim
+        structure dimension_t
+           int size
+           int reverse
+           int binning
+           int offset
+           int fullDim
+</pre>
+<p>
+The main advantage of arrays of structures is that
+<ol>
+<li>it's easier for people to get data out these structures and into arrays in, for example matlab</li>
+<li>if, for example, reverse changes then in pvAccess the other fields do not have to be sent, whereas currently if a structure array changes all fields must always be sent.</li>
+</ol>
+However I don't think either reason is particularly compelling in this case.
+<p>
+<span class="ed"> Question: Which do we prefer
+<ol>
+<li>scalar array fields in the top structure</li>
+<li>scalar array fields in a substrucutre of the top structure</li>
+<li>a structure array field in the top structure</li>
+</ol>
+</span> 
+
+<h3 id="opt">uniqueId</h3>
+
+<p>
+This corresponds to the NDArray uniqueId.
+
+<h3 id="opt">attributes</h3>
+ 
+<p>
+The attribute fields encode the linked list of NDAttributes in areaDetector. The attribute values of of a heterogenous type.
+Previously we had to use NTVariant[] to encode them. Now we can use a union or variant.
+<p>
+The natural way to do this is to use arrays
+<p>
+Three options of how to do this:
+<p>
+<ol>
+<li>Top-level scalar array fields (plus a union array for attribute values):
+<pre>
+    string[] attributeDescriptions
+    int[]    attributeSourceTypes
+    string[] attributeSources
+    any[]     attributeValues
+</pre>
+<p>
+<li> The same but put this in a structure below the top-level structure:
+<pre>
+    structure attributes
+        string[] descriptions
+        int[]    sourceTypes
+        string[] sources
+        any[]    values
+</pre>
+
+<li> Replace scalar arrays with a single structure array.
+<pre>
+    structure[] attributes
+        structure attribute_t
+            string description
+            int[]    sourceType
+            string source
+            any[]    value
+
+</pre>
+</ol>
+Currently in pvAccess if any part of any array changes then all elements must be resent. In the case of structure arrays this mean alls elements of all structures.
+<p>
+So if any attribute value changed all values would have to be resent in cases 1 and 2. In case 3 all fields would have to be resent.
+<p>
+This is a problem because
+<ol>
+<li>There are use cases where the attribute meta-data is significant and may dominate detector data.</li>
+<li>There is a request to allow attribute values to be scalar arrays as well as scalars and we don't want to resend array data that hasn't changed.</li>
+</ol>
+We'll need therefore to extend pvData and pvAccess to allow not sending elements which have not changed.
+For simplicity we do this for complex array types. Each array gets a bitset to signify which elements have changed.
+<p>
+Adding this feature for UnionArrays means that encoding using 1 or 2, if an attribute value changes then the other attribute values need not be sent (nor to any descriptions etc). If, for example, any description changes then all descriptions must be sent. 
+<p>
+Adding this feature for StructureArrays means that encoding using 3, if an attribute value changes then the other structure array elements do not have to be sent, but the description and other fields corresponding to that value must be resent (similarly for other fields).
+<p>
+It would be desirable to also add a feature to only send those fields of a structure in a structure array. Then if a value (or other field) changed only that field.
+<p>
+One ot both of these features could be rolled out by agreeing that they are in the road-map and updating the pvAccess spec, with the initial implementation being all fields are sent and the changebit being implemented when possible. 
+<p>
+I've gone for provisionally option 1) following the usual convention of top-level arrays instead of a structure array or array fields in a substructure, although I actually prefer 3.
+<p>
+If the additional "send only changed fields of elements in a structure array" was also available.
+<p>
+<span class="ed"> Question: Can either of both of these be implemented?</span> 
+<p>
+<span class="ed"> Question: Any preferences for the structure 1,2, 3?</span> 
+<p>
+<span class="ed"> Note in previous versions ColorMode and BayerPattern were brought out of the attributes into the top-level. I've relagated them back down to attributes as pulling them into the top-level complicated encoding and decoding (especially decoding to run remote plugins.</span> 
+
+
+<h3 id="opt">TSimeStamps</h3>
+<p>
+NDArrays have a double timeStamp field and in later versions a V3 epicsTimeStamp (secondsPastEpoch, nanoseconds). V4 NT types normally have an optional V4 timestamp_t field (secondsPastEpoch, nanoseconds, integer userTag).
+<p>
+The defintion of NTNDArray above has only the usual V4 timeStamp.
+<p>
+<span class="ed">  
+Q. I haven't given the NTNDArray any timeStamp fields other than the usual except the V4 timestamp. Do we need more than this? E.g. do we need an optional timeStamp which encodes the processing time of the PV and a second which stores the original timeStamp of the data from the NDArray</span> 
+<p>
+<h3 id="opt">Optional fields</h3>
+<p>
+    NTNDArray has the usual set of optional fields.
+<p>
+    string     descriptor  :opt
+    time_t     timeStamp   :opt
+    alarm_t    alarm       :opt
+    display_t  display     :opt
+
+
+</div>
+
+    
+
+
+</body>
+</html>
