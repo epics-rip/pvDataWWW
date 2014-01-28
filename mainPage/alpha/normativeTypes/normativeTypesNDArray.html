@@ -173,9 +173,10 @@ structure NTNDArray
     int uniqueID
 
 //e) Attributes
-    string[] attributeDescriptions
-    int[]    attributeSourceTypes
-    string[] attributeSources
+    string[]  attributeNames
+    string[]  attributeDescriptions
+    int[]     attributeSourceTypes
+    string[]  attributeSources
     any[]     attributeValues
 
 //f,g) Timestamps, Optional fields
@@ -220,8 +221,7 @@ In the cases where it doesn't it is desirable to get the data matching the host 
 <p>
 So assuming the endianness of the data in the buffer pointed to by pData matches that of the host the it will be possible to create a shared_vector of appropriate type around the existing void* buffer and swap into the PVXArray, helping to achieve zero-copy.
 <p>
-<span class="ed"> Matej/Michael Ds: Is this correct?</span> 
-<p>
+
 
 
 <h4 id="non-array">Headers and non-array data formats</h4>
@@ -231,7 +231,8 @@ In nearly all areaDetector applications the data pointed to by pData is an N-d a
 <p>
 The correct behaviour should be in general for this type of processing to be done in the driver or early in the plugin chain. So NTNDArray need not consider this case.
 
-<span class="ed">  AD experts: Are there any cases of data other than arrays? If so how would these be handled ("codec" field)</span>  
+<p>
+<span class="ed">  AD experts: Are there any cases of data other than arrays? If so how would these be handled (e.g. "codec" field)</span>  
 
 <p>
 <h4 id="Compression">Compression</h4>
@@ -263,7 +264,8 @@ The 2nd may be particular important as in an areaDetector processing chain invol
 <p> 
 <span class="ed"> Question: Is use case 3 required. Ulrik says no - fix it in the driver!</span> 
 <p>
-<span class="ed"> Question: For case 2 is the pvData layer the correct place to do the compression and therefore is the codec field the right place to encode the compression algorithm. For example if we are transporting the image locally within a process we don't want to compress it and decompress it again. Between processes on the same host we might. If we're transporting the across to a remote client we may well. Could this be encoded in the pvAccess provider so pvData is unaware of it. Or is it possible to send the data compressed in a remote monitor update and  </span> 
+<span class="ed"> Question: For case 2 is the pvData layer the correct place to do the compression and therefore is the codec field the right place to encode the compression algorithm. For example if we are transporting the image locally within a process we don't want to compress it and decompress it again. Between processes on the same host we might. If we're transporting the across to a remote client we may well. Could this be encoded in the pvAccess provider so pvData is unaware of it. </span>
+
 <p>
 The "codec" field is included to cater for other possibilities.
 
@@ -292,21 +294,26 @@ It is used in the case where an N-d array is compressed (e.g. by blosc) into a b
 <span class="ed"> Question is the "dataType" field wanted or should the info be encoded in the "codec" string. </span> 
 <p>
 <span class="ed"> Question I think there an endianness issue here if we use a compression algorithm. E.g. host compresses an int array using blosc, transports it to a client and the client decompresses it and interprets it as an int array. If so how do we encode this? As a separate field or in the "codec" field.</span> 
-
+<p>
+ <span class="ed">Suggestion from V4 conference call is that the endianess should be in the codec. For image codecs this would be in the fourcc code already. For compression algorithms like lz4 or blosc we have to have separate strings for big and little endian compression, but the uncompressed array type is encoded by the dataType.</span>
 
 <h3 id="value">Dimensions</h3>
 
 The fields "dim", "offset", "binning", "reverse" are arrays corresponding to the size, offset, binning and reverse fields of NDDimension_t[]  dims field of NDArray. These encode the following information
+<dl>
+  <dt>dim</dt>
+    <dd>The numbers of elements in each dimension of the array</dd>
+  <dt>offset</dt>
+    <dd>Offset the offsets relative to the origin of the original data source (detector, for example). If a selected region of the detector is being read, then this value may be > 0. The offset value is cumulative, so if a plugin such as NDPluginROI further selects a subregion, the offset is relative to the first element in the detector, and not to the first element of the region passed to NDPluginROI.</dd>
+  <dt>binning</dt>
+    <dd>The binning (pixel summation, 1=no binning) for each dimension relative to original data source
+      source</dd>
+  <dt>reverse</dt>
+    <dd>The orientation (0=normal, 1=reversed) for each dimension relative to the original data source
+      source</dd>
+</dl>
 
 <p>
-dim - the numbers of elements in each dimension of the array. 
-
-<p>
-offset - the offsets relative to the origin of the original data source (detector, for example). If a selected region of the detector is being read, then this value may be > 0. The offset value is cumulative, so if a plugin such as NDPluginROI further selects a subregion, the offset is relative to the first element in the detector, and not to the first element of the region passed to NDPluginROI.
-
-<p>
-binning - the binning (pixel summation, 1=no binning) for each dimension relative to original data source
-reverse - the orientation (0=normal, 1=reversed) for each dimension relative to the original data source
 
 <p>
 There is also a fullDim field which is the size for each dimension of the whole image of which the NTNDArray is a part. 
@@ -383,15 +390,17 @@ Three options of how to do this:
 <ol>
 <li>Top-level scalar array fields (plus a union array for attribute values):
 <pre>
-    string[] attributeDescriptions
-    int[]    attributeSourceTypes
-    string[] attributeSources
+    string[]  attributeNames
+    string[]  attributeDescriptions
+    int[]     attributeSourceTypes
+    string[]  attributeSources
     any[]     attributeValues
 </pre>
 <p>
 <li> The same but put this in a structure below the top-level structure:
 <pre>
     structure attributes
+        string[] names
         string[] descriptions
         int[]    sourceTypes
         string[] sources
@@ -402,9 +411,10 @@ Three options of how to do this:
 <pre>
     structure[] attributes
         structure attribute_t
-            string description
+            string[] name
+            string   description
             int[]    sourceType
-            string source
+            string   source
             any[]    value
 
 </pre>
@@ -440,24 +450,25 @@ If the additional "send only changed fields of elements in a structure array" wa
 <span class="ed"> Note in previous versions ColorMode and BayerPattern were brought out of the attributes into the top-level. I've relagated them back down to attributes as pulling them into the top-level complicated encoding and decoding (especially decoding to run remote plugins.</span> 
 
 
-<h3 id="opt">TSimeStamps</h3>
+<h3 id="opt">TimeStamps</h3>
 <p>
 NDArrays have a double timeStamp field and in later versions a V3 epicsTimeStamp (secondsPastEpoch, nanoseconds). V4 NT types normally have an optional V4 timestamp_t field (secondsPastEpoch, nanoseconds, integer userTag).
 <p>
 The defintion of NTNDArray above has only the usual V4 timeStamp.
 <p>
 <span class="ed">  
-Q. I haven't given the NTNDArray any timeStamp fields other than the usual except the V4 timestamp. Do we need more than this? E.g. do we need an optional timeStamp which encodes the processing time of the PV and a second which stores the original timeStamp of the data from the NDArray</span> 
+Question (People with stong opinions on timeStamps): I haven't given the NTNDArray any timeStamp fields other than the usual except the V4 timestamp. Do we need more than this? E.g. do we need an optional timeStamp which encodes the processing time of the PV and a second which stores the original timeStamp of the data from the NDArray and can be decoded back from the NTNDArray into the NTArray epicsTS. If we need to keep both I would add an addition timeStamp field (i.e. I would not be in favour of using attributes for this). The question is "Is there a use case?"</span> 
 <p>
 <h3 id="opt">Optional fields</h3>
 <p>
     NTNDArray has the usual set of optional fields.
 <p>
+<pre>
     string     descriptor  :opt
     time_t     timeStamp   :opt
     alarm_t    alarm       :opt
     display_t  display     :opt
-
+</pre>
 
 </div>
 
