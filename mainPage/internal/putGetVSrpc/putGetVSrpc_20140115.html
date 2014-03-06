@@ -38,21 +38,19 @@
 <div class="head">
 <h1>chennelPutGet VS channelRPC</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 06-Mar-2014</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 15-Jan-2014</h2>
 
   <dl>
     <dt>Latest version:</dt>
     <dd><a
-      href="putGetVSrpc.html">putGetVSrpc.html</a>
+      href="getGetVSrpc.html">getGetVSrpc.html</a>
     </dd>
     <dt>This version:</dt>
     <dd><a
-      href="putGetVSrpc_20140306.html">putGetVSrpc_20140306.html</a>
+      href="getGetVSrpc_20140115.html">getGetVSrpc_20140115.html</a>
     </dd>
     <dt>Previous version:</dt>
-    <dd><a
-      href="putGetVSrpc_20140115.html">putGetVSrpc_20140115.html</a>
-    </dd>
+     <dd>None</dd>
     <dt>Editors:</dt>
     <dd>Marty Kraimer, BNL</dd>
   </dl>
@@ -67,9 +65,7 @@ license.</a></p>
 
 <p>Before union and unionArray were available channelRPC was the primary method for
 implementing services.
-This document makes the argument that channelPutGet should be considered
-for services where the argumment and/or result has an immutable introspection
-interface.
+This document makes the argument that channelPutGet should become the primary method.
 If this argument is accepted then the information in this document should be moved
 into pvAccessJava.html. </p>
 
@@ -109,16 +105,11 @@ because the introspection interface for the result and/or the argument could cha
 from request to request.</p>
 <p>
 This document makes the argument that union and unionArray makes it possible to implement
-many services via channelPutGet instead of channelRPC.
+all services via channelPutGet instead of channelRPC.
 Using channelPutGet has the desirable feature that the other channel methods can also be used
 to access the PVRecord (channelRPC does not allow this).
-This allows the PVRecord to be introspected and montored, 
+This allows the PVRecord to me introspected and montored, 
 which are both desirable features.
-</p>
-<p><b>NOTE:</b> PVRecord is a concept implemented by pvDatabaseCPP and pvIOCJava.
-Each has a complete implementation of pvAccess channel provider.
-Thus implementing a service via channelPutGet assumes that a C++ service will use
-pvDatabaseCPP and a Java service will use pvIOCJava.
 </p>
 <p>The next section shows how a PVRecord can be created that provides a channelPutGet
 that completele replaces a channelRPC.
