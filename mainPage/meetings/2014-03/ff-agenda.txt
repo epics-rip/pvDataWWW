@@ -1,0 +1,51 @@
+AGENDA FOR EPICS V4 FACE-TO-FACE MEETING, MAR 11-13 2014, LJUBLJANA, COSYLAB
+
+From: https://sourceforge.net/p/epics-pvdata/mailman/epics-pvdata-devel/thread/CAJvg_wD6biw_1twn%2BGX0Wz2hAxT3uX5AbHck_9TGinNLjH2htA%40mail.gmail.com/#msg32061203
+
+
+11 March 2014 (aka areaDetector/NTNDArray related topics day)
+-------------
+ 9:00 - find room, welcome, etc.
+ 9:30 - areaDetector intro - David & Marty
+ 9:45 - areaDetector integration/plugins - David
+10:30 - areaDetector V4 demo - Marty
+11:00 - application of NTNDArray for two use cases - Aaron Chabot
+11:30 - NTNArray - David
+
+12:30 - lunch
+
+13:15 - revision of (other) NT types, union application, fixed size arrays
+16:30 - areaDetector related work planning, establish priorities
+17:00 - (end)
+
+12 March 2014
+-------------
+9:00  - pvData status - Marty
+10:00 - pvAccess status - Matej
+          - status (15')
+          - facts and myths about large data transfer (30')
+          - pvMS (multicast), zeroMQ (30')
+          - pvService API (15')
+
+11:30 - pvDatabase status - Marty
+
+12:30 - lunch
+
+13:15 - CSS and PVManager
+
+    - CSS and PVManager stage of integration - Matej/Gabriele
+    - PVManager plans - establish priorities - Gabriele
+               Gateway
+               C++ implementation
+               NTNDArray
+               Performance measurements
+
+
+17:00 (end)
+
+13 March 2014
+-------------
+9:00 -
+- Joint session with DISCS, Suzanne Gysin on RBAC for Access Security.
+10:00 overflow
+13:00 (Meeting ends)
