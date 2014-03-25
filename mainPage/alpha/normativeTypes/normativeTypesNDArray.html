@@ -95,7 +95,9 @@ plugins may run remotely
   <li>Minimise the resending of unmodified data</li>
   <li>Allow efficient implementation of the area detector processing chain</li>
 </ol>
-<!--
+
+
+
 <p>
 Essentially NDArrays have the following information:
 </p><pre>a) Array data,
@@ -111,7 +113,6 @@ because the image itself has been compressed using an image codec or has
  been compressed for transport via pvAccess. So to the above information
  we might add:
 
-</p><p>
 </p><pre>f) Compression algorithm
 </pre>
 
@@ -125,41 +126,6 @@ We might also add fields to enable easy monitoring of the data size, both of the
 There are also some standard optional fields for V4 PVs:
 </p><pre>h) Optional fields
 </pre>
--->
-
-<p>
-Essentially NDArrays have the following information:
-</p>
-<ol type=a start=a>
-  <li>Array data,
-  <li>1..* Dimension Structures (containing size, offset, binning and reverse fields)
-  <li>uniqueID
-  <li>0..* Attribute Structures (each containing a name, value of heterogenous type, description, source and source type)
-  <li>Timestamps (time, epicsTime)
-</ol>
-
-
-<p>
-
-In addition the NTNDArray might contain data which is compressed either
-because the image itself has been compressed using an image codec or has
- been compressed for transport via pvAccess. So to the above information
- we might add:
-</p>
-
-</p><p>
-<ol type=a start=6><li>Compression algorithm</li></ol>
-</p>
-
-<p>
-We might also add fields to enable easy monitoring of the data size, both of the compressed and uncompressed data
-<ol type=a start=7><li>Data sizes</li></ol>
-</p>
-
-<p>
-There are also some standard optional fields for V4 PVs:
-</p>
-<ol type=a start=8><li>Optional fields</li></ol>
 
 
 
@@ -197,16 +163,16 @@ The following is a candidate defintion for NTNDArray, broken down by the categor
 //b) Dimensions
     structure[] dimension
         structure dimension_t dimension
-            int size
-            int offset
-            int fullSize
-            int binning
-            int reverse
+            int     size
+            int     offset
+            int     fullSize
+            int     binning
+            boolean reverse
 
 //c) uniqueId
     int uniqueID
 
-//e)
+//e) time stamp
      time_t  dataTimeStamp
 
 //d) Attributes
@@ -218,8 +184,7 @@ The following is a candidate defintion for NTNDArray, broken down by the categor
             int     sourceType
             string  source
 
-
-//e,h) Timestamps, Optional fields
+//e,h) Time stamp, Optional fields
     string     descriptor  :opt
     time_t     timeStamp   :opt
     alarm_t    alarm       :opt
@@ -242,7 +207,26 @@ questions relating to it.
 <p>
 The "value" field stores the
 actual image data which corresponds to the data pointed to by the pData
-field in NDArray. In the original NTImage this field was any one of the
+field in NDArray.
+</p><pre>structure NTNDArray
+//a) Array data
+    union  value
+        boolean[] booleanValue
+        byte[]    byteValue
+        short[]   shortValue
+        int[]     intValue
+        long[]    longValue
+        ubyte[]   ubyteValue
+        ushort[]  ushortValue
+        uint[]    uintValue
+        ulong[]   ulongValue
+        float[]   floatValue
+        double[]  doubleValue
+    // ...
+</pre>
+</p>
+
+In the original NTImage this field was any one of the
 array types, i.e. its type was hardcoded in the introspection data. This
  had the drawback that it did not allow the type of data to change
 dynamically. The demos have used byte arrays containing pData's bytes
@@ -334,6 +318,8 @@ element type of the uncompressed data.
 
 <p>
 It is not possible to monitor the length of an array using pvAccess without monitoring the whole array.
+For "value", which may be very large, this may be undesirable.
+</p><p>
 To make it easier to monitor the size of image data two fields have been added.
 </p>
 <p><pre>structure NTNDArray
@@ -343,10 +329,10 @@ To make it easier to monitor the size of image data two fields have been added.
     // ...
 </pre>
 </p>
-With compression the length*element_size("value") MAY be (and typically
-will be) less than the product of the dimensions and the size of the
-element type of the uncompressed data.
+<p>
+The "compressedSize" field is the size of the data in the value field in bytes after compression.
 </p><p>
+The "uncompressedSize" field is the size of the data in bytes before compression.
 </p>
 
 <h3 id="compression_algorithm">Compression algorithm</h3>
@@ -411,12 +397,12 @@ This allows us solve the problem of arguments as well as namespace qualification
 </p><pre>structure NTNDArray
     // ...
     structure[] dimension
-        structure dimension_t
-           int size
-           int offset
-           int fullSize
-           int binning
-           int reverse
+        structure dimension_t dimension
+            int     size
+            int     offset
+            int     fullSize
+            int     binning
+            boolean reverse
     // ...
 </pre>
 <p>
@@ -441,7 +427,7 @@ and not to the first element of the region passed to NDPluginROI.</dd>
     <dd>The binning (pixel summation, 1=no binning) in this dimension relative to original data source
       source</dd>
   <dt>reverse</dt>
-    <dd>The orientation (0=normal, 1=reversed) in this dimension relative to the original data source
+    <dd>The orientation (false=normal, true=reversed) in this dimension relative to the original data source
       source</dd>
 </dl>
 
