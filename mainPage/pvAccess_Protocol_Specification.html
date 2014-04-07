@@ -32,11 +32,11 @@ span.ed.priv { display: none }
 <!-- text, 3. the This Verison a tag's href URL, 4. The Status of this document -->
   
 <h2 class="nocount" id="L50">EPICS v4 Working Group, Third (in progress) Public Working
-Draft, 23-Jul-2013</h2>
+Draft, 7-April-2014</h2>
 <dl>
   <dt>This version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20130723.html">pvAccess_Protocol_Specification_20130723.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20140407.html">pvAccess_Protocol_Specification_20140407.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
@@ -79,7 +79,7 @@ Control System. </a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 23 Jul 2013 version of the pvAccess Protocol Specification. This
+<p>This is the 7 April 2014 version of the pvAccess Protocol Specification. This
 version consititutes the first publication of the Third Public Working Draft. 
 The Third Public Working Draft includes in particular support for unsigned integer, unions, and
 material and revisions from the Invited Experts above. The
@@ -210,6 +210,8 @@ important. Such non-normative text is in <i>italics</i>.</p>
         (0x12)</a></li>
       <li><a href="#protocolMessages:applicationMessages:channelRPC">Channel
         RPC (0x14)</a></li>
+      <li><a href="#protocolMessages:applicationMessages:cancelRequest">Cancel
+        request (0x15)</a></li>
     </ol>
   </li>
   <li><a href="#controlMessages">Control Messages</a>
@@ -682,16 +684,26 @@ when each connection is established. </p>
       <td>0xFE + ID</td>
       <td style="font-weight:bold">ONLY_ID_TYPE_CODE</td>
       <td>Serialization contains only an ID (that was assigned by one of the
-        previous FULL_WITH_ID descriptions).</td>
+        previous FULL_WITH_ID_TYPE_CODE or FULL_TAGGED_ID_TYPE_CODE descriptions).</td>
     </tr>
     <tr>
       <td>0xFD + ID + FieldDesc</td>
       <td style="font-weight:bold">FULL_WITH_ID_TYPE_CODE</td>
       <td>Serialization contains an ID (that can be used later, if cached) and
-        full interface description.</td>
+        full interface description. Any existing definition with the same ID is overriden.</td>
     </tr>
     <tr>
-      <td>0xFC - 0xE0</td>
+      <td>0xFC + ID + tag + FieldDesc</td>
+      <td style="font-weight:bold">FULL_TAGGED_ID_TYPE_CODE</td>
+      <td>Serialization contains an ID (that can be used later, if cached), tag (of integer type) and
+        full interface description. Any existing definition with the same ID is overriden.
+        A tag must guarantee that the same (ID, FieldDesc) pair has the same tag and any previous definition
+        with the same ID and different FieldDesc has a different tag. In non-reliable transport systems this
+        identifies whether the definition with given ID overrides already existing one and allow receivers to skip deserialization of FieldDesc, if tags match.<br/>
+      </td>
+    </tr>
+    <tr>
+      <td>0xFB - 0xE0</td>
       <td>RESERVED</td>
       <td>Reserved for future usage, MUST NOT be used.</td>
     </tr>
@@ -1165,6 +1177,10 @@ that actions MUST NOT be run in parallel. </p>
 <p>When connection is lost, a request MUST be put to DISCONNECTED state and
 automatically reinitialized when connection is reestablished (as if the request
 were newly instantiated). </p>
+
+<p>A pending request MAY be canceled. Actual cancellation MAY be ignored, however
+completion of the request MUST be always reported via request completion callback
+mechanism.</p>
 
 <p>A request MAY be destroyed any time (in any state) and then its state MUST
 be set to DESTROYED. Once the request is destroyed, it MUST NOT be used
@@ -2935,8 +2951,8 @@ array request(s). </p>
     int serverChannelID;
     int requestID;
     byte subcommand = 0x40 mask for GET; 0x10 mask for DESTROY;
-    int offset;
-    int count;
+    size offset;
+    size count;
 };
 
 struct channelGetArrayResponse {
@@ -2967,12 +2983,11 @@ struct channelGetArrayResponse {
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">offset</td>
-      <td>Offset from the beginning of the array (if positive) or end of the
-        array (if negative).</td>
+      <td>Offset from the beginning of the array.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">count</td>
-      <td>Number of elements requested, -1 means form offset to the end of the
+      <td>Number of elements requested, 0 means form offset to the end of the
         array.</td>
     </tr>
   </tbody>
@@ -3007,7 +3022,7 @@ struct channelGetArrayResponse {
     int serverChannelID;
     int requestID;
     byte subcommand = 0x00 mask for PUT; 0x10 mask for DESTROY;
-    int offset;
+    size offset;
     PVField pvArrayData;
 };
 
@@ -3038,8 +3053,7 @@ struct channelPutArrayResponse {
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">offset</td>
-      <td>Offset from the beginning of the array (if positive) or end of the
-        array (if negative) where to put given subarray.</td>
+      <td>Offset from the beginning of the array.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">pvArrayData</td>
@@ -3073,8 +3087,8 @@ struct channelPutArrayResponse {
     int serverChannelID;
     int requestID;
     byte subcommand = 0x80 mask for SET_LENGTH; 0x10 mask for DESTROY;
-    int length;
-    int capacity;
+    size length;
+    size capacity;
 };
 
 struct channelSetLengthResponse {
@@ -3104,11 +3118,11 @@ struct channelSetLengthResponse {
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">length</td>
-      <td>New length, -1 to keep old value.</td>
+      <td>New length.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">capacity</td>
-      <td>New capacity, -1 to keep old value.</td>
+      <td>New capacity, 0 to keep old value.</td>
     </tr>
   </tbody>
 </table>
@@ -3537,6 +3551,35 @@ struct channelRPCResponse {
     <tr>
       <td style="text-align:right;font-family:monospace">pvResponseData</td>
       <td>Response data structure.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="protocolMessages:applicationMessages:cancelRequest">Cancel request
+(0x15)</h3>
+
+<p>A "cancel request" messages is used cancel any pending request, i.e. an
+instance with requestID. </p>
+<pre>// cancel any request with given requestID
+struct cancelRequest {
+    int serverChannelID;
+    int requestID;
+};</pre>
+
+<table style="caption-side:bottom">
+  <caption style="font-weight:bold; padding:1em">Cancel request.</caption>
+  <tbody>
+    <tr>
+      <th>Member</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">serverChannelID</td>
+      <td>Server generated channel ID, same as in create channel response.</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">requestID</td>
+      <td>Request ID, same as in request init message.</td>
     </tr>
   </tbody>
 </table>
