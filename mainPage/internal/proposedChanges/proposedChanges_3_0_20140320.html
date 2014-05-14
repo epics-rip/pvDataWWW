@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS V4 Proposed Changes to release 3.0</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+  </script>
+</head>
+<body>
+
+<div class="head">
+<h1>EPICS V4 Proposed Changes to release 3.0</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+
+<h2 class="nocount">EPICS N4 Working Group, Working Draft, 20-Mar-2014</h2>
+
+  <dl>
+    <dt>Latest version:</dt>
+    <dd>
+       <a href = "proposedChanges_3_0.html">
+       proposedChanges_3_0.html>
+       </a>
+    </dd>
+    <dt>This version:</dt>
+    <dd>
+       <a href = "proposedChanges_3_0_20140320.html">
+        proposedChanges_3_0_20140320.html>i
+       </a>
+    </dd>
+    <dt>Previous version:</dt>
+    <dd>
+       <a href = "proposedChanges_3_0_20131023.html">
+        proposedChanges_3_0_20131023.html>i
+       </a>
+    </dd>
+    <dt>Editors:</dt>
+    <dd>Marty Kraimer, BNL</dd>
+    <dd>Matej Sekoranja, cosyLAB</dd>
+    <dd>Michael Davidsaver, BNL</dd>
+    <dd>David Hicken, Diamond Light Source</dd>
+  </dl>
+
+  <p class="copyright">This product is made available subject to acceptance of the <a
+href="http://epics-pvdata.sourceforge.net/LICENSE.html">EPICS open source
+license.</a></p>
+<hr />
+</div>
+
+<h2 class="nocount">Abstract</h2>
+
+<p>Proposed Changes to pvData and pvAccess after Release 3.0</p>
+
+<h2 class="nocount">Status of this Document</h2>
+
+<p>
+<p>This document discusses proposed changes to the repositories that make up release 3.0.
+</p>
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+<div id="contents" class="contents">
+
+<h2>Introduction</h2>
+<p>
+This document discusses the status of pvData, pvAccess, pvaSrv, pvDatabaseCPP,
+and pvIOCJava.
+It describes changes that have been made since the release last October.
+It also discusses changes that will also be made.
+</p>
+<p>Since removing methods from pvData and the
+pvAccess API changes will break other projects
+the changes will be made on a branch named <b>changesAfter3_0_2</b>.
+</p>
+<p>
+The changes will affect the following projects:</p>
+<pre>
+pvDataCPP
+pvAccessCPP
+pvaSrv
+pvDatabaseCPP
+
+pvDataJava
+pvAccessJava
+pvIOCJava
+</pre>
+<p>Only after all these projects are working will each be merged back
+into the default branch.
+</p> 
+<p>Following the description of each change that is not done is a action
+item with the names of who is responsible for the change.
+This is a paragraph starting with:</p>
+<p><b>AI</b> ...</p>
+<h2>pvUnion and pvUnionArray</h2>
+<p>
+Both Java and C++ now support two new data types: union and unionArray
+</p>
+<p>
+The definition of Type is now:
+<pre>
+public enum Type {
+    scalar,
+    scalarArray,
+    structure,
+    structureArray,
+    union,
+    unionArray;    
+}
+</pre>
+The types <b>union</b> and <b>unionArray</b> are new.<p>
+<p>FieldCreate, the facility for creating introspection interfaces has
+the following new methods:
+<pre>
+public interface FieldCreate {
+    ...
+    UnionArray createUnionArray(Union elementUnion);
+    UnionArray createVariantUnionArray();
+    ...
+    Union createVariantUnion();
+    Union createUnion(String[] fieldNames, Field[] fields);
+    Union createUnion(String id, String[] fieldNames, Field[] fields);
+</pre>
+<p>PVDataCreate has the new methods:
+<pre>
+public interface PVDataCreate {
+    ...
+    PVUnionArray createPVUnionArray(UnionArray unionArray);
+    ...
+    PVUnion createPVUnion(Union union);
+    ...
+    PVUnion createPVVariantUnion();
+    PVUnionArray createPVVariantUnionArray();
+    ...
+    PVUnion createPVUnion(PVUnion unionToClone);
+    ...
+    PVUnionArray createPVUnionArray(Union union);
+    ...
+}    
+</pre>
+<p>A varient is a union where the data can be any pvType.
+A C++ example is:</p>
+<pre>
+static void exampleVarientUnion()
+{
+    cout &lt;&lt; endl;
+    cout &lt;&lt; "exampleVarientUnion" &lt;&lt; endl;
+    PVUnionPtr pvUnion = pvDataCreate-&gt;createPVVariantUnion();
+    cout&lt;&lt; "pvUnion " &lt;&lt; pvUnion-&gt;dumpValue(cout) &lt;&lt; endl;
+    PVScalarPtr pvFloating = pvDataCreate-&gt;createPVScalar(pvDouble);
+    convert-&gt;fromDouble(pvFloating,10.3);
+    pvUnion-&gt;set(pvFloating);
+    cout&lt;&lt; "pvUnion " &lt;&lt; pvUnion-&gt;dumpValue(cout) &lt;&lt; endl;
+    PVScalarPtr pvInteger = pvDataCreate-&gt;createPVScalar(pvInt);
+    convert-&gt;fromInt(pvInteger,10);
+    pvUnion-&gt;set(pvInteger);
+    cout&lt;&lt; "pvUnion " &lt;&lt; pvUnion-&gt;dumpValue(cout) &lt;&lt; endl;
+}
+</pre>
+<p>This produces:</p>
+<pre>
+exampleVarientUnion
+any 
+    (none)
+pvUnion 0x604148
+any 
+    double  10.3
+pvUnion 0x604148
+any 
+    int  10
+pvUnion 0x604148
+</pre>
+<p>The following is an example of a union that can only be a pvInt or pvDouble.
+<pre>
+static void exampleUnion()
+{
+    cout &lt;&lt; "exampleUnion" &lt;&lt; endl;
+    StringArray names(2);
+    names[0] = "float";
+    names[1] = "integer";
+    FieldConstPtrArray fields(2);
+    fields[0] = fieldCreate-&gt;createScalar(pvDouble);
+    fields[1] = fieldCreate-&gt;createScalar(pvInt);
+    PVUnionPtr pvUnion =  pvDataCreate-&gt;createPVUnion(
+         fieldCreate-&gt;createUnion(names,fields));
+    cout&lt;&lt; "pvUnion " &lt;&lt; pvUnion-&gt;dumpValue(cout) &lt;&lt; endl;
+    PVScalarPtr pvFloating = pvDataCreate-&gt;createPVScalar(pvDouble);
+    convert-&gt;fromDouble(pvFloating,10.3);
+    pvUnion-&gt;select("float");
+    pvUnion-&gt;set(pvFloating);
+    cout&lt;&lt; "pvUnion " &lt;&lt; pvUnion-&gt;dumpValue(cout) &lt;&lt; endl;
+    PVScalarPtr pvInteger = pvDataCreate-&gt;createPVScalar(pvInt);
+    convert-&gt;fromInt(pvInteger,10);
+    pvUnion-&gt;select("integer");
+    pvUnion-&gt;set(pvInteger);
+    cout&lt;&lt; "pvUnion " &lt;&lt; pvUnion-&gt;dumpValue(cout) &lt;&lt; endl;
+}
+</pre>
+<p>This produces:</p>
+<pre>
+exampleUnion
+union 
+    (none)
+pvUnion 0x604148
+union 
+    double  10.3
+pvUnion 0x604148
+union 
+    int  10
+pvUnion 0x604148
+
+</pre>
+
+<p><b>NOTE:</b> neither pvDataCPP.html or pvDataJava.html discusses union.</p>
+<p>
+<b>AI</b>
+Matej has "cookbook" with examples.
+Cookbook will be put in documentation directory.
+Marty will update both pvDataCPP.html and pvDataJava.html.
+</p>
+
+
+<h2>pvDataCPP New Array Support</h2>
+<h3>Description</h3>
+<p>These are changes that Michael Davidsaver made.
+There is a new class that inplements <b>shared_vector</b>.
+It is a template class and is used by all the array types provided by pvData.
+The various PVArray types all inforce COW (Copy On Write).
+The implementation implements COW by using an immutable shared_vector
+to hold the data.
+<h3>pvSubArrayCopy</h3>
+<p>pvDataCPP has a new and much smaller version of <b>Convert</b>.
+It no longer has the methods for converting between raw array data and PVScalarArrays.
+pvSubArrayCopy provides methods required by the pvCopy faclity implemented
+by pvDatabaseCPP,
+They are described in file <b>pvSubArrayCopy.h</b> and implemented in <b>pvSubArrayCopy.cpp</b>
+<h3>Deprecated Array Methods</h3>
+<p>Many of the old  array methods were kept but deprecated.
+This was because of code in pvAccess, pvaSrv, and pvDatabaseCPP 
+that used the deprecated methods.
+All three projects no longer use any of the deprecated methods.
+All deprecated methods will be removed.
+<h3>pvDataCPP.html</h3>
+<p>The documentation describes the new array support and also removed
+descriptions of all the deprecated methods.
+As mentioned above it does not describe union.
+Michael needs to look at and possibly correct the description of arrays.
+</p>
+<p>
+<b>AI</b>
+Michael will review the documentation about shared_vector and new implementation of PVArrays
+</p>
+<h2>Build Support for Other Operating Systems</h2>
+<p>I think that there is now support for building pvDataCPP on windows
+and RTEMS.
+I do not kmow about vxWorks.
+I will let Matej give the status.
+</p>
+<p><b>AI</b> Matej will track progress of builds on other operating systems.
+</p>
+<h2>bitSet</h2>
+<p>The semantics of Java and C++ are now the same.
+The changes were to the following C++ methods, which did not have the same semantics as Java.</p>
+<dl>
+   <dt>operator&amp;=</dt>
+     <dd>The only change is to first check for self assignment</dd>
+   <dt>operator|=</dt>
+     <dd>Check for self assignment.
+       Next make wordsInUse max of wordsInUse and set.wordsInUse.
+       After operation on wordsInCommon copy any remaining words.</dd>
+   <dt>operator^=</dt>
+     <dd>Check for self assignment.
+       Next make wordsInUse max of wordsInUse and set.wordsInUse.
+       After operation on wordsInCommon recalculateWordsInUse()
+     </dd>
+   <dt>operator-=</dt>
+     <dd>This is not in the Java version was removed from the C++ implementation.</dd>
+</dl>
+<p><b>AI:</b> None. This work is complete.
+</p>
+<h2>Monitor Queuesize</h2>
+<p>This discussion applies to pvAccessCPP, pvAccessJava, pvIOCJava, and
+pvDatabaseCPP.</p>
+<p>Previously pvAccess, pvIOCJava, and pvDatabaseCPP all implemented monitir queues with
+different semantics.
+Now they all only implement the following:</p>
+<dl>
+   <dt>queueSize=1</dt>
+     <dd>There is a single monitorElement but a private changeBitSet, overrunBitSet, and pvStructure.
+     When the client calls poll the private data is copied to the monitorElement.</dd>
+   <dt>queueSize&gt;=2</dt>
+     <dd>A finite queue of monitorElements is created.
+      The existing semantics for monitorQueue is OK.
+     But should a queue be created on both client and server?
+     I think not. Having a queue on the server but not on the client sounds desirable.
+     How can client specify this since currently both client and server get the queueSize from pvRequest?
+     </dd>
+</dl>
+<p>Previously there were additional options like noQueue, etc.
+These had problems.</p>
+<p><b>AI</b> None since this work is complete.</p>`
+
+<h2>Other changes to pvDataCPP</h2>
+<p>This section discusses proposed changes to the definitions in pvData.h.
+The changes are mostly to remove methods.
+This is a result of discussions on the epics-pvdata mailing list.
+The main contributers to this discussion were Benjamin Franksen, David Hicken,
+and Michael Davidsaver.</p>
+<h3>const</h3>
+<p>David has sent some emails about more rigouous use of <b>const</b> in pvData.h.
+Michael agrees.</p>
+<p><b>AI</b> Some combination of Michael, David, and Matej will make changes.
+Perhaps David can make them and have Michael review changes?
+</p>
+<h3>PVField</h3>
+<p>The following methods will be removed from PVField</p>
+<pre>
+class PVField
+...
+public:
+...
+    virtual void message(String message,MessageType messageType);
+    virtual void setRequester(RequesterPtr const &amp;prequester)
+    PVAuxInfoPtr &amp; getPVAuxInfo();
+    void replacePVField(const PVFieldPtr&amp;  newPVField);
+    void renameField(String const &amp; newName);
+...
+protected:
+...
+    void replaceField(FieldConstPtr &amp;field);
+</pre>
+<p><b>AI</b> Marty will remove the above methods to pvDataCPP.
+The changes will <b>not </b> be made to pvDataJava until xml parsers are rewritten.
+</p>
+<p><b>Question:</b> Should the following methods be replaced?</p>
+<pre>
+    virtual void toString(StringBuilder buf);
+    virtual void toString(StringBuilder buf,int indentLevel);
+    virtual std::ostream&amp; dumpValue(std::ostream&amp; o) const = 0;
+</pre>
+<p>Perhaps by:</p>
+<pre>
+    virtual String toString() const;
+    virtual std::ostream&amp; operator&lt;&lt;(std::ostream&amp; o) const = 0;
+</pre>
+<p>
+<p><b>AI:</b> Matej will make changes so that this is compatible with streams.
+He will make changes in pvDataJava so that toString does not show the entire array is huge.
+</p>
+
+<h3>PVStructure</h3>
+<p>The following methods will be removed from PVStructure</p>
+<pre>
+class PVStructure
+...
+public
+...
+    void appendPVField(String const &amp;fieldName,PVFieldPtr const &amp; pvField);
+    void appendPVFields(StringArray const &amp; fieldNames,PVFieldPtrArray const &amp; pvFields);
+    void removePVField(String const &amp;fieldName);
+    String getExtendsStructureName() const;
+    bool putExtendsStructureName(String const &amp;extendsStructureName);
+...
+</pre>
+<p><b>AI</b> Marty will remove these methods from pvDataCPP.
+The changes will <b>not </b> be made to pvDataJava until xml parsers are rewritten.
+</p>
+<p><b>Question</b> Should the following methods be added?</p>
+<pre>
+    PVBooleanArrayPtr getBooleanArrayField(String const &amp;fieldName) const;
+    ...
+    PVStringArrayPtr getStringArrayField(String const &amp;fieldName) const;
+</pre>
+<p><b>Note:</b> The methods getBooleanField, ... , getStringField no longer generate
+a message if they fail.</p>
+<p><b>AI</b> The methods above will not be provided.
+The methods getBoolean, etc will be replaced by a template(generic) version of getSubField.
+Matej will make the changes.
+</p>
+<h2>Change to pvDataJava</h2>
+<p>For now the only change to pvDataJava is the <b>toString</b>
+method for scalar arrays.
+Currently the entire array appears.
+This will be changed to limit the output to some number
+of inital elements and some number of ending elements.
+The number will be compatible with what C++ does.</p>
+<p>In the future the methods removed from pvDataCPP will also
+be removed from pvDataJava.
+This requires changes to the xml parser in pvIOCJava.
+</p>
+<p><b>AI</b> Marty will make the changes.</p>
+<h2>base 3.15</h2>
+<p>Is this the time to start building against the base 3.15 releases?</p>
+<p><b>AI</b> Nothing will be done until later.
+Ralph will decide when it will be done.</p>
+
+<h2>pvAccess API changes</h2>
+<p>The changes to channelArray and channelPutGet change the pva network protocol.
+The changes to channelArray will be made.
+The changes to channelArray only change the C++ API.
+Since these changes do change the network protocol the changes to channelPutGet are also
+considered.</p>
+<p>The changes to channelGet, channelPut, and channelPutGet are suggested because
+they help prevent clients making errors related to thread concurrency.
+The changes are described for the Java implementation but similar
+changes can be made to the C++ implementation.</p>
+</p>
+<h3>channelArray</h3>
+<p>The current definition is:</p>
+<pre>
+class ChannelArray : public ChannelRequest{
+...
+    virtual void putArray(bool lastRequest, int offset, int count);
+    virtual void getArray(bool lastRequest, int offset, int count;
+    virtual void setLength(bool lastRequest, int length, int capacity)'
+...
+}
+</pre>
+<p>This will be changed to:</p>
+<pre>
+class ChannelArray : public ChannelRequest{
+...
+    virtual void putArray(bool lastRequest, size_t offset, size_t count);
+    virtual void getArray(bool lastRequest, size_t offset, size_t count;
+    virtual void setLength(bool lastRequest, size_t length, size_t capacity)'
+...
+}
+</pre>
+<p>This change also requires a change to the pvAccess network protocal.
+Cureently the network prorotol states that offset and count are send as an <b>int</b>.
+This will state that they are sent as a <b>size</b>.
+</p>
+<p><b>AI</b> Matej will make the changes to pvAccessJava and to serialize/deserialize in both Java and C++</p>
+<h3>channelGet</h3>
+<p>The current definition for Java is:</p>
+<pre>
+public interface ChannelGetRequester extends Requester {
+    void channelGetConnect(Status status,ChannelGet channelGet,PVStructure pvStructure,BitSet bitSet);
+    void getDone(Status status);
+}
+
+interface ChannelGet extends ChannelRequest {
+    void get(boolean lastRequest);
+}
+</pre>
+<p>Should this be changed to?</p>
+<pre>
+public interface ChannelGetRequester extends Requester {
+    void channelGetConnect(Status status,ChannelGet channelGet,Structure structure);
+    void getDone(Status status,ChannelGet channelGet,PVStructure pvStructure,BitSet bitSet);
+}
+
+interface ChannelGet extends ChannelRequest {
+    void get(boolean lastRequest);
+}
+</pre>
+<h3>channelPut</h3>
+<p>The current definition for Java is:</p>
+<pre>
+interface ChannelPutRequester extends Requester {
+    void channelPutConnect(Status status, ChannelPut channelPut, PVStructure pvStructure, BitSet bitSet);
+    void putDone(Status status);
+    void getDone(Status status);
+}
+
+interface ChannelPut extends ChannelRequest {
+    void put(boolean lastRequest);
+    void get();
+}
+</pre>
+<p>Should this be changed to?</p>
+<pre>
+interface ChannelPutRequester extends Requester {
+    void channelPutConnect(Status status,ChannelPut channelPut,Structure structure);
+    void putDone(Status status,ChannelPut channelPut);
+    void getDone(Status status,ChannelPut channelPut,PVStructure pvStructure, BitSet bitSet);
+}
+
+interface ChannelPut extends ChannelRequest {
+    void put(boolean lastRequest, PVStructure pvStructure, BitSet bitSet);
+    void get();
+}
+</pre>
+<h3>ChannelPutGet</h3>
+<pre>
+interface ChannelPutGetRequester extends Requester {
+    void channelPutGetConnect(Status status, ChannelPutGet channelPutGet,
+            PVStructure pvPutStructure, PVStructure pvGetStructure);
+    void putGetDone(Status status);
+    void getPutDone(Status status);
+    void getGetDone(Status status);
+}
+interface ChannelPutGet extends ChannelRequest {
+    void putGet(boolean lastRequest);
+    void getPut();
+    void getGet();
+}
+</pre>
+<p>Should this be changed to?</p>
+<pre>
+interface ChannelPutGetRequester extends Requester {
+    void channelPutGetConnect(Status status, ChannelPutGet channelPutGet,
+            Structure putStructure, Structure getStructure);
+    void putGetDone(Status status,ChannelPutGet channelPutGet,PVStructure getPVStructure,BitSet getBitSet);
+    void getPutDone(Status status,ChannelPutGet channelPutGet,PVStructure putPVStructure,BitSet putBitSet);
+    void getGetDone(Status status,ChannelPutGet channelPutGet,PVStructure getPVStructure,BitSet getBitSet);
+}
+interface ChannelPutGet extends ChannelRequest {
+    void putGet(boolean lastRequest,PVStructure pvPutStructure,BitSet bitSet);
+    void getPut();
+    void getGet();
+}
+</pre>
+<p><b>NOTE:</b> Adding the bitSets changes the pvAccess network protocol.
+If the bitSets are not added then the network protocol does not change.</p>
+<p><b>AI</b> Matej will make the above changes.
+channelPutGet will have bitSets.
+More definition required fir bitSets to handle think like access control.
+Matej will direct requirements definition an implementation in pvAccessCPP and pvAccessJava.
+Marty will make any required changes to pvDatabaseCPP and pvIOCJava.
+</p>
+<h3>Cancellation of channel requests</h3>
+<p>
+All channelXXX requests will a new method that cancels currently pending request. The method will be added to ChannelRequest interface:
+<pre>
+class ChannelRequest {
+    virtual void cancel();
+}
+</pre>
+<p><b>AI:</b> Matej will make these changes.</p>
+
+<h3>Access Security support</h3>
+<p>
+pvAccess API will get new methods to support pluggable security mechanism (a bit more generic and flexible Channel Access security API design).
+</p>
+<p><b>AI:</b> Matej will make these changes.</p>
+<h2>pvaSrv</h2>
+<p>The pvAccess API changes will require changes to pvaSrv.</p>
+<p><b>AI</b> Ralph will make these changes.</p>
+<h2>pvIOCJava</h2>
+<p>The pvAccess API changes will require changes to pvIOCJava.</p>
+<p><b>AI</b> Marty will make these changes.</p>
+<h2>pvDatabaseCPP</h2>
+<p>The following changes will be made:</p>
+<dl>
+  <dt>pvCopy</dt>
+    <dd>
+     Consider breaking pvCopy into two components.
+     One will know only how to copy between a top level structure and another top level structure that is a subset
+     of the fields in the master.
+     The other component is uses the first component and handles the PVRecord methods.
+    </dd>
+  <dt>local Channel provider</dt>
+    <dd>This will leave the semantics coming via pvRequest to a layer below local provider.
+      This will allow plugins.
+      The local provider will make the pvRequest and pvCopy methods available to layer below.
+    </dd>
+</dl>
+<p>
+<b>AI</b> Marty will makes these changes
+</p>
+
+
+</div>
+</body>
+</html>
+
