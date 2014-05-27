@@ -1,0 +1,70 @@
+<h1>Summary of Release 4.4 Features</h1>
+<p>A more  detailed description of new features for release 4.4 is provided by
+<a href="http://epics-pvdata.sourceforge.net/internal/proposedChanges/proposedChanges_3_0.html">proposedChanges_3_0.html</a></p>
+<p>Note that this document refers to release 3_0 instead of release 4.3.
+This is because pvData and pvAccess both used a tag of 3.0.x for the
+version that became part of EPICS Version 4 release 4.3.</p>
+<p>The main features and changes since release 4.3 are:</p>
+<ul>
+<li>array semantics now enforce Copy On Write.</li>
+<li>union is new type.</li>
+<li>pvAccess API changes.</li>
+<li>codec based pvAccess implementation.</li>
+<li>pvAccess multicast support.</li>
+<li>pluggable pvAccess security API.</li>
+<li>copy is new.</li>
+<li>monitorPlugin is new.</li>
+</ul>
+<h2>Array Semantics</h2>
+<p>PVArray and derived classes now enforce COW (Copy On Wrire) semantics.
+In addition the raw data is managed via a new class shared_vector,
+which is like std::vector except that std::shared_pointer is used
+to hold the raw data array.</p>
+<p>This is only for the C++ impementation.
+For Java nothing is currently planned.</p>
+<h2>Union and UnionArray are new Types.</h2>
+<p>A union is like a structure that has a single sub-field with
+a type that can be changed dynamically.
+For a varient union the type can be any type.
+For a regular union the type can be a fixed set of types as determined
+by the introspection interface.</p>
+<h2>pvAccess API changes</h2>
+<p>This applies to channelGet, channelPut, channelPutGet, and monitor.
+For release 3.3 the PVData and BitSet arguments are provided to the clent via
+the connection callback.
+This is changed so that the connction callback returns introspection interfaces.
+The PVData and BitSets are now arguments provides by the
+component that provides the data.</p>
+<p>channelArray has the following changes:</p>
+<ul>
+<li>A new argument stride is present.</li>
+<li>length, offset, capacity, and stride are now of type size_t instead of int.</li>
+<li>a new method getLength is available.</li>
+</ul>
+<p>These changes apply to both C++ and Java.
+For Java, however, the length, offset, capacity, and stride  are still int.</p>
+<h2>Codec based pvAccess implementation</h2>
+<p>Codec implementation decouples protocol from transport. All the protocol
+specific code is encapluslated in one abstract class. Transport specific
+code (e.g. TCP, UDP, shared memory, zeroMQ) needs to be implemented in order
+to get fully functional pvAccess communication.</p>
+<h2>pvAccess multicast support</h2>
+<p>Implementation of multicast used for channel/service discovery and shared data transfer.</p>
+<h2>Pluggable pvAccess security API</h2>
+<p>pvAccess security plugin API was added that allows pluggable
+implementation of specific security schemes.</p>
+<h2>Copy is new</h2>
+<p>Both pvIOCJava and pvDatabaseCPP had a facility pvCopy,
+which together with pvRequest allows client access to an arbitrary subset
+of the data in the structure associated with a pvAccess channel.</p>
+<p>CreateRequest, which is used by clients to create a pvRequest,
+has been moved from pvAccess to pvData.
+In addition a new facility pvCopy is now provided by pvData.
+It is the old pvCopy with all dependence on PVRecord removed.
+Thus it only depends on pvData.</p>
+<p>The old implementation of pvCopy in pvIOCJava and pvDatabaseCPP has been
+changed to use the pvCopy from pvData.</p>
+<h2>Monitor Plugin is new</h2>
+<p>This is only in pvdataCPP.
+It is a way for a client to specify processing options for monitors.</p>
+<p>The semantics and usefullness are still a topic being debated.</p>
