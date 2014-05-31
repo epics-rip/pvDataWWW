@@ -1,105 +1,158 @@
-Summary of Release 4.4 Features
-==================================
 
-A more  detailed description of new features for release 4.4 is provided by
+<head>
+  <link rel="stylesheet" type="text/css" href="../../base.css" />
+  <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
+</head>
+  
+<br />
+
+
+# Summary of Release 4.4 Features
+
+EPICS Version 4 is an extensive system of extensions that interoperate with EPICS core version 3 modules, to provide IOC data in simple, elegant, efficient ways to users, scientists and high performance processors.
+
+Version 4.4 brings simplicity, elegance and performance to many facets
+of EPICS.
+
+EPICS base version 3.14 is required to run Version 4. 
+
+Major new features include:
+
+* Dynamic channel data typing, by unions
+* Higher performance and simplified array handling [pvArray, COW]
+* More flexible and informative channel data API [channel* callbacks]
+* Codec based transport, plus bundled codecs for pvAccess and ZeroMQ
+* Multicast support
+* Pluggable pvAccess security API
+* Smart handling of data measurement and fitting errors [Normative type errors]
+* Composite IOC PV data [dbGroup]
+* Simplified and upgraded eget command line tool [unified pvget/eget]
+* Upgraded Easy to use API [easyPVA]
+
+Cleanups and infrastructue changes
+
+* Reimplemented pvCopy
+
+Alpha software bundled
+
+* An embeddable smart database and processing framework for the IOC [pvDatabase]
+* Monitor processing options
+
+A more  detailed description of the changes to the V4 core modules pvAccess and
+pvData w.r.t. release 4.4, is given in
 [proposedChanges_3_0.html](http://epics-pvdata.sourceforge.net/internal/proposedChanges/proposedChanges_3_0.html)
 
-Note that this document refers to release 3_0 instead of release 4.3.
-This is because pvData and pvAccess both used a tag of 3.0.x for the
-version that became part of EPICS Version 4 release 4.3.
 
-The main features and changes since release 4.3 are:
+High performance and simplified array handling [pvArray, COW]
+-
 
-* array semantics now enforce Copy On Write.
-* union is new type.
-* pvAccess API changes.
-* codec based pvAccess implementation.
-* pvAccess multicast support.
-* pluggable pvAccess security API.
-* copy is new.
-* monitorPlugin is new.
+The C++ implementation of the data management interface of EPICS V4, pvData,
+now enforces Copy On Write (COW) semantics, to reduce
+computationaly expensive copy operations to the absolute minimum. 
 
-Array Semantics
----------------
+The API for extracting array data and type conversion, `Convert` has been
+greatly simplified. 
 
-PVArray and derived classes now enforce COW (Copy On Wrire) semantics.
-In addition the raw data is managed via a new class shared_vector,
-which is like std::vector except that std::shared_pointer is used
-to hold the raw data array.
+The method for put and get array data to a channel, `channelArray` has been upgraded.
 
-This is only for the C++ impementation.
-For Java nothing is currently planned.
+Dynamic data typing
+-
 
-Union and UnionArray are new Types.
-----------------------------------
+A new basic data type has been added for expressing unions. PV data may now dynamically change type.
 
 A union is like a structure that has a single sub-field with
-a type that can be changed dynamically.
-For a varient union the type can be any type.
-For a regular union the type can be a fixed set of types as determined
-by the introspection interface.
+a type that can be changed dynamically. There are two subtypes of union:
 
-pvAccess API changes
+* variant union, in which the type can be any type
+* a "regular" union, in which the type must be one of the fixed set of types, determined by the introspection interface of a given union instance.
+
+ 
+More flexible and informative channel data API  [channel* callbacks]
 --------------------
 
-This applies to channelGet, channelPut, channelPutGet, and monitor.
-For release 3.3 the PVData and BitSet arguments are provided to the clent via
-the connection callback.
-This is changed so that the connction callback returns introspection interfaces.
-The PVData and BitSets are now arguments provides by the
-component that provides the data.
+pvAccess channelGet, channelPut, channelPutGet, and monitor have been upgarded to
+provide connection callbacks with introspection interfaces to the data and its bitset metadata.
 
-channelArray has the following changes:
+The PVData data and bitsets are now arguments given by the component that provided the data,
+so a client can examine what data it has been returned by the provider.
 
-* A new argument stride is present.
-* length, offset, capacity, and stride are now of type size_t instead of int.
-* a new method getLength is available.
-
-These changes apply to both C++ and Java.
-For Java, however, the length, offset, capacity, and stride  are still int.
 
 Codec based pvAccess implementation
 -----------------------------------
 
-Codec implementation decouples protocol from transport. All the protocol
-specific code is encapluslated in one abstract class. Transport specific
-code (e.g. TCP, UDP, shared memory, zeroMQ) needs to be implemented in order
-to get fully functional pvAccess communication.
+Using a codec decouples protocol from transport. All the protocol [GW: do you
+mean "protocol", or do you mean "transport" here? - I think you mean transport]
+specific code is now encapluslated in one abstract class. Transport specific
+code (as provided by for instance TCP, UDP, shared memory, or zeroMQ) must
+then be provided in order to get a fully functional pvAccess communication.
+
+Codecs for the former transport layer of pvAccess, and ZeroMQ transport, are provided,
+so you can use pvAccess or ZeroMQ immediately.
 
 
-pvAccess multicast support
+Multicast support
 -----------------------------------
 
-Implementation of multicast used for channel/service discovery and shared data transfer.
-
+Implementation of multicast used for channel/service discovery and shared data transfer, is added to pvAccess.
 
 Pluggable pvAccess security API
 -------------------------------
 
-pvAccess security plugin API was added that allows pluggable
+A security plugin API is added, that allows pluggable
 implementation of specific security schemes.
 
+Smart handling of data measurement and fitting errors [Normative type errors]
+-
 
-Copy is new
------------
+The system of high level data types, called Normative Types
+(<http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html>)
+have been revised and extended to properly incorporate errors on data values. Clients and intelligent OPIs can now find and display the measurement or fit error along with the data of a PV.
 
-Both pvIOCJava and pvDatabaseCPP had a facility pvCopy,
-which together with pvRequest allows client access to an arbitrary subset
-of the data in the structure associated with a pvAccess channel.
+Composite IOC PV data [dbGroup]
+-
+The IOC can now return the value of a number of records as a single PV's value. For instance, a single IOC hosted PV may give both the magnetic field strength and setpoint current of a magnet.
 
-CreateRequest, which is used by clients to create a pvRequest,
+Although the PVs comprising the returned PV's value, need not be from the same lockset, the data from them is not lockset atomic. When the IOC base software incorporates atomic lockset spaning operations, this function will be upgraded.
+
+Simplified and upgraded eget command line tool [unified pvget/eget]
+-
+eget and pvget have been unified into one comprehensive command, doing all the functions of get, monitor, and rpc, over PVA, or CA (if CA supports the operation), and supporting pvaRequest and URL syntax.
+
+Upgraded Easy to use API [easyPVA]
+-
+The easy to use API, easyPVA <http://epics-pvdata.sourceforge.net/docbuild/easyPVAJava/tip/documentation/easyPVA.html> is upgraded to include monitors and parallel acqusitions (multichannel).
+
+
+<br />
+
+#Non-functional changes and cleanups
+
+Reimplemented pvCopy
+-
+
+`pvCopy`, which used together with `pvRequest`, allows a client to access to an arbitrary subset
+of the data in the structure associated with a pvAccess channel, has been moved from its two implementations in pvIOCJava and pvDatabaseCPP, to a single implementation in `pvData`, and its dependency on pvRecord has been removed.
+
+Additionally, `CreateRequest`, which is used by clients to create a pvRequest,
 has been moved from pvAccess to pvData.
-In addition a new facility pvCopy is now provided by pvData.
-It is the old pvCopy with all dependence on PVRecord removed.
-Thus it only depends on pvData.
 
-The old implementation of pvCopy in pvIOCJava and pvDatabaseCPP has been
-changed to use the pvCopy from pvData.
+Uses of `pvCopy` in `pvIOCJava` and `pvDatabaseCPP` have been
+changed to use the `pvCopy` from pvData.
 
-Monitor Plugin is new
+<br />
+
+# Alpha software bundled
+
+Some powerful but alpha level software is also bundled into V4.4 for early adopters.
+
+An embedded smart database and processing framework for the IOC [pvDatabase]
+-
+
+Version 4.4 provides a framework for implementing a network accessible database of smart memory resident records, named pvDatabase. Such a database may be embedded into an IOC to work in concert with the IOC's database, or at higher levels of a control system to provide high performance dataflow processing of lower level measurement data. For instance, it can be used to host a set of areaDetector plugins, working as a pipeline processor for camera image data. See pvDatabaseCPP <http://epics-pvdata.sourceforge.net/docbuild/pvDatabaseCPP/tip/documentation/pvDatabaseCPP.html>.
+
+
+Monitor processing options
 --------------------
 
 This is only in pvdataCPP.
 It is a way for a client to specify processing options for monitors.
-
-The semantics and usefullness are still a topic being debated.
