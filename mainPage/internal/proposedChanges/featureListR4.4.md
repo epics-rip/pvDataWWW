@@ -25,13 +25,13 @@ Major new features include:
 * Upgraded Easy to use API [easyPVA]
 * Intrinsic data type support for images from detectors and cameras [NTNDArray]
 
-Cleanups and infrastructue changes
+Cleanups and infrastructure changes
 
 * Reimplemented pvCopy
 
 Alpha software bundled
 
-* An embeddable smart database and processing framework for the IOC [pvDatabase]
+* A smart database and processing framework, embeddable in an IOC [pvDatabase]
 * Monitor processing options
 * Use Python to talk to pvAccess PVs
 * Use Matlab to talk to pvAccess PVs
@@ -70,7 +70,7 @@ Higher performance and simplified array handling [pvArray, COW]
 
 The C++ implementation of the data management interface of EPICS V4, pvData,
 now enforces Copy On Write (COW) semantics, to reduce
-computationaly expensive copy operations to the absolute minimum. 
+computationally expensive copy operations to the absolute minimum. 
 
 The API for extracting array data and type conversion, `Convert` has been
 greatly simplified. 
@@ -82,7 +82,7 @@ Codec based pvAccess transport
 
 Using a codec decouples protocol from transport. All the protocol [GW: do you
 mean "protocol", or do you mean "transport" here? - I think you mean transport]
-specific code is now encapluslated in one abstract class. Transport specific
+specific code is now encapsulated in one abstract class. Transport specific
 code (as provided by for instance TCP, UDP, shared memory, or zeroMQ) must
 then be provided in order to get a fully functional pvAccess communication.
 
@@ -92,7 +92,7 @@ so you can use pvAccess or ZeroMQ immediately.
 More flexible and informative channel data API  [channel* callbacks]
 --------------------
 
-pvAccess channelGet, channelPut, channelPutGet, and monitor have been upgarded to
+pvAccess channelGet, channelPut, channelPutGet, and monitor have been upgraded to
 provide connection callbacks with introspection interfaces to the data and its bitset metadata.
 
 The PVData data and bitsets are now arguments given by the component that provided the data,
@@ -114,17 +114,17 @@ implementation of specific security schemes.
 
 Simplified and upgraded eget command line tool [unified pvget/eget]
 -
-eget and pvget have been unified into one comprehensive command, doing all the functions of get, monitor, and rpc, over PVA, or CA (if CA supports the operation), and supporting pvaRequest and URL syntax.
+eget and pvget have been unified into one comprehensive command, doing all the functions of get, monitor, and RPC, over PVA, or CA (if CA supports the operation), and supporting pvaRequest and URL syntax.
 
 Upgraded Easy to use API [easyPVA]
 -
-The easy to use API, easyPVA <http://epics-pvdata.sourceforge.net/docbuild/easyPVAJava/tip/documentation/easyPVA.html> is upgraded to include monitors and parallel acqusitions (multichannel).
+The easy to use API, easyPVA <http://epics-pvdata.sourceforge.net/docbuild/easyPVAJava/tip/documentation/easyPVA.html> is upgraded to include monitors and parallel acquisitions (multichannel).
 
 Intrinsic data type support for images from detectors and cameras [NTNDArray]
 -
-A new data type for carrying data from detectors and cameras, has been added to the set of standard EPICS V4 types. This new type, called [NTNDArray](http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html), carries all the data of one frame, and is modelled heavily on the [NDarray](http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/class_n_d_array.html) of areaDetector.
+A new data type for carrying data from detectors and cameras, has been added to the set of standard EPICS V4 types. This new type, called [NTNDArray](http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html), carries all ~the data of one frame, and is modelled heavily on the [NDarray](http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/class_n_d_array.html) of areaDetector.
 
-Using PVs defined as an NTNDArray, for instance enables one to build a chain processors of areaDetector plugins encapsulated as pvDatabase records in a data flow model, for high performance image processing.
+Using PVs defined as an NTNDArray,~ for instance enables one to build a chain processors of areaDetector plugins encapsulated as pvDatabase records in a data flow model, for high performance image processing.
 
 <br />
 
@@ -148,7 +148,7 @@ changed to use the `pvCopy` from pvData.
 
 Some powerful but alpha level software is also bundled into V4.4 for early adopters.
 
-An embedded smart database and processing framework for the IOC [pvDatabase]
+A smart database and processing framework, embeddable in an IOC [pvDatabase]
 -
 
 Version 4.4 provides a framework for implementing a network accessible database of smart memory resident records, named pvDatabase. Such a database may be embedded into an IOC to work in concert with the IOC's database, or at higher levels of a control system to provide high performance dataflow processing of lower level measurement data. For instance, it can be used to host a set of areaDetector plugins, working as a pipeline processor for camera image data. See pvDatabaseCPP <http://epics-pvdata.sourceforge.net/docbuild/pvDatabaseCPP/tip/documentation/pvDatabaseCPP.html>.
