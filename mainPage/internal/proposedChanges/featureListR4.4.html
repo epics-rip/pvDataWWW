@@ -1,22 +1,24 @@
 <p><link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" /></p>
-<h1>Summary of Release 4.4 Features</h1>
+<h1>RELEASE 4.4 NEW FEATURES</h1>
 <p>EPICS Version 4 is an extensive system of extensions that interoperate with EPICS core version 3 modules, to provide IOC data in simple, elegant, efficient ways to users, scientists and high performance processors.</p>
 <p>Version 4.4 brings simplicity, elegance and performance to many facets
 of EPICS.</p>
 <p>EPICS base version 3.14 is required to run Version 4. </p>
-<p>Major new features include:</p>
+<h1>New Features Summary</h1>
+<p>Major new features of version 4.4 include:</p>
+<p><strong>Items marked * are hoped for new features, but as of this writing it is not confirmed they will be in 4.4</strong></p>
 <ul>
 <li>Multicast support</li>
-<li>Composite IOC PV data [dbGroup]</li>
+<li>Composite IOC PV data [dbGroup*]</li>
 <li>Dynamic channel data typing, by unions</li>
 <li>Higher performance and simplified array handling [pvArray, COW]</li>
 <li>Codec based transport, plus bundled codecs for pvAccess and ZeroMQ</li>
-<li>More flexible and informative channel data API [channel* callbacks]</li>
+<li>More flexible and informative channel data API [channel method callbacks]</li>
 <li>Smart handling of data measurement and fitting errors [Normative type errors]</li>
 <li>Pluggable pvAccess security API</li>
-<li>Simplified and upgraded data access command line tools [unified pvget/eget]</li>
-<li>Upgraded Easy to use API [easyPVA]</li>
+<li>Simplified and upgraded data access command line tools [unified pvget/eget*]</li>
+<li>Upgraded Easy to use API [easyPVA*]</li>
 <li>Intrinsic data type support for images from detectors and cameras [NTNDArray]</li>
 </ul>
 <p>Cleanups and infrastructure changes</p>
@@ -30,6 +32,7 @@ of EPICS.</p>
 <li>Use Python to talk to pvAccess PVs</li>
 <li>Use Matlab to talk to pvAccess PVs</li>
 </ul>
+<h1>New Feature Details</h1>
 <p>A more detailed description of the changes specifically in the V4 core modules, pvAccess and
 pvData, w.r.t. release 4.4, is given in
 <a href="http://epics-pvdata.sourceforge.net/internal/proposedChanges/proposedChanges_3_0.html">proposedChanges_3_0.html</a></p>

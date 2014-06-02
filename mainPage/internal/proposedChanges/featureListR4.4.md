@@ -2,7 +2,7 @@
   <link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
 
-# Summary of Release 4.4 Features
+#RELEASE 4.4 NEW FEATURES
 
 EPICS Version 4 is an extensive system of extensions that interoperate with EPICS core version 3 modules, to provide IOC data in simple, elegant, efficient ways to users, scientists and high performance processors.
 
@@ -11,18 +11,22 @@ of EPICS.
 
 EPICS base version 3.14 is required to run Version 4. 
 
-Major new features include:
+#New Features Summary
+
+Major new features of version 4.4 include:
+
+**Items marked \* are hoped for new features, but as of this writing it is not confirmed they will be in 4.4**
 
 * Multicast support
-* Composite IOC PV data [dbGroup]
+* Composite IOC PV data [dbGroup\*]
 * Dynamic channel data typing, by unions
 * Higher performance and simplified array handling [pvArray, COW]
 * Codec based transport, plus bundled codecs for pvAccess and ZeroMQ
-* More flexible and informative channel data API [channel* callbacks]
+* More flexible and informative channel data API [channel method callbacks]
 * Smart handling of data measurement and fitting errors [Normative type errors]
 * Pluggable pvAccess security API
-* Simplified and upgraded data access command line tools [unified pvget/eget]
-* Upgraded Easy to use API [easyPVA]
+* Simplified and upgraded data access command line tools [unified pvget/eget\*]
+* Upgraded Easy to use API [easyPVA\*]
 * Intrinsic data type support for images from detectors and cameras [NTNDArray]
 
 Cleanups and infrastructure changes
@@ -35,6 +39,9 @@ Alpha software bundled
 * Monitor processing options
 * Use Python to talk to pvAccess PVs
 * Use Matlab to talk to pvAccess PVs
+
+
+#New Feature Details
 
 A more detailed description of the changes specifically in the V4 core modules, pvAccess and
 pvData, w.r.t. release 4.4, is given in
