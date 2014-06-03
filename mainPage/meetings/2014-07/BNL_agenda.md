@@ -1,5 +1,6 @@
-  <link rel="stylesheet" type="text/css" href="../../base.css" />
-  <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
+HTML header:
+    <link rel="stylesheet" type="text/css" href="../../base.css" />
+    <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
 
 <br />
 
@@ -19,12 +20,18 @@ DAY 1, Tuesday July 15, 2014: Version 4.4 preparedness status reports
 -
 Precise location and times to be announced.
 
-Status reports and demonstrations of work for planned version 4.4 features.
+Status reports and demonstrations of work for (planned version 4.4 features)[http://epics-pvdata.sourceforge.net/internal/proposedChanges/featureListR4.4.html].
 
 * **dbGroup** [Ralph]
 
-    Description, API and demo. 
+    Description, API and demo. Note dbGroup is not intended for 4.4, but this is a convenient time for Ralph to bring us up to date. 
 
+* [**pvDatabase, and use of pvDatabase for composite PVs**]
+
+    A description and demo of the "multi" capabilities of pvDatabase for
+	expressing a pva PV whose value is composed of CA pv names and values.
+	Other features of PVDatabase will be discussed Wednesday morning.
+	
 * **Multicast** [Matej]
 
     Description, API and demo of use cases.
@@ -64,7 +71,7 @@ Precise location and times to be announced.
 
 * **pvDatabase description and status** [Marty]
 
-    Description of the database and processing, and demo of examples
+    Further description of the database and processing, and demo of examples (con't from Tuesday's talk on the multi capability of pvDatabase).
 
 * **Discussion of V4 IOC integration plans and schedule** [Andrew leads]
 
@@ -92,6 +99,8 @@ Precise location and times to be announced.
 * **BNL operations use of OLOG and MASAR** [Speaker to be announced. Bob can you arrange one?]
 
 * **BNL environment for experimental control, data acquisition, and data management** [Bob or deputy]
+
+* **User's guide to CSS** [Gabriele]
 
 * **BNL users' experience with CSS** [Speaker to be announced]
 
