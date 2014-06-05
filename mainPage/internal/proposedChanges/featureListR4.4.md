@@ -2,7 +2,13 @@
   <link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
 
-# Summary of Release 4.4 Features
+<br />
+
+#RELEASE 4.4 NEW FEATURES
+
+**Version:** This is the 3-June-2014 version of the 4.4 features document. This version
+removes dbGroup and replaces that functionality through pvDatabase, and adds the
+CA security plugin.
 
 EPICS Version 4 is an extensive system of extensions that interoperate with EPICS core version 3 modules, to provide IOC data in simple, elegant, efficient ways to users, scientists and high performance processors.
 
@@ -11,18 +17,21 @@ of EPICS.
 
 EPICS base version 3.14 is required to run Version 4. 
 
-Major new features include:
+#New Features Summary
+
+Major new features of version 4.4 include:
+
+**Items marked \* are hoped for new features, but as of this writing it is not confirmed they will be in 4.4**
 
 * Multicast support
-* Composite IOC PV data [dbGroup]
 * Dynamic channel data typing, by unions
 * Higher performance and simplified array handling [pvArray, COW]
 * Codec based transport, plus bundled codecs for pvAccess and ZeroMQ
-* More flexible and informative channel data API [channel* callbacks]
+* More flexible and informative channel data API [channel method callbacks]
 * Smart handling of data measurement and fitting errors [Normative type errors]
-* Pluggable pvAccess security API
-* Simplified and upgraded data access command line tools [unified pvget/eget]
-* Upgraded Easy to use API [easyPVA]
+* Pluggable access security API, plus plugin for Channel Access Security
+* Simplified and upgraded data access command line tools [unified pvget/eget\*]
+* Upgraded Easy to use API [easyPVA\*]
 * Intrinsic data type support for images from detectors and cameras [NTNDArray]
 
 Cleanups and infrastructure changes
@@ -32,9 +41,13 @@ Cleanups and infrastructure changes
 Alpha software bundled
 
 * A smart database and processing framework, embeddable in an IOC [pvDatabase]
+* Composite IOC PV data [multi capability of pvDatabase]
 * Monitor processing options
 * Use Python to talk to pvAccess PVs
 * Use Matlab to talk to pvAccess PVs
+
+
+#New Feature Details
 
 A more detailed description of the changes specifically in the V4 core modules, pvAccess and
 pvData, w.r.t. release 4.4, is given in
@@ -47,11 +60,6 @@ Multicast Support
 
 Implementation of multicast used for channel/service discovery and shared data transfer, is added to pvAccess.
 
-Composite IOC PV data [dbGroup]
--
-The IOC can now return the value of a number of records as a single PV's value. For instance, a single IOC hosted PV may give both the magnetic field strength and setpoint current of a magnet.
-
-Although the PVs comprising the returned PV's value, need not be from the same lockset, the data from them is not lockset atomic. When the IOC base software incorporates atomic lockset spaning operations, this function will be upgraded.
 
 
 Dynamic channel data typing
@@ -105,11 +113,11 @@ The system of high level data types, called Normative Types
 (<http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html>)
 have been revised and extended to properly incorporate errors on data values. Clients and intelligent OPIs can now find and display the measurement or fit error along with the data of a PV.
 
-Pluggable pvAccess security API
+Pluggable access security API, plus plugin for Channel Access Security
 -------------------------------
 
 A security plugin API is added, that allows pluggable
-implementation of specific security schemes.
+implementations of specific security schemes for pvAccess or Channel Access, together with one such plugin for Channel Access security.  
 
 
 Simplified and upgraded eget command line tool [unified pvget/eget]
@@ -152,6 +160,12 @@ A smart database and processing framework, embeddable in an IOC [pvDatabase]
 -
 
 Version 4.4 provides a framework for implementing a network accessible database of smart memory resident records, named pvDatabase. Such a database may be embedded into an IOC to work in concert with the IOC's database, or at higher levels of a control system to provide high performance dataflow processing of lower level measurement data. For instance, it can be used to host a set of areaDetector plugins, working as a pipeline processor for camera image data. See pvDatabaseCPP <http://epics-pvdata.sourceforge.net/docbuild/pvDatabaseCPP/tip/documentation/pvDatabaseCPP.html>.
+
+Composite IOC PV data [multi capability of pvDatabase]
+-
+The IOC can now return the value of a number of records as a single PV's value. For instance, a single IOC hosted PV may give both the magnetic field strength and setpoint current of a magnet.
+
+The composite PV is expressed as a pvDatabase record. The pvDatabase may be embedded in an IOC, or hosted at a higher level.
 
 Use Python to talk to pvAccess PVs 
 -

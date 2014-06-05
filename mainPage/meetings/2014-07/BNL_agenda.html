@@ -1,97 +1,118 @@
-<p><link rel="stylesheet" type="text/css" href="../../base.css" />
-  <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" /></p>
+<p>HTML header:
+    <link rel="stylesheet" type="text/css" href="../../base.css" />
+    <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" /></p>
 <p><br /></p>
-<h1>Agenda of EPICS Version 4 meeting</h1>
+<h1>Agenda of EPICS Version 4 Meeting</h1>
 <p><em>PRELIMINARY AGENDA V1-6-14. TIMES TO BE ADDED.</em></p>
 <p><strong>Dates</strong>: July 15, 16, 17 2014</p>
 <p><strong>Location</strong>: <a href="http://www.bnl.gov/world/">Brookhaven National Lab</a>.</p>
 <p><strong>Local contact</strong>: Bob Dalesio</p>
-<h2>DAY 1: Version 4.4 preparedness status reports</h2>
+<p>Comprehensive minutes will be recorded by Google shared document. Attendees should be prepared to minute part of the meeting.</p>
+<h2>DAY 1, Tuesday July 15, 2014: Version 4.4 preparedness status reports</h2>
 <p>Precise location and times to be announced.</p>
-<p>Status reports and demonstrations of work for planned version 4.4 features.</p>
+<p>Status reports and demonstrations of work for (planned version 4.4 features)[http://epics-pvdata.sourceforge.net/internal/proposedChanges/featureListR4.4.html].</p>
 <ul>
 <li>
-<p>Multicast [Matej]</p>
+<p><strong>dbGroup</strong> [Ralph]</p>
+<p>Description, API and demo. Note dbGroup is not intended for 4.4, but this is a convenient time for Ralph to bring us up to date. </p>
+</li>
+<li>
+<p>[<strong>pvDatabase, and use of pvDatabase for composite PVs</strong>]</p>
+<p>A description and demo of the "multi" capabilities of pvDatabase for
+expressing a pva PV whose value is composed of CA pv names and values.
+Other features of PVDatabase will be discussed Wednesday morning.</p>
+</li>
+<li>
+<p><strong>Multicast</strong> [Matej]</p>
 <p>Description, API and demo of use cases.</p>
 </li>
 <li>
-<p>dbGroup [Ralph]</p>
-<p>Description, API and demo. </p>
-</li>
-<li>
-<p>Use of unions [Dave]</p>
+<p><strong>Use of unions</strong> [Dave]</p>
 <p>Just the two kinds of union and a demo - perhaps from areaDetector work,
 but lets look more closely at areaDetector, NTNDArray and discussion in day 2.</p>
 </li>
 <li>
-<p>pvArray and copy on write [Marty]</p>
+<p><strong>Codec based transport</strong> [Matej]</p>
+<p>Description, API and demo of both pvAccess codec and the ZeroMQ codec.</p>
+</li>
+<li>
+<p><strong>pvArray and copy on write</strong> [Marty]</p>
 <p>I'd really like to see a demo which illustrates not only the 
 programmers interface but also quantitatively characterizes the 
 performance.</p>
 </li>
 <li>
-<p>Codec based transport [Matej]</p>
-<p>Description, API and demo of both pvAccess codec and the ZeroMQ codec.</p>
-</li>
-<li>
-<p>New channel Data API [Matej]</p>
+<p><strong>New channel Data API</strong> [Matej]</p>
 <p>Description, API and demo. </p>
 </li>
 <li>
-<p>Access security plugin [Matej]</p>
+<p><strong>Access security plugin</strong> [Matej]</p>
 <p>Description, API and demo.</p>
 </li>
+<li>
+<p><strong>pvaPy</strong> [Andrew for Sinisa]</p>
+<p>Description, API, and demo of Python support of pvAccess (and CA is being added through the pvAccess API too, right?)</p>
+</li>
 </ul>
-<h2>DAY 2: Collaboration exchange</h2>
+<h2>DAY 2, Wednesday July 16, 2014: Collaboration exchange</h2>
 <p>Precise location and times to be announced.</p>
-<p><em>Morning; user experiences</em></p>
+<p><em>Morning 1; IOC plans</em></p>
 <ul>
 <li>
-<p>SLAC's architecture for EPICS V4, services and applications [Greg]</p>
-<p>Description and demo of the services developed at slac, and their use in Matlab apps.</p>
+<p><strong>pvDatabase description and status</strong> [Marty]</p>
+<p>Further description of the database and processing, and demo of examples (con't from Tuesday's talk on the multi capability of pvDatabase).</p>
 </li>
 <li>
-<p>BNL use of Channel Finder Service [Speaker to be announced. Bob can you arrange one?]</p>
-</li>
-<li>
-<p>BNL operations use of OLOG and MASAR [Speaker to be announced. Bob can you arrange one?]</p>
-</li>
-<li>
-<p>BNL environment for experimental control, data acquisition, and data management [Bob or deputy]</p>
-</li>
-<li>
-<p>BNL users' experience with CSS [Speaker to be announced]</p>
+<p><strong>Discussion of V4 IOC integration plans and schedule</strong> [Andrew leads]</p>
 </li>
 </ul>
-<p><em>Afternoon, High level applications and HP processing support</em></p>
+<p><em>Morning 2; High level applications and HP processing support</em></p>
 <ul>
 <li>
-<p>New Normative types with errors [Greg]</p>
+<p><strong>New Normative types with errors</strong> [Greg]</p>
 <p>Description and demo of types including measurement or fitting errors</p>
 </li>
 <li>
-<p>NTNDArray and areaDetector work at Diamond [Dave]</p>
+<p><strong>NTNDArray and areaDetector work at Diamond</strong> [Dave]</p>
 </li>
 <li>
-<p>pvDatabase description and status [Marty]</p>
-<p>Description of the database and processing, and demo of examples</p>
-</li>
-<li>
-<p>areaDetector, NTNDArray, and plans for large data support.</p>
+<p><strong>areaDetector, NTNDArray, and plans for large data support</strong></p>
 <p>Bob, can you prepare the objectives for this session, and questions to be answered?</p>
 </li>
 </ul>
-<h2>Day 3: Gateway requirements</h2>
+<p><em>Afternoon; User experiences</em></p>
+<ul>
+<li>
+<p><strong>SLAC's architecture for EPICS V4, services and applications [Greg]</strong></p>
+<p>Description and demo of the services developed at slac, and their use in Matlab apps.</p>
+</li>
+<li>
+<p><strong>BNL use of Channel Finder Service</strong> [Speaker to be announced. Bob can you arrange one?]</p>
+</li>
+<li>
+<p><strong>BNL operations use of OLOG and MASAR</strong> [Speaker to be announced. Bob can you arrange one?]</p>
+</li>
+<li>
+<p><strong>BNL environment for experimental control, data acquisition, and data management</strong> [Bob or deputy]</p>
+</li>
+<li>
+<p><strong>User's guide to CSS</strong> [Gabriele]</p>
+</li>
+<li>
+<p><strong>BNL users' experience with CSS</strong> [Speaker to be announced]</p>
+</li>
+</ul>
+<h2>DAY 3, Thursday July 17, 2014: Gateway requirements</h2>
 <p>Precise location and times to be announced.</p>
 <p><em>Morning; Gateway requirements, plans, assignments</em></p>
 <ul>
 <li>
-<p>Review of the [gateway requirements][1] [Lead by Ralph]</p>
+<p><strong>Review of the [gateway requirements][1]</strong> [Lead by Ralph]</p>
 <p>The gateway is now becoming the most critical element of V4 outstanding. Please be prepared having read the published requirements and ready with your own.</p>
 <p>One objective will be prioritization. Will streaming be attempted in the first pass? How to deal with differing pvRequests of the same PV?</p>
 </li>
 <li>
-<p>Monitor processing</p>
+<p><strong>Monitor processing</strong> [Marty]</p>
 </li>
 </ul>
 <p><em>Afternoon; overflow</em></p>
