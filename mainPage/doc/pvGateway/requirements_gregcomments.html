@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>EPICS V4 PV Gateway Requirements</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+ </script>
+</head>
+
+<body>
+
+<div class="head">
+<h1>EPICS V4 PV Gateway Requirements</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date. -->
+
+<h2 class="nocount">EPICS V4 Working Group, Working Draft, 02-Jun-2014</h2>
+<dl>
+  <dt>Latest version:</dt>
+    <dd><a href="requirements.html">requirements.html</a></dd>
+  <dt>This version:</dt>
+    <dd><a href="requirements_20140602.html">requirements_20140602.html</a></dd>
+  <dt>Previous version:</dt>
+    <dd><a href="requirements_20140527.html">requirements_20140527.html</a></dd>
+  <dt>Editors:</dt>
+    <dd>Ralph Lange, ITER International Organization</dd>
+</dl>
+</div>
+
+<h2 class="nocount">Purpose and Scope of this Document</h2>
+
+<p>This document gathers all the requirements for the "EPICS V4 PV Gateway"
+component of EPICS Version 4. The primary purpose of this component is to proxy connections to PVs, possibly across network
+boundaries.</p>
+
+<p>This document is mainly targeted to software architects, developers, and
+testers.</p>
+
+<h2 class="nocount">Status of this Document</h2>
+
+<p>The status of this document is <i>Early Editors Draft</i>.</p>
+
+<p>This document is being used to collect the requirements. It is not complete, and
+is intended to be a background for informed discussion and decision.</p>
+
+<p>Once finalized and approved, this document will serve as input for
+specification, design, and test.</p>
+
+<div id="toc">
+<h2 class="nocount">Table of Contents</h2>
+</div>
+
+<div id="contents" class="contents">
+<h2>Requirements Identification</h2>
+
+<p>The component identifier of the PV Gateway is 'PVGW'. The requirement
+identifiers are formatted as</p>
+
+<p style="margin-left:2em;">PVGW-REQ-&lt;req-category&gt;-&lt;req-number&gt;</p>
+
+<p>The requirement categories used in this document are:</p>
+
+<table border="1" style="width: 100%">
+  <col />
+  <col />
+  <thead>
+    <tr>
+      <td style="background-color:#c0c0c0"><strong><em>Requirement
+        Category</em></strong></td>
+      <td style="background-color:#c0c0c0"><strong><em>ID</em></strong></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Functional</td>
+      <td>F</td>
+    </tr>
+    <tr>
+      <td>External Interface</td>
+      <td>I</td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td>O</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>General Description</h2>
+
+<p>Similar to the Channel Access Gateway component in EPICS V3, the PV Gateway
+component in EPICS V4 ("Gateway") will be an application embedding a pvAccess
+server, possibly a Channel Access server, and a pvAccess client.</p>
+
+<p>Its main purpose is to proxy pvAccess and Channel Access connections,
+possibly across IP network boundaries.</p>
+
+<p>In this document, the clients of the Gateway will be referred to as
+"external", while the servers (e.g., IOCs) that the Gateway connects to on
+behalf of its external clients will be called "internal". This is solely done
+to clearly distinguish between the two sides of the Gateway.</p>
+
+<h2>Functional Requirements</h2>
+
+<h3>EPICS Network Protocol Requirements</h3>
+
+<h4>PVGW-REQ-F-001 pvAccess Client</h4>
+
+<p>The Gateway should be able to connect to internal servers using the pvAccess
+network protocol of EPICS V4.  <span class="ed">Puzzled why this isn't a MUST requirement.</span></p>
+
+<h4>PVGW-REQ-F-002 pvAccess Server</h4>
+
+<p>The Gateway should provide channels on the external network by means of the
+pvAccess network protocol of EPICS V4.</p>
+
+<h4 id="PVGW-REQ-F-003">PVGW-REQ-F-003 Configurable pvAccess Server</h4>
+
+<p>It should be possible to configure if the pvAccess server (PVGW-REQ-F-002)
+is started. This configuration should be defined at start-up, and is not
+required to be changeable at runtime.</p>
+
+<h4>PVGW-REQ-F-004 Redundant pvAccess Server Operation</h4>
+
+<p>It should be possible to run multiple Gateways with identical configuration
+in parallel, to allow failover and load balancing. This mode should not require
+special configuration on the external clients. <span class="ed">Interesting, but won't possibility of managing possibility of many gateway replies to broadcasts mean that this requirement will be hard to achieve?</span></p>
+
+<h4>PVGW-REQ-F-011 Channel Access Client</h4>
+
+<p>The Gateway should be able to connect to internal servers using the Channel
+Access network protocol of EPICS V3.</p>
+
+<h4>PVGW-REQ-F-012 Channel Access Server</h4>
+
+<p>The Gateway should provide channels on the external network by means of the
+Channel Access network protocol of EPICS V3. <span class="ed">Presumably this requirement refers only to eternal client requests made over CA?</span></p>
+
+<h4>PVGW-REQ-F-013 Configurable Channel Access Server</h4>
+
+<p>It should be possible to configure if the Channel Access server
+(PVGW-REQ-F-012) is started. This configuration should be defined at start-up,
+and is not required to be changeable at runtime. <span class="ed">Ah, I see, w.r.t. PVGW-REQ-F-003, you're referring to a gateway that is capable of mediating both PVA and CA, and you're saying whether one running instance does one or the other or both, should be configurable? If so, let's make that explicit.</span></p>
+
+<h4>PVGW-REQ-F-021 Configurable Server Side Network Binding</h4>
+
+<p>On machines with multiple network interfaces, the Gateway should allow
+configuration of the network interfaces that its server(s) bind to. This
+configuration should be defined at start-up, and is not required to be
+changeable at runtime.</p>
+
+<h3>Data Flow Engine Requirements</h3>
+
+<h4 id="PVGW-REQ-F-101">PVGW-REQ-F-101 Full pvData Support</h4>
+
+<p>The Gateway should support transport of all pvData structures without
+restrictions. No legal pvData type should require recompilation or restart of
+the Gateway.</p>
+
+<h4 id="PVGW-REQ-F-102">PVGW-REQ-F-102 Full Normative Type Support</h4>
+
+<p>The Gateway should support transport of all Normative Type (NT) structures
+without restrictions. It must not depend on specific properties of any NT. <span class="ed">Yes, though this is a consequence of PVGW-REQ-F-101.</span></p>
+
+
+<h4>PVGW-REQ-F-111 Low Latency for Large Structures/Arrays</h4>
+
+<p>The Gateway should add minimal latency when forwarding large structures or
+arrays. Sending data to the external clients should start immediately, and not
+require data structures to be received completely. <span class="ed">Brilliant</span></p>
+
+<h4>PVGW-REQ-F-112 Quality-of-Service Mechanisms</h4>
+
+<p>The Gateway should implement mechanisms to avoid negative effects of
+connections with large structures and arrays on connections to other PVs on the
+same internal server.</p>
+
+<h4 id="PVGW-REQ-F-121">PVGW-REQ-F-121 Combine Sub-Structure Subscriptions</h4>
+
+<p>The Gateway should be able to combine external clients' subscriptions to
+different sub-structures of the same channel into one subscription to the
+internal server. <span class="ed">Yes. My guess is the right thing here is not to be too clever - let's not try to manage the union of pv requests on a single complex structured PV.</span></p>
+
+<h4>PVGW-REQ-F-122 Combine Request Configurations for Identical
+Subscriptions</h4>
+
+<p>The Gateway should be able to combine external clients' request
+configurations (pvRequest) for subscriptions to identical sub-structures of the
+same channel into one subscription to the internal server. <span class="ed">Suggest again gateway should just treat any external req for a PV as a request for all of it, and combine such requests; then serve out the requested subparts.</span></p>
+
+<h4>PVGW-REQ-F-131 Data Cache</h4>
+
+<p>The Gateway should be able to cache data, so that data for replies to get
+operations and initial updates on new subscriptions from external clients may
+be taken from the cache. <span class="ed">Yes preacher man, tell it like it is.</span></p>
+
+<h4>PVGW-REQ-F-132 Configurable Data Cache</h4>
+
+<p>Application of the "Data Cache" feature (PVGW-REQ-F-131) to get operations
+should be configurable, both globally and specifically on a channel name/regex
+base.</p>
+
+<h4>PVGW-REQ-F-141 Transparent Data Behavior</h4>
+
+<p>The Gateway should act completely transparently. When comparing a direct
+connection to a PV with a connection through the Gateway, order and contents of
+received data should be the same.</p>
+
+<p>This does not apply to get operations when data caching (PVGW-REQ-131) is
+enabled. In that case, the values returned from the cache may be different from
+the values in the internal server</p>
+
+<h4>PVGW-REQ-F-142 Transparent Out-of-Band Behavior</h4>
+
+<p>The Gateway should act transparently with respect to out-of-band behavior.
+When comparing a direct connection to a PV with a connection through the
+Gateway, out-of-band situations (e.g., connection loss, reconnection,
+non-existent PV) should produce the same exceptions in the same order.</p>
+
+<h4>PVGW-REQ-F-143 Transparent Timeout Behavior</h4>
+
+<p>The Gateway should act transparently with respect to timeouts. When comparing
+a direct connection to a PV with a connection through the Gateway, timeouts
+defined by the external client should be honored in the same way.</p>
+
+<h3>Authentication/Authorization Requirements</h3>
+
+<h4>PVGW-REQ-F-201 Local AuthN/AuthZ</h4>
+
+<p>The Gateway should support a local layer of authentication and
+authorization, where authN/authZ for requests is decided possibly using an
+independent authN/authZ server, but without querying the internal server.</p>
+
+<h4>PVGW-REQ-F-202 Run-Time Configurable Local AuthN/AuthZ</h4>
+
+<p>The "Local AuthN/AuthZ" feature (PVGW-REQ-F-201) should be configurable at
+run-time. Activating a new configuration should not require a restart of the
+Gateway. Connections whose authZ does not change by the new configuration
+should not be affected.</p>
+
+<h4>PVGW-REQ-F-203 Proxy AuthN/AuthZ</h4>
+
+<p>The Gateway should support proxy authentication and authorization, where
+authorization for requests is decided by querying the internal server, using
+the credentials supplied by the external client.</p>
+
+<h4>PVGW-REQ-F-211 Transparent AuthZ Forwarding</h4>
+
+<p>The Gateway should transparently forward authorization changes on the
+internal connections to its external clients.</p>
+
+<h2>External Interface Requirements</h2>
+
+<h4>PVGW-REQ-I-001 Statistics Data</h4>
+
+<p>The Gateway should provide statistical and performance data as pvData NT
+structures.</p>
+
+<h4>PVGW-REQ-I-002 Network Binding for Statistics Data</h4>
+
+<p>On machines with multiple network interfaces, the Gateway should allow
+configuration of the network interfaces that the statistics data
+(PVGW-REQ-I-001) server(s) bind to, independent from the equivalent setting of
+the data server(s) (PVGW-REQ-F-021). This configuration should be defined at
+start-up, and is not required to be changeable at runtime.</p>
+
+<h4>PVGW-REQ-I-011 Debugging Shell</h4>
+
+<p>The Gateway should provide a shell for debugging purposes, allowing to
+inspect its internal structures and lists, trace requests, set up debug log
+output filtered by channel or external client or internal server, etc. <span class="ed">Must this shell require restart, which would quite possibly clear any problem for which a shell would have been useful?</span></p>
+
+<h2>Other Requirements</h2>
+
+<h4>PVGW-REQ-O-001 Build Environment</h4>
+
+<p>The Gateway component should compile in a standard EPICS V4 build
+environment, using the standard EPICS V4 tools and compilers.</p>
+
+<h4>PVGW-REQ-O-002 Supported Platforms</h4>
+
+<p>The Gateway should be supported on all host type architectures/platforms
+officially supported by EPICS V4.</p>
+
+<h4>PVGW-REQ-O-003 SMP Support</h4>
+
+<p>The Gateway should be able to make use of SMP architectures, distributing
+load onto the available CPUs.</p>
+
+<span class="ed">
+<p>No mention of protocol translation (pva/pvdata &lt;&dash;&gt; http/something/xml) - that's ok, probably too early to mention that. But what about speeding up clients by separation of the time base of the source (eg Khz trigger) from time base of client (eg display updating at 1 Hz). cf pvManager. I would have thought that's an important feature.</p>
+</span>
+<hr />
+<address>
+  Ralph Lange, ITER International Organization. 
+</address>
+<!--$date=-->2014-06-02<!--$--></div>
+</body>
+</html>
