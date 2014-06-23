@@ -24,9 +24,13 @@ Status reports and demonstrations of work for (planned version 4.4 features)[htt
 
 * **dbGroup** [Ralph]
 
-    Description, API and demo. Note dbGroup is not intended for 4.4, but this is a convenient time for Ralph to bring us up to date. 
+    Description, API and demo. Note dbGroup is not intended for 4.4, but this is a convenient time for Ralph to bring us up to date.
 
-* [**pvDatabase, and use of pvDatabase for composite PVs**]
+* **Version 4.4 Feature List review** [Greg]
+
+    Short review of items that we intended to be in 4.4 [2]
+
+* **pvDatabase, and use of pvDatabase for composite PVs** [Marty]
 
     A description and demo of the "multi" capabilities of pvDatabase for
 	expressing a pva PV whose value is composed of CA pv names and values.
@@ -110,7 +114,7 @@ DAY 3, Thursday July 17, 2014: Gateway requirements
 -
 Precise location and times to be announced.
 
-*Morning; Gateway requirements, plans, assignments*
+*Morning; Gateway requirements, 2014-15 Charter review, plans, assignments*
 
 * **Review of the [gateway requirements][1]** [Lead by Ralph]
 
@@ -120,11 +124,11 @@ Precise location and times to be announced.
 
 * **Monitor processing** [Marty]
 
-    
+* **2014-15 Charter Review and Roadmap** [Greg]    
 
 *Afternoon; overflow*
 
 As we've found we need, we need some overflow time to return to critical issues.
 
 [1] http://epics-pvdata.sourceforge.net/doc/pvGateway/requirements.html
-
+[2] http://epics-pvdata.sourceforge.net/internal/proposedChanges/featureListR4.4.html
