@@ -1,83 +1,85 @@
 <p>HTML header:
     <link rel="stylesheet" type="text/css" href="../../base.css" />
     <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" /></p>
+<!-- python -m markdown BNL_agenda.md BNL_agenda.html -->
+
 <p><br /></p>
 <h1>Agenda of EPICS Version 4 Meeting</h1>
-<p><em>PRELIMINARY AGENDA V1-6-14. TIMES TO BE ADDED.</em></p>
+<p><em>AGENDA V24-6-14</em></p>
 <p><strong>Dates</strong>: July 15, 16, 17 2014</p>
 <p><strong>Location</strong>: <a href="http://www.bnl.gov/world/">Brookhaven National Lab</a>.</p>
 <p><strong>Local contact</strong>: Bob Dalesio</p>
 <p>Comprehensive minutes will be recorded by Google shared document. Attendees should be prepared to minute part of the meeting.</p>
 <h2>DAY 1, Tuesday July 15, 2014: Version 4.4 preparedness status reports</h2>
-<p>Precise location and times to be announced.</p>
-<p>Status reports and demonstrations of work for (planned version 4.4 features)[http://epics-pvdata.sourceforge.net/internal/proposedChanges/featureListR4.4.html].</p>
+<p>9:00 AM Convene. Start at 9:20. Precise location to be announced. TIMES ARE AT CHAIR'S DISCRETION.</p>
+<p>Status reports and demonstrations of work for <a href="http://epics-pvdata.sourceforge.net/internal/proposedChanges/featureListR4.4.html" title="Version 4.4 Feature List">planned version 4.4 features</a>.</p>
 <ul>
 <li>
-<p><strong>dbGroup</strong> [Ralph]</p>
+<p><strong>dbGroup</strong> <em>Ralph Lange</em></p>
 <p>Description, API and demo. Note dbGroup is not intended for 4.4, but this is a convenient time for Ralph to bring us up to date.</p>
 </li>
 <li>
-<p><strong>Version 4.4 Feature List review</strong> [Greg]</p>
-<p>Short review of items that we intended to be in 4.4 [2]</p>
+<p><strong>Version 4.4 Feature List review</strong> <em>Greg White</em></p>
+<p>Short review of <a href="http://epics-pvdata.sourceforge.net/internal/proposedChanges/featureListR4.4.html" title="Version 4.4 Feature List">features that we intended to be in 4.4</a></p>
 </li>
 <li>
-<p><strong>pvDatabase, and use of pvDatabase for composite PVs</strong> [Marty]</p>
+<p><strong>pvDatabase, and use of pvDatabase for composite PVs</strong> <em>Marty Kraimer</em></p>
 <p>A description and demo of the "multi" capabilities of pvDatabase for
 expressing a pva PV whose value is composed of CA pv names and values.
 Other features of PVDatabase will be discussed Wednesday morning.</p>
 </li>
 <li>
-<p><strong>Multicast</strong> [Matej]</p>
+<p><strong>Multicast</strong> <em>Matej Sekornaja</em></p>
 <p>Description, API and demo of use cases.</p>
 </li>
 <li>
-<p><strong>Use of unions</strong> [Dave]</p>
+<p><strong>Use of unions</strong> <em>Dave Hickin</em></p>
 <p>Just the two kinds of union and a demo - perhaps from areaDetector work,
 but lets look more closely at areaDetector, NTNDArray and discussion in day 2.</p>
 </li>
 <li>
-<p><strong>Codec based transport</strong> [Matej]</p>
+<p><strong>Codec based transport</strong> <em>Matej Sekornaja</em></p>
 <p>Description, API and demo of both pvAccess codec and the ZeroMQ codec.</p>
 </li>
 <li>
-<p><strong>pvArray and copy on write</strong> [Marty]</p>
+<p><strong>pvArray and copy on write</strong> <em>Marty Kraimer</em></p>
 <p>I'd really like to see a demo which illustrates not only the 
 programmers interface but also quantitatively characterizes the 
 performance.</p>
 </li>
 <li>
-<p><strong>New channel Data API</strong> [Matej]</p>
+<p><strong>New channel Data API</strong> <em>Matej Sekornaja</em></p>
 <p>Description, API and demo. </p>
 </li>
 <li>
-<p><strong>Access security plugin</strong> [Matej]</p>
+<p><strong>Access security plugin</strong> <em>Matej Sekornaja</em></p>
 <p>Description, API and demo.</p>
 </li>
 <li>
-<p><strong>pvaPy</strong> [Andrew for Sinisa]</p>
+<p><strong>pvaPy</strong> <em>Andrew for Sinisa Veseli</em></p>
 <p>Description, API, and demo of Python support of pvAccess (and CA is being added through the pvAccess API too, right?)</p>
 </li>
 </ul>
 <h2>DAY 2, Wednesday July 16, 2014: Collaboration exchange</h2>
-<p>Precise location and times to be announced.</p>
+<p>9:00 AM. Precise location to be announced. TIMES ARE AT CHAIR'S DISCRETION.</p>
 <p><em>Morning 1; IOC plans</em></p>
 <ul>
 <li>
-<p><strong>pvDatabase description and status</strong> [Marty]</p>
+<p><strong>pvDatabase description and status</strong> <em>Marty Kraimer</em></p>
 <p>Further description of the database and processing, and demo of examples (con't from Tuesday's talk on the multi capability of pvDatabase).</p>
 </li>
 <li>
-<p><strong>Discussion of V4 IOC integration plans and schedule</strong> [Andrew leads]</p>
+<p><strong>Discussion of V4 IOC integration plans and schedule</strong> <em>Andrew Johnson leads</em></p>
 </li>
 </ul>
 <p><em>Morning 2; High level applications and HP processing support</em></p>
 <ul>
 <li>
-<p><strong>New Normative types with errors</strong> [Greg]</p>
+<p><strong>New Normative types with errors</strong> <em>Greg White</em></p>
 <p>Description and demo of types including measurement or fitting errors</p>
 </li>
 <li>
-<p><strong>NTNDArray and areaDetector work at Diamond</strong> [Dave]</p>
+<p><strong>areaDetector and V4 Integration work at Diamond</strong> <em>Dave Hickin</em></p>
 </li>
 <li>
 <p><strong>areaDetector, NTNDArray, and plans for large data support</strong></p>
@@ -87,42 +89,43 @@ performance.</p>
 <p><em>Afternoon; User experiences</em></p>
 <ul>
 <li>
-<p><strong>SLAC's architecture for EPICS V4, services and applications [Greg]</strong></p>
+<p><strong>SLAC's architecture for EPICS V4, services and applications</strong> <em>Greg White</em></p>
 <p>Description and demo of the services developed at slac, and their use in Matlab apps.</p>
 </li>
 <li>
-<p><strong>BNL use of Channel Finder Service</strong> [Speaker to be announced. Bob can you arrange one?]</p>
+<p><strong>The MongoDB and V4 based Archive Service at BNL</strong> <em>Nikolay Malitsky</em></p>
 </li>
 <li>
-<p><strong>BNL operations use of OLOG and MASAR</strong> [Speaker to be announced. Bob can you arrange one?]</p>
+<p><strong>BNL use of Channel Finder Service</strong> <em>Speaker to be announced. Bob can you arrange one?</em></p>
 </li>
 <li>
-<p><strong>BNL environment for experimental control, data acquisition, and data management</strong> [Bob or deputy]</p>
+<p><strong>BNL operations use of OLOG and MASAR</strong> <em>Speaker to be announced. Bob can you arrange one?</em></p>
 </li>
 <li>
-<p><strong>User's guide to CSS</strong> [Gabriele]</p>
+<p><strong>BNL environment for experimental control, data acquisition, and data management</strong> <em>Bob or deputy</em></p>
 </li>
 <li>
-<p><strong>BNL users' experience with CSS</strong> [Speaker to be announced]</p>
+<p><strong>User's guide to CSS</strong> <em>Gabriele Carcassi</em></p>
+</li>
+<li>
+<p><strong>BNL users' experience with CSS</strong> <em>Speaker to be announced</em></p>
 </li>
 </ul>
 <h2>DAY 3, Thursday July 17, 2014: Gateway requirements</h2>
-<p>Precise location and times to be announced.</p>
+<p>9:00 AM. Precise location to be announced. TIMES ARE AT CHAIR'S DISCRETION.</p>
 <p><em>Morning; Gateway requirements, 2014-15 Charter review, plans, assignments</em></p>
 <ul>
 <li>
-<p><strong>Review of the [gateway requirements][1]</strong> [Lead by Ralph]</p>
+<p><strong>Review of the <a href="http://epics-pvdata.sourceforge.net/doc/pvGateway/requirements.html" title="Gateway Requirements">gateway requirements</a></strong> <em>Lead by Ralph Lange</em></p>
 <p>The gateway is now becoming the most critical element of V4 outstanding. Please be prepared having read the published requirements and ready with your own.</p>
 <p>One objective will be prioritization. Will streaming be attempted in the first pass? How to deal with differing pvRequests of the same PV?</p>
 </li>
 <li>
-<p><strong>Monitor processing</strong> [Marty]</p>
+<p><strong>Monitor processing</strong> <em>Marty Kraimer</em></p>
 </li>
 <li>
-<p><strong>2014-15 Charter Review and Roadmap</strong> [Greg]    </p>
+<p><strong>2014-15 Charter Review and Roadmap</strong> <em>Greg White</em>    </p>
 </li>
 </ul>
 <p><em>Afternoon; overflow</em></p>
 <p>As we've found we need, we need some overflow time to return to critical issues.</p>
-<p>[1] http://epics-pvdata.sourceforge.net/doc/pvGateway/requirements.html
-[2] http://epics-pvdata.sourceforge.net/internal/proposedChanges/featureListR4.4.html</p>
