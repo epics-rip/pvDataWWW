@@ -55,7 +55,7 @@ echo "
                           sought in
                           ./<hgrepodirname>/pvDataWWW/scripts/RELEASE_VERSIONS, and
                           the local maven repository will be sought in
-                          ~/.m2/repository/epics/. If -l is not given, the
+                          ~/.m2/repository/org/epics/. If -l is not given, the
                           SourceForge hosted files will be used.
 
        -r <SFusername>   Use remote files. The argument SFusername is the SourceForge
@@ -86,7 +86,7 @@ echo "
        EPICS-Java-4.3.0-pre1, as specified in the RELEASE_VERSIONS file it finds on the
        web (see URL in source of this script).
        It will first download the files it finds in the maven repo at 
-       http://epics.sourceforge.net/maven2/epics/, and package them into a tar file.
+       http://epics.sourceforge.net/maven2/org/epics/, and package them into a tar file.
 
 "
 }
@@ -178,16 +178,16 @@ do
         #
         echo Adding ${modulei} ${tag} to ${releaseName} tar directory 
         if [ ${localfiles} -eq 1 ]; then
-	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}.jar .
-	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}.pom .
-	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar .
-	    cp ~/.m2/repository/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar .
+	    cp ~/.m2/repository/org/epics/${modulei}/${tag}/${modulei}-${tag}.jar .
+	    cp ~/.m2/repository/org/epics/${modulei}/${tag}/${modulei}-${tag}.pom .
+	    cp ~/.m2/repository/org/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar .
+	    cp ~/.m2/repository/org/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar .
         else
             set -x
-	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}.jar
-	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}.pom
-	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar
-	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar
+	    wget http://epics.sourceforge.net/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}.jar
+	    wget http://epics.sourceforge.net/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}.pom
+	    wget http://epics.sourceforge.net/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar
+	    wget http://epics.sourceforge.net/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar
         fi
         set +x
      else

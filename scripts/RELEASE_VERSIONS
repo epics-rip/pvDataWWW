@@ -53,6 +53,15 @@ EPICS-Java-4.3.0            caj               1.1.10
 EPICS-Java-4.3.0            jca               2.3.6
 EPICS-Java-4.3.0            directoryService  0.2.2
 
+# 4.4-dev1 Java
+EPICS-Java-4.4.0-dev1       pvDataJava        3.1.0
+EPICS-Java-4.4.0-dev1       pvAccessJava      3.1.0
+EPICS-Java-4.4.0-dev1       easyPVAJava       0.3.0
+EPICS-Java-4.4.0-dev1       exampleJava       2.1.2
+EPICS-Java-4.4.0-dev1       caj               1.1.14
+EPICS-Java-4.4.0-dev1       jca               2.3.6
+EPICS-Java-4.4.0-dev1       directoryService  0.2.3
+
 # 4.3 CPP
 EPICS-CPP-4.3.0-pre1         pvCommonCPP       3.0.0
 EPICS-CPP-4.3.0-pre1         pvDataCPP         3.0.0
@@ -88,3 +97,12 @@ EPICS-CPP-4.3.0             pvAccessCPP       3.0.4
 EPICS-CPP-4.3.0             pvIOCCPP          3.0.3
 EPICS-CPP-4.3.0             exampleCPP        3.0.0
 EPICS-CPP-4.3.0             pvaSrv            0.9.2
+
+# 4.4-dev1 CPP
+EPICS-CPP-4.4.0-dev1        pvCommonCPP       3.0.3
+EPICS-CPP-4.4.0-dev1        pvDataCPP         3.1.0
+EPICS-CPP-4.4.0-dev1        pvAccessCPP       3.1.0
+EPICS-CPP-4.4.0-dev1        pvDatabaseCPP     3.1.0
+EPICS-CPP-4.4.0-dev1        exampleCPP        3.1.0
+EPICS-CPP-4.4.0-dev1        pvaSrv            0.9.3
+
