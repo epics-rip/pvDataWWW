@@ -97,12 +97,13 @@ http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE_VERS
 README_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/README
 
+# Remote location of the Makefile
 MAKEFILE_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/Makefile
 
-# Remote location of the README file
-CONGIG_SCRIPT=\
-http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/configure.sh
+# Remote location of the configuration script
+CONFIG_SCRIPT_URL=\
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/configure.sh
 
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
@@ -205,7 +206,7 @@ else
     if [ -e configure.sh ]; then
         rm -rf configure.sh
     fi
-    wget ${CONGIG_SCRIPT_URL}
+    wget ${CONFIG_SCRIPT_URL}
     config_script_pathname=${PWD}/configure.sh 
 fi
 
