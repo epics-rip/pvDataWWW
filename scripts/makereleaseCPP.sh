@@ -57,7 +57,7 @@ echo "
 
    Examples:
 
-         $ makereleaseCPP.sh -V -n EPICS-CPP-4.3.0-pre1 -r dhickin
+         $ makereleaseCPP.sh -V -n EPICS-CPP-4.3.0-pre1 -u dhickin
 
        In this example, makereleaseCPP.sh packages a tar for a release named
        EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file in the 
@@ -67,7 +67,7 @@ echo "
        package them into a tar file along with the copy of README found in the
        copy of pvDataWWW
 
-         $ makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre1 -r dhickin
+         $ makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre1 -u dhickin
 
        This time makereleaseCPP.sh packages a tar for the release
        EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file it 
@@ -96,6 +96,13 @@ http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE_VERS
 # Remote location of the README file
 README_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/README
+
+MAKEFILE_URL=\
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/Makefile
+
+# Remote location of the README file
+CONGIG_SCRIPT=\
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/configure.sh
 
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
@@ -166,6 +173,8 @@ fi
 if [ ${localreleaseinfo} -eq 1 ]; then
     release_versions_pathname=${scriptdir}/RELEASE_VERSIONS
     readme_pathname=${scriptdir}/../mainPage/README
+    makefile_pathname=${scriptdir}/Makefile
+    config_script_pathname=${scriptdir}/configure.sh
 else
     # Get the remote version file.
     # Delete the existing file first if it's already there.
@@ -181,7 +190,23 @@ else
         rm -rf README
     fi
     wget ${README_URL}
-    readme_pathname=${PWD}/README 
+    readme_pathname=${PWD}/README
+
+    # Get the remote version file.
+    # Delete the existing file first if it's already there.
+    if [ -e Makefile ]; then
+        rm -rf Makefile
+    fi
+    wget ${MAKEFILE_URL}
+    makefile_pathname=${PWD}/Makefile
+
+    # Get the remote readme file.
+    # Delete the existing file first if it's already there.
+    if [ -e configure.sh ]; then
+        rm -rf configure.sh
+    fi
+    wget ${CONGIG_SCRIPT_URL}
+    config_script_pathname=${PWD}/configure.sh 
 fi
 
 if [ ! -f ${release_versions_pathname} ]; then
@@ -191,9 +216,18 @@ fi
 
 if [ ! -f ${readme_pathname} ]; then
     echo "Failed to locate the README file ${readme_versions_pathname}"
-    Exit 7
+    Exit 6
 fi
 
+if [ ! -f ${makefile_pathname} ]; then
+    echo "Failed to locate the Makefile file ${makefile_pathname}"
+    Exit 6
+fi
+
+if [ ! -f ${config_script_pathname} ]; then
+    echo "Failed to locate the config script file ${config_script_pathname}"
+    Exit 6
+fi
 
 # Construct fully qualified pathname of RELEASE_VERSIONS file
 file=$release_versions_pathname
@@ -203,6 +237,13 @@ release_versions_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$
 file=$readme_pathname
 readme_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
+# Construct fully qualified pathname of Makefile file
+file=$makefile_pathname
+makefile_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
+
+# Construct fully qualified pathname of configure script file
+file=$config_script_pathname
+config_script_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
 # Read the repos and versions that the release tar must be composed of from the
 # RELEASE_VERSIONS file.
@@ -212,7 +253,7 @@ modulesa=(`awk -v relname=${releaseName} 'BEGIN {relname="^" relname "$"} $1 ~ r
 # Check we got at least 1 module.
 if [ ${#modulesa[@]} -lt 1 ]; then
     echo "Failed to find modules for release ${releaseName}"
-    Exit 8
+    Exit 7
 fi
 
 echo ${releaseName} is composed of ${modulesa[*]}
@@ -230,7 +271,7 @@ do
 
     if [ $? -ne 0 ]; then
 	    echo "Could not get module version for ${modulei}, exiting"
-	    Exit 9
+	    Exit 8
     fi
 
     echo Adding ${modulei} ${tag} to ${releaseName} tar directory
@@ -240,7 +281,7 @@ do
     hg clone -u ${tag} ssh://${SFusername}@hg.code.sf.net/p/epics-pvdata/${modulei} ${checkoutname}
     if [ $? -ne 0 ]; then
 	    echo "hg clone failed."
-        Exit 10            
+        Exit 9            
     fi
 
     # update separately. "hg clone -u <tag>" does not return an error status
@@ -249,7 +290,7 @@ do
     hg update -r ${tag}
     if [ $? -ne 0 ]; then
 	    echo "hg update failed."
-	    Exit 11
+	    Exit 10
     fi
 
     echo "tags for ${modulei}:"
@@ -264,10 +305,12 @@ do
 done
 
 
-# Add RELEASE_VERSIONS and README to the bundle
-echo Adding RELEASE_VERSIONS and README
+# Add RELEASE_VERSIONS, README, Makefile and configure.sh to the bundle
+echo Adding RELEASE_VERSIONS, README, Makefile and configure.sh
 cp $release_versions_pathname .
 cp $readme_pathname .
+cp $makefile_pathname .
+cp $config_script_pathname .
 
 cd ..
 
