@@ -1,4 +1,4 @@
-default: base helloWorld 
+default: base helloWorld
 
 base : pvCommon pvData pvAccess pvaSrv pvDatabase
 
@@ -34,15 +34,16 @@ clean :
 	make -C exampleCPP/HelloWorld clean
 	make -C exampleCPP/ChannelArchiverService clean
 
+distclean : clean config_clean 
+
 configure: FORCE
 	./configure.sh
 
 config_multi: FORCE
-	./configure.sh multi
+	./configure.sh all
 
 config_clean:
 	./configure.sh clean
-
 
 FORCE:
 
