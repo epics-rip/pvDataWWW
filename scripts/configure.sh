@@ -1,7 +1,6 @@
 #!/bin/bash
 
 THISDIR=${PWD}
-
 EV4_BASE=$THISDIR
 
 
@@ -9,9 +8,17 @@ clean()
 {
    echo "Removing old RELEASE.locals"
    find . -name RELEASE.local -exec rm {} \; 
-   exit 0
 }
 
+
+check_for_config_files()
+{
+    if [ `find . -name RELEASE.local | wc -l` -ne 0 ]; then
+       echo "Existing configuration files found. Remove before configuring"
+       echo "Run \"./configuration.sh clean\" to do this."
+       exit 3
+    fi 
+}
 
 check_shell_vars()
 {
@@ -27,26 +34,28 @@ check_shell_vars()
 
     if [ ! -f "${EPICS_BASE}/include/epicsVersion.h" ]; then
         echo "EPICS_BASE version file (${EPICS_BASE}/include/epicsVersion.h) does not exist."
-        echo "Not a valid EPICS installation."
+        echo "Incorrect directory specified or not a valid EPICS installation."
         exit 2
     fi
 
-    if [ ! -z "${ARCHIVER_DIR}" ] && [ ! -d ${ARCHIVER_DIR} ]; then
-        echo "ARCHIVER_DIR specified (${ARCHIVER_DIR}), but does not exist."
-        exit 2
-    fi
+    if [ ! -z "${ARCHIVER_DIR}" ]; then
+        if [ ! -d ${ARCHIVER_DIR} ]; then
+            echo "ARCHIVER_DIR specified (${ARCHIVER_DIR}), but does not exist."
+            exit 2
+        fi
 
-    if [ ! -d ${ARCHIVER_DIR}/include ]; then
-        echo "${ARCHIVER_DIR}/include does not exist."
-        echo "Not a valid channel archiver or channel archiver has not been built."
-        exit 2
+        if [ ! -d ${ARCHIVER_DIR}/include ]; then
+            echo "ARCHIVER_DIR specified but ${ARCHIVER_DIR}/include does not exist."
+            echo "Not a valid channel archiver or channel archiver has not been built."
+            exit 2
+        fi
     fi
 }
-
 
 start_common()
 {
     echo "configuring ..."
+    check_for_config_files
     echo "EPICS_BASE =  ${EPICS_BASE}"
     echo "ARCHIVER_DIR = ${ARCHIVER_DIR}"
     check_shell_vars
@@ -61,7 +70,7 @@ top_level()
     echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
     echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
     echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
-    if [ -d ${ARCHIVER_DIR} ]; then
+    if [ -d "${ARCHIVER_DIR}" ]; then
         echo "ARCHIVER=${ARCHIVER_DIR}" >> RELEASE.local
     fi
     echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
@@ -97,12 +106,12 @@ pvaccess()
 {
     if [ -e pvAccessCPP/configure ]; then
         echo "Making config files for pvAccessCPP" 
-        pushd pvAccessCPP/configure
+        cd pvAccessCPP/configure
         echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
         echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
         echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
         echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
-        popd
+        cd ../..
     else
         echo "Skipping pvAccessCPP: configure - doesn't exist" 
     fi
@@ -112,13 +121,13 @@ pvasrv()
 {
     if [ -e pvaSrv/configure ]; then
         echo "Making config files for pvaSrv" 
-        pushd pvaSrv/configure
+        cd pvaSrv/configure
         echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
         echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
         echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
         echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
         echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
-        popd
+        cd ../..
     else
         echo "Skipping pvaSrv: configure doesn't exist" 
     fi
@@ -128,31 +137,30 @@ pvDatabase()
 {
     if [ -e pvDatabaseCPP/configure ]; then
         echo "Making config files for pvDatabaseCPP" 
-        pushd pvDatabaseCPP/configure
+        cd pvDatabaseCPP/configure
         echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
         echo "PVASRV=\$(EV4_BASE)/pvaSrv" >> RELEASE.local
         echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
         echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
         echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
         echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
-        popd
+        cd ../..
     else
         echo "Skipping pvDatabaseCPP: configure doesn't exist" 
     fi
 }
 
-
 helloWorld()
 {
     if [ -e exampleCPP/HelloWorld/configure ]; then
         echo "Making config files for exampleCPP/HelloWorld" 
-        pushd exampleCPP/HelloWorld/configure
+        cd exampleCPP/HelloWorld/configure
         echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
         echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
         echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
         echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
         echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
-        popd
+        cd ../../..
     else
         echo "Skipping exampleCPP/HelloWorld: configure doesn't exist" 
     fi
@@ -161,20 +169,19 @@ helloWorld()
 archiverService()
 {
     if [ -e exampleCPP/ChannelArchiverService/configure ]; then
-        echo "Making files for exampleCPP/ChannelArchiverService"
-        if [ -z "${ARCHIVER_DIR}" ] ]; then
+        echo "Making config files for exampleCPP/ChannelArchiverService"
+        if [ -z "${ARCHIVER_DIR}" ]; then
             echo "ARCHIVER_DIR not specified, but required for ChannelArchiverService."
             echo "Skipping making config."
-            exit 2
         else 
-            pushd exampleCPP/ChannelArchiverService/configure
+            cd exampleCPP/ChannelArchiverService/configure
             echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
             echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
             echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
             echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
             echo "ARCHIVER=${ARCHIVER_DIR}" >> RELEASE.local
             echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
-            popd
+            cd ../../..
         fi
     else
         echo "Skipping exampleCPP/ChannelArchiverService: configure doesn't exist" 
@@ -182,21 +189,15 @@ archiverService()
 }
 
 
-
 if [ "$1" = "clean" ]; then
     clean
-fi
 
-
-if [ "$1" = "" ]; then
+elif [ "$1" = "" ]; then
     start_common
     top_level
     echo "Configuration successful"
-    exit 0
-fi
 
-
-if [ "$1" = "all" ]; then
+elif [ "$1" = "all" ]; then
     start_common
     pvcommon
     pvdata
@@ -205,13 +206,9 @@ if [ "$1" = "all" ]; then
     pvDatabase
     helloWorld
     archiverService
-    exit 0
+
+else
+    echo "Unknown option $1"
+    exit 1
 fi
-
-echo "Unknown option $1"
-exit 1
-
-
-
-
 
