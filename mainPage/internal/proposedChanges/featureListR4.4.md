@@ -2,6 +2,7 @@
   <link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
 
+<!-- python -m markdown featureListR4.4.md > featureListR4.4.html -->
 <br />
 
 #RELEASE 4.4 NEW FEATURES
@@ -25,7 +26,7 @@ Major new features of version 4.4 include:
 
 * Multicast support
 * Dynamic channel data typing, by unions
-* Higher performance and simplified array handling [pvArray, COW]
+* Higher performance and simplified array handling [pvArray, fixed-size arrays, COW]
 * Codec based transport, plus bundled codecs for pvAccess and ZeroMQ
 * More flexible and informative channel data API [channel method callbacks]
 * Smart handling of data measurement and fitting errors [Normative type errors]
@@ -33,6 +34,7 @@ Major new features of version 4.4 include:
 * Simplified and upgraded data access command line tools [unified pvget/eget\*]
 * Upgraded Easy to use API [easyPVA\*]
 * Intrinsic data type support for images from detectors and cameras [NTNDArray]
+* Windows added to supported platforms.
 
 Cleanups and infrastructure changes
 
@@ -75,6 +77,8 @@ a type that can be changed dynamically. There are two subtypes of union:
 
 Higher performance and simplified array handling [pvArray, COW]
 -
+
+For use cases in which the length of arrays won't change, a simple fixed-size array handling mechanism has been enabled to unlock the potential for very fast fixed array exchange.
 
 The C++ implementation of the data management interface of EPICS V4, pvData,
 now enforces Copy On Write (COW) semantics, to reduce
@@ -185,4 +189,8 @@ Monitor processing options
 This is only in pvdataCPP.
 It is a way for a client to specify processing options for monitors.
 
+Windows platform
+----------------
+
+EPICS V4 has been ported to Windows (**what Windows more specifically**)
 

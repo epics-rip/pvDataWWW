@@ -1,5 +1,7 @@
 <p><link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" /></p>
+<!-- python -m markdown featureListR4.4.md > featureListR4.4.html -->
+
 <p><br /></p>
 <h1>RELEASE 4.4 NEW FEATURES</h1>
 <p><strong>Version:</strong> This is the 3-June-2014 version of the 4.4 features document. This version
@@ -15,7 +17,7 @@ of EPICS.</p>
 <ul>
 <li>Multicast support</li>
 <li>Dynamic channel data typing, by unions</li>
-<li>Higher performance and simplified array handling [pvArray, COW]</li>
+<li>Higher performance and simplified array handling [pvArray, fixed-size arrays, COW]</li>
 <li>Codec based transport, plus bundled codecs for pvAccess and ZeroMQ</li>
 <li>More flexible and informative channel data API [channel method callbacks]</li>
 <li>Smart handling of data measurement and fitting errors [Normative type errors]</li>
@@ -23,6 +25,7 @@ of EPICS.</p>
 <li>Simplified and upgraded data access command line tools [unified pvget/eget*]</li>
 <li>Upgraded Easy to use API [easyPVA*]</li>
 <li>Intrinsic data type support for images from detectors and cameras [NTNDArray]</li>
+<li>Windows added to supported platforms.</li>
 </ul>
 <p>Cleanups and infrastructure changes</p>
 <ul>
@@ -52,6 +55,7 @@ a type that can be changed dynamically. There are two subtypes of union:</p>
 <li>a "regular" union, in which the type must be one of the fixed set of types, determined by the introspection interface of a given union instance.</li>
 </ul>
 <h2>Higher performance and simplified array handling [pvArray, COW]</h2>
+<p>For use cases in which the length of arrays won't change, a simple fixed-size array handling mechanism has been enabled to unlock the potential for very fast fixed array exchange.</p>
 <p>The C++ implementation of the data management interface of EPICS V4, pvData,
 now enforces Copy On Write (COW) semantics, to reduce
 computationally expensive copy operations to the absolute minimum. </p>
@@ -111,3 +115,5 @@ changed to use the <code>pvCopy</code> from pvData.</p>
 <h2>Monitor processing options</h2>
 <p>This is only in pvdataCPP.
 It is a way for a client to specify processing options for monitors.</p>
+<h2>Windows platform</h2>
+<p>EPICS V4 has been ported to Windows (<strong>what Windows more specifically</strong>)</p>
