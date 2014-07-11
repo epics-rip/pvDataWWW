@@ -4,7 +4,7 @@
 
 <p><br /></p>
 <h1>RELEASE 4.4 NEW FEATURES</h1>
-<p><strong>Version:</strong> This is the 3-June-2014 version of the 4.4 features document. This version
+<p><strong>Version:</strong> This is the 11-July-2014 version of the 4.4 features document. This version
 removes dbGroup and replaces that functionality through pvDatabase, and adds the
 CA security plugin.</p>
 <p>EPICS Version 4 is an extensive system of extensions that interoperate with EPICS core version 3 modules, to provide IOC data in simple, elegant, efficient ways to users, scientists and high performance processors.</p>
@@ -44,6 +44,16 @@ of EPICS.</p>
 pvData, w.r.t. release 4.4, is given in
 <a href="http://epics-pvdata.sourceforge.net/internal/proposedChanges/proposedChanges_3_0.html">proposedChanges_3_0.html</a></p>
 <p>[Other questions regarding the release; will Gather be reimplemented standalone and bundled? What about swtShell? What about portDriverJava? What will be the status of pvRequest?] </p>
+<p><code>DISCUSSION REQUIRED</code></p>
+<ul>
+<li>Should this document still refer to proposedChanges?</li>
+<li>swtshell is ready to be part of 4.4. Should it?</li>
+<li>Gather: Only client or also server?</li>
+<li>Gather: How is this related to pvDatabaseCPP multiChannel?</li>
+<li>masarServer::gatherV3Data needs major changes because of COW semantics for arrays.</li>
+<li>portDriverJava should not be part of 4.4.</li>
+<li>What is meant by "What will be the status of pvRequest?"</li>
+</ul>
 <h2>Multicast Support</h2>
 <p>Implementation of multicast used for channel/service discovery and shared data transfer, is added to pvAccess.</p>
 <h2>Dynamic channel data typing</h2>
@@ -54,14 +64,26 @@ a type that can be changed dynamically. There are two subtypes of union:</p>
 <li>variant union, in which the type can be any type</li>
 <li>a "regular" union, in which the type must be one of the fixed set of types, determined by the introspection interface of a given union instance.</li>
 </ul>
+<p><a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/tip/documentation/pvDataCPP.html">pvDataCPP.html</a>
+provides example code for generating union and unionArray fields. Read section "Examples".</p>
 <h2>Higher performance and simplified array handling [pvArray, COW]</h2>
 <p>For use cases in which the length of arrays won't change, a simple fixed-size array handling mechanism has been enabled to unlock the potential for very fast fixed array exchange.</p>
-<p>The C++ implementation of the data management interface of EPICS V4, pvData,
-now enforces Copy On Write (COW) semantics, to reduce
-computationally expensive copy operations to the absolute minimum. </p>
-<p>The API for extracting array data and type conversion, <code>Convert</code> has been
-greatly simplified. </p>
-<p>The method for put and get array data to a channel, <code>channelArray</code> has been upgraded.</p>
+<p>The channelArray  methods have been changed so that:</p>
+<ul>
+<li>In addition to offset and length, stride is now supported.</li>
+<li>Offset, length, and stride are no longer restricted to be a 32 bit integer,</li>
+<li>A new method getLength allows a client to get the length and capacity of an array without transfering the array itself.</li>
+</ul>
+<p>The C++ implementation of pvData has the following major changes:</p>
+<ul>
+<li>The array data types (scalarArray, unionArray, and structureArray)
+now enforce Copy On Write (COW) semantics, which helps prevent thread conflicts.</li>
+<li>A new shared_vector facility allows read only array data to be shared so that
+computationally expensive copy operations are minimized.
+This facility is used to store the raw data for PVArray.</li>
+<li>Convert, a facility for converting between two different PVData objects, has been greatly simplified.</li>
+<li>PVSubArray is a new facility that copies a subarray from one PVArray to another. The two arrays must have the same element type.</li>
+</ul>
 <h2>Codec based pvAccess transport</h2>
 <p>Using a codec decouples protocol from transport. All the protocol [GW: do you
 mean "protocol", or do you mean "transport" here? - I think you mean transport]
@@ -71,10 +93,15 @@ then be provided in order to get a fully functional pvAccess communication.</p>
 <p>Codecs for the former transport layer of pvAccess, and ZeroMQ transport, are provided,
 so you can use pvAccess or ZeroMQ immediately.</p>
 <h2>More flexible and informative channel data API  [channel* callbacks]</h2>
-<p>pvAccess channelGet, channelPut, channelPutGet, and monitor have been upgraded to
-provide connection callbacks with introspection interfaces to the data and its bitset metadata.</p>
-<p>The PVData data and bitsets are now arguments given by the component that provided the data,
-so a client can examine what data it has been returned by the provider.</p>
+<p>The pvAccess API for channelGet, channelPut, channelPutGet, and monitor have been upgraded as follows:</p>
+<ul>
+<li>The connect callback now provides the introspection interface instead of the data interface.</li>
+<li>Whoever provides the data provides the data in the method that delivers the data and a bitSet showing what has changed.</li>
+</ul>
+<p>These changes greatly simplify threading issues.
+See
+<a href="http://epics-pvdata.sourceforge.net/docbuild/AccessJava/tip/documentation/AccessJava.html">pvAccessJava.html</a>
+for the new API for pvAccess.</p>
 <h2>Smart handling of data measurement and fitting errors [Normative type errors]</h2>
 <p>The system of high level data types, called Normative Types
 (<a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html</a>)
@@ -86,14 +113,17 @@ implementations of specific security schemes for pvAccess or Channel Access, tog
 <p>eget and pvget have been unified into one comprehensive command, doing all the functions of get, monitor, and RPC, over PVA, or CA (if CA supports the operation), and supporting pvaRequest and URL syntax.</p>
 <h2>Upgraded Easy to use API [easyPVA]</h2>
 <p>The easy to use API, easyPVA <a href="http://epics-pvdata.sourceforge.net/docbuild/easyPVAJava/tip/documentation/easyPVA.html">http://epics-pvdata.sourceforge.net/docbuild/easyPVAJava/tip/documentation/easyPVA.html</a> is upgraded to include monitors and parallel acquisitions (multichannel).</p>
+<p><code>DISCUSSION REQUIRED</code> multiChannel has been implemented but not monitor.</p>
 <h2>Intrinsic data type support for images from detectors and cameras [NTNDArray]</h2>
 <p>A new data type for carrying data from detectors and cameras, has been added to the set of standard EPICS V4 types. This new type, called <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">NTNDArray</a>, carries all ~the data of one frame, and is modelled heavily on the <a href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/class_n_d_array.html">NDarray</a> of areaDetector.</p>
 <p>Using PVs defined as an NTNDArray,~ for instance enables one to build a chain processors of areaDetector plugins encapsulated as pvDatabase records in a data flow model, for high performance image processing.</p>
 <p><br /></p>
 <h1>Non-functional changes and cleanups</h1>
 <h2>Reimplemented pvCopy</h2>
-<p><code>pvCopy</code>, which used together with <code>pvRequest</code>, allows a client to access to an arbitrary subset
-of the data in the structure associated with a pvAccess channel, has been moved from its two implementations in pvIOCJava and pvDatabaseCPP, to a single implementation in <code>pvData</code>, and its dependency on pvRecord has been removed.</p>
+<p><code>pvCopy</code>, together with <code>pvRequest</code>, allows a client to access to an arbitrary subset
+of the data in the structure associated with a pvAccess channel.
+It was in pvIOCJava and pvDatabaseCPP but has been moved to pvDataJava and pvDataCPP.
+The dependency on pvRecord has been removed.</p>
 <p>Additionally, <code>CreateRequest</code>, which is used by clients to create a pvRequest,
 has been moved from pvAccess to pvData.</p>
 <p>Uses of <code>pvCopy</code> in <code>pvIOCJava</code> and <code>pvDatabaseCPP</code> have been
@@ -106,6 +136,13 @@ changed to use the <code>pvCopy</code> from pvData.</p>
 <h2>Composite IOC PV data [multi capability of pvDatabase]</h2>
 <p>The IOC can now return the value of a number of records as a single PV's value. For instance, a single IOC hosted PV may give both the magnetic field strength and setpoint current of a magnet.</p>
 <p>The composite PV is expressed as a pvDatabase record. The pvDatabase may be embedded in an IOC, or hosted at a higher level.</p>
+<p><code>DISCUSSION REQUIRED</code> composite PV has not been implemented.
+Some design decisions are required:</p>
+<ul>
+<li>What data type are supported?</li>
+<li>When is record configured? At iocInit time? Dynamically by pvAccess client?</li>
+<li>What collects records from multiple IOCs?</li>
+</ul>
 <h2>Use Python to talk to pvAccess PVs</h2>
 <p><a href="https://sourceforge.net/p/epics-pvdata/pvaPy/ci/default/tree/">pvaPy</a> is a simple and elegant Python API for pvAccess.</p>
 <p>[Will Need a few words on how complete it is, and whether it incorporates CA access].</p>
@@ -115,5 +152,6 @@ changed to use the <code>pvCopy</code> from pvData.</p>
 <h2>Monitor processing options</h2>
 <p>This is only in pvdataCPP.
 It is a way for a client to specify processing options for monitors.</p>
+<p><code>DISCUSSION REQUIRED</code> monitorPlugins need discussion.</p>
 <h2>Windows platform</h2>
 <p>EPICS V4 has been ported to Windows (<strong>what Windows more specifically</strong>)</p>
