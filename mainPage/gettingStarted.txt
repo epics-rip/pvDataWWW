@@ -73,12 +73,23 @@ development checkout area.
 Ref: http://mercurial.selenic.com/wiki/TutorialInit
 
 Eg:
-% pwd
-/Users/greg
-% cd Development/epicsV4/
-% mkdir ev4hg
-% cd ev4hg
-% hg init   <- this creates a .hg file in ev4hg
+cd /Users/greg/Development/epics/base/
+mkdir v4
+cd v4
+mkdir hg
+cd hg
+
+!! % hg init   <- this creates a .hg file in ev4hg don't need this
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvDataJava
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvAccessJava
+
+! easy interface and examples
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/easyPVAJava
+% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/exampleJava
+
+mvn command line
+MAc's will need mvn.
+
 
 
 Download SOURCE EPICSv4 from epics-pvdata into your local repo

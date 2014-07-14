@@ -150,7 +150,7 @@ formally listed in <a href="https://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/
 
 <p>To link the new EPICS V4 modules to EPICS Base IOC records, two basic approaches are possible.</p>
 
-<p>In the first, an an embedded pvAccess server inside a Base IOC (say running EPICS
+<p>In the first, an embedded pvAccess server inside a Base IOC (say running EPICS
 V3.14) accesses records directly
 through the database, allowing a V4 client to communicate with the "V3" records through pvAccess.
 This is provided by <a
@@ -460,9 +460,9 @@ see:</p>
 <p>The build itself is handled by Maven for Java builds. The actions for the build of
 each EPICS V4 module is handled by its own pom.xml file, there is no global one. So,
 the build process involves "cd" ing to the cloned repository (as they're called in
-mercurial speak) of each one of the 3 core modules, and issuing "mvn compile install"
+mercurial speak) of each one of the core modules, and issuing "mvn compile install"
 in each one. Start with pvDataJava since it has no dependencies, then pvAccessJava,
-then pvIOCJava.
+then the others.
 </p>
 
 <p>If this is really the first Maven build you've done, the first mvn compile line
@@ -547,13 +547,13 @@ write code that compiles and executes against the jar files above.</p>
   <li>Make pvAccessJava depend on pvDataJava, and adjust other dependencies for both of those.</li>
 </ul>
 
-<h4 id="javaexamples">Java Examples</h4>
+<h4 id="javaexamples">Java Service Examples</h4>
 
-<p>For Java client and server examples, at the time of writing, see the source code
+<p>For Java client and server V4 service examples, at the time of writing, see the source code
 in the examplesJava module. You can find this on the epics-pvdata web site
 [<a href="#ev4examples-java">ev4examples-java</a>]. At the time of writing, examplesJava
-contains 2 examples, both of RPC style servers (that is, pass arguments to EPICS V4
-server, get data back dependent on the arguments).</p>
+contains 2 examples of RPC style servers (that is, pass arguments to an EPICS V4 pvAccess
+server, get data back that is dependent on the arguments).</p>
 
 <dl>
   <dt>helloWorld</dt>
@@ -611,7 +611,7 @@ access the PVs through the pvAccess network protocol). </p>
 The simplest way to obtain the EPICS V4 C++ source is to download it as a tar from the SorceForge website 
 site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
 http://sourceforge.net/projects/epics-pvdata/files/</a>.
-This is a good option if you wish to deploy EPICS V4 services or add a pvAccess server to a V3 IOC and want a stable release.
+This is a good option if you wish to deploy EPICS V4 services or add a pvAccess server to a V3 IOC and want a stable release, see the section below on <a href="#building_the_epics_v4_c++_implementation_source_with_make" >Building the EPICS V4 C++ implementation source with make</a>.
 
 <p>If you want the latest code or wish to contribute to development you will need to clone the SourceForge Mercurial repositories.
 This will of course give you the full revision history of the modules including previous releases.
@@ -1213,7 +1213,7 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Wed Aug 28 11:30:56 PDT 2013 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Jul  2 12:31:10 PDT 2014 <!-- hhmts end -->
 
 </body>
 </html>
