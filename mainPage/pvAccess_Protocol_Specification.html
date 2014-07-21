@@ -1482,8 +1482,13 @@ it were expressed by the following structure: </p>
       <td>Middle message (of set of segmented messages).</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">6</td>
-      <td colspan="2">Unused, MUST be 0.</td>
+      <td rowspan="2" style="text-align:right;font-family:monospace">6</td>
+      <td style="text-align:right;font-family:monospace">0</td>
+      <td>Message sent by client.</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">1</td>
+      <td>Message sent by server.</td>
     </tr>
     <tr>
       <td rowspan="2" style="text-align:right;font-family:monospace">7</td>
@@ -2873,7 +2878,7 @@ monitoring and to destroy monitor request (subscription): </p>
 
 <p>A "channel array" set of messages are used to handle remote array values. Requests
 allow a client agent to: retrieve (get) and set (put) data from/to the array, and
-to change the array's length (number of valid elements in the array) and capacity. </p>
+to change the array's length (number of valid elements in the array). </p>
 <pre>struct channelArrayRequestInit {
     int serverChannelID;
     int requestID;
@@ -3083,12 +3088,14 @@ struct channelPutArrayResponse {
     </tr>
   </tbody>
 </table>
+
+/// TODO GetLength is missing, fix the codes !!!
+
 <pre>struct channelSetLengthRequest {
     int serverChannelID;
     int requestID;
     byte subcommand = 0x80 mask for SET_LENGTH; 0x10 mask for DESTROY;
     size length;
-    size capacity;
 };
 
 struct channelSetLengthResponse {
@@ -3119,10 +3126,6 @@ struct channelSetLengthResponse {
     <tr>
       <td style="text-align:right;font-family:monospace">length</td>
       <td>New length.</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">capacity</td>
-      <td>New capacity, 0 to keep old value.</td>
     </tr>
   </tbody>
 </table>
