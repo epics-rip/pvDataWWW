@@ -117,17 +117,17 @@ passing, and high level software services, to production release status. </p>
 
 <h2>Charter lifetime</h2>
   <p> This version of the Charter is specifically for the third year of operations of
-the Working Group, covering approximately the year April 2013 to April 2014.</p>
+the Working Group, covering approximately the year April 2014 to April 2015.</p>
 
 <h2>Mission</h2>
 
-<p>This year the Mission of the EPICS V4 working group is to support high performance data processing, particularly of area detector data, and to develop several mechanisms to make it easier for high level applications to manage groups of PVs (aggregates). Additionally, we will develop a gateway, so that aggregate data and data processing may be housed anywhere in classical EPICS networking infrastructures.  </p>
+<p>This year the Mission of the EPICS V4 working group is to support high performance data processing, particularly of area detector data, and to develop several mechanisms to make it easier for high level applications to manage groups of PVs (aggregates). Additionally, we will start development of a gateway, so that aggregate data and data processing may be housed anywhere in classical EPICS networking infrastructures.  </p>
 
 <h2>Basis for Work</h2>
 
 <p>The EPICS V4 working group is directly supported by Brookhaven Lab (BNL), and collaborating organizations, subject
   to their following the mission, goals, and expected deliverables, of this Charter, and
-  following the <a href="epicsv4process.html" >EPICS V4 Process</a> as the work method.  Following the review period, conformance to and agreement with this Charter is 
+  following the <a href="epicsv4process.html" >EPICS V4 Process</a> as the work method. Conformance to and agreement with this Charter is 
   required for participation in the working group.  </p>
 
 <h2>Basic Scope and Goals</h2>
@@ -285,18 +285,19 @@ achievement particularly for streams over network connections and in the context
 
 
 <h2 id="success">Success Criteria</h2>
-<p class="ed">TBD - what's listed is just examples!!</p>
+
 <p>Derived from the goals above, success criteria are at least:</p>
 <ol>
- <li>Adoption or planned adoption of EPICS V4 in the EPICS
- community</li>
- <li>Deployed image processing pipeline <span "ed">What do you think *Dave*, *Andrew*</span></li>
+ <li>EPICS V4 integration into the EPICS release schedule. That is, merger of EPICS V4 into "EPICS" base</li>
+ <li>Deployed image processing pipeline</li>
+ <li>Early prototype pvaccess gateway</li> 
  <li>Demonstrated high performance</li>
- <li>Demonstrated easy to implement an EPICS V4 client, taking data 
- from a number EPICS v3 records from &gt;1 lock-set, returned as NTMultiChannelArray</li>
+ <li>Demonstrate that it is easy to implement an EPICS V4 client, taking data 
+ from a number EPICS v3 records from &gt;1 lock-set, returned as NTMultiChannel</li>
+ <li>Demonstrated ease of dealing with control system measurement data and errors through use of Normative Types</li>
  <li>Demonstrated easy for an end user to get a list of all PVs and named entities in
 an EPICS network, through an EPICS client, given a name pattern</li>
-<li><span class="ed">What else?</span></li>
+
 </ol>
 
 <h2 id="deliverables">Deliverables and Duration</h2>
@@ -337,9 +338,9 @@ class="ed">WG to agree</span>:</p>
   clearly started in documentation
   </li>
 
-  <li id="de:multi">Develop a framework to enable definition of and get, set, monitor semantics, for collections of PVA <strong> or </strong> IOC process variables, as a single NTMultiChannel PV. In this way enable a PV to express all of the interesting values of a device, or all of the interesting values of a system of devices - eg all the X,Y,TMIT of all BPMs in an accelerator line. cf pvDatabase multi</li>
+  <li id="de:multi">Develop a framework to enable definition of get, set and monitor semantics, for collections of PVA <strong> or </strong> IOC process variables, as a single NTMultiChannel PV. In this way enable a PV to express all of the interesting values of a device, or all of the interesting values of a system of devices - eg all the X,Y,TMIT of all BPMs in an accelerator line. cf pvDatabase multi</li>
 
-  <li id="de:tmmulti">Extend the "multi" framework above to integrate with an accelerator timing system, so that all PVs in the system may be collected from the same beam pulse of other event. cf synchronous multi</li>
+  <li id="de:tmmulti">Extend the "multi" framework above to integrate with an accelerator timing system, so that all PVs in the system may be collected from the same beam pulse or other event. cf synchronous multi</li>
   
  
 
@@ -484,7 +485,7 @@ License</a>.</p>
 <hr />
 <address class="author">
  Greg White, EPICS V4 group co-chair<br />
-<!-- hhmts start -->Last modified: Sun Jun 22 21:06:41 PDT 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Jul 30 12:58:46 CEST 2014 <!-- hhmts end -->
 </address>
 
 </div> <!-- contents -->
