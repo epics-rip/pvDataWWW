@@ -2,7 +2,7 @@ HTML header:
     <link rel="stylesheet" type="text/css" href="../../base.css" />
     <link rel="stylesheet" type="text/css"   href="../../epicsv4.css" />
 
-<!-- python -m markdown BNL_agenda.md BNL_agenda.html -->
+<!-- python -m markdown BNL_agenda.md > BNL_agenda.html -->
 
 <br />
 
@@ -120,6 +120,8 @@ DAY 3, Thursday July 17, 2014: Gateway requirements
 9:00 AM. Precise location to be announced. TIMES ARE AT CHAIR'S DISCRETION.
  
 *Morning; Gateway requirements, 2014-15 Charter review, plans, assignments*
+
+* **Dates and Location of next meeting** Proposal is both Monday 20th and Friday 24th October as satellite of Saclay EPICS Users Meeting.
 
 * **Review of the [gateway requirements][2]** _Lead by Ralph Lange_
 
