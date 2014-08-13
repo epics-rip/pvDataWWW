@@ -610,10 +610,10 @@ highwarning &le; highalarm</em> SHOULD be observed when setting the those thresh
 raises alarms based on how the alarm limits are valued according to the following
 algorithm:</p>
 <pre>
-If the value is >= highalarm then a major alarm is raised
-else if value>=highwarning then a minor alarm is raised
-else if value<= lowalarm then a major alarm is issued
-else if value<=lowwarning then a minor alarm is raised
+If the value is &gt;= highalarm then a major alarm is raised
+else if value&gt;=highwarning then a minor alarm is raised
+else if value&lt;= lowalarm then a major alarm is issued
+else if value&lt;=lowwarning then a minor alarm is raised
 else do not raise an alarm.
 </pre>
 
