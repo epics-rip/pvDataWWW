@@ -23,7 +23,7 @@
 <div class="head">
 <h1>EPICS Version 4 Core Module Development and Release Guide</h1>
 
-<h2 class="nocount">Working Group draft for version 4.4.0</h2>
+<h2 class="nocount">Working Group draft for version 4.3.0</h2>
 
 <dl>
 <dt>Authors:</dt>
@@ -31,11 +31,12 @@
   <dd>Greg White</dd>
   <dd>Dave Hickin</dd>
 <dt>Date:</dt>
-  <dd>19 August 2014</dd>
+  <dd>22 September 2013</dd>
 <dt>Latest version:</dt>
   <dd><a href="release.html">release.html</a></dd>
 <dt>Older versions:</dt>
-  <dd><a href="release_20130922.html">release_20130922.html</a></dd>
+  <!-- Add versions for each release here.
+  <dd><a href="release_4.3.0.html">release_4.3.0.html</a></dd> -->
   <dd><a href="release_20130910.html">release_20130910.html</a></dd>
 </dl>
 
@@ -58,9 +59,8 @@ creating a new version of the software.</p>
 <div id="contents" class="contents">
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
-
-<p>This is the August 2014 version of the EPICS V4 Core Module Development and
-Release Guide, in preparation for the V4.4 code release.</p>
+<p>This is the 22 September 2013 version of the EPICS V4 Core Module Development and Release Guide. </p>
+  <p>This version includes a separate section on C++ release packaging, with more detailed instructions for this with an increased emphasis on process.</p>
 
 <!-- Please always include this statement of terms, unless it's really silly -->
 <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
@@ -98,12 +98,12 @@ software. More details about this data can be found in the sections below.</p>
 <h3>Individual Responsibilities</h3>
 
 <dl>
-<dt>Release Coordinator (RC):</dt>
+<dt>Release Coordinator:</dt>
   <dd>Andrew Johnson</dd>
-<dt>Module Packagers (MPs):</dt>
+<dt>Module Packagers:</dt>
   <dd>Java Modules &ndash; Greg White<br />
     C++ Modules &ndash; David Hickin</dd>
-<dt>Website Editor (WE):</dt>
+<dt>Website Editor:</dt>
   <dd>Greg White</dd>
 </dl>
 
@@ -121,61 +121,56 @@ software. More details about this data can be found in the sections below.</p>
 <tbody>
 
 <tr>
-  <td rowspan='4'>epicsJava 4.4.0</td>
+  <td rowspan='4'>epicsJava 4.3.0</td>
   <td>pvDataJava</td>
-  <td>4.0</td>
+  <td>3.0</td>
   <td>Marty Kraimer</td>
   </tr>
 <tr>
   <td>pvAccessJava</td>
-  <td>4.0</td>
+  <td>3.0</td>
   <td>Matej Sekoranja</td>
   </tr>
 <tr>
   <td>exampleJava</td>
-  <td>?</td>
+  <td>3.0</td>
   <td>Greg White</td>
   </tr>
 <tr>
   <td>easyPVAJava</td>
-  <td>?</td>
+  <td>0.1</td>
   <td>Matej Sekoranja</td>
   </tr>
 
 <tr>
-  <td rowspan='6'>epicsCPP 4.4.0</td>
+  <td rowspan='6'>epicsCPP 4.3.0</td>
   <td>pvCommonCPP</td>
-  <td>4.0</td>
+  <td>3.0</td>
   <td>Matej Sekoranja</td>
   </tr>
 <tr>
   <td>pvDataCPP</td>
-  <td>4.0</td>
+  <td>3.0</td>
   <td>Marty Kraimer</td>
   </tr>
 <tr>
   <td>pvAccessCPP</td>
-  <td>4.0</td>
+  <td>3.0</td>
   <td>Matej Sekoranja</td>
   </tr>
 <tr>
-  <td>pvDatabaseCPP</td>
-  <td>?</td>
+  <td>pvIOCCPP</td>
+  <td>3.0</td>
   <td>Marty Kraimer</td>
   </tr>
 <tr>
   <td>exampleCPP</td>
-  <td>?</td>
+  <td>3.0</td>
   <td>David Hickin</td>
   </tr>
 <tr>
   <td>pvaSrv</td>
-  <td>?</td>
-  <td>Ralph Lange</td>
-  </tr>
-<tr>
-  <td>pvaPy</td>
-  <td>?</td>
+  <td>0.9.1</td>
   <td>Ralph Lange</td>
   </tr>
 
@@ -233,7 +228,7 @@ software. More details about this data can be found in the sections below.</p>
   <td>pvCommonCPP, pvDataCPP</td>
   </tr>
 <tr>
-  <td>pvDatabaseCPP</td>
+  <td>pvIOCCPP</td>
   <td>pvCommonCPP, pvDataCPP, pvAccessCPP</td>
   </tr>
 <tr>
@@ -242,7 +237,7 @@ software. More details about this data can be found in the sections below.</p>
   </tr>
 <tr>
   <td>pvaSrv</td>
-  <td>pvCommonCPP, pvDataCPP, pvAccessCPP</td>
+  <td>pvCommonCPP, pvDataCPP, pvAccessCPP, pvIOCCPP</td>
   </tr>
 
 </tbody>
@@ -262,25 +257,25 @@ software. More details about this data can be found in the sections below.</p>
 
 <tr>
   <td>Feature freeze</td>
-  <td>2014-09-02</td>
+  <td>2013-07-05</td>
   <td>2 weeks</td>
   </tr>
 
 <tr>
   <td>Pre-release 1</td>
-  <td>2014-09-16</td>
+  <td>2013-07-19</td>
   <td>2 weeks</td>
   </tr>
 
 <tr>
   <td>Release Candidate</td>
-  <td>2014-09-30</td>
+  <td>2013-08-02</td>
   <td>2 weeks</td>
   </tr>
 
 <tr>
   <td>Final Release</td>
-  <td>2014-10-14</td>
+  <td>2013-08-16</td>
   <th><!-- leave empty --></th>
   </tr>
 
@@ -302,13 +297,13 @@ software. More details about this data can be found in the sections below.</p>
 <tbody>
 
 <tr>
-  <td><!-- date --></td>
+  <td>2013-06-11</td>
   <td>WG</td>
   <td>Nominate a Release Coordinator for the release.</td>
   </tr>
 
 <tr>
-  <td><!-- date --></td>
+  <td>2013-07-09</td>
   <td>WG/MO</td>
   <td>Agree which modules to include and their new version numbers.</td>
   </tr>
@@ -328,14 +323,14 @@ software. More details about this data can be found in the sections below.</p>
 <tbody>
 
 <tr>
-  <td><!-- date --></td>
+  <td>2013-07-09</td>
   <td>RC</td>
   <td>Edit this Release Guide document for the release. Discuss
     modifications to the process with WG and publish.</td>
   </tr>
 
 <tr>
-  <td>2014-08-19</td>
+  <td>2013-07-09</td>
   <td>RC</td>
   <td>Propose the date of Feature freeze. Adjust as necessary based on feedback
     from MDs.</td>
@@ -406,7 +401,7 @@ software. More details about this data can be found in the sections below.</p>
 <tbody>
 
 <tr>
-  <td><!-- date --></td>
+  <td>2013-07-22</td>
   <td>RC</td>
   <td>Cue the MPs to start packaging the <code>&#8209;pre<i>n</i></code>
     release.</td>
@@ -540,7 +535,7 @@ software. More details about this data can be found in the sections below.</p>
   <td><!-- date --></td>
   <td>RC</td>
   <td>Complete and archive the Release Guide document for this release:
-<pre>hg cp release.html release_4.4.0.html
+<pre>hg cp release.html release_4.3.0.html
 hg ci release*.html
 hg push</pre>
     </td>
@@ -696,7 +691,7 @@ Individuals may take multiple roles as necessary.</p>
 
 <ul>
 <li>Release Coordinator (RC) &ndash; a project manager for the release</li>
-<li>Module Owner (MO) &ndash; the lead developer for a module</li>
+<li>Module Owner (MO) &ndash; the proprietor of a one-person module</li>
 <li>Module Developers (MDs) &ndash; everyone who works on the code</li>
 <li>Module Packagers (MPs) &ndash; the individuals who make tar/jar files</li>
 <li>Integration Testers (ITs) &ndash; for release quality assurance</li>
@@ -736,15 +731,11 @@ remaining stages of the release process.</p>
 in this release, and provide feedback to the Release Coordinator about the
 release timetable.</p>
 
-<p>The Module Packagers examine the release scripts and make any changes to
-these that are necessary due to either changes in the release process or in the
-software. This includes adding any new modules, removing old ones that are no
-longer to be included, and adjusting any dependency information to match.</p>
 
-<h4>Features frozen</h4>
+<h4>Feature freeze</h4>
 
 <p>Feature freeze occurs at a specific time and date and is thus an
-instantaneous event, not a period of time. After that time, the software is
+instantaneous event, not a period of time. After that moment, the software is
 said to have been frozen.</p>
 
 <p>All development work on new features for this release must have been completed
@@ -756,8 +747,7 @@ final release.</p>
 <p>After the freeze there will be a delay (normally 2 weeks but this may vary)
 before the first pre-release is made. Module Developers are expected to spend
 this period completing the documentation and testing their software to identify
-and fix any major bugs before the it gets published to a wider audience. Module
-Packagers can use this time for testing and refining their release scripts.</p>
+and fix any major bugs before the it gets published to a wider audience.</p>
 
 
 <h4>Pre-releases</h4>
@@ -1164,6 +1154,6 @@ Eg
 
 <hr>
 <address>EPICS V4 Working Group</address>
-<!-- hhmts start -->Last modified: Tue Aug 19 12:01:59 CDT 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Sep 11 11:14:59 PDT 2013 <!-- hhmts end -->
 </body>
 </html>
