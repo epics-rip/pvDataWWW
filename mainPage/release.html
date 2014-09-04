@@ -92,8 +92,7 @@ officially numbered releases of the EPICS v4 software modules.</p>
 software. More details about this data can be found in the sections below.</p>
 
 <!-- The information and dates in this section must be modified by the
-  -- Release Coordinator in preparation for and during each new release.
-  -->
+     Release Coordinator in preparation for and during each new release. -->
 
 <h3>Individual Responsibilities</h3>
 
@@ -112,7 +111,7 @@ software. More details about this data can be found in the sections below.</p>
 
 <table class="left">
 <thead><tr>
-  <th>Package & Version</th>
+  <th>Package &amp; Version</th>
   <th>Module</th>
   <th>Module Version</th>
   <th>Module Owner</th>
@@ -212,7 +211,7 @@ software. More details about this data can be found in the sections below.</p>
   </tr>
 
 <tr>
-  <th colspan=2></th>
+  <th colspan="2"></th>
   </tr>
 
 <tr>
@@ -368,7 +367,7 @@ software. More details about this data can be found in the sections below.</p>
   <td>RC</td>
   <td>Check repositories for missing documentation and release notes, ask MDs to
     correct any omissions and update any Getting Started documentation.</td>
-  </tr>
+</tr>
 
 <tr>
   <td><!-- date --></td>
@@ -377,6 +376,7 @@ software. More details about this data can be found in the sections below.</p>
     scripts in the pvDataWWW/scripts directory that are used for releasing the
     software. Modify them as necessary, commit your changes and push them to
     SourceForge.</td>
+</tr>
 
 <tr>
   <td><!-- date --></td>
@@ -384,7 +384,7 @@ software. More details about this data can be found in the sections below.</p>
   <td>Create a new version-specific folder in the "Files" area of SourceForge
     for MPs to upload packaged files to. Edit the README file and copy it to
     that directory.</td>
-  </tr>
+</tr>
 
 </tbody>
 </table>
@@ -989,6 +989,7 @@ the third may be also carried out more than once.
 
 <p>The version of each module that is to go into a package release (that is to say, a pre-release, release candidate or final
  release of a target final package release) corresponds to a Mercurial tag.
+</p>
 
 <p>The tagged version SHOULD be a numbered release and the name of the tag SHOULD be the number of the version,
 so for example version 3.0.0 is tagged with "3.0.0" (not v3.0.0, V3.0.0 or any other similar variant).
@@ -999,10 +1000,12 @@ The numbering conventions are as described in the Java Packaging section.
 <p>Numbering of modules is independent of EPICS V4 packages. A versioned release of a module can be made as often as desired without being included in a package release. Similarly if a module does not change between EPICS V4 package releases its version number will not change.
 </p> 
 <p>Modules are tagged using the usual Mercurial commands. So a module is tagged as version 3.0.1 as follows:
- <pre>    % hg commit
-    % hg tag 3.0.1
-    % hg push</pre>
 </p>
+<pre>
+    % hg commit
+    % hg tag 3.0.1
+    % hg push
+</pre>
 
 <h3>Updating the versions file</h3>
 
@@ -1013,6 +1016,7 @@ committed and pushed to the SourceForge repo).
 
 <p>For each package release (i.e. for each pre-release, release candidate and final release of a target final release of a package)
 there should be a line containing the release name, repo name and tag for each module in that release. E.g.
+</p>
 
 <pre>Extract of pvDataWWW/scripts/RELEASE_VERSIONS, showing what is in
 EPICS-CPP-4.3.0-pre2:
@@ -1027,8 +1031,7 @@ EPICS-CPP-4.3.0-pre2         pvIOCCPP          3.0.2
 EPICS-CPP-4.3.0-pre2         exampleCPP        3.0.0
 EPICS-CPP-4.3.0-pre2         pvaSrv            0.9.1
 </pre>
-</p>
-The file SHIULD be added to as new versions are added. Version numbers for previous releases remain in the file and SHOULD NOT be modified.
+<p>The file SHOULD be added to as new versions are added. Version numbers for previous releases remain in the file and SHOULD NOT be modified.
 </p>
 <p> Once the module packager is ready to make a release they should indicate this through the mailing list, at which
 point the versions file SHOULD NOTbe modified except by the module packager until the latter reports that the release
@@ -1047,7 +1050,7 @@ The module packager SHOULD indicate whether this is the case.
 <p>To aid the process, subsequent to a release the module packager may create a template for the next release with the same version numbers
 as the previous release. The lines for this release should be conventionally commented out,
 e.g. subsequent to the pre2 release of 4.3.0 the following lines can be added:
-
+</p>
 <pre>
 # =================================================================
 # Ev4 Release name           Repo name      Tag/version
@@ -1059,23 +1062,24 @@ e.g. subsequent to the pre2 release of 4.3.0 the following lines can be added:
 #EPICS-CPP-4.3.0-pre3         exampleCPP        3.0.0
 #EPICS-CPP-4.3.0-pre3         pvaSrv            0.9.1
 </pre>
-<p>
-A module owner can then update their tag for the release, removing the comment, e.g.
+<p>A module owner can then update their tag for the release, removing the comment, e.g.
+</p>
 <pre>
 EPICS-CPP-4.3.0-pre3         pvCommonCPP       3.0.2
 </pre>
+<p>
 If such a template does not exist then the first module owner to add the tag for a release MAY create it.
 </p>
-<p> The module owners (or indeed anyone else) MAY test the release versions by running the packaging script in pvDataWWW (see below).
+<p>The module owners (or indeed anyone else) MAY test the release versions by running the packaging script in pvDataWWW (see below).
 They may do this at any time and as often as desired. However they SHOULD NOT upload the tar or otherwise make this publicly available.
 </p>
-<p> The script may be run with the -V option to use the RELEASE_VERSIONS from the same local pvDataWWW repo as the
+<p>The script may be run with the -V option to use the RELEASE_VERSIONS from the same local pvDataWWW repo as the
 script and can be used to test the release versions prior to pushing changes. 
 </p>
 
 <h3>Updating the readme file</h3>
 
-<p> The packaging script pulls in the readme file (pvDataWWW/scripts/README). Unless the script is run with the -V option (for testing only)
+<p>The packaging script pulls in the readme file (pvDataWWW/scripts/README). Unless the script is run with the -V option (for testing only)
 the file is the one from the remote repo. If any changes are required to this they MUST therefore be pushed to the SourceForge
 repo prior to running the script.
 </p>
@@ -1094,7 +1098,8 @@ providing the resulting tar is not made public.
   Access to SourceForge for EPICS V4 Development</a>).
 </p>
 
-<p> Before running the script:
+<p>Before running the script:
+</p>
 <ol>
   <li>Check the release versions file is correct, e.g. that the release name is right, that the repos names are right,
       that the version numbers appear correct, that no modules have been omitted, that no modules remain commented out, that there are no duplicates etc.</li>
@@ -1102,14 +1107,13 @@ providing the resulting tar is not made public.
   <li>Check in CloudBees to verify that all the remote modules you want to include 
 have completed their build and have no unexpected issues.</li>
 </ol>
-</p>
 <p>
 The script makereleaseCPP.sh has the following usage:
-
+</p>
 <pre>
     % &lt;pathname&gt;/makereleaseCPP.sh -n &lt;releaseName&gt; -u &lt;SFusername&gt; [-f ] [-V] 
 </pre>
-where releaseName the the name of the release that MUST match the name which appears in the release versions file and SFusername is the
+<p>where releaseName the the name of the release that MUST match the name which appears in the release versions file and SFusername is the
 SourceForge user name of the person running the script.
 </p>
 <p>The -V option uses the local versions of the readme and release versions in the same repository as the script rather than the remote versions.
@@ -1118,17 +1122,17 @@ The -f option will delete tars and intermediate files from previously running th
 script. (The default is for the script to fail if these exist.)
 </p>
 <p>Help can be obtained with the -h option:
+</p>
 <pre>
     % &lt;pathname&gt;/makereleaseCPP.sh -h 
 </pre>
-</p>
-The script is run from the intended location final tar. So if the local pvDataWWW repo which you will run is in a parent
+<p>The script is run from the intended location final tar. So if the local pvDataWWW repo which you will run is in a parent
 directory with "create_release" and the latter is where you want your tar, cd to create_release and run the script, for example
+</p>
 <pre>
     % ../pvDataWWW/scripts/makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre2 -u dhickin
 </pre>
-
-<p> After running the script, open up the tar and examine the contents, perform any testing etc.
+<p>After running the script, open up the tar and examine the contents, perform any testing etc.
 </p>
 
 <p>On beginning making a release the module packager SHOULD send an email to the mailing list announcing that they are doing so and requesting
@@ -1137,10 +1141,11 @@ that the release versions and readme files are not altered until complete.</p>
 to the versions file and readme.</p>
 <p>After obtaining the tar, the module packager should satisfy themselves that the contents are correct and carry out any testing that they wish
 to establish the quality of the release (e.g. building the modules, running test code).
+</p>
 <p>The module packager SHOULD pause or stop the process of making a release if there are unresolvable issues, such a module which does not build (when this is expected for the target), and SHOULD send a mail to inform the group and fix the issue.</p>
 
 
-<h3>Uploading the tar to SourceForge</h3> 
+<h3>Uploading the tar to SourceForge</h3>
 
 <p>If the module packager is satisfied with the release they SHOULD upload it to SourceForge and inform the mailing list. To upload, use the rsync command:
 </p>
@@ -1162,3 +1167,4 @@ Eg
 <!-- hhmts start -->Last modified: Tue Aug 19 12:01:59 CDT 2014 <!-- hhmts end -->
 </body>
 </html>
+
