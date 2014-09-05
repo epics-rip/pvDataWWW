@@ -796,17 +796,62 @@ created and published. Minor bugs that have not been fixed should be documented
 in a list of Known Problems that accompanies the release.</p>
 
 <h2>Mercurial workflow for versioning</h2>
-<p>The workflow given below shows how Mercurial tags are used to indicate module
-versions (as defined above). It includes what to do when a change must be made to
-a module after it has been included in a suite release (see below). The change is
-made on a branch. Note the naming of the branch, and the numbering of the tag
-(or tags) on that branch.</p>
 
-<p>The process is described for Java, though C++ is a simple subset. Simply omit
-those aspects which refer to Maven operations, such as editing the pom.xmls.</p>
+<p>EPICS V4 uses a branched development workflow that is described in [<a
+href="http://epics-pvdata.sourceforge.net/hgflow/using_hgflow.html">1</a>]. The
+procedure to prepare a release is as follows:</p>
 
-<img src="ReleaseProcessforJava.png" alt="The Mercurial workflow for EPICS V4"/>
+<p>Create the release branch off <code>develop</code> trunk:</p>
 
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update default</strong>
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+&gt; <strong>hg branch release/4.0</strong>
+marked working directory as branch release/4.0
+&gt; <strong>hg commit --message "Create branch 'release/4.0'."</strong></pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow release start 4.0</strong>
+0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+marked working directory as branch release/4.0</pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Change, commit and tag preparing for the release on the newly created
+release branch. This includes all changes necessary for pre-release and
+release-candidate stages, up to preparing the final release. At any point,
+changes and/or bugfixes on the release branch can be merged back into
+<code>develop</code>:</p>
+
+<table border="0" style="width: 100%">
+  <col width="50%" />
+  <col width="50%" />
+  <tbody>
+    <tr valign="top">
+      <td><pre>&gt; <strong>hg update default</strong>
+3 files updated, 0 files merged, 3 files removed, 0 files unresolved
+&gt; <strong>hg merge release/4.0</strong>
+3 files updated, 0 files merged, 0 files removed, 0 files unresolved
+&gt; <strong>hg commit --message "Promote &lt;release&gt; '4.0' (b009fb5075d1) to 'default'."</strong>
+&gt; <strong>hg update release/4.0</strong>
+2 files updated, 0 files merged, 1 files removed, 0 files unresolved</pre>
+      </td>
+      <td><pre>&gt; <strong>hg flow release promote default</strong>
+3 files updated, 0 files merged, 3 files removed, 0 files unresolved
+3 files updated, 0 files merged, 0 files removed, 0 files unresolved
+2 files updated, 0 files merged, 1 files removed, 0 files unresolved </pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+The release branch is never closed, and works as a bugfix and support branch
+for this release. I.e., in this example it will carry the releases 4.0.0,
+4.0.1, 4.0.2, ... 
 
 <h2>Java Packaging Instructions</h2>
 
