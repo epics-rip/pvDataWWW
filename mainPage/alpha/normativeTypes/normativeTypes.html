@@ -607,10 +607,10 @@ highwarning &le; highalarm</em> SHOULD be observed when setting the those thresh
 raises alarms based on how the alarm limits are valued according to the following
 algorithm:</p>
 <pre>
-If the value is >= highalarm then a major alarm is raised
-else if value>=highwarning then a minor alarm is raised
-else if value<= lowalarm then a major alarm is issued
-else if value<=lowwarning then a minor alarm is raised
+If the value is &gt;= highalarm then a major alarm is raised
+else if value&gt;=highwarning then a minor alarm is raised
+else if value&lt;= lowalarm then a major alarm is issued
+else if value&lt;=lowwarning then a minor alarm is raised
 else do not raise an alarm.
 </pre>
 
@@ -742,8 +742,7 @@ displays.</p>
 <p>Normative Type instance data MUST identify themselves as such by including a string in a
   well known part of their pvData instance datum (see below), that encodes an identifier
   of the Normative
-  Type to which they conform. This is the <span class="def">Normative Type Identifier</span
-  class="def">, or "Ntype identifier" string for short. Ntype identifiers have the syntax
+  Type to which they conform. This is the <span class="def">Normative Type Identifier</span>, or "Ntype identifier" string for short. Ntype identifiers have the syntax
   <dfn>&lt;namespace-name&gt;:&lt;type-name&gt;</dfn>. There are two parts to
   this Ntype identifier:</p>
 
@@ -1162,7 +1161,7 @@ structure NTURI
    string authority   : opt  
    string path     
    structure query    : opt  
-      {string | double | int <field-name>}0+ 
+      {string | double | int &lt;field-name&gt;}0+ 
    {&lt;field-type&gt; &lt;field-name&gt;}0+
 </pre>
 
@@ -1214,7 +1213,7 @@ the archive history of a (second) channel, named probably, "quad45:bdes".</p>
 
 <p>Construct the introspection interface (ie type definition) of the NTURI
   conformant structure that will be used to make requests to the archive service.</p>
-<Pre style="font-size:smaller">
+<pre style="font-size:smaller">
 // Construct an NTURI for making a request to a service that understands 
 // query arguments named "starttime" and "endtime".
 FieldCreate fieldCreate = FieldFactory.getFieldCreate();
@@ -1262,7 +1261,7 @@ scalar values. </p>
 
 
 <p> For the related problem of expressing a key-value system where each value may be
-array valued, see <a href="#ntvariantarray">NTVariantArray</a> or <A href="#nttable">NTTable</a>.</p>
+array valued, see <a href="#ntvariantarray">NTVariantArray</a> or <a href="#nttable">NTTable</a>.</p>
 
 <p>Use cases: In a school, a single NTNamedValue might describe the grades from a
  number of classes for for one student. </p>
@@ -1412,7 +1411,7 @@ quadrupoles' desired field values. </p>
     <dd>The difference in seconds between the time that each corresponding element of the
       <span class="term">value</span> array was read, and the
       timeStamp field.</dd>
-  <dt>alarm<dt>
+  <dt>alarm</dt>
     <dd>The alarm of the NTMultiChannelArray as a whole. The association of the
       values in the severities field and the alarm field is not defined since the alarm
       field refers explicitly to the value field and so not necessarily to the
@@ -1730,7 +1729,7 @@ that may receive instances of those Normative Types.</p>
 <pre>
 <span class="nterm">anydata_t :=</span>
 structure 
-  {  scalar_t[] <name> | structure_t[] <name> }1+  
+  {  scalar_t[] &lt;name&gt; | structure_t[] &lt;name&gt; }1+  
 </pre>
 
 <h3>NTAny</h3>
@@ -1901,7 +1900,7 @@ Input / Output Controller (IOC) Application Developer's Guide</a> Marty Kraimer,
   </dd>
    <dt class="bib" id="bib:uri">bib:uri</dt>
    <dd>Uniform Resource Identifiers (URI): Generic Syntax, <a href="http://www.ietf.org/rfc/rfc2396.txt" >http://www.ietf.org/rfc/rfc2396.txt</a>.
-   <dd>
+   </dd>
 </dl>
 
 
