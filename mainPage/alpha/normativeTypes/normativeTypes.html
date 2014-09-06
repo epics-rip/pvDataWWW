@@ -3,10 +3,7 @@
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
 Auth:  Greg White, SLAC,PSI. Nov-2011.
-Vers:  20-Aug-2014, Marty Kraimer
-       Chaged definitions of timeStamp, control, display, valueAlarm (previously alarmLimit)
-       to agree with implementation in pvData.
-       13-Oct-2012, Greg White, SPAC,PSI
+Vers:  13-Oct-2012, Greg White, SPAC,PSI
        Noratmively defined encoding order of NTMatrix value as row major order.
        04-Oct-2012,  Greg White, SLAC,PSI
        Made the primary field named "value" in all NT (aggregate, histogram).
@@ -68,14 +65,14 @@ Todo: Add multichannelvariantarray. Check order of fields.
   <div class="head">
     <h1>EPICS V4 Normative Types</h1>
 
-      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 20-Aug-2014</h2>
+      <h2 class="nocount">EPICS V4 Normative Types, Editors Draft, 18-Oct-2012</h2>
       <dl>
 	<dt id="latestversion">Latest version:</dt>
 	  <dd><a href="normativeTypes.html">normativeTypes.html</a></dd>
 	<dt id="thisversion">This version:</dt>
-	  <dd><a href="normativeTypes_20140820.html">normativeTypes_20140820.html</a></dd>
-	<dt>Previous version:</dt>
 	  <dd><a href="normativeTypes_20121018.html">normativeTypes_20121018.html</a></dd>
+	<dt>Previous version:</dt>
+	  <dd><a href="normativeTypes_20121008.html">normativeTypes_20121008.html</a></dd>
 
 	<dt>Editors:</dt>
 	  <dd>Greg White, SLAC, PSI</dd>
@@ -111,11 +108,11 @@ Todo: Add multichannelvariantarray. Check order of fields.
 
       <h2 class="nocount">Status of this Document</h2>
       <!-- Statement about why this version exists -->
-      <p>This is the 20 Aug 2014 version of the Normative Types document.
-       This version changes the definitions of timeStamp, control, display, and alarmlimit
-       to match what pvData implements.
-       Note also that alarmlimit is replaced by valueAlarm.
-      </p>
+      <p>This is the 18 Oct 2012 version of the Normative Types document. This
+      version
+      is a minor edit fixing the table of types. The last significant draft was the
+      previous 
+	version which added NTURI.</p>
 
       <p>Items planned but not described (ie "TODO"): Add
       MultiChannelVariantArray. Each optional field of each Normative type, where the
@@ -337,8 +334,8 @@ one of the following: </p>
 | <span class="nterm">time_t[]</span>        // an array of points in time
 | <span class="nterm">alarm_t</span>         // a summary diagnostic of a control system event
 | <span class="nterm">alarm_t[]</span>       // an array of summary diagnostics
-| <span class="nterm">valueAlarm_t</span>    // value thresholds for a control system diagnostic report
-| <span class="nterm">valueAlarm_t[]</span>  // an array of threshold values
+| <span class="nterm">alarmlimit_t</span>    // value thresholds for a control system diagnostic report
+| <span class="nterm">alarmlimit_t[]</span>  // an array of threshold values
 | <span class="nterm">display_t</span>       // meta data of displayed data
 | <span class="nterm">display_t[]</span>     // an array of display mata data
 | <span class="nterm">control_t</span>       // control setpoint range boundaries 
@@ -455,16 +452,16 @@ midnight on January 1st, 1970 UTC. It is implemented as a pvData field of Type
 <span class="nterm">time_t</span> :=
 
 structure timeStamp
-   long secondsPastEpoch
+   long secsPastEpoch   
    int  nanoseconds
    int  userTag</pre>
 
 <p>where:</p>
 <dl>
-  <dt>secondsPastEpoch</dt>
+  <dt>secsPastEpoch</dt>
     <dd>Seconds since Jan 1, 1970 00:00:00 UTC</dd>
-  <dt>nanoseconds</dt>
-    <dd>Nanoseconds relative to the <span class="term">secondsPastEpoch</span> field</dd>
+  <dt>nanoSeconds</dt>
+    <dd>Nano seconds relative to the <span class="term">secsPastEpoch</span> field</dd>
   <dt>userTag</dt>
     <dd>An integer value whose interpretation is deliberately undefined and therefore MAY be
       used by EPICS V4 agents in a user defined way</dd>
@@ -472,7 +469,7 @@ structure timeStamp
 
 <p>Interpretation: The point in time being identified by a <span
 class="nterm">time_t</span>, is given by Jan 1, 1970 00:00:00 UTC plus some
-nanoseconds given by its <span class="term">secondsPastEpoch</span>
+nanoseconds given by its <span class="term">secsPastEpoch</span>
 times 10<sup>9</sup> plus its <span class="term">nanoseconds</span>.</p>
 
 <p>pvData provides two helper classes for a timeStamp structure: timeStamp, and
@@ -505,6 +502,7 @@ structure describing an alarm. It is implemented as a PVData field of Type
 
 <pre>
 <span class="nterm">alarm_t</span> :=
+
 structure alarm
    int severity
    int status
@@ -546,104 +544,89 @@ PVData field of Type <a
 class="nterm">alarm_t</span> above.</p>
 
 
-<h4>valueAlarm_t</h4>
+<h4>alarmlimit_t</h4>
 
 
-<p>An <span class="nterm">valueAlarm_t</span> is a structure that gives the numeric
+<p>An <span class="nterm">alarmlimit_t</span> is a structure that gives the numeric
   intervals to be used for the high and low limit ranges of an associated limit type
-  alarm. The specific instance of the alarm to which the valueAlarm refers, is not
-  specified in the valueAlarm structure, it may be any EPICS alarm.  
+  alarm. The specific instance of the alarm to which the alarmlimit refers, is not
+  specified in the alarmlimit structure, it may be any EPICS alarm.  
 <span
-class="nterm">valueAlarm_t</span> is implemented as a PVData field of Type <a
+class="nterm">alarmlimit_t</span> is implemented as a PVData field of Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structure"</a> with the following form: </p>
 
 
-<pre><span class="nterm">valueAlarm_t</span> :=
-structure valueAlarm
-    boolean active
-    double lowAlarmLimit
-    double lowWarningLimit
-    double highWarningLimit
-    double highAlarmLimit
-    int lowAlarmSeverity
-    int lowWarningSeverity
-    int highWarningSeverity
-    int highAlarmSeverity
-    double hysteresis
+<pre><span class="nterm">alarmlimit_t</span> :=
+
+structure alarmlimit
+    double highalarm
+    double highwarning
+    double lowwarning
+    double lowalarm
  </pre>
 
 <p>where:</p>
 <dl>
-  <dt>valueAlarm</dt>
-    <dd>The structure must have the name "valueAlarm".</dd>
-  <dt>active</dt>
-    <dd>Is alarming active?
-      If no then alarms are not raised.
-       If yes then the associated value is checked for alarm cobditions.
-    </dd>
-  <dt>lowAlarmLimit</dt>
-    <dd>If the value is &lt;= lowAlarmLimit then the severity is lowAlarmSeverity.</dd>
-  <dt>lowWarningLimit</dt>
-    <dd>If the value is &gt; lowAlarmLimit and &lt;= lowWarningLimit then the severity is lowWarningSeverity.</dd>
-  <dt>highWarningLimit</dt>
-    <dd>If the value is &gt;= highWarningLimit and &lt; highAlarmLimit then the severity is highWarningLimit.</dd>
-  <dt>highAlarmLimit</dt>
-    <dd>If the value is &gt;= highAlarmLimit then the severity is highAlarmSeverity.</dd>
-  <dt>lowAlarmSeverity</dt>
-     <dd>Severity for value that satisfies lowAlarmLimit.</dd>
-  <dt>lowWarningSeverity</dt>
-     <dd>Severity for value that satisfies lowWarningLimit.</dd>
-  <dt>highWarningSeverity</dt>
-     <dd>Severity for value that satisfies highWarningLimit.</dd>
-  <dt>highAlarmSeverity</dt>
-     <dd>Severity for value that satisfies highAlarmLimit.</dd>
-  <dt>hysteresis</dt>
-     <dd>When a value enters an alarm limit this is how much it must change before is it put into a lower severity state.
-      This prevents alarm chatter.
-     </dd>
+  <dt>alarmlimit</dt>
+    <dd>The structure must have the name "alarmlimit".</dd>
+  <dt>highalarm</dt>
+    <dd>Upper bound of allowed operating range of the value to which the alarmlimit
+    refers</dd>
+  <dt>highwarning</dt>
+    <dd>Upper bound of normal operating range of the value to which the alarmlimit
+    refers</dd>
+  <dt>lowwarning</dt>
+    <dd>Lower bound of normal operating range of the value to which the alarmlimit
+    refers</dd>
+  <dt>lowalarm</dt>
+    <dd>Lower bound of allowed operating range of the value to which the alarmlimit
+    refers.</dd>
 </dl>
 
-<p>Code that checks for alarms should use code similar to the following:<p>
+<p>The interpretation is that where the Normative Type instance's value field is:</p>
+<ul>
+
+  <li> outside the closed interval [lowwarning,highwarning] the value SHOULD be
+  considered out of its <em>normal</em> operating range</li>
+
+  <li> outside the closed interval [lowalarm,highalarm], the value SHOULD be
+  considered out of its <em>allowed</em> operating range</li>
+
+ <li> neither inside (lowwarning,highwarning) nor outside [lowalarm,highalarm] then
+ the value SHOULD be considered out of its normal operating range but is still inside
+ its allowed range.</li>
+
+</ul>
+
+<p>Since the above conditions do not at all form a three valued function over all
+possible values of the limits, the invariant <em>lowalarm &le; lowwarning &le;
+highwarning &le; highalarm</em> SHOULD be observed when setting the those thresholds.</p>
+
+<p>Code in both V3 IOC record support and in V4 IOC  
+raises alarms based on how the alarm limits are valued according to the following
+algorithm:</p>
 <pre>
-    boolean active = pvActive.get();
-    if(!active) return;
-    double  val = pvValue.get();
-    int severity = pvHighAlarmSeverity.get();
-    double level = pvHighAlarmLimit.get();
-    if(severity&gt;0 &amp;&amp; (val&gt;=level)) {
-    	raiseAlarm(level,val,severity,"highAlarm");
-    	return;
-    }
-    severity = pvLowAlarmSeverity.get();
-    level = pvLowAlarmLimit.get();
-    if(severity&gt;0 &amp;&amp; (val&lt;=level)) {
-    	raiseAlarm(level,val,severity,"lowAlarm");
-    	return;
-    }
-    severity = pvHighWarningSeverity.get();
-    level = pvHighWarningLimit.get();
-    if(severity&gt;0 &amp;&amp; (val&gt;=level)) {
-    	raiseAlarm(level,val,severity,"highWarning");
-    	return;
-    }
-    severity = pvLowWarningSeverity.get();
-    level = pvLowWarningLimit.get();
-    if(severity&gt;0 &amp;&amp; (val&lt;=level)) {
-    	raiseAlarm(level,val,severity,"lowWarning");
-    	return;
-    }
-    raiseAlarm(0,val,0,"");
+If the value is >= highalarm then a major alarm is raised
+else if value>=highwarning then a minor alarm is raised
+else if value<= lowalarm then a major alarm is issued
+else if value<=lowwarning then a minor alarm is raised
+else do not raise an alarm.
 </pre>
 
-<h4>valueAlarm_t[]</h4>
+<p>Where an <span class="nterm">alarmlimit_t</span> structure instance is present
+in a Normative Type structure, it MUST be interpreted as referring to that
+Normative Type's field named "value". Therefore it is only used in Normative Types
+that have a single numeric "value" field.</p>
 
-<p>An valueAlarm_t[] is an array of alarm limit conditions. The field is an array of
+<h4>alarmlimit_t[]</h4>
+
+<p>An alarmlimit_t[] is an array of alarm limit conditions. The field is an array of
 structures each describing an alarm limit. It is implemented as a PVData field of
 Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structureArray"</a> each element of which with the form of <span
-class="nterm">valueAlarm_t</span> above.</p>
+class="nterm">alarmlimit_t</span> above.</p>
 
 
 <h4>display_t</h4>
@@ -664,21 +647,22 @@ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documenta
 >"structure"</a> with the following form: </p>
 
 <pre><span class="nterm">display_t</span> :=
+
 structure display
-        double limitLow
-        double limitHigh
-        string description
-        string format
-        string units
-</pre>
+    double lowlimit
+    double highlimit
+    string description
+    string format
+    string units
+ </pre>
 
 <p>where:</p>
 <dl>
   <dt>display</dt>
     <dd>The structure must have the name "display". </dd>
-  <dt>limitLow</dt>
+  <dt>lowlimit</dt>
     <dd>The lower bound of range within which the value must be set, to be presented to a user </dd>
-  <dt>limitHigh</dt>
+      <dt>highlimit</dt>
     <dd>The upper bound of range within which the value must be set, to be presented to a user </dd>
   <dt>description</dt>
     <dd>A textual summary of the variable that the value quantifies</dd>
@@ -719,11 +703,10 @@ Type <a
  >"structure"</a> with the following form: </p>
 
 <pre><span class="nterm">control_t</span> :=
+
 structure control
-    double limitLow
-    double limitHigh
-    double minStep
-</pre>
+        double lowlimit
+        double highlimit</pre>
 
 <p>where:</p>
 <dl>
