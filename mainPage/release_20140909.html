@@ -538,29 +538,32 @@ hg push</pre>
 <p>The mercurial repositories of
 individual modules should all be tagged with their individua release identification, as it appears in  <a href="http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a>.
 
-<h3>The EPICS V4 Distribution Version Number</h3>
+<h3>The EPICS V4 Release Distribution Version Identifier</h3>
 
-<p>A version number of the  EPICS V4 Distribution takes the following form:</p>
-<pre>4.<i>major</i>.<i>minor</i>
+<p>A version identifier of the  EPICS V4 Distribution takes the following form:</p>
+<pre>
+EPICS&#x2011;{CPP|Java}&#x2011;4.<i>major</i>.<i>minor</i>.<i>dot</i>[&#x2011;<i>suffix</i>]
 </pre>
+<p>The filename part of distribution files are named with the above identifier.</p>
 <ul>
-  <li>The first number will always be <code>4</code>.</li>
+  <li>C++ or java language distribution. We distribute 2 files separately, since in particular minor releases and bugfixes may apply to only one language</li> 
+  <li>The first number will always be <code>4</code></li>
   <li>The second number <code><i>major</i></code> increments at every major
-    release. A major release is one in which any of the component modules is a major release, as defined below. </li>
+    release. A major release is one in which any of the component modules is a major release, as defined below </li>
   <li>The third number <code><i>minor</i></code> increments at every minor
-    release, and is reset to zero whenever the major number changes. A minor release is one in which any of the component modules is a minor release, and none is a major release, as defined below. Of course, this will be the usual condition. </li>
-  <li>The fourth number <code><i>dot</i></code> increments only if the release is neither major nor minor. Therefore, it is ised for incidental and bugfix releases.</li>
+    release, and is reset to zero whenever the major number changes. A minor release is one in which any of the component modules is a minor release, and none is a major release, as defined below. Of course, this will be the usual condition </li>
+  <li>The fourth number <code><i>dot</i></code> increments only if the release is neither major nor minor. Therefore, it is ised for incidental and bugfix releases</li>
   <!-- &#8209; is a non-breaking hyphen; not needed inside a <pre> block -->
   <li>The <code>&#x2011;<i>suffix</i></code> and its leading hyphen character
     are only present in pre-release and release candidate version numbers,
-    never in a final official release version number.<br />
+    never in a final official release version number.
     In between official releases, the <code>&#x2011;<i>suffix</i></code>
     indicates the status of the code and is one of <code>&#x2011;dev</code>
     (development), <code>&#x2011;pre<i>n</i></code> (numbered pre-release) or
     <code>&#x2011;rc<i>n</i></code> (numbered release-candidate).</li>
 </ul>
 
-<p>When printing or discussing a particular version number, all the parts of
+<p>When printing or discussing a particular package version, all the parts of
 <code>4.<i>major</i>.<i>minor</i></code> SHOULD always be given. The
 <code>.<i>dot</i></code> and/or <code>&#x2011;<i>suffix</i></code> parts
 SHOULD be included if they they are needed to identify the specific version of
@@ -571,9 +574,9 @@ release version numbers is confusing and MUST NOT be used in the future.</p>
 
 <h3>Module Version Numbers</h3>
 
-<p>Each module in EPICS V4 has its own, independently moving, version number. This version number appears in three places - all must agree</p>
+<p>Each module in EPICS V4 has its own, independently moving, version number. This version number appears in three places - all must agree:</p>
 <ol>
-<li>It must be used as the Mercurial tag for the source of the release</li>
+<li>It must be used as the Mercurial tag for the source code of the release of the module</li>
 <li>It identifies the module version to be included in a release in <a href="http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a></li>
 <li>Additionally, for Java, it must appear in the &lt;version&gt; element of the pom.xml Maven file of the module.</li>
 </ol>
@@ -1168,6 +1171,6 @@ href="https://sourceforge.net/projects/epics-pvdata/files/?source=navbar">https:
 <address>
   EPICS V4 Working Group
 </address>
-<!-- hhmts start -->Last modified: Tue Sep  9 12:35:46 PDT 2014 <!-- hhmts end --></div>
+<!-- hhmts start -->Last modified: Tue Sep  9 14:09:48 PDT 2014 <!-- hhmts end --></div>
 </body>
 </html>
