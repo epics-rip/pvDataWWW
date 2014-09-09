@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html lang="en">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html;" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Process</title>
+  <link rel="stylesheet" type="text/css"
+      href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+      href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+
+  <!-- 
+  Author: Greg White, greg@slac.stanford.edu, (c) Mar-2012.
+  Version:  Greg White, greg@slac.stanford.edu, (c) 19-Sep-2012.
+            Added more description of normative.
+  -->
+
+  <!-- Styles:
+   Special css styles used in this document goes here in the head.
+   That is, extra stuff to that in base.css,
+   epicsv4.css or epicsv4web.css. Eg:
+
+   opt - Markup for standard optional fields of Normative Types
+   nterm - Non-terminal symbol, in the grammar of Normative types
+   term - Terminal symbol in the grammar of Normative Types
+   user - A replacement string in the grammar of Normative Types.
+  -->
+  <style type="text/css">
+  /*<![CDATA[*/
+table.content {
+        font-size:85%
+}
+
+
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     .nonnorm { font-style:italic }
+  /*]]>*/</style>
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+     src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+  </script>
+
+</head>
+		
+<body>
+
+  <div class="head">
+    <h1>EPICS Version 4 Process</h1>
+
+      <h2 class="nocount">EPICS V4 Process, Working Draft 25-Nov-2013</h2>
+      <dl>
+	<dt>Latest version:</dt>
+	  <dd><a href="epicsv4process.html">epicsv4process.html</a></dd>
+	<dt>This version:</dt>
+	  <dd><a href="epicsv4process_20140909.html">epicsv4process_20140909.html</a></dd>
+	<dt>Previous version:</dt>
+	  <dd><a href="epicsv4process_20131125.html">epicsv4process_20131125.html</a></dd>
+	<dt>Editors:</dt> <!-- List of editors and invited experts (in parentheses) -->
+	  <dd>Greg White, SLAC</dd>
+	  <dd>Bob Dalesio, BNL</dd>
+      </dl>
+      <hr />
+      
+      <h2 class="nocount">Abstract</h2>
+
+      <p>This document describes the administrative processes of the EPICS V4 Working
+      Group.</p>
+
+        <p>The EPICS V4 Working Group is a collaboration of software engineers and
+  physicists involved in the design and implementation of the next major version of
+  EPICS.  
+  </p>
+      
+      <!-- last para of Abstract is boilerplate reference to EPICS -->
+      <p>For more information about EPICS, please refer to the home page of the <a
+       href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
+      Control System</a>.</p>
+
+      <!-- Status of this Document is REQUIRED -->
+      <h2 class="nocount">Status of this Document</h2>
+      <!-- Statement about why this version exists -->
+
+      <!-- First para MUST give the date of the version and summarize what
+      distinguishes this version from previous -->
+
+      <p>This is the 09 Sep 2014 version of the Process document. This version adds the workflow for version tracked documents in Appendix A.</p>
+
+      <!-- After 3rd para give other stuff -->
+      <p> Comments are welcome, please
+      address them to the chairs of the EPICS V4 at the EPICS V4 mailing list,
+      <a href="https://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">https://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel</a></p>
+
+      <!-- Last para MUST include bibliography of terms used, eg the following -->
+      <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
+      highlighted (through style sheets, and in uppercase in the source) are used in
+      accordance with RFC 2119 [RFC2119]. The term NOT REQUIRED (not defined in RFC
+      2119) indicates exemption. </p>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+<div id="contents" class="contents">	  
+<hr />
+
+  <h2>Introduction</h2>
+
+  <p>The process is described by a list of practices and required documents, given in
+  approximately the chronological order in which they are used.</p>
+
+  <h2>Working Group</h2>
+
+  <p>The collaboration between individuals working on EPICS Version 4, is formalised
+  as Working Group. As such it has definite participants, who are responsible for the
+  deliverables; and observers, who partake in policy and meetings, but are not
+  required to deliver work. </p> <p> Participants are expected to contribute 20-30%
+  of their time on the activities of the Working Group. Participants MUST get active
+  approval from their home institution, in writing, delivered to the <a
+   href="chairs">chairs<a/>.</p>
+
+  <h2>Chairs</h2>
+  
+  <p>One or two individuals take the role of chairs of the Working Group. They draft
+  the <a href="charter">charter</a> and are responsible for the charter success criteria. Specific
+  activities of the chairs will include assigning roles to group members, meeting
+  agenda, making sure meetings are productive, deciding on the mechanism of action item, issue, and resolution
+  recording (see below), arbitration and the role of final "decider." </p>
+
+  <h2>Charter</h2>
+
+  <p>A Charter document is prepared which defines the duration, deliverables, success
+  criteria, scope (including items out of scope), and funding, of the Working
+  Group. The charter is intended to be the basis for agreement of objectives between
+  the collaborating institutions, and between employers and employees about their
+  EPICS Working Group commitment.  </p>
+
+  <h2>Meetings</h2>
+  
+  <p>Telecon meetings should be held every week or close to that schedule.</p>
+
+  <p>Face-to-face meetings should be held, for one or two days, on an approximately
+  quarterly schedule, or as activities require.</p>
+  
+  <p>Minutes of all meeting should be recorded in some detail and be available for
+  reference among the members and other parties to the charter such as managers and
+  EPICS leadership. </p>
+
+  <h2>Tracking</h2>
+
+  <h3>Things which are tracked</h3>
+  <p>Some activities of the working group should be formally and openly tracked, so
+  that the group can itself administer its own activity and decisions effectively,
+  and so that home institutions and the EPICS community in general can monitor
+  activity. In particular the following should be tracked: </p>
+  <ul>
+    <li>ACTION ITEMS: Action Items are small specific and defined deliverables, such
+  as for a piece of software, a document, or similar work. AIs are specifically
+  assigned to a group member, preferably with a delivery date </li>
+  <li>RESOLUTIONS: Decisions of the working group, such as which alternative from a
+  choice of designs was selected, should be recorded and written as a resolution. In
+  this way, the matter decided can be clearly explained, and the choice made
+  explicit</li>
+  <li>ISSUES: Problematic areas of work should be identified as recorded. In this way
+  the Working Group keeps track of things they will have to deal with </li>
+  <li>BUGS: Software bugs should be tracked.</li>
+    </ul>
+
+  <p>The tracking mechanism is to use <a href="https://sourceforge.net/p/epics-pvdata/_list/tickets?source=navbar" >SourceForge (SF) tickets</a>. Each kind of item tracked above will be tracked by a SF ticket type.</p>
+
+  <h3>AI progress tracking</h3>
+
+  <p>The Charter defines which projects are important for the following year. For organizational
+     clarity we'll group these into activities:
+
+    <table class="content">
+      <tr><th>Activity</th></tr>
+	<tr><td>Basic Development, Network and IOC</td></tr>
+	<tr><td>APIs and Clients</td></tr>
+	<tr><td>High Performance Data Processing</td></tr>
+	<tr><td>Platform Support</td></tr>
+	<tr><td>Documentation and Web Site</td></tr>
+      </table>
+
+    <p>
+    Each project will accomplished by defining and completing <a href="https://sourceforge.net/p/epics-pvdata/action-items/" >ACTION ITEMS</a> (AIs). There may be one or many AIs associated with a project.</p>
+
+    <pre>
+    Charter <->> Activities <->> Projects <->> ACTION ITEMS
+    </pre>
+  </p>
+
+    <p>The status of the ACTION ITEMS of each Project are tracked by a <a href="http://en.wikipedia.org/wiki/Kanban" >Kanban</a> like <a href="https://docs.google.com/spreadsheet/pub?key=0AiY7lwlw4Y4XdDNBVzRUN0FOMGw1Ty1pZk9MeGtPVnc&output=html" >dashboard</a>.</p>
+
+   <h4>Group participant responsibilities for project tracking</h4>
+      
+    <p>Working group participants are expected to:</p>
+      <ol>
+      <li>Create and also work on the AIs of projects as created by the chairs</li>
+      <li>Keep the SF ticket of each AI up to date</li>
+      <li>When starting a new project, propose the initial AIs to the group. Inform the chairs and Bob of any new AI you make on yourself</li>
+      <li>Link your AI to documented use cases (see below)</li>
+      <li>Help to keep the dashboard up to date, through editing the dashboard file directly. 
+      </ol>
+      
+    <p>In the <em>penultimate telecon of each month we'll review the active AIs in the dashboard.</em> </p>
+    <p> In the <em>last meeting of each month Bob, as the main money man of EPICS V4, will prioritize what AIs should be worked on the following month</em>.</p>
+
+<h4>Prioritization References</h4>
+    <p>
+    Work prioritization should stem from scientific and controls Use Cases as much as possible. Therefore, we will create a new document called Use Cases and APIs. This document will list the ways
+  one might want to get data, and the physics or controls use case in which it would 
+  be used. 
+  Each AI's ticket should link to the use case, either in email, or in the Use Cases and APIs 
+  doc. To get priority for a job, someone would write a use case to illustrate what
+  they want, and include what the user interface would look like, either in email, or in the Use Cases document.
+</p>
+
+
+
+  
+  <h2>Software</h2>
+
+    <p>The source code products of the Working Group should be made available to the
+    public, with reference to the EPICS License. </p>
+
+    <p>All source code should be accompanied by programmers guidance documentation,
+    and should also be accompanied by fully marked up source code reference
+    documentation such as Doxygen (C++) or JavaDoc (java). </p>
+
+    <p>Very clear instructions about how to acquire, build, and link software,
+    should be clearly visible in the group's web site. Prerequisites of the software
+    must be clear. </p>
+    
+    <p>All software should be managed in a Source Code Management system. Releases
+    should be made including unit tests, ideally within a Continuous Integration
+    Management system.</p>
+
+    <p>The association of software implementation version with the version or
+    versions of the <a href="#normative" >normative documents</a> on which that
+    software is associated, should be very clear, and made explicit on the web
+    site. </p>
+
+  <h2>Public Web Site</h2>
+
+    <p>The working group should maintain a public web site, where software and
+    document products can be found easily.</p>
+
+    <p>The maturity and status of each working group product
+    must be clearly indicated on the web site. </p>
+
+    <p>The web site must make clear to the public how to contact the working group,
+    how to provide feedback to the group and how to report bugs in software and
+    specifications. SourceForge is a reasonable platform for the web site.</p>
+
+  <h2>Document and Software Classifications</h2>
+
+    <p>This section defines basic terms used to identify the provenance of documents
+and code of the EPICS V4 Working Group. Where appropriate, working group material
+SHOULD identify itself as one of these:</p>
+
+    <dl>
+      <dt id="normative">Normative</dt>
+
+      <dd> <p id="normative">Documents that define a specification of a standard or
+	design being proposed by the Working Group for EPICS, should themselves be
+	written according to a standard. We will call such documents "Normative"; see
+	<a href="http://en.wikipedia.org/wiki/Normative#Standards_documents"
+	>http://en.wikipedia.org/wiki/Normative#Standards_documents</a>. Normative
+	documents of the EPICS V4 working group are documents which contain
+	prescriptions of what process or software that claim to conform to the
+	standard, ought to do.</p
+
+	<p> Normative documents must contain mostly deterministically specified
+	descriptions of designs and processes (though Normative documents may contain
+	non-normative material to help clarify or illustrate, as long it's clearly
+	shown to be so). Normative software should conform to one or more Normative
+	documents that describe its function. In general, Normative work of the group
+	is intended to be developed collaboratively in the open with the EPICS
+	community.  Core products of the working group must be Normative.</p>
+
+	<p>Normative code will be documented to an agreed standard level and conform
+	to the <a href"Coding_Style_Guidelines.html">Coding Standard
+	Guidelines</a></p> <p>Normative documents MUST all follow the same <a
+	 href="templates/epicsv4_document.html" >template</a>, which specifies
+	inclusion of text that indicates the status and provenance of the
+	document.</p>
+
+	<p>Normative specifications or designs for software (or hardware) should be
+	accompanied by a reference implementation.</p> </dd>
+
+      <dt id="informative">Informative</dt>
+
+      <dd>Documents and code additionally made available by the group, for
+        illustration, or as minor test code, or incidental, should not be considered
+        normative. Call those simply "informative"</dd>
+
+      <dt id="internal">Internal<dt>
+    
+      <dd>Documents and code which are neither normative nor informative in the
+	senses above, should be considered simply internal documents of the
+	group. Note that internal documents may appear on the public web site.</dd>
+
+</dl>
+
+  <h2>Normative Document Development and Publication Process</h2>
+
+    <p>Normative documents should go through the following iterative collaboration
+    procedure. This is to ensure that the EPICS community has good opportunity to
+    comment and refine the spec, the final product is broadly useful, and weak or
+    unnecessary specs get dropped. </p>
+
+    <ol>
+      <li>Editors Draft. This status is used while the writers and editors just
+      develop the spec inside the Working Group. Editors Draft status indicates the
+      spec is not ready to be reviewed</li>
+    
+      <li>First Public Working Draft. The document is ready for initial review. </li>
+      <li>Successive "Second", "Third" etc Public Working Draft. As the document is
+    refined, it should be republished to Tech-talk etc, as numbered and dated working
+    drafts. </li>
+      <li>Last Call. When the working group is satisfied that it has a draft which can
+    form the basis for an EPICS standard, it should publish a Last Call draft. The
+    Working Group should publish this to Tech-talk and be prepared to record their
+    responses to all comments (such as in a mailing list). </li>
+      <li>When the WG is confident that its spec is ready, it should petition Bob
+    Dalesio and Andrew Johnson to publish the spec as a Recommendation</li>
+      <li>Recommendation. This status indicates the EPICS community and leaders have
+    accepted the specification and associated software, if any, as part of EPICS, and
+    recommend that other activities build on it.</li>
+    </ol>
+
+    <h2>Appendix A: Versioned Document Change Process</h2>
+    <p>Important documents of the Working Group are version tracked in a particular way which allows both formal version control in Mercurial, easy hyperlink cross reference to specific versions of such documents, and html document differencing tools to see what changes have been made between versions.</p>
+
+    <p>The flow is based on keeping one file in mercurial that is, if you like, the "head" of the documents development. It is the latest published version. It is named simply <kbd>&lt;filename&gt;.html</kbd>. Additionally, we keep any number of dated "branch" versions. These are named with a date suffix, .i.e, <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd>. These are each <b>also</b> in Mercurial as distinct objects, with their full name. They're not mercurial branches of the same file. </p>
+
+    <p>Example, this document titled "EPICS Version 4 Proces" exists as the file epicsv4process.html, and as the file epicsv4process_20140909.html. I am typing into
+   epicsv4process_20140909.html. </p>
+
+    <p>To make a major change to a version tracked file:</p>
+    <ol>
+      <li>In pvDataWWW repo, hg pull and hg update</li>
+      <li><kbd>cp</kbd> <kbd>&lt;filename&gt;.html</kbd> to a new file, named <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd></li>
+      <li>Edit <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd> to reset the header material elements, so the "This Version" link points to your  <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd>, and the "Previous Version" link points to the old "This Version"</li>
+      <li>Edit the first paragraph in the "Status of this Document" section, to describe what makes this version different to the last one</li>
+      <li> <kbd>hg add</kbd> <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd></li>
+      <li>Make your edits</li>
+      <li>When you're ready to share your version (we're not "publishing" yet - that is, we're not yet replacing the main document <kbd>&lt;filename&gt;.html</kbd> with the new one) :
+      <ol>
+	<li><kbd>hg pull; hg update</kbd></li>
+	<li><kbd>hg commit</kbd> <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd></li>
+	<li><kbd>hg push</kbd>. Cloudbees will publish your version as http://epics-pvdata.sourceforge.net/&lt;filename&gt;&dash;YYYYMMDD.html</li>
+      
+	<li>Email the WG to tell them about your new version. Include a hyperlink to it</li>
+      </ol>
+    </li>
+    <li>Now, either make more changes, repeating the above from the "Make your edits" stage, or publish.</li>
+    <li>Publish. Publication means replacing the main file, to which our home page and all external references link, with your version:
+    <ol>
+      <li><kbd>hg pull; hg update</kbd></li>
+      <li>Literally <kbd>cp</kbd> <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd> to <kbd>&lt;filename&gt;.html</kbd></li>
+      <li><kbd>hg commit &lt;filename&gt;.html</kbd></li>
+      <li><kbd>hg push</kbd>.  Cloudbees will publish your, replacing the old http://epics-pvdata.sourceforge.net/&lt;filename&gt;.html with yours.</li>
+    </ol>
+    </li>
+  </ol>
+  <p>When you have finished making such a change, do not delete the <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd> in the repository. It marks a kind of branch of that document, and is still needed because it may be referred to in hyperlinks of other documents and emails. </p>
+</div> <!-- contents -->
+
+<hr />
+<address>Contact author: Greg White, SLAC</address>
+<!-- hhmts start -->Last modified: Tue Sep  9 15:53:04 PDT 2014 <!-- hhmts end -->
+</body>
+</html>
