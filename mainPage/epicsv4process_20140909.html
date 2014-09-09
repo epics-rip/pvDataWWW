@@ -338,11 +338,19 @@ SHOULD identify itself as one of these:</p>
     <h2>Appendix A: Versioned Document Change Process</h2>
     <p>Important documents of the Working Group are version tracked in a particular way which allows both formal version control in Mercurial, easy hyperlink cross reference to specific versions of such documents, and html document differencing tools to see what changes have been made between versions.</p>
 
-    <p>The flow is based on keeping one file in mercurial that is, if you like, the "head" of the documents development. It is the latest published version. It is named simply <kbd>&lt;filename&gt;.html</kbd>. Additionally, we keep any number of dated "branch" versions. These are named with a date suffix, .i.e, <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd>. These are each <b>also</b> in Mercurial as distinct objects, with their full name. They're not mercurial branches of the same file. </p>
+    <p>All of our normative documents as version tracked in this way. </p>
+
+    <p>The workflow is based on keeping one file in mercurial that is, if you like, the "head" of the documents development. It is the latest published version. It is named simply <kbd>&lt;filename&gt;.html</kbd>. Additionally, we keep any number of dated "branch" versions. These are named with a date suffix, .i.e, <kbd>&lt;filename&gt;&dash;YYYYMMDD.html</kbd>. These are each <b>also</b> in Mercurial as distinct objects, with their full name. They're not mercurial branches of the same file. </p>
 
     <p>Example, this document titled "EPICS Version 4 Proces" exists as the file epicsv4process.html, and as the file epicsv4process_20140909.html. I am typing into
    epicsv4process_20140909.html. </p>
 
+    <h3>Making minor changes to a version tracked document</h3>
+    
+    <p>Making minor changes to a version tracked document is easy. Just directly edit the  <kbd>&lt;filename&gt;.html</kbd> file, commit and push. </p>
+
+    <h3>Making major changes to a version tracked document</h3>
+    
     <p>To make a major change to a version tracked file:</p>
     <ol>
       <li>In pvDataWWW repo, hg pull and hg update</li>
@@ -375,6 +383,6 @@ SHOULD identify itself as one of these:</p>
 
 <hr />
 <address>Contact author: Greg White, SLAC</address>
-<!-- hhmts start -->Last modified: Tue Sep  9 15:53:04 PDT 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Sep  9 16:09:33 PDT 2014 <!-- hhmts end -->
 </body>
 </html>
