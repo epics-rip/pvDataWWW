@@ -1,6 +1,6 @@
 default: base helloWorld
 
-base : pvCommon pvData pvAccess pvaSrv pvDatabase
+base : pvCommon pvData pvAccess pvaSrv pvDatabase nt
 
 all : default archiverService
 
@@ -19,6 +19,9 @@ pvaSrv : FORCE
 pvDatabase : FORCE
 	make -C pvDatabaseCPP
 
+nt : FORCE
+	make -C normativeTypesCPP
+
 helloWorld : FORCE
 	make -C exampleCPP/HelloWorld
 
@@ -31,6 +34,7 @@ clean :
 	make -C pvAccessCPP clean
 	make -C pvaSrv clean
 	make -C pvDatabaseCPP clean
+	make -C normativeTypesCPP clean
 	make -C exampleCPP/HelloWorld clean
 	make -C exampleCPP/ChannelArchiverService clean
 

@@ -68,6 +68,7 @@ top_level()
     echo "PVDATABASE=\$(EV4_BASE)/pvDatabaseCPP" >> RELEASE.local
     echo "PVASRV=\$(EV4_BASE)/pvaSrv" >> RELEASE.local
     echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
+    echo "PVDATA=\$(EV4_BASE)/normativeTypesCPP" >> RELEASE.local
     echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
     echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
     if [ -d "${ARCHIVER_DIR}" ]; then
@@ -150,6 +151,21 @@ pvDatabase()
     fi
 }
 
+nt()
+{
+    if [ -e normativeTypesCPP/configure ]; then
+        echo "Making config files for normativeTypesCPP" 
+        cd normativeTypesCPP/configure
+        echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
+        echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
+        echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
+        echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
+        cd ../..
+    else
+        echo "Skipping normativeTypesCPP: configure - doesn't exist" 
+    fi
+}
+
 helloWorld()
 {
     if [ -e exampleCPP/HelloWorld/configure ]; then
@@ -204,6 +220,7 @@ elif [ "$1" = "all" ]; then
     pvaccess
     pvasrv
     pvDatabase
+    nt
     helloWorld
     archiverService
 
