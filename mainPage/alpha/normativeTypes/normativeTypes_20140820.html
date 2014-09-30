@@ -4,7 +4,7 @@
 <!--
 Auth:  Greg White, SLAC, Nov-2011.
 Vers:  22-Sept-2014, Marty Kraimer
-       Made consistant with pvData and normativeTypesCPP
+       Made consistent with pvData and normativeTypesCPP
        15-Sep-2014, Greg White
        Changed Type version identifier from uri:ev4:nt/2012/pwd to uri:ev4:nt/2014/pwd.  
        20-Aug-2014, Marty Kraimer
@@ -738,7 +738,7 @@ class="nterm">display_t</span> above.</p>
 <h4>control_t</h4>
 <p>An <span class="nterm">control_t</span> is a structure that describes a range,
 given by the interval
-(limitlow,limithigh), within which it is expected some control software or hardware
+(limitLow,limitHigh), within which it is expected some control software or hardware
 shall bind the control PV to which this Normative Type
 instance's value field refers.</p>
 <p>
@@ -758,8 +758,7 @@ structure control
 <p>where:</p>
 <dl>
   <dt>control</dt>
-    <dd>The structure must have the name "control"
-      array.</dd>
+    <dd>The structure must have the name "control".</dd>
   <dt>lowLimit</dt>
     <dd>The control low limit for the value field</dd>
       <dt>highLimit</dt>
@@ -858,7 +857,7 @@ control
 display
 valueAlarm
 </pre>
-<p>Both also provide the ability to create the followng normatve types:</p>
+<p>Both also provide the ability to create the following normative types:</p>
 <pre>
 NTScalar
 NTScalarArray
@@ -908,8 +907,8 @@ via fieldCreate and pvDataCreate.</p>
 <h5>Sender</h5>
 
 <p>The sender typically first creates an introspection definition, using the pvData
-introspection interfaces (Field, Structure etc). It then creates an instance of the
-type and populates it with the pvData data interfaces (PVField, PVstructure etc).</p>
+introspection interfaces (Field, Structure etc.). It then creates an instance of the
+type and populates it with the pvData data interfaces (PVField, PVstructure etc.).</p>
 
 <p class="caption">Example of creating the introspection interface of an NTScalar, as
   may be done on a server that will be returning one. In this example, only one of
@@ -1180,12 +1179,12 @@ column vector, and non-vector matrices appropriately.</p>
 
       <pre>
 structure NTURI  
-   string scheme      
-   string authority   : opt  
-   string path     
-   structure query    : opt  
-      {string | double | int <field-name>}0+ 
-   {&lt;field-type&gt; &lt;field-name&gt;}0+
+    string scheme      
+    string authority   : opt  
+    string path     
+    structure query    : opt  
+        {string | double | int <field-name>}0+ 
+        {&lt;field-type&gt; &lt;field-name&gt;}0+
 </pre>
 
 <h4>Interpretation of NTURI under the "pva" scheme</h4>
@@ -1373,7 +1372,7 @@ of a table would also be easily described by NTNameValue.
 structure, and the length of <span class="term">labels</span> MUST be the same. All
 <span class="nterm">scalar_t[]</span> fields in the <span class="term">value</span> structure, MUST have the
 same length, being the number of "rows" in the table. No array field within the
-<span class="term">value</span> structure may itelf be named "value".</p>
+<span class="term">value</span> structure may itself be named "value".</p>
 
 
 <h2>Specific Normative Types</h2>
@@ -1397,7 +1396,7 @@ currently defined types are each described in a section below.</p>
 values from different EPICS Process Variable (PV) channel sources, into a single variable. </p>
 
 <p>Use cases; in a particle accelerator, a single NTMultiChannel might include
-the data of a number of Beam Positon Monitors' X offset values, or of a number of
+the data of a number of Beam Position Monitors' X offset values, or of a number of
 quadrupoles' desired field values. </p>
 
 <pre>structure NTMultiChannel
@@ -1421,11 +1420,11 @@ quadrupoles' desired field values. </p>
       <dd>The name of each of channel.
 	</dd>
   <dt>timeStamp</dt>
-     <dd>The timeStamp asociated with the NTMultiChannel itself.
+     <dd>The timeStamp associated with the NTMultiChannel itself.
       secondsPastEpoch, nanoseconds, and userTag show the timeStamp for each channel.
       </dd>
   <dt>alarm</dt>
-     <dd>The alarm asociated with the NTMultiChannel itself.
+     <dd>The alarm associated with the NTMultiChannel itself.
       severity, status, and message show the alarm for each channel.
       </dd>
   <dt>severity</dt>
@@ -1523,13 +1522,13 @@ structure NTNDArray
        <dd>A timeStamp taken for the array source such as a camera.</dd>
    <dt>attribute</dt>
       <dd>A number of attributes can be associated with an NDArray.
-     The "structure NTAttribute" shown above shows how each atrtribute is described.
+     The "structure NTAttribute" shown above shows how each attribute is described.
       </dd>
   <dt>timeStamp</dt>
-     <dd>The timeStamp asociated with the NTDNArray itself.
+     <dd>The timeStamp associated with the NTDNArray itself.
       </dd>
   <dt>alarm</dt>
-     <dd>The alarm asociated with the NTDNArray itself.
+     <dd>The alarm associated with the NTDNArray itself.
       </dd>
 </dl>
 
