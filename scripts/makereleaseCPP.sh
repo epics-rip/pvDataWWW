@@ -105,6 +105,10 @@ http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/Makefile
 CONFIG_SCRIPT_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/configure.sh
 
+# Remote location of the configuration script
+CONFIG_LOCAL_URL=\
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/CONFIG_SITE.local
+
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
 
@@ -176,6 +180,7 @@ if [ ${localreleaseinfo} -eq 1 ]; then
     readme_pathname=${scriptdir}/../mainPage/README
     makefile_pathname=${scriptdir}/Makefile
     config_script_pathname=${scriptdir}/configure.sh
+    config_site_local_pathname=${scriptdir}/CONFIG_SITE.local
 else
     # Get the remote version file.
     # Delete the existing file first if it's already there.
@@ -207,7 +212,13 @@ else
         rm -rf configure.sh
     fi
     wget ${CONFIG_SCRIPT_URL}
-    config_script_pathname=${PWD}/configure.sh 
+    config_script_pathname=${PWD}/configure.sh
+
+    if [ -e CONFIG_SITE.local ]; then
+        rm -rf CONFIG_SITE.local
+    fi
+    wget ${CONFIG_LOCAL_URL}
+    config_site_local_pathname=${PWD}/CONFIG_SITE.local
 fi
 
 if [ ! -f ${release_versions_pathname} ]; then
@@ -227,6 +238,11 @@ fi
 
 if [ ! -f ${config_script_pathname} ]; then
     echo "Failed to locate the config script file ${config_script_pathname}"
+    Exit 6
+fi
+
+if [ ! -f ${config_site_local_pathname} ]; then
+    echo "Failed to locate the CONFIG_SITE.local file ${config_site_local_pathname}"
     Exit 6
 fi
 
@@ -312,7 +328,7 @@ cp $release_versions_pathname .
 cp $readme_pathname .
 cp $makefile_pathname .
 cp $config_script_pathname .
-
+cp $config_site_local_pathname ./CONFIG.local
 cd ..
 
 
