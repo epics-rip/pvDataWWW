@@ -83,6 +83,8 @@ pvCommonCPP        Utility libraries.
 exampleCPP         Code examples, including use of pvData containers, RPC, 
                    demo servers. 
 pvaSrv             An EPICS Base IOC plugin interfacing CA data to pvAccess.
+pvDatabaseCPP      EPICS V4 record/database framework for providing services
+                   over pvAccess.
 normativeTypesCPP  Support for EPICS V4 normative types.
 pvaPy              Python API for pvAccess.
 
