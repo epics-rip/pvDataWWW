@@ -262,6 +262,7 @@ makefile_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 file=$config_script_pathname
 config_script_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
+
 # Read the repos and versions that the release tar must be composed of from the
 # RELEASE_VERSIONS file.
 modulesa=(`awk -v relname=${releaseName} 'BEGIN {relname="^" relname "$"} $1 ~ relname {print $2}' < $release_versions_pathname`)
@@ -280,6 +281,12 @@ echo ${releaseName} is composed of ${modulesa[*]}
 #
 mkdir -p ${outdir}
 cd ${outdir}
+
+
+tags_filename="hg_ids.txt"
+file=$tags_filename
+tags_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
+echo "# module global_rev local_rev branch tag" > $tags_pathname 
 
 for modulei in ${modulesa[*]}
 do
@@ -310,8 +317,9 @@ do
 	    Exit 10
     fi
 
-    echo "tags for ${modulei}:"
-    hg id -t
+    echo "ids & tags for ${modulei}:"
+    hg id -tnib
+    echo "${modulei} " `hg id -tnib` >> ${tags_pathname}
 
 
     # Remove mercurial metadata
