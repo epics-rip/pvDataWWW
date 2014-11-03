@@ -68,7 +68,7 @@ top_level()
     echo "PVDATABASE=\$(EV4_BASE)/pvDatabaseCPP" >> RELEASE.local
     echo "PVASRV=\$(EV4_BASE)/pvaSrv" >> RELEASE.local
     echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
-    echo "PVDATA=\$(EV4_BASE)/normativeTypesCPP" >> RELEASE.local
+    echo "NORMATIVETYPES=\$(EV4_BASE)/normativeTypesCPP" >> RELEASE.local
     echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
     echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
     if [ -d "${ARCHIVER_DIR}" ]; then
