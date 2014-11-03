@@ -283,10 +283,11 @@ mkdir -p ${outdir}
 cd ${outdir}
 
 
-tags_filename="hg_ids.txt"
+tags_filename="RELEASE_IDS"
 file=$tags_filename
 tags_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
-echo "# module global_rev local_rev branch tag" > $tags_pathname 
+echo "# Module IDs for release ${releaseName}"   > $tags_pathname
+echo "# module global_rev local_rev branch tag" >> $tags_pathname 
 
 for modulei in ${modulesa[*]}
 do
