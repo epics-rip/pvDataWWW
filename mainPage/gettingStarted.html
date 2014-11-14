@@ -282,9 +282,16 @@ total 8
 </pre>
 </li>
 
-<li>Modify helloWorld_setup.bash.
+<li>Try out helloWorld RPC service.
 
-<p> Note that exactly how the setup must be, will depend
+<p>The simplest example of an EPICS V4 pvAccess server that provides functions new in V4,
+is the helloWorld in exampleJava. It shows a pvAccess server taking a argument, and returning
+a string based on the argument.</p>
+
+<p>Modify helloWorld_setup.bash.</p>
+
+<p> The helloWorld example is in <code>exampleJava/services/helloWorld/</code>.
+Note that exactly how the setup must be, will depend
 on whether you intend to execute the example code from its jar, as download in the
 distribution tar, or to extract the source of the example so you can look at it and
 build it, or whether thirdly you may have cloned the repos. This example will assume
@@ -1213,7 +1220,7 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Wed Jul  2 12:31:10 PDT 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Thu Oct 30 17:38:38 PDT 2014 <!-- hhmts end -->
 
 </body>
 </html>

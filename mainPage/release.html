@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<html xml:lang="en-us" lang="en-us">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <meta http-equiv="PRAGMA" content="NO-CACHE" />
@@ -33,11 +33,10 @@
     <dd>Dave Hickin</dd>
     <dd>Ralph Lange</dd>
   <dt>Date:</dt>
-    <dd>10 October 2014</dd>
+    <dd>04 September 2014</dd>
   <dt>Latest version:</dt>
     <dd><a href="release.html">release.html</a></dd>
   <dt>Older versions:</dt>
-    <dd><a href="release_20140909.html">release_20140909.html</a></dd>
     <dd><a href="release_20140819.html">release_20140819.html</a></dd>
     <dd><a href="release_20130922.html">release_20130922.html</a></dd>
     <dd><a href="release_20130910.html">release_20130910.html</a></dd>
@@ -60,8 +59,8 @@ for use during the process of creating a new version of the software.</p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the September 2014 version of the EPICS V4 Core Module Development
-and Release Guide, in preparation for the V4.4 code release.</p>
+<p>This is the September 2014 version of the EPICS V4 Core Module Development and
+Release Guide, in preparation for the V4.4 code release.</p>
 <!-- Please always include this statement of terms, unless it's really silly -->
 
 <p>The terms MUST, MUST NOT, SHOULD, SHOULD NOT, REQUIRED, and MAY when
@@ -780,13 +779,13 @@ procedure to prepare a release is as follows:</p>
     <tr valign="top">
       <td><pre>&gt; <strong>hg update default</strong>
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-&gt; <strong>hg branch release/x.y</strong>
-marked working directory as branch release/x.y
-&gt; <strong>hg commit --message "Create branch 'release/x.y'."</strong></pre>
+&gt; <strong>hg branch release/4.0</strong>
+marked working directory as branch release/4.0
+&gt; <strong>hg commit --message "Create branch 'release/4.0'."</strong></pre>
       </td>
-      <td><pre>&gt; <strong>hg flow release start x.y</strong>
+      <td><pre>&gt; <strong>hg flow release start 4.0</strong>
 0 files updated, 0 files merged, 0 files removed, 0 files unresolved
-marked working directory as branch release/x.y</pre>
+marked working directory as branch release/4.0</pre>
       </td>
     </tr>
   </tbody>
@@ -805,10 +804,10 @@ changes and/or bugfixes on the release branch can be merged back into
     <tr valign="top">
       <td><pre>&gt; <strong>hg update default</strong>
 3 files updated, 0 files merged, 3 files removed, 0 files unresolved
-&gt; <strong>hg merge release/x.y</strong>
+&gt; <strong>hg merge release/4.0</strong>
 3 files updated, 0 files merged, 0 files removed, 0 files unresolved
-&gt; <strong>hg commit --message "Promote &lt;release&gt; 'x.y' (&lt;hash-value&gt;) to 'default'."</strong>
-&gt; <strong>hg update release/x.y</strong>
+&gt; <strong>hg commit --message "Promote &lt;release&gt; '4.0' (b009fb5075d1) to 'default'."</strong>
+&gt; <strong>hg update release/4.0</strong>
 2 files updated, 0 files merged, 1 files removed, 0 files unresolved</pre>
       </td>
       <td><pre>&gt; <strong>hg flow release promote default</strong>
@@ -820,8 +819,8 @@ changes and/or bugfixes on the release branch can be merged back into
   </tbody>
 </table>
 The release branch is never closed, and works as a bugfix and support branch
-for this release. I.e., in this example it will carry the releases x.y.0,
-x.y.1, x.y.2, ... 
+for this release. I.e., in this example it will carry the releases 4.0.0,
+4.0.1, 4.0.2, ... 
 
 <h2>Java Packaging Instructions</h2>
 
@@ -835,12 +834,12 @@ x.y.1, x.y.2, ...
 <p>The key to the automatic packaging, is that a file in pvDataWWW named
 RELEASE_VERSIONS specifies the Mercurial (hg) tag value of each module for each
 suite release package (the tar file that may be downloaded from SourceForge).
-In addition, the code to be included in the version MUST have a Maven version
+In addition, the Java code to be included in the release  MUST have a Maven version
 whose value is identical to the Mercurial tag. That is, this identity must
 hold: </p>
-<pre>    [mercurial tag ==] RELEASE_VERSIONS entry == hg tag</pre>
+<pre>    [maven version ==] RELEASE_VERSIONS entry == hg tag</pre>
 
-<p>The mercurial part is optional because it applies only to all Java modules,
+<p>The maven part is optional because it applies only to all Java modules,
 not the C++ ones. </p>
 
 <h3>Module Mercurial and Maven tagging</h3>
@@ -1167,9 +1166,8 @@ href="https://sourceforge.net/projects/epics-pvdata/files/?source=navbar">https:
 </p>
 <hr />
 <address>
-  EPICS V4 Working Group 
+  EPICS V4 Working Group
 </address>
-<!-- hhmts start -->
-Last modified: Thu Sep 04 16:42:61 CEST 2014 <!-- hhmts end --></div>
+<!-- hhmts start -->Last modified: Wed Oct 29 10:13:26 PDT 2014 <!-- hhmts end --></div>
 </body>
 </html>
