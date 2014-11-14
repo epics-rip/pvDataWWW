@@ -2,7 +2,7 @@ default: base helloWorld
 
 base : pvCommon pvData pvAccess pvaSrv pvDatabase nt
 
-all : default archiverService
+all : default archSrv pyaPy
 
 pvCommon : FORCE
 	make -C pvCommonCPP
@@ -25,8 +25,11 @@ nt : FORCE
 helloWorld : FORCE
 	make -C exampleCPP/HelloWorld
 
-archiverService : FORCE
+archSrv : FORCE
 	make -C exampleCPP/ChannelArchiverService
+
+pyaPy : FORCE
+	make -C pvaPy
 
 clean : 
 	make -C pvCommonCPP clean
@@ -37,6 +40,7 @@ clean :
 	make -C normativeTypesCPP clean
 	make -C exampleCPP/HelloWorld clean
 	make -C exampleCPP/ChannelArchiverService clean
+	make -C pvaPy clean
 
 distclean : clean config_clean 
 
