@@ -122,3 +122,11 @@ EPICS-CPP-4.4.0-pre1        pvaSrv            0.9.4
 EPICS-CPP-4.4.0-pre1        normativeTypesCPP 4.0.0
 EPICS-CPP-4.4.0-pre1        pvaPy             0.4.3
 
+EPICS-CPP-4.4.0-pre2        pvCommonCPP       4.0.0
+EPICS-CPP-4.4.0-pre2        pvDataCPP         4.0.1
+EPICS-CPP-4.4.0-pre2        pvAccessCPP       4.0.1
+EPICS-CPP-4.4.0-pre2        pvDatabaseCPP     4.0.1
+EPICS-CPP-4.4.0-pre2        exampleCPP        4.0.1
+EPICS-CPP-4.4.0-pre2        pvaSrv            0.10.3
+EPICS-CPP-4.4.0-pre2        pvaPy             0.4.5
+EPICS-CPP-4.4.0-pre2        normativeTypesCPP 4.0.1
