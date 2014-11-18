@@ -1,0 +1,36 @@
+#-*-makefile-*-
+
+pvDataJava : FORCE
+	(cd pvDataJava; mvn compile install -Dmaven.test.skip=true)
+
+pvAccessJava : FORCE
+	(cd pvAccessJava; mvn compile install -Dmaven.test.skip=true)
+
+easyPVAJava : FORCE
+	(cd easyPVAJava; mvn compile install -Dmaven.test.skip=true)
+
+exampleJava : FORCE
+	(cd exampleJava; mvn compile install -Dmaven.test.skip=true)
+
+directoryService : FORCE
+	(cd directoryService; mvn compile install -Dmaven.test.skip=true)
+
+FORCE :
+
+# Doesn't work, seems repo files have timestamp of last change, not time of build
+#M2_REPO=~/.m2/repository
+#PVDATA_JAVAJAR=$(M2_REPO)/org/epics/pvDataJava/4.0.0/pvDataJava-4.0.0.jar
+#PVACCESS_JAVAJAR=$(M2_REPO)/org/epics/pvAccessJava/4.0.0/pvAccessJava-4.0.0.jar
+#
+#all : pvDataJava
+#
+#pvDataJava : PVDATA_JAVAJAR
+#
+#PVDATA_JAVAJAR : pvDataJava/pom.xml
+#	(cd pvDataJava; mvn compile install -Dmaven.test.skip=true)
+#
+#PVACCESS_JAVAJAR : PVDATA_JAVAJAR pvAccessJava/pom.xml
+#	(cd pvAccessJava; mvn compile install -Dmaven.test.skip=true)
+
+
+
