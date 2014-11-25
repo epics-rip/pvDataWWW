@@ -28,7 +28,9 @@
 #
 # ----------------------------------------------------------------------------
 # Auth: 20-Dec-2011, Greg White (greg@slac.stanford.edu) 
-# Mod:  22-Oct-2013, Greg White (greg@slac.stanford.edu) 
+# Mod:  25-Nov-2014, Greg White (greg@slac.stanford.edu)
+#       Get caj and jca fom Maven central.
+#       22-Oct-2013, Greg White (greg@slac.stanford.edu) 
 #       Fixed awk command for matching "full releases", eg EPICS-java-4.3.0 rather than
 #       those with suffix. The old one was a thirsty match, so matched also suffix 
 #       release lines.
@@ -99,6 +101,10 @@ RELEASE_VERSIONS_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE_VERSIONS
 README_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/README
+SF_URL=\
+http://epics.sourceforge.net
+MAVEN_URL=\
+http://repo1.maven.org
 
 SFusername=
 releaseName= 
@@ -183,13 +189,21 @@ do
 	    cp ~/.m2/repository/org/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar .
 	    cp ~/.m2/repository/org/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar .
         else
-            set -x
-	    wget http://epics.sourceforge.net/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}.jar
-	    wget http://epics.sourceforge.net/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}.pom
-	    wget http://epics.sourceforge.net/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar
-	    wget http://epics.sourceforge.net/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar
+	    if [ ${modulei} = "caj" ] || [ ${modulei} = "jca" ]; then
+		set -x
+		wget ${MAVEN_URL}/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}.jar
+		wget ${MAVEN_URL}/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}.pom
+		wget ${MAVEN_URL}/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar
+		wget ${MAVEN_URL}/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar
+	    else
+		set -x
+		wget ${SF_URL}/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}.jar
+		wget ${SF_URL}/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}.pom
+		wget ${SF_URL}/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}-sources.jar
+		wget ${SF_URL}/maven2/org/epics/${modulei}/${tag}/${modulei}-${tag}-javadoc.jar
+	    fi
+            set +x
         fi
-        set +x
      else
 	echo "Could not get module version for ${modulei}, exiting"
 	exit 3
