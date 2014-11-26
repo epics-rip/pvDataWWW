@@ -1,0 +1,5707 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS V4 Developer's Guide</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+  </script>
+</head>
+<body>
+
+<div class="head">
+<h1>EPICS V4 Developer's Guide</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 26-Nov-2014</h2>
+
+  <dl>
+    <dt>Latest version:</dt>
+    <dd><a
+      href="developerGuide.html">developerGuide.html</a>
+    </dd>
+    <dt>This version:</dt>
+    <dd>None</dd>
+    <dt>Previous version:</dt>
+    <dd>None</dd>
+    <dt>Editors:</dt>
+   <dd> Marty Kraimer, BNL<br />
+      Matej Sekoranja, CosyLab
+      </dd>
+  </dl>
+
+<h2 class="nocount">Abstract</h2>
+
+<p>This is Developer's Guide for EPICS V4,
+which is one of a
+related set of products:<br />
+<a href="http://epics-pvdata.sourceforge.net/relatedDocumentsV4.html">relatedDocumentsV4.html</a>
+</p>
+
+
+<h2 class="nocount">Status of this Document</h2>
+
+<p>This is the 26-Nov-2014 version of the Developer's Guide.
+It is for EPICS V4 Release 4.4.
+This version of the Developer's Guide is only a rough draft.
+It still needs lots of work but hopefull will be useful for understanding EPICS V4.
+</p>
+
+
+
+</div>
+
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+<div id="contents" class="contents">
+
+<h2>Introduction</h2>
+<p>This document is intended for EPICS V4 software developers: both Java and C++.
+The main topics are:</p>
+<dl>
+   <dt>pvData</dt>
+      <dd>
+       The EPICS V4 type system.
+      </dd>
+   <dt>pvAccess</dt>
+      <dd>
+       The V4 network support for transporting pvData between client and server,
+      </dd>
+</dl>
+<p>
+<b>pvData</b> supports structured data.
+It is not an object oriented type system, i. e.
+it does not support user extensible methods attached to data objects.
+</p>
+<p>
+<b>pvAccess</b>, which  provides network transport for pvData,
+provides methods for transporting pvData.
+</p>
+<p>
+pvData/pvAccess has a complete implemantion in both Java and C++.
+A client written in either Java or C++ can communicate with a server written in either Java or C++.
+All communication between client and server is done via the methods provided by pvAccess and by pvData
+objects.
+</p>
+<p>
+pvAccess provides two interfaces, channelPutGet and channelRPC,
+that provide the equivalent of a Remote Procedure Call.s
+The client passes a pvData object to the server.
+This pvData object is the argument for the RPC.
+The server uses this to decide what to do
+and sends a pvData object back to the client, which is the RPC result.
+</p>
+<p>
+The type system supports arbitary structures of data composed of a fixed set of primitive types
+or arrays of the supported types.
+</p>
+<p>This document uses the following terminology:</p>
+<dl>
+   <dt>API</dt>
+     <dd>This is how a client accesses the type system and data objects for the type.
+      In Java this consists mainly of Java interfaces.
+      In C++ this is via mainly via C++ classes.
+       This document uses a combination of <b>psuedo</b> code, Java code, and C++ code for describing
+       APIs. It uses <b>psuedo</b> code when there is equivalent code in Java and in C++.
+      The <b>psuedo</b> code is similar to Java interface definitions.
+       The language specific APIs are provided in projects  pvDataJava, pvAccessJava, pvDataCPP, and pvAccessCPP.
+      </dd>
+   <dt>Introspection API</dt>
+      <dd>The type system supports both introspection and data interfaces.
+       The introspection interfaces allow a client to determine the data types for objects
+       without requiring a data instance.
+      </dd>
+   <dt>Data API</dt>
+     <dd>These provide access to data instances.
+     </dd>
+     <dt>type</dt>
+        <dd>Often used when talking about a field.
+          In this case it means the intospection interface for the field.
+        </dd>
+     <dt>PVScalarType</dt>
+       <dd>Generic name for the data type for a scalar.
+        This a generic name for one of PVBoolean, PVByte, ..., PVString.
+        </dd>
+     <dt>PVScalarArrayType</dt>
+       <dd>Generic name for the data type for a scalarArray.
+        This a generic name for one of PVBooleanArray,
+         PVByteArray, ..., PVStringArray.
+        </dd>
+     <dt>PVType</dt>
+       <dd>Generic name for any valid Data API type.
+        Thus any of PVScalarType, PVScalarArrayType, PVUnion, PVStructureArray,
+        or PVUnionArray.
+        </dd>
+     <dt>Special Field</dt>
+        <dd>These are a set of widely used structure definitions:
+        enum, alarm, timeStamp, control, display, and alarmLimit.
+        </dd>
+    <dt>NTType</dt>
+        <dd>Generic name for a normative type.
+         When <b>NTType</b> appears in a statement it means that the statement
+         is true for all normative types,
+          i. e. <b>NTScalar</b>, <b>NTScalarArray</b>, ... .
+         </dd>
+</dl>
+<h2>pvData</h2>
+<h3>ScalarType</h3>
+<p>This defines the pvData primitive types:</p>
+<dl>
+ <dt>boolean</dt>
+    <dd>Can be either <b>true</b> or <b>false</b>
+    </dd>
+  <dt>byte</dt>
+     <dd>
+     An 8 bit signed integer.
+     </dd>
+  <dt>short</dt>
+     <dd>
+     A 16 bit signed integer.
+     </dd>
+  <dt>int</dt>
+     <dd>
+     A 32 bit signed integer.
+     </dd>
+  <dt>long</dt>
+     <dd>
+     A 64 bit signed integer.
+     </dd>
+  <dt>ubyte</dt>
+     <dd>
+     An 8 bit unsigned integer.
+     </dd>
+  <dt>ushort</dt>
+     <dd>
+     A 16 bit unsigned integer.
+     </dd>
+  <dt>uint</dt>
+     <dd>
+     A 32 bit unsigned integer.
+     </dd>
+  <dt>ulong</dt>
+     <dd>
+     A 64 bit unsigned integer.
+     </dd>
+  <dt>float</dt>
+     <dd>
+     A 32 bit IEEE floating point number.
+     </dd>
+  <dt>double</dt>
+     <dd>
+     A 64 bit IEEE floating point number.
+     </dd>
+  <dt>string</dt>
+     <dd>
+      In Java a Java String. In C++ a std::string.
+      On the network a UTF8 encoded string.
+     </dd>
+</dl>
+<h3>Type</h3>
+<p>A pvData object consists of a set of fields where each field has one on the following types:</p>
+<dl>
+   <dt>scalar</dt>
+      <dd>
+        The type of the field is one of the scalar types.
+      </dd>
+   <dt>scalarArray</dt>
+      <dd>
+        The type of the field is an array one of the scalar types.
+      </dd>
+   <dt>structure</dt>
+      <dd>
+        The field has a set of sub-fields.
+        Each sub-field has a name and a type that can be any valid Type.
+      </dd>
+   <dt>structureArray</dt>
+      <dd>
+       The  field is an array of structure fields where each
+       element has the same introspection interface.
+      </dd>
+   <dt>union</dt>
+      <dd>
+       The field has a single sub-field.
+       Two types of union are supported: a regular union and a variant
+       union. For a variant union the sub-field can be have any valid Type.
+      For a regular union the sub-field can have any of a specified
+      set of Types.
+      </dd>
+   <dt>unionArray</dt>
+      <dd>
+       The  field is an array of union fields where each
+       element has the same introspection interface.
+      </dd>
+</dl>
+<h3>Data Examples</h3>
+<p><b>NOTE:</b>
+In the examples <b>alarm_t</b>, <b>time_t</b>, and <b>enum_t</b>
+are used as type names.
+All have type <b>structure</b>.
+They are examples of special fields described later.
+The core part of pvData and pvAccess,
+which are discussed before section <b>interlude</b>
+treat them as type <b>structure</b>.
+</p>
+<p>The following is a top level structure that has three sub-fields:</p>
+<dl>
+   <dt>value</dt>
+       <dd>This has type scalar and scalarType double.</dd>
+   <dt>alarm</dt>
+      <dd>This is a structure field.</dd>
+   <dt>timeStamp</dt>
+     <dd>This is also a structure field</dd>
+</dl>
+<pre>
+structure
+    double value 5.0
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message no alarm
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+</pre>
+<p>The following is an example where the value field is a scalar string array.</p>
+<pre>
+structure
+    string[] value ["aaa","bbb","ccc","ddd"]
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+</pre>
+<p>The following is an example is a structure with a single subfield that is itself a structure.</p>
+<pre>
+structure
+    enum_t value
+        int index 0
+        string[] choices [true,false]
+</pre>
+<p>The following has two examples of a regular union.
+</p>
+<pre>
+structure
+    union value
+        time_t
+            long secondsPastEpoch 1000
+            int nanoseconds 0
+            int userTag 0
+
+structure
+    union value
+        double  100000
+</pre>
+<p>This is like the previous example but now the value
+field is a variant union.</p>
+<pre>
+structure
+    any value
+        time_t
+            long secondsPastEpoch 1000
+            int nanoseconds 0
+            int userTag 0
+
+structure
+    any value
+        double  100000
+</pre>
+<p>The first example is a union array where each element is variant union.
+The second is where each element is a regular union.
+</p>
+<pre>
+structure
+    any[] value
+        any
+            (none)
+        any
+            double  1.245
+`
+structure
+    union[] value
+        union
+            (none)
+        union
+            double  1.245
+</pre>
+<p>This is an example of a structure array where each element is a
+<b>time_t</b> structure.
+</p>
+<pre>
+structure
+    time_t[] value
+        time_t
+            long secondsPastEpoch 1000
+            int nanoseconds 0
+            int userTag 0
+        time_t
+            long secondsPastEpoch 3000
+            int nanoseconds 0
+            int userTag 0
+</pre>
+<p>This is a structure that has data for a power supply.</p>
+<pre>
+structure
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message
+    time_t timestamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+    structure power
+        double value 0
+        alarm_t alarm
+            int severity 0
+            int status 0
+            string message
+    structure voltage
+        double value 0
+        alarm_t alarm
+            int severity 0
+            int status 0
+            string message
+    structure current
+        double value 0
+        alarm_t alarm
+            int severity 0
+            int status 0
+            string message
+</pre>
+
+
+<h3>Introspection API</h3>
+<pre>
+Field
+    string getID()
+    Type getType()
+    serialize/deserialize
+    display
+
+    Scalar
+        ScalarType getScalarType()
+
+    Union
+        size_t getNumberFields()
+        Field getField(string fieldName)
+        size_t getFieldIndex(string fieldName)
+        Field[] getFields()
+        Field getField(size_t fieldIndex)
+        string[] getFieldNames()
+        string getFieldName(size_t fieldIndex)
+        boolean isVariant()
+
+    Array
+        ArraySizeType getArraySizeType()
+        size_t getMaximumCapacity()
+
+        ScalarArray
+            ScalarType getElementType()
+
+        StructureArray
+            Structure getStructure()
+
+        UnionArray
+            Union getUnion()
+
+     Structure
+         Field getField(string fieldName)
+         size_t getFieldIndex(string fieldName)
+         Field[] getFields()
+         Field getField(size_t fieldIndex)
+         string[] getFieldNames()
+         string getFieldName(size_t fieldIndex)
+</pre>
+<h4>Field</h4>
+<p>This is the base class for the Introspection API.
+It has the members:</p>
+<dl>
+   <dt>string getID()</dt>
+     <dd>
+     Each field instance has an asociated ID, which is just a string.
+     The core part of pvData and pvAccess do not attach any semantics
+      to the value except that pvAccess transfers the ID when it
+      transfers an introspection object.
+    FieldCreate assigns a default ID to each type but also allows
+    code to assign different values.
+    This feature is used for both special fields and normative
+    types.
+     </dd>
+   <dt>Type getType()</dt>
+     <dd>
+       Get the type.
+     </dd>
+   <dt>serialize/deserialize</dt>
+     <dd>
+       These are methods to convert an introspection object to/from a 
+       byte stream. These are used by pvAccess to transfer introspection
+       objects between client and server.
+       Other code could also use these methods.
+      This document does not provide the details.
+      See pvDataCPP or pvDataJava for details.
+     </dd>
+   <dt>display</dt>
+     <dd>
+       These methods are used to display the value of an introspection
+       object. Java provides methods to implement <b>toString</b>.
+      C++ provides methods that implement C++ <b>steams</b>.
+      Thus the Java and C++ methods are completely different.
+      See pvDataCPP or pvDataJava for details.
+     </dd>
+</dl>
+<h4>Scalar</h4>
+<p>This is the API for all scalar types, i. e. boolean, byte, ... , string.
+It has method:</p>
+<dl>
+   <dt>ScalarType getScalarType()</dt>
+     <dd>
+      Return the scalarType
+      </dd>
+</dl>
+<h4>Union</h4>
+<p>This is the API for type union.
+A union is a field that has a single subField.
+The subField has no name.
+A union can be either a variant union or a regular union.
+The subField for a variant union can have any supported type.
+A regular union has a Field array and a string array.
+Each element of the string array is associated with the corresponding
+element of the field array.</p>
+<p>Union has the methods:</p>
+<dl>
+   <dt>size_t getNumberFields()</dt>
+     <dd>Return the number of elements in the Field and string arrays.
+      This is always 0 for a variant union.
+     </dd>
+   <dt>Field getField(string fieldName)</dt>
+     <dd>
+      Return the Field associated with the fieldName.
+      A null Field is returned if the fieldName is not valid.
+      For a variant array null is always returned.
+     </dd>
+   <dt>size_t getFieldIndex(string fieldName)</dt>
+     <dd>
+      Return the index associated with the fieldName.
+      -1 is returned if the fieldName is not valid.
+      For a variant array -1 is always returned.
+     </dd>
+   <dt>Field[] getFields()</dt>
+     <dd>
+      Get the field types.
+      For a variant array and empty array is returned.
+     </dd>
+   <dt>Field getField(size_t fieldIndex)</dt>
+     <dd>
+       Get the introspection interface associates with the fieldIndex.
+       A null Field is returned if the fieldIndex is not valid.
+      For a variant array null is always returned.
+     </dd>
+   <dt>string[] getFieldNames()</dt>
+     <dd>
+      Get the field names.
+      For a variant array and empty array is returned.
+     </dd>
+   <dt>string getFieldName(size_t fieldIndex)</dt>
+     <dd>
+      Get the name asociated with the fieldIndex.
+      An empty string is returned if the fieldIndex is not valid.
+      For a variant array an empty string is always returned.
+     </dd>
+   <dt>boolean isVariant()</dt>
+     <dd>
+      returns (false,true) if (regular, variant) union.
+     </dd>
+</dl>
+<h4>Array</h4>
+<p>Base class for all array types. It has the methods:</p>
+<dl>
+   <dt>ArraySizeType getArraySizeType()</dt>
+     <dd>
+     Size means the number of elements.
+     ArraySizeType is one of:
+        <dl>
+           <dt>variable</dt>
+              <dd>The size is only limited by what cpu architecture allows.</dd>
+           <dt>fixed</dt>
+               <dd>The size is determined when an instance is created and can not be changed.</dd>
+           <dt>bounded</dt>
+               <dd>The size can be changed but only up to a maximum specified when an instance is created.</dd>
+        </dl>
+     </dd>
+    <dt>size_t getMaximumCapacity()</dt>
+     <dd>
+       Get the maximum capacity and also size that array can have.
+     </dd>
+</dl>
+<h4>ScalarArray</h4>
+<p>This is the API for type scalarArray. It has the method:</p>
+<dl>
+   <dt>ScalarType getElementType()</dt>
+     <dd>
+      Get the ScalarType for each element.
+     </dd>
+</dl>
+<h4>StructureArray</h4>
+<p>This is the API for type structureArray. It has the method:</p>
+<dl>
+   <dt>Structure getStructure()</dt>
+     <dd>
+       Get the introspection interface that each element must have.
+       Note that all elements MUST have exactly the same introspection interface.
+     </dd>
+</dl>
+<h4>UnionArray</h4>
+<p>This is the API for type unionArray. It has the method:</p>
+<dl>
+   <dt>Union getUnion()</dt>
+     <dd>
+       Get the introspection interface that each element must have.
+       Note that all elements MUST have exactly the same introspection interface.
+     </dd>
+</dl>
+<h4>Structure</h4>
+<p>This is the API for type structure. It has the methods:</p>
+<dl>
+   <dt>Field getField(string fieldName)</dt>
+     <dd>
+     Get the subField with the specified name.
+     A null Field is returned if the structure does not have a subField with the specified name.
+     </dd>
+   <dt>size_t getFieldIndex(string fieldName)</dt>
+     <dd>
+     Get the index of the subField with the specified name.
+     -1 is returned if the structure does not have a subField with the specified name.
+     </dd>
+   <dt>Field[] getFields()</dt>
+     <dd>
+      Get the Field array for the subFields of the structure.
+     </dd>
+   <dt>Field getField(size_t fieldIndex)</dt>
+     <dd>
+     Get the subField with the specified index.
+     A null Field is returned if the fieldIndex is invalid for this structure.
+     </dd>
+   <dt>string[] getFieldNames()</dt>
+     <dd>
+      Get fieldName array for the subFields.
+     </dd>
+    <dt>string getFieldName(size_t fieldIndex)</dt>
+     <dd>
+     Get the subField name with the specified index.
+     An empty string is returned if the fieldIndex is invalid for this structure.
+     </dd>
+</dl>
+
+<h3>Introspection Factory</h3>
+<p>FieldCreate is a factory for creating introspection objects.</p>
+<pre>
+FieldCreate
+    FieldBuilder createFieldBuilder()
+    Scalar createScalar(ScalarType scalarType)
+    BoundedString createBoundedString(size_t maxLength)
+    ScalarArray createScalarArray(ScalarType elementType)
+    ScalarArray createFixedScalarArray(ScalarType elementType, size_t size)
+    ScalarArray createBoundedScalarArray(ScalarType elementType, size_t bound)
+    StructureArray createStructureArray(Structure elementStructure)
+    UnionArray createUnionArray(Union elementUnion)
+    UnionArray createVariantUnionArray()
+    Structure createStructure() //Java does not implement
+    Structure createStructure(string[] fieldNames, Field[] fields)
+    Structure createStructure(string id, string[] fieldNames, Field[] fields)
+    Structure appendField(Structure structure,string fieldName, Field field)
+    Structure appendFields(Structure structure,string[] fieldNames, Field[] fields)
+    Structure createStructure(Structure structToClone) // CPP does not implement
+    Union createVariantUnion()
+    Union createUnion(string[] fieldNames, Field[] fields)
+    Union createUnion(string id, string[] fieldNames, Field[] fields)
+</pre>
+<pre>
+FieldBuilder
+    FieldBuilder setId(string id)
+    FieldBuilder add(string name, ScalarType scalarType)
+    FieldBuilder addBoundedString(string name, size_t maxLength)
+    FieldBuilder add(string name, Field field)
+    FieldBuilder addArray(string name, ScalarType scalarType)
+    FieldBuilder addFixedArray(string name, ScalarType scalarType, size_t size)
+    FieldBuilder addBoundedArray(string name, ScalarType scalarType, size_t bound)
+    FieldBuilder addArray(string name, Field field)
+    Structure createStructure()
+    Union createUnion()
+    FieldBuilder addNestedStructure(string name)
+    FieldBuilder addNestedUnion(string name)
+    FieldBuilder addNestedStructureArray(string name)
+    FieldBuilder addNestedUnionArray(string name)
+    FieldBuilder endNested()
+</pre>
+<h4>FieldCreate</h4>
+<p>The methods are:</p>
+<dl>
+    <dt>FieldBuilder createFieldBuilder()</dt>
+      <dd>
+       Create a FieldBuilder which is described below.
+      </dd>
+    <dt>Scalar createScalar(ScalarType scalarType)</dt>
+      <dd>
+       Create a Scalar of the specified type.
+      </dd>
+    <dt>BoundedString createBoundedString(size_t maxLength)</dt>
+      <dd>
+        Create a BoundedString, which is a Scalar with ScalarType pvString and that has a bounded size.
+      </dd>
+    <dt>ScalarArray createScalarArray(ScalarType elementType)</dt>
+      <dd>
+       Create a ScalarArray that has elements of the specified ScalarType.
+      </dd>
+    <dt>ScalarArray createFixedScalarArray(ScalarType elementType, size_t size)</dt>
+      <dd>
+       Create a ScalarArray of the specified ScalarType and that will have the specified fixed size.
+      </dd>
+    <dt>ScalarArray createBoundedScalarArray(ScalarType elementType, size_t bound)</dt>
+      <dd>
+       Create a ScalarArray of the specified ScalarType and that will have the specified maximum size.
+      </dd>
+    <dt>StructureArray createStructureArray(Structure elementStructure)</dt>
+      <dd>
+       Create a StructureArray where each element will have the specified introspection interface.
+      </dd>
+    <dt>UnionArray createUnionArray(Union elementUnion)</dt>
+      <dd>
+       Create a UnionArray where each element will have the specified introspection interface.
+      </dd>
+    <dt>UnionArray createVariantUnionArray()</dt>
+      <dd>
+       Create a UnionArray where each element can have any valid type.
+      </dd>
+    <dt>Structure createStructure() //Java does not implement</dt>
+      <dd>
+       Create a Structure with no subFields.
+      </dd>
+    <dt>Structure createStructure(string[] fieldNames, Field[] fields)</dt>
+      <dd>
+       Create a Structure with the specified set of fieldNames and fields.
+       The length of the two arrays must be the same.
+      </dd>
+    <dt>Structure createStructure(string id, string[] fieldNames, Field[] fields)</dt>
+      <dd>
+       Create a Structure with the specified set of fieldNames and fields.
+       The length of the two arrays must be the same.
+        The Structure will have the ID specfied.
+      </dd>
+    <dt>Structure appendField(Structure structure,string fieldName, Field field)</dt>
+      <dd>
+        Create a new Structure that is the old structure with an appended subField.
+      </dd>
+    <dt>Structure appendFields(Structure structure,string[] fieldNames, Field[] fields)</dt>
+      <dd>
+        Create a new Structure that is the old structure with appended subFields.
+      </dd>
+    <dt>Structure createStructure(Structure structToClone) // CPP does not implement</dt>
+      <dd>
+        Create a new Structure that is a clone of an existing structure.
+      </dd>
+    <dt>Union createVariantUnion()</dt>
+      <dd>
+       Create a variant Union.
+      </dd>
+    <dt>Union createUnion(string[] fieldNames, Field[] fields)</dt>
+      <dd>
+        Create an regular Union that can have a subField with an type specified by fields.
+      </dd>
+    <dt>Union createUnion(string id, string[] fieldNames, Field[] fields)</dt>
+      <dd>
+      Like the previous method but with the ID specified.
+      </dd>
+</dl>
+<h4>FieldBuilder</h4>
+<p>This is an easier way to create introspection interfaces.
+A single instance can be used to create multiple introspection interfaces because
+everytime createStructure or createUnion is called the internal state is reset to start over.
+Each method except createStructure and createUnion return the FieldBuilder itself so that
+methods can be chained together. See the examples below.
+The methods are:</p>
+<dl>
+    <dt>FieldBuilder setId(string id)</dt>
+       <dd>
+       Specfy the ID for the next Structure or Union to create.
+       </dd>
+    <dt>FieldBuilder add(string name, ScalarType scalarType)</dt>
+       <dd>
+      Add a scalar field.
+       </dd>
+    <dt>FieldBuilder addBoundedString(string name, size_t maxLength)</dt>
+       <dd>
+        Add a bounded string field.
+       </dd>
+    <dt>FieldBuilder add(string name, Field field)</dt>
+       <dd>
+        Add a field with the specified type.
+       </dd>
+    <dt>FieldBuilder addArray(string name, ScalarType scalarType)</dt>
+       <dd>
+         Add a scalarArray with the specified element type.
+       </dd>
+    <dt>FieldBuilder addFixedArray(string name, ScalarType scalarType, size_t size)</dt>
+       <dd>
+         Add a fixed size scalarArray with the specified element type.
+       </dd>
+    <dt>FieldBuilder addBoundedArray(string name, ScalarType scalarType, size_t bound)</dt>
+       <dd>
+         Add a bounded size scalarArray with the specified element type.
+       </dd>
+    <dt>FieldBuilder addArray(string name, Field field)</dt>
+       <dd>
+        Add an array with elementType field.
+       </dd>
+    <dt>Structure createStructure()</dt>
+       <dd>
+        Create a Structure from what has been defined so far. The internal state is reset after creation.
+       </dd>
+    <dt>Union createUnion()</dt>
+       <dd>
+        Create a Union from what has been defined so far. The internal state is reset after creation.
+       </dd>
+    <dt>FieldBuilder addNestedStructure(string name)</dt>
+       <dd>
+        Add a nested Structure. All fields added until the corresponding endNested will be in the nested Structure.
+       </dd>
+    <dt>FieldBuilder addNestedUnion(string name)</dt>
+       <dd>
+        Add a nested Union. All field added until the corresponding endNested will be in the nested Union.
+       </dd>
+    <dt>FieldBuilder addNestedStructureArray(string name)</dt>
+       <dd>
+        Add a nested StructureArray.
+        All fields added until the corresponding endNested will be in the nested StructureArray.
+       </dd>
+    <dt>FieldBuilder addNestedUnionArray(string name)</dt>
+       <dd>
+        Add a nested UnionArray.
+        All fields added until the corresponding endNested will be in the nested UnionArray.
+       </dd>
+    <dt>FieldBuilder endNested()</dt>
+       <dd>
+        End of the current nested Structure, Union, StructureArray, or UnionArray.
+       </dd>
+</dl>
+<h3>Java Introspection Basic Examples</h3>
+<p>The first example creates a Structure with a single subField:</p>
+<pre>
+String[] fieldName = new String[1];
+Field[] field = new Field[1];
+fieldName[0] = "value";
+field[0] = fieldCreate.createScalar(ScalarType.pvDouble);
+Structure structure = fieldCreate.createStructure(fieldName, field);
+System.out.println(structure);
+</pre>
+<p>This produces:</p>
+<pre>
+structure
+    double value
+</pre>
+<p>Using FieldBuilder the code is:</p>
+<pre>
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.add("value", ScalarType.pvDouble).
+    createStructure();
+System.out.println(structure);
+</pre>
+<p>The output is again:</p>
+<pre>
+structure
+    double value
+</pre>
+<p>The next example shows how to create a Structurre
+that has three field: a value field that is a scalarArray with
+element type double, an alarm structure, and a timeStamp structure.
+Later standardField will be discussed and
+show that what takes many lines of code using fieldCreate can be done
+easily via standardFields.
+</p>
+<pre>
+String[] fieldName = new String[3];
+Field[] field = new Field[3];
+fieldName[0] ="severity";
+fieldName[1] ="status";
+fieldName[2] ="message";
+field[0] = fieldCreate.createScalar(ScalarType.pvInt);
+field[1] = fieldCreate.createScalar(ScalarType.pvInt);
+field[2] = fieldCreate.createScalar(ScalarType.pvString);
+Structure alarm = fieldCreate.createStructure(fieldName, field);
+fieldName = new String[3];
+field = new Field[3];
+fieldName[0] = "secondsPastEpoch";
+fieldName[1] = "nanoseconds";
+fieldName[2] = "userTag";
+field[0] = fieldCreate.createScalar(ScalarType.pvLong);
+field[1] = fieldCreate.createScalar(ScalarType.pvInt);
+field[2] = fieldCreate.createScalar(ScalarType.pvInt);
+Structure timeStamp = fieldCreate.createStructure(fieldName, field);
+fieldName = new String[3];
+field = new Field[3];
+fieldName[0] = "value";
+fieldName[1] = "alarm";
+fieldName[2] = "timeStamp";
+field[0] = fieldCreate.createScalarArray(ScalarType.pvDouble);
+field[1] = alarm;
+field[2] = timeStamp;
+Structure structure = fieldCreate.createStructure(fieldName, field);
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+<p>The section after next shows the same example using FieldBuilder.</p>
+
+<h3>C++ Introspection Basic Examples</h3>
+<p>The first example creates a Structure with a single subField:</p>
+<pre>
+StringArray fieldName(1);
+FieldConstPtrArray field(1);
+fieldName[0] = "value";
+field[0] = fieldCreate-&gt;createScalar(pvDouble);
+
+StructureConstPtr structure =
+    fieldCreate-&gt;createStructure(fieldName, field);
+cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+<p>This produces:</p>
+<pre>
+structure
+    double value
+</pre>
+<p>The next example shows how to create a Structurre
+that has three field: a value field that is a scalarArray with
+element type double, an alarm structure, and a timeStamp structure.
+Later standardField will be discussed and
+show that what takes many lines of code using fieldCreate can be done
+easily via standardFields.
+</p>
+<pre>
+size_t n = 3;
+StringArray fieldName(n);
+FieldConstPtrArray field(n);
+fieldName[0] ="severity";
+fieldName[1] ="status";
+fieldName[2] ="message";
+field[0] = fieldCreate-&gt;createScalar(pvInt);
+field[1] = fieldCreate-&gt;createScalar(pvInt);
+field[2] = fieldCreate-&gt;createScalar(pvString);
+StructureConstPtr alarm = fieldCreate-&gt;createStructure(fieldName, field);
+fieldName = StringArray(n);
+field = FieldConstPtrArray(n);
+fieldName[0] = "secondsPastEpoch";
+fieldName[1] = "nanoseconds";
+fieldName[2] = "userTag";
+field[0] = fieldCreate-&gt;createScalar(pvLong);
+field[1] = fieldCreate-&gt;createScalar(pvInt);
+field[2] = fieldCreate-&gt;createScalar(pvInt);
+StructureConstPtr timeStamp = fieldCreate-&gt;createStructure(fieldName, field);
+fieldName = StringArray(n);
+field = FieldConstPtrArray(n);
+fieldName[0] = "value";
+fieldName[1] = "alarm";
+fieldName[2] = "timeStamp";
+field[0] = fieldCreate-&gt;createScalarArray(pvDouble);
+field[1] = alarm;
+field[2] = timeStamp;
+StructureConstPtr structure = fieldCreate-&gt;createStructure(fieldName, field);
+cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+<p>The next two sections shows the same example using FieldBuilder.</p>
+<h3>Java Introspection Examples Using FieldBuilder</h3>
+<dl>
+   <dt>valueAlarmTimeStamp</dt>
+   <dd>
+      <pre>
+System.out.println("valueAlarmTimeStamp");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure alarm =
+     fb.add("severity", ScalarType.pvInt).
+     add("status",ScalarType.pvInt).
+     add("message",ScalarType.pvString).
+     createStructure();
+Structure timeStamp =
+     fb.add("secondsPastEpoch", ScalarType.pvLong).
+     add("nanoseconds",ScalarType.pvInt).
+     add("userTag",ScalarType.pvInt).
+     createStructure();
+Structure structure =
+     fb.addArray("value", ScalarType.pvDouble).
+     add("alarm",alarm).
+     add("timeStamp",timeStamp).
+     createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+   </dd>
+
+   <dt>valueAlarmTimeStampNested</dt>
+   <dd>
+      <pre>
+System.out.println("valueAlarmTimeStampNested");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure =
+    fb.addArray("value", ScalarType.pvDouble).
+    addNestedStructure("alarm").
+         add("severity", ScalarType.pvInt).
+         add("status",ScalarType.pvInt).
+         add("message",ScalarType.pvString).
+    endNested().
+    addNestedStructure("timeStamp").
+         add("secondsPastEpoch", ScalarType.pvLong).
+         add("nanoseconds",ScalarType.pvInt).
+         add("userTag",ScalarType.pvInt).
+    endNested().
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces the same output as valueAlarmTimeStamp.
+   </dd>
+
+   <dt>valueAlarmTimeStampSimple</dt>
+   <dd>
+      <pre>
+System.out.println("valueAlarmTimeStampEasy");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure =
+    fb.addArray("value", ScalarType.pvDouble).
+    add("alarm",standardField.alarm()).
+    add("timeStamp",standardField.timeStamp()).
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+structure
+    double[] value
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+   </dd>
+
+   <dt>union</dt>
+    <dd>
+<pre>
+System.out.println("union");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Union union =
+    fb.add("short", ScalarType.pvShort).
+    add("long", ScalarType.pvLong).
+    createUnion();
+Structure structure = 
+    fb.add("value",union).
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+union
+structure
+    union value
+        short short
+        long long`
+</pre>
+    </dd>
+   <dt>unionNested</dt>
+   <dd>
+<pre>
+System.out.println("unionNested");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.addNestedUnion("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+        endNested().
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces the same result as union.
+   </dd>
+
+   <dt>unionArray</dt>
+   <dd>
+<pre>
+System.out.println("unionArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Union union =
+    fb.add("short", ScalarType.pvShort).
+    add("long", ScalarType.pvLong).
+    createUnion();
+Structure structure = 
+    fb.addArray("value",union).
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+unionArray
+structure
+    union[] value
+        union[]
+            union
+                short short
+                long long
+</pre>
+    </dd>
+
+   <dt>unionArrayNested</dt>
+   <dd>
+<pre>
+System.out.println("unionArrayNested");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.addNestedUnionArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces the same result as unionArray.
+   </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+System.out.println("structureArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure subStruct =
+    fb.add("short", ScalarType.pvShort).
+    add("long", ScalarType.pvLong).
+    createStructure();
+Structure structure = 
+    fb.addArray("value",subStruct).
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+structureArray
+structure
+    structure[] value
+        structure[]
+            structure
+                short short
+                long long
+</pre>
+   </dd>
+
+   <dt>structureArrayNested</dt>
+   <dd>
+<pre>
+System.out.println("structureArrayNested");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+   fb.addNestedStructureArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+System.out.println(structure);`
+</pre>
+This produces the same result as structureArray.
+   </dd>
+
+</dl>
+
+<h3>C++ Introspection Examples Using FieldBuilder</h3>
+<dl>
+   <dt>valueAlarmTimeStamp</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "valueAlarmTimeStamp\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr alarm =
+   fb-&gt;add("severity", pvInt)-&gt;
+   add("status",pvInt)-&gt;
+   add("message",pvString)-&gt;
+   createStructure();
+StructureConstPtr timeStamp =
+        fb-&gt;add("secondsPastEpoch", pvLong)-&gt;
+        add("nanoseconds",pvInt)-&gt;
+        add("userTag",pvInt)-&gt;
+        createStructure();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value", pvDouble)-&gt;
+    add("alarm",alarm)-&gt;
+    add("timeStamp",timeStamp)-&gt;
+    createStructure();
+cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+   </dd>
+
+   <dt>valueAlarmTimeStampNested</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "valueAlarmTimeStampNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value", pvDouble)-&gt;
+    addNestedStructure("alarm")-&gt;
+        add("severity", pvInt)-&gt;
+        add("status",pvInt)-&gt;
+        add("message",pvString)-&gt;
+    endNested()-&gt;
+    addNestedStructure("timeStamp")-&gt;
+        add("secondsPastEpoch", pvLong)-&gt;
+        add("nanoseconds",pvInt)-&gt;
+        add("userTag",pvInt)-&gt;
+        endNested()-&gt;
+    createStructure();
+cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces the same output as valueAlarmTimeStamp.
+   </dd>
+
+   <dt>valueAlarmTimeStampSimple</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "valueAlarmTimeStampEasy\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value", pvDouble)-&gt;
+    add("alarm",standardField-&gt;alarm())-&gt;
+    add("timeStamp",standardField-&gt;timeStamp())-&gt;
+        createStructure();
+    cout &lt;&lt; *structure &lt;&lt; endl;
+
+</pre>
+This produces:
+<pre>
+structure
+    double[] value
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+   </dd>
+
+   <dt>union</dt>
+    <dd>
+<pre>
+cout &lt;&lt; "union\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+UnionConstPtr unionx =
+    fb-&gt;add("short", pvShort)-&gt;
+    add("long", pvLong)-&gt;
+    createUnion();
+StructureConstPtr structure  =
+    fb-&gt;add("value",unionx)-&gt;
+        createStructure();
+    cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+union
+structure
+    union value
+        short short
+        long long`
+</pre>
+    </dd>
+   <dt>unionNested</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "unionNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedUnion("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+        endNested()-&gt;
+    createStructure();
+cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces the same result as union.
+   </dd>
+
+   <dt>unionArray</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "unionArray\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+UnionConstPtr unionx =
+    fb-&gt;add("short", pvShort)-&gt;
+    add("long", pvLong)-&gt;
+    createUnion();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value",unionx)-&gt;
+    createStructure();
+cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+unionArray
+structure
+    union[] value
+        union[]
+            union
+                short short
+                long long
+</pre>
+    </dd>
+
+   <dt>unionArrayNested</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "unionArrayNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedUnionArray("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+    endNested()-&gt;
+        createStructure();
+    cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces the same result as unionArray.
+   </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "structureArray\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr subStruct =
+    fb-&gt;add("short", pvShort)-&gt;
+    add("long", pvLong)-&gt;
+    createStructure();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value",subStruct)-&gt;
+createStructure();
+cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+structureArray
+structure
+structure[] value
+    structure[]
+            structure
+                short short
+                long long
+</pre>
+   </dd>
+
+   <dt>structureArrayNested</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "structureArrayNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedStructureArray("value")-&gt;
+    add("short", pvShort)-&gt;
+    add("long", pvLong)-&gt;
+    endNested()-&gt;
+        createStructure();
+    cout &lt;&lt; *structure &lt;&lt; endl;
+</pre>
+This produces the same result as structureArray.
+   </dd>
+
+</dl>
+
+
+<h3>Data API</h3>
+<pre>
+PVField
+    serialize/deserialize
+    display
+    string getFieldName()
+    string getFullName()
+    size_t getFieldOffset()
+    size_t getNextFieldOffset()
+    size_t getNumberFields()
+    boolean isImmutable()
+    void setImmutable()
+    Field getField()
+    PVStructure getParent()
+    void postPut()
+    void setPostHandler(PostHandler postHandler)
+
+    PVScalar
+        Scalar getScalar()
+
+        PVScalarType // each scalarType, e. g. PVBoolean
+            scalarType get()
+            void put (scalarType value)
+
+    PVUnion
+        Union getUnion()
+        PVField get()
+        PVType get(Class c)           //PVType is valid PVField extension
+        PVField select(int index)
+        PVType select(Class c,int index)
+        PVField select(string fieldName)
+        PVType select(Class c,string fieldName)
+        int getSelectedIndex()
+        string getSelectedFieldName()
+        void set(PVField value)
+        void set(int index, PVField value)
+        void set(string fieldName, PVField value)
+
+    PVArray
+        Array getArray()
+        size_t getLength(
+        void setLength(size_t length)
+        size_t getCapacity(
+        void setCapacity(size_t length)
+        boolean isCapacityMutable()
+        void setCapacityMutable(boolean isMutable)
+
+        PVScalarArray
+            ScalarArray getScalarArray()
+
+            PVScalarTypeArray  // each scalarType, e.g. PVBooleanArray
+                // C++ and Java have different semantics. See below
+
+        PVUnionArray
+            UnionArray getUnionArray()
+            // C++ and Java have different semantics. See below
+
+        PVStructureArray
+            StructureArray getStructureArray()
+            // C++ and Java have different semantics. See below.
+</pre>
+<h4>PVField</h4>
+<dl>
+   <dt>serialize/deserialize</dt>
+     <dd>
+       These are methods to convert a data object to/from a 
+       byte stream. These are used by pvAccess to transfer data
+       objects between client and server.
+       Other code could also use these methods.
+      This document does not provide the details.
+      See pvDataCPP or pvDataJava for details.
+     </dd>
+   <dt>display</dt>
+     <dd>
+       These methods are used to display the value of a data
+       object. Java provides methods to implement <b>toString</b>.
+      C++ provides methods that implement C++ <b>steams</b>.
+      Thus the Java and C++ methods are completely different.
+      See pvDataCPP or pvDataJava for details.
+     </dd>
+   <dt>string getFieldName()</dt>
+      <dd>
+      Get the name of the field.
+      The name of a top level field is an empty string.
+      </dd>
+   <dt>string getFullName()</dt>
+      <dd>
+       Fully expand the name of this field using the names of its parent fields with a dot '.' seperating each name.
+      For example if an alarm is a top level field named alarm then the
+      status field has the name <b>alarm.status</b>.
+      </dd>
+    <dt>size_t getFieldOffset()</dt>
+      <dd>
+       Get offset of the PVField field within top level structure.
+       Every field within the PVStructure has a unique offset.
+       The top level structure has an offset of 0.
+       The first field within the structure has offset equal to 1.
+       The other offsets are determined by recursivelys
+        traversing each structure of the tree.
+      </dd>
+    <dt>size_t getNextFieldOffset()</dt>
+      <dd>
+      Get the next offset.
+      If the field is a scalar or union or array field
+      then this is just offset + 1.
+      If the field is a structure it is the offset
+      of the next field after this structure.
+      Thus (nextOffset - offset) is always equal
+      to the number of fields within the field.
+      </dd>
+    <dt>size_t getNumberFields()</dt>
+      <dd>
+       Get the total number of fields in this field.
+       This is equal to nextFieldOffset - fieldOffset.
+      </dd>
+    <dt>boolean isImmutable()</dt>
+      <dd>
+      Is the field immutable, i.e. does it not allow changes.
+      </dd>
+    <dt>void setImmutable()</dt>
+      <dd>
+       Set the field to be immutable, i. e. it can no longer be modified.
+       This is permanent, i.e. once done the field can not be made mutable.
+      </dd>
+    <dt>Field getField()</dt>
+      <dd>
+       Get the <b>Field</b> that describes the field.
+      </dd>
+    <dt>PVStructure getParent()</dt>
+      <dd>
+       Get the parent of this field.
+       A top level field has a null parent.
+      </dd>
+    <dt>void postPut()</dt>
+      <dd>
+      Called when the field is updated by the implementation.
+      </dd>
+    <dt>void setPostHandler(PostHandler postHandler)</dt>
+      <dd>
+      Set the handler for postPut. At most one handler can be set.
+      </dd>
+</dl>
+<h4>PVScalar</h4>
+<dl>
+   <dt>Scalar getScalar()</dt>
+      <dd>
+       Get the <b>Scalar</b> that describes the field.
+      </dd>
+</dl>
+<h4>PVScalarType // each scalarType, e. g. PVBoolean</h4>
+<dl>
+    <dt>scalarType get()</dt>
+      <dd>
+       Get the value.
+      For example PVDouble has a method <b>double get()</b>.
+      </dd>
+    <dt>void put (scalarType value)</dt>
+      <dd>
+       Change the value.
+      For example PVDouble has a method <b>void put(double value)</b>.
+      </dd>
+</dl>
+<h4>PVUnion</h4>
+<dl>
+    <dt>Union getUnion()</dt>
+      <dd>
+       Get the <b>Union</b> that describes the field.
+      </dd>
+    <dt>PVField get()</dt>
+      <dd>
+       Get the current data member.
+      This can be null.
+      </dd>
+    <dt>PVType get(Class c)</dt>
+      <dd>
+       Get the current data member.
+       This returns null if no member or if current member is
+       not of the type sepecified.
+      </dd>
+    <dt>PVField select(int index)</dt>
+      <dd>
+       If the union is a regular union than select the
+        field specified by index. If the curent field has a
+       different type than a new field is created.
+      An exception is thrown if the index is out of range
+      or for a variant union.
+      The interface to the data object is returned.
+      </dd>
+    <dt>PVType select(Class c,int index)</dt>
+      <dd>
+       Like the previous method but null is returned if the
+       data object does not have the specified type.
+      </dd>
+    <dt>PVField select(string fieldName)</dt>
+      <dd>
+       If the union is a regular union than select the
+        field specified by fieldName. If the curent field has a
+       different type than a new field is created.
+      An exception is thrown if the fieldName is not valid
+      or for a variant union.
+      The interface to the data object is returned.
+      </dd>
+    <dt>PVType select(Class c,string fieldName)</dt>
+      <dd>
+       Like the previous method but null is returned if the
+       data object does not have the specified type.
+      </dd>
+    <dt>int getSelectedIndex()</dt>
+      <dd>
+      Get the index of the current field.
+     A -1 is returned if no field defined or for a variant union.
+      </dd>
+    <dt>string getSelectedFieldName()</dt>
+      <dd>
+       Get the fieldName of the current field.
+       A null string is returned if no field defined or for a variant union.
+      </dd>
+    <dt>void set(PVField value)</dt>
+      <dd>
+       Set the data member to the specified value.
+       An exception is thrown if the value is not valid for this PVUnion.
+      </dd>
+    <dt>void set(int index, PVField value)</dt>
+      <dd>
+       Set the data member to the specified index and value.
+       An exception is thrown if the value is not valid for this index.
+      </dd>
+    <dt>void set(string fieldName, PVField value)</dt>
+      <dd>
+       Set the data member to the specified fieldName and value.
+       An exception is thrown if the value is not valid for this fieldName.
+      </dd>
+</dl>
+
+<h4>PVArray</h4>
+<dl>
+    <dt>Array getArray()</dt>
+      <dd>
+       Get the <b>Array</b> that describes the field.
+      </dd>
+    <dt>size_t getLength(</dt>
+      <dd>
+      Get the current length of the array.
+      </dd>
+    <dt>void setLength(size_t length)</dt>
+      <dd>
+       Set the length of the array.
+       An exception is thrown if the value is not legal for this array.
+      </dd>
+    <dt>size_t getCapacity(</dt>
+      <dd>
+       Get the current capacity of the array.
+      </dd>
+    <dt>void setCapacity(size_t length)</dt>
+      <dd>
+        Set the capacity.
+       An exception is thrown if the value is not legal for this array.
+      </dd>
+    <dt>boolean isCapacityMutable()</dt>
+      <dd>
+        Returns (true,false) if the capacity (can,can not) be changed.
+      </dd>
+    <dt>void setCapacityMutable(boolean isMutable)</dt>
+      <dd>
+       Set capacityMutable to the specified value.
+      </dd>
+</dl>
+
+<h4>PVScalarArray</h4>
+<p>Most methods are different for Java and C++. See following sections.</p>
+<dl>
+    <dt>ScalarArray getScalarArray()</dt>
+      <dd>
+       Get the <b>ScalarArray</b> that describes the field.
+      </dd>
+</dl>
+
+<h4>PVUnionArray</h4>
+<p>Most methods are different for Java and C++. See following sections.</p>
+<dl>
+    <dt>UnionArray getUnionArray()</dt>
+      <dd>
+       Get the <b>UnionArray</b> that describes the field.
+      </dd>
+</dl>
+
+<h4>PVStructureArray</h4>
+<p>Most methods are different for Java and C++. See following sections.</p>
+<dl>
+     <dt>StructureArray getStructureArray()</dt>
+      <dd>
+       Get the <b>StructureArray</b> that describes the field.
+      </dd>
+</dl>
+
+
+
+<h3>Data Factory</h3>
+<pre>
+PVDataCreate
+    PVField createPVField(Field field)
+    PVField createPVField(PVField fieldToClone)
+    PVScalar createPVScalar(Scalar scalar)
+    PVScalar createPVScalar(ScalarType fieldType)
+    PVScalar createPVScalar(PVScalar scalarToClone)
+    PVScalarType createPVScalar(Class scalarType) // generic 
+    PVUnion createPVUnion(Union union)
+    PVUnion createPVVariantUnion()
+    PVUnion createPVUnion(PVUnion unionToClone)
+    PVStructure createPVStructure(Structure structure)
+    PVStructure createPVStructure(string[] fieldNames,PVField[] pvFields)
+    PVStructure createPVStructure(PVStructure structToClone)
+    PVScalarArray createPVScalarArray(ScalarArray array)
+    PVScalarArray createPVScalarArray(ScalarType elementType)
+    PVScalarArray createPVScalarArray(PVScalarArray arrayToClone)
+    PVScalarTypeArray createPVScalarArray(Class element) // generic 
+    PVStructureArray createPVStructureArray(StructureArray structureArray)
+    PVStructureArray createPVStructureArray(Struture structure)
+    PVUnionArray createPVUnionArray(UnionArray unionArray)
+    PVUnionArray createPVVariantUnionArray()
+    PVUnionArray createPVUnionArray(Union union)
+</pre>
+where
+<dl>
+  <dt>PVField createPVField(Field field)</dt>
+    <dd>
+      Create a PVField with the specified introspection interface.
+    </dd>
+  <dt>PVField createPVField(PVField fieldToClone)</dt>
+    <dd>
+      Create a PVField with the same introspection interface as
+      fieldToClone and then copy data from fieldToClone to newly
+      created PVField.
+    </dd>
+  <dt>PVScalar createPVScalar(Scalar scalar)</dt>
+    <dd>
+      Create a PVScalar with the specified introspection interface.
+    </dd>
+  <dt>PVScalar createPVScalar(ScalarType fieldType)</dt>
+    <dd>
+      Create a PVScalar with the specified fieldType.
+    </dd>
+  <dt>PVScalar createPVScalar(PVScalar scalarToClone)</dt>
+    <dd>
+      Create a PVScalar with the same introspection interface as
+      scalarToClone and then copy data from scalarToClone to newly
+      created PVScalar.
+    </dd>
+  <dt>PVScalarType createPVScalar(Class scalarType)</dt>
+    <dd>
+     Generic version of createPVScalar.
+     See pvDataJava or pvDataCPP for language specific syntax.
+    </dd>
+  <dt>PVUnion createPVUnion(Union union)</dt>
+    <dd>
+      Create a PVUnion with the specified introspection interface.
+    </dd>
+  <dt>PVUnion createPVVariantUnion()</dt>
+    <dd>
+      Create a variant PVUnion.
+    </dd>
+  <dt>PVUnion createPVUnion(PVUnion unionToClone)</dt>
+    <dd>
+      Create a PVUnion with the same introspection interface as
+      unionToClone and then copy data from unionToClone to newly
+      created PVUnion.
+    </dd>
+  <dt>PVStructure createPVStructure(Structure structure)</dt>
+    <dd>
+      Create a PVStructure with the specified introspection interface.
+    </dd>
+  <dt>PVStructure createPVStructure(string[] fieldNames,PVField[] pvFields)</dt>
+    <dd>
+      Create a PVStructure with the specified set of fieldNames.
+      The introspection interface for the subFields is the same
+      as the introspection interfaces of pvFields.
+      <b>Why does this method exist?</b>
+    </dd>
+  <dt>PVStructure createPVStructure(PVStructure structToClone)</dt>
+    <dd>
+      Create a PVStructure with the same introspection interface as
+      structToClone and then copy data from structToClone to newly
+      created PVStructure.
+    </dd>
+  <dt>PVScalarArray createPVScalarArray(ScalarArray array)</dt>
+    <dd>
+      Create a PVScalarArray with the specified introspection interface.
+    </dd>
+  <dt>PVScalarArray createPVScalarArray(ScalarType elementType)</dt>
+    <dd>
+      Create a PVScalarArray with the specified elementType.
+    </dd>
+  <dt>PVScalarArray createPVScalarArray(PVScalarArray arrayToClone)</dt>
+    <dd>
+      Create a PVScalarArray with the same introspection interface as
+      arrayToClone and then copy data from arrayToClone to newly
+      created PVScalarArray.
+    </dd>
+  <dt>PVScalarTypeArray createPVScalarArray(Class element)</dt>
+    <dd>
+     Generic version.
+     See pvDataJava or pvDataCPP for language specific syntax.
+    </dd>
+  <dt>PVStructureArray createPVStructureArray(StructureArray structureArray)</dt>
+    <dd>
+      Create a PVStructureArray with the specified introspection interface.
+    </dd>
+  <dt>PVStructureArray createPVStructureArray(Struture structure)</dt>
+    <dd>
+      Create a PVStructureArray where each element has
+      the specified introspection interface.
+    </dd>
+  <dt>PVUnionArray createPVUnionArray(UnionArray unionArray)</dt>
+    <dd>
+      Create a PVUnionArray with the specified introspection interface.
+    </dd>
+  <dt>PVUnionArray createPVVariantUnionArray()</dt>
+    <dd>
+      Create a variant PVUnionArray.
+    </dd>
+  <dt>PVUnionArray createPVUnionArray(Union union)</dt>
+    <dd>
+      Create a PVUnionArray where each element has
+      the specified introspection interface.
+    </dd>
+</dl>
+<h4>Java Array API</h4>
+<p>The following is for PVDoubleArray.
+There are similar definitions for each scalarType.</p>
+<pre>public class DoubleArrayData {
+    public double[] data
+    public int offset
+}
+
+interface PVDoubleArray extends PVArray {
+    int get(int offset, int len, DoubleArrayData data)
+    int put(int offset,int len, double[] from, int fromOffset)
+    void shareData(double[] from)
+}</pre>
+<p>For PVStructureArray and PVUnionArray the definitions are:</p>
+<pre>
+public class StructureArrayData {
+    public PVStructure[] data
+    public int offset
+}
+
+interface PVStructureArray extends PVArray {
+    StructureArray getStructureArray()
+    int get(int offset, int length, StructureArrayData data)
+    int put(int offset,int length, PVStructure[] from, int fromOffset)
+    void shareData(PVStructure[] from)
+}
+
+public class UnionArrayData {
+    public PVUnion[] data
+    public int offset
+}
+
+interface PVUnionArray extends PVArray{
+    UnionArray getUnionArray()
+    int get(int offset, int length, UnionArrayData data)
+    int put(int offset,int length, PVUnion[] from, int fromOffset)
+    void shareData(PVUnion[] from)
+}
+</pre>
+<h3>C++ Array API</h3>
+<p>The actual definition is template based.
+But the following is the psuedo code for PVDoubleArray.
+Each scalarType, PVUnionArray, and PVStructureArray have similar psuedo code.
+</p>
+<pre>
+class PVDoubleArray
+    ...
+    shared_vector&gt;const double&lt; view()
+    void swap(shared_vector&gt;const double&lt; other)
+    void replace(const shared_vector&gt;const double&lt; next)
+    shared_vector&gt;double&lt; reuse()
+    ...
+// to change the raw array use code like:
+shared_vector&gt;const double&lt; data(n)
+// put values into data and then
+pvDoubleArray-&gt;replace(freeze(data))
+</pre>
+
+<h3>Java Data Examples</h3>
+<dl>
+   <dt>simpleExample</dt>
+    <dd>
+<pre>
+System.out.println("simple");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.add("value", ScalarType.pvDouble).
+    createStructure();
+PVStructure pvStructure = pvDataCreate.createPVStructure(structure);
+PVDouble pvDouble = pvStructure.getSubField(PVDouble.class, "value");
+pvDouble.put(10.0);
+System.out.println(pvStructure);
+</pre>
+    This produces:
+<pre>
+simple
+structure 
+    double value 10.0
+</pre>
+    </dd>
+   <dt>valueAlarmTimeStamp</dt>
+   <dd>
+<pre>
+System.out.println("valueAlarmTimeStamp");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure =
+        fb.addArray("value", ScalarType.pvDouble).
+        add("alarm",standardField.alarm()).
+        add("timeStamp",standardField.timeStamp()).
+        createStructure();
+PVStructure pvStructure = pvDataCreate.createPVStructure(structure);
+PVDoubleArray pvDoubleArray = pvStructure.getSubField(PVDoubleArray.class, "value");
+int length = 4;
+double[] data = new double[length];
+for (int i=0; &lt;length; ++i) data[i] = i+1;
+convert.fromDoubleArray(pvDoubleArray, 0, length, data, 0);
+System.out.println(pvStructure);
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure 
+    double[] value [1.0,2.0,3.0,4.0]
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+</pre>
+   </dd>
+
+   <dt>union</dt>
+   <dd>
+<pre>
+System.out.println("union");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.addNestedUnion("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+        endNested().
+    createStructure();
+PVStructure pvStructure = pvDataCreate.createPVStructure(structure);
+PVUnion pvUnion = pvStructure.getSubField(PVUnion.class,"value");
+PVLong pvLong = (PVLong)pvDataCreate.createPVScalar(ScalarType.pvLong);
+pvLong.put(1000);
+pvUnion.set("long",pvLong);
+System.out.println(pvStructure);
+</pre>
+This produces:
+<pre>
+union
+structure 
+    union value
+        long  1000
+</pre>
+    </dd>
+
+   <dt>unionArray</dt>
+    <dd>
+<pre>
+System.out.println("unionArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.addNestedUnionArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+PVStructure pvStructure = pvDataCreate.createPVStructure(structure);
+PVUnionArray pvValue = pvStructure.getSubField(PVUnionArray.class,"value");
+int len = 2;
+PVUnion[] pvUnions = new PVUnion[len];
+for(int i=0; &lt;len; ++i) pvUnions[i] = pvDataCreate.createPVUnion(pvValue.getUnionArray().getUnion());
+pvUnions[0].select("short");
+pvUnions[1].select("long");
+PVShort pvShort = pvUnions[0].get(PVShort.class);
+pvShort.put((short)1);
+PVLong pvLong = pvUnions[1].get(PVLong.class);
+pvLong.put(5);
+pvValue.put(0, len, pvUnions, 0);
+System.out.println(pvStructure);
+</pre>
+This produces:
+<pre>
+unionArray
+structure 
+    union[] value 
+        union 
+            short  1
+        union 
+            long  5
+</pre>
+    </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+System.out.println("structureArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+        fb.addNestedStructureArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+PVStructure pvStructure = pvDataCreate.createPVStructure(structure);
+PVStructureArray pvValue = pvStructure.getSubField(PVStructureArray.class,"value");
+int len = 2;
+PVStructure[] pvStructures = new PVStructure[len];
+for(int i=0; i&lt;len; ++i) {
+    pvStructures[i] = pvDataCreate.createPVStructure(pvValue.getStructureArray().getStructure());
+    PVStructure pvs = pvStructures[i];
+    PVShort pvShort = pvs.getSubField(PVShort.class,"short");
+    pvShort.put((short)i);
+    PVLong pvLong = pvs.getSubField(PVLong.class,"long");
+    pvLong.put(i);
+}
+pvValue.put(0, len,pvStructures , 0);
+System.out.println(pvStructure);
+</pre>
+This produces:
+<pre>
+structureArray
+structure 
+    structure[] value 
+        structure 
+            short short 0
+            long long 0
+        structure 
+            short short 1
+            long long 1
+</pre>
+   </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+System.out.println("structureArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+   fb.addNestedStructureArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+System.out.println(structure);`
+</pre>
+This produces the same result as structureArray.
+   </dd>
+
+</dl>
+
+<h3>CPP Data Examples</h3>
+<dl>
+   <dt>simpleExample</dt>
+    <dd>
+<pre>
+cout &lt;&lt; "simple\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;add("value", pvDouble)-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVDoublePtr pvDouble = pvStructure-&gt;getSubField&lt;PVDouble&gt;( "value");
+pvDouble-&gt;put(10.0);
+cout &lt;&lt; *pvStructure &lt;&lt; endl;
+</pre>
+    This produces:
+<pre>
+simple
+structure 
+    double value 10.0
+</pre>
+    </dd>
+   <dt>valueAlarmTimeStamp</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "valueAlarmTimeStamp\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure =
+    fb-&gt;addArray("value", pvDouble)-&gt;
+    add("alarm",standardField-&gt;alarm())-&gt;
+    add("timeStamp",standardField-&gt;timeStamp())-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVDoubleArrayPtr pvDoubleArray = pvStructure-&gt;getSubField&lt;PVDoubleArray&gt;("value");
+size_t len = 4;
+PVDoubleArray::svector data(4);
+for(size_t i=0; i&lt;len; ++i) data[i] = i+1;
+pvDoubleArray-&gt;replace(freeze(data));
+    cout &lt;&lt; *pvStructure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure 
+    double[] value [1.0,2.0,3.0,4.0]
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+</pre>
+   </dd>
+
+   <dt>union</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "unionNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedUnion("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+        endNested()-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVLongPtr pvlong = pvDataCreate-&gt;createPVScalar&lt;PVLong&gt;();
+pvlong-&gt;put(1000);
+PVUnionPtr pvUnion = pvStructure-&gt;getSubField&lt;PVUnion&gt;("value");
+pvUnion-&gt;set("long",pvlong);
+    cout &lt;&lt; *pvStructure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+union
+structure 
+    union value
+        long  1000
+</pre>
+    </dd>
+
+   <dt>unionArray</dt>
+    <dd>
+<pre>
+cout &lt;&lt; "unionArrayNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedUnionArray("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+    endNested()-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVUnionArrayPtr pvValue = pvStructure-&gt;getSubField&lt;PVUnionArray&gt;("value");
+size_t len = 2;
+PVUnionArray::svector pvUnions(len);
+for(size_t i=0; i&lt;len; ++i) pvUnions[i] =
+    pvDataCreate-&gt;createPVUnion(pvValue-&gt;getUnionArray()-&gt;getUnion());
+pvUnions[0]-&gt;select("short");
+pvUnions[1]-&gt;select("long");
+PVShortPtr pvshort = pvUnions[0]-&gt;get&lt;PVShort&gt;();
+pvshort-&gt;put(1);
+PVLongPtr pvlong = pvUnions[1]-&gt;get&lt;PVLong&gt;();
+pvlong-&gt;put(5);
+pvValue-&gt;replace(freeze(pvUnions));
+cout &lt;&lt; *pvStructure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+unionArray
+structure 
+    union[] value 
+        union 
+            short  1
+        union 
+            long  5
+</pre>
+    </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "structureArrayNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedStructureArray("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+    endNested()-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVStructureArrayPtr pvValue = pvStructure-&gt;getSubField&lt;PVStructureArray&gt;("value");
+size_t len = 2;
+PVStructureArray::svector pvStructures(len);
+for(size_t i=0; i&lt;len; ++i) {
+    pvStructures[i] = pvDataCreate-&gt;createPVStructure(
+        pvValue-&gt;getStructureArray()-&gt;getStructure());
+    PVStructurePtr pvs = pvStructures[i];
+    PVShortPtr pvshort = pvs-&gt;getSubField&lt;PVShort&gt;("short");
+    pvshort-&gt;put(i);
+    PVLongPtr pvlong = pvs-&gt;getSubField&lt;PVLong&gt;("long");
+    pvlong-&gt;put(i);
+}
+pvValue-&gt;replace(freeze(pvStructures));
+    cout &lt;&lt; *pvStructure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+structureArray
+structure 
+    structure[] value 
+        structure 
+            short short 0
+            long long 0
+        structure 
+            short short 1
+            long long 1
+</pre>
+   </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+System.out.println("structureArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+   fb.addNestedStructureArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+System.out.println(structure);`
+</pre>
+This produces the same result as structureArray.
+   </dd>
+
+</dl>
+
+<h2>BitSet and PVStructure</h2>
+<p>Some important features of pvAccess are:</p>
+<dl>
+  <dt>PVAccess Transmits Top Level PVStructures</dt>
+    <dd>
+     For example a channelGet sends data from server to client as a top
+     level PVStructure. For a channelPutGet a top level PVStructure
+     is sent from the client to the server and a different top
+     level PVStructure is returned from the server to the client.
+     </dd>
+  <dt>Top Level Introspection Immutable</dt>
+     <dd>
+     Once a top level PVStructure is created it's introspection
+     can not be modified.
+    Thus pvAccess has no need to send introspection information
+    with data. Consider channelGet as an example.
+    When a channelGet is created the server creates a top level
+    pvStructure for get requests.
+    The server sends the introspection info back to the client
+    side of pvAccess, which also creates a top level pvStructure.
+    Each time the client issues a get request the data is
+    copied into the top level pvStructure of the server and
+    transmitted to the client side of pvAccess,
+    which puts the data in it's top level pvStructure,
+    and finally presented to the client.
+     </dd>
+  <dt>Only fields that change are transmitted.</dt>
+    <dd>
+      Only the data for fields that change value between requests
+      are sent.
+     </dd>
+  <dt>Clients can request an arbitrary set of fields from server.</dt>
+    <dd>
+     The client does not have to receive all fields provided by the
+     server but can request an arbitrary subset of the fields.
+     </dd>
+</dl>
+<p>In order to implement the above features pvAccess uses bitSets,
+where each bit is associated with a field.
+The following is a top level pvStructure and how bits from a bitSet
+are assigned:</p>
+<a name="bitAssignment"></a>
+<pre>
+bit#    field
+0    structure
+1        double scalarValue
+2        structure timeStamp
+3            long secondsPastEpoch
+4            int nanoSeconds
+5            int userTag
+6        union unionValue
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+7        structure[] structureValue
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+8        any[] unionValue
+             any
+                 structure timeStamp
+                     long secondsPastEpoch
+                     int nanoSeconds
+                     int userTag
+             any
+                 double value
+9        string lastValue
+</pre>
+<p>Note that bits for structure subfields are assigned recursively.
+But each scalar, union, scalarArray, structureArray, and unionArray field
+are assigned a single bit.
+This means that each subfield of a union, structuctureArray, or unionArray
+is treated just like a new top level field.
+If ANY change is made to a union, scalarArray, structureArray,
+or unionArray, the complete set of data for that field is sent.
+</p>
+<p>
+Below the following are discussed:</p>
+<dl>
+  <dt>Convert</dt>
+    <dd>A facility that supports copy and convert methods for PVData.
+     </dd>
+  <dt>pvCopy</dt>
+     <dd>A facility that transfers data between a client top level
+      PVStructure and the top level PVStructure from the server.
+     </dd>
+</dl>
+<p>An important featured provided by Convert is to copy data between
+compatible PVStructures.
+</p>
+<p>
+<b>Java feature:</b>
+pvDataJava does a deep copies of all fields 
+with the possible exception of scalar array fields.
+If the source and destination have the same scalarType
+and the source is immutable then the raw data array is shared
+and the destination is made immutable.
+</p>
+<p>
+<b>C++ feature:</b>
+pvDataCPP does deep copies between scalar and structure fields
+but shallow copies between scalarArray, structureArray, and unionArray fields.
+For scalarArray fields this is safe because the implementation of
+arrays implements COW (Copy on Write) by making the array data <b>const</b>.
+This forces code to create new raw data in order to change a scalar array
+field.
+It also uses <b>const</b> for structureArray and unionArray fields
+but this does not force all elements of the array to be <b>const</b>.
+Thus the elements can be changed.
+Thus any code that wants to share a top level PVStructure
+must be very careful when changing the value of a union,
+structureArray, or unionArray field.
+The rule is that the union, structureArray, or unionArray
+must be replaced with a new value.
+</p>
+<p>Since the pvCopy facility makes extensive use of Convert
+the same rules apply to it.</p>
+
+<h2>pvAccess</h2>
+<h3>ChannelProvider</h3>
+<pre>
+ChannelProviderRegistry
+    ChannelProvider getProvider(string providerName)
+    ChannelProvider createProvider(string providerName)
+    string[] getProviderNames()
+
+ChannelProvider
+    string getProviderName()
+    ChannelFind channelFind(
+        string channelName,
+        ChannelFindRequester channelFindRequester)
+    ChannelFind channelList(
+        ChannelListRequester channelListRequester)
+    Channel createChannel(
+         string channelName,
+         ChannelRequester,
+         short priority)
+    Channel createChannel(
+         string channelName,
+         ChannelRequester channelRequester,
+         short priority,
+         string address)
+
+ChannelFindRequester
+    void channelFindResult(
+        Status status,
+        ChannelFind channelFind,
+        boolean wasFound)
+
+ChannelFind
+    ChannelProvider getChannelProvider()
+     void cancelChannelFind()
+</pre>
+
+<h4>ChannelProviderRegistry</h4>
+<dl>
+  <dt>getProvider</dt>
+    <dd>This gets the requested provider.Two providers are registered automatically:
+     <b>pva</b>, which uses the pvAccess network protocol, and <b>ca</b>,
+      which uses the Channel Access network protocol.
+     </dd>
+  <dt>createProvider</dt>
+    <dd>This registers a ChannelProvider. Usually user code does not call this,
+      e.g. it is called via code that implements the ChannelProvider interface.
+    </dd>
+  <dt>getProviderNames</dt>
+    <dd>Returns the names of the providers that have been created.</dd>
+</dl>
+
+<h4>ChannelProvider</h4>
+<dl>
+  <dt>destroy</dt>
+    <dd>The channel provider will shutdown and remove all resources it is
+    using.</dd>
+  <dt>getProviderName</dt>
+    <dd>Get the name of the provider.</dd>
+  <dt>channelFind</dt>
+    <dd>Find a channel. The details are described in this section.</dd>
+  <dt>createChannel</dt>
+    <dd>Create a channel. A Channel is described in the next section.</dd>
+</dl>
+
+<h4>ChannelFindRequester</h4>
+<dl>
+  <dt>channelFindResult</dt>
+    <dd>This is called by the implementation. It may or may not get called. For
+      a remote call it is normally called only if the channel is found. A local
+      provider will usually call it immediately and report if it has the
+      requested channel. Thus this can be called before the channelFind method
+      returns.</dd>
+</dl>
+
+<h4>ChannelFind</h4>
+<p>This method is to be used to by local pvAccess implementations (e.g.
+pvAccess server queries pvIOCJava. A client can determine if a channel exists
+without creating a channel. The client must implement a requester interface and
+the implementation provides an interface that the client can use to cancel the
+request.</p>
+<dl>
+  <dt>getChannelProvider</dt>
+    <dd>Get the channel provider.</dd>
+  <dt>cancelChannelFind</dt>
+    <dd>Cancel the find request.</dd>
+</dl>
+
+<h3>Channel</h3>
+<pre>
+ChannelRequester extends Requester
+    void channelCreated(
+        Status status,
+        Channel channel)
+    void channelStateChange(
+        Channel channel,
+        ConnectionState connectionState)
+
+enum AccessRights {
+    none,
+    read,
+    readWrite
+}
+
+Channel extends Requester
+    ChannelProvider getProvider()
+    string getRemoteAddress()
+    ConnectionState getConnectionState()
+    void destroy()
+    string getChannelName()
+    ChannelRequester getChannelRequester()
+    boolean isConnected()
+    AccessRights getAccessRights(PVField pvField)
+    void getField(GetFieldRequester requester,string subField)
+    ChannelProcess createChannelProcess(
+        ChannelProcessRequester channelProcessRequester,
+        PVStructure pvRequest)
+    ChannelGet createChannelGet(
+        ChannelGetRequester channelGetRequester,
+        PVStructure pvRequest)
+    ChannelPut createChannelPut(
+        ChannelPutRequester channelPutRequester,
+        PVStructure pvRequest)
+    ChannelPutGet createChannelPutGet(
+        ChannelPutGetRequester channelPutGetRequester,
+        PVStructure pvRequest)
+    ChannelRPC createChannelRPC(
+        ChannelRPCRequester channelRPCRequester,
+        PVStructure pvRequest)
+    ChannelArray createChannelArray(
+        ChannelArrayRequester channelArrayRequester,
+        PVStructure pvRequest)
+    Monitor createMonitor(
+        MonitorRequester MonitorRequester,
+        PVStructure pvRequest)
+</pre>
+<h4>ChannelRequester</h4>
+<p>
+The caller must implement the interface ChannelRequester.
+</p>
+<dl>
+  <dt>Requester</dt>
+    <dd>This is defined in package org.epics.pvdata.pv. It has two methods:
+      getRequesterName and message.</dd>
+  <dt>channelCreated</dt>
+    <dd>This is called when a channel has been created. The argument provides
+      the channel unless status was not success.</dd>
+  <dt>channelStateChange</dt>
+    <dd>A channel connection state change has occurred. This is called the first
+      time when a channel has been created and connected to a server or
+      destroyed.</dd>
+</dl>
+
+<h4>Channel</h4>
+<p>where</p>
+<dl>
+  <dt>getProvider</dt>
+    <dd>Get the provider.</dd>
+  <dt>getRemoteAddress</dt>
+    <dd>Get the network address of the server.</dd>
+  <dt>destroy</dt>
+    <dd>Destroy the channel and all resources used by the channel.</dd>
+  <dt>getChannelName</dt>
+    <dd>The name of the channel, e.g. the name if the PVRecord.</dd>
+  <dt>getChannelRequester</dt>
+    <dd>Get the channel requester. This is normally called by the
+      implementation rather than the client.</dd>
+  <dt>isConnected</dt>
+    <dd>Is the channel connected?</dd>
+  <dt>getAccessRights</dt>
+    <dd>Get the access rights for the channel.</dd>
+</dl>
+<p>The remaining methods are described in later sections of this package
+overview.</p>
+
+<p>Many of the interface described in the later sections are created via a
+create call that has as one of it's arguments:
+</p>
+<pre>PVStructure pvRequest</pre>
+<p>This is also discussed in a later section.</p>
+
+<h3>GetField</h3>
+
+<p>The method:</p>
+<pre>    Channel.getField(GetFieldRequester requester, String subField);</pre>
+
+<p>Gets the introspection interface for the specified sub field of the record
+it which the channel is connected. The subField can be null, which means get
+the introspection interface for the entire record, or is of the form
+"name.name..." . Thus it can be a request for any field within a record. The
+requester must implement the interface:</p>
+<pre>interface GetFieldRequester extends Requester {
+    void getDone(Status status, Field field);
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>getDone</dt>
+    <dd>A getField request has finished. A null is returned if the request
+      fails and status contains a reason of a failure. If the request succeeds
+      Field is the introspection interface. </dd>
+</dl>
+
+<h3>ChannelRequest</h3>
+
+<p>Many of the interfaces described in later sections extend the following
+interface.</p>
+<pre>
+interface ChannelRequest extends Lockable, Destroyable {
+    Channel getChannel();
+    void cancel();
+    void lastRequest();
+</pre>
+
+<p>where</p>
+<dl>
+  <dt>destroy</dt>
+    <dd>Destroy whatever the extended interface implements. It will free all
+      resources it uses.</dd>
+  <dt>getChannel</dt>
+     <dd>Get the channel instance to which this request belongs.</dd>
+  <dt>cancel</dt>
+     <dd>Cancel the current request.</dd>
+  <dt>lastRequest</dt>
+     <dd>The next request will be the last request.</dd>
+</dl>
+
+
+<h3>ChannelProcess</h3>
+<p>A ChannelProcess is created via a call to:</p>
+<pre>interface Channel extends Requester {
+   ChannelProcess createChannelProcess(
+       ChannelProcessRequester channelProcessRequester);
+}</pre>
+<p>The definition is:</p>
+<pre>
+ChannelProcessRequester extends Requester
+    void channelProcessConnect(
+        Status status,
+        ChannelProcess channelProcess)
+    void processDone(
+        Status status,
+        ChannelProcess channelProcess)
+
+ChannelProcess extends ChannelRequest
+    void process()
+</pre>
+<h4>ChannelProcessRequester</h4>
+<p>The requester must implement this interface.</p>
+<dl>
+  <dt>channelProcessConnect</dt>
+    <dd>This returns the interface for requesting that a record be processed.
+      Status is the result for the create request. channelProcess is null if
+      status is not success.</dd>
+  <dt>processDone</dt>
+    <dd>This is called when a process request is done. Status is the result for
+      the process request. </dd>
+</dl>
+
+<h4>ChannelProcess</h4>
+<dl>
+  <dt>process</dt>
+    <dd>Process the record.
+      Another process request must not be issued until processDone is
+      called.</dd>
+</dl>
+
+<h3>ChannelGet</h3>
+<p>A ChannelGet is created via a call to:</p>
+<pre>interface Channel extends Requester {
+    ChannelGet createChannelGet(
+        ChannelGetRequester channelGetRequester,
+        PVStructure pvRequest);
+}</pre>
+<p>The definition is:</p>
+<pre>
+ChannelGetRequester extends Requester
+    void channelGetConnect(
+        Status status,
+        ChannelGet channelGet,
+        Structure structure)
+    void getDone(
+        Status status,
+        ChannelGet channelGet,
+        PVStructure pvStructure,
+        BitSet bitSet)
+
+ChannelGet extends ChannelRequest
+    void get()
+</pre>
+<h4>ChannelGetRequester</h4>
+<dl>
+  <dt>channelGetConnect</dt>
+    <dd>This is called if the createProcess fails or when the client request is
+      connected to the server. Status provides the result of the createChannel
+      request. If status is not success than the other arguments are null.
+      channelGet is the interface for requesting gets. structure is the
+      introspection interface for data that is returned to getDone.
+    </dd>
+  <dt>getDone</dt>
+    <dd>The get request is done. status provides the result of the get request.
+      If successful the pvStructure and bitSet contain the data returned
+      as a result of a get request.
+      bitSet shows which fields have new data. If a
+      bit of bitSet is set for a structure field that means that all fields of
+      the structure have new values. For example of bit 0 of bitSet is set then
+      all fields of pvStructure have new data. Note that each PVField
+      implements a method getFieldOffset(). this can be used with bitSet to
+      determine which fields have new data values. See BitSet and PVField in
+      org.epics.pvdata for details.
+      </dd>
+</dl>
+
+<h4>ChannelGet</h4>
+<dl>
+  <dt>get</dt>
+    <dd>Get data.
+       Another get
+      request must not be issued until getDone is called.</dd>
+</dl>
+
+<h3>ChannelPut</h3>
+<p>A ChannelPut is created via a call to:</p>
+<pre>interface Channel extends Requester {
+    ChannelPut createChannelPut(
+        ChannelPutRequester channelPutRequester,
+        PVStructure pvRequest);
+}</pre>
+<p>The definition is:</p>
+
+<pre>
+ChannelPutRequester extends Requester
+    void channelPutConnect(
+        Status status,
+        ChannelPut channelPut,
+        Structure structure)
+    void putDone(
+        Status status,
+        ChannelPut channelPut)
+    void getDone(
+        Status status,
+        ChannelPut channelPut,
+        PVStructure pvStructure,
+        BitSet bitSet)
+
+ChannelPut extends ChannelRequest
+    void put(PVStructure pvPutStructure, BitSet bitSet)
+    void get()
+</pre>
+<h4>ChannelPutRequester</h4>
+<p>The requester must implement this interface.</p>
+<dl>
+  <dt>channelPutConnect</dt>
+    <dd>This is called if the createChannelPut fails or when the client request
+      is connected to the server. Status provides the result of the
+      createChannelPut request. If status is not success than the other
+      arguments are null. channelPut is the interface for requesting puts and
+      gets. Structure is the introspection interface that must be used
+      for data that is put to the server or that is returned by a get request.
+      </dd>
+  <dt>putDone</dt>
+    <dd>The put request is done. status provides the result of the put request.
+    </dd>
+  <dt>getDone</dt>
+    <dd>The get request is done. status provides the result of the put request.
+      pvStructure has the data returned from the server.
+      bitSet to shows which fields have new data before making a put request.
+      If a bit of bitSet is set for a structure field that means that all
+      fields of the structure have new values. For example of bit 0 of bitSet
+      is set then all fields of pvStructure have new data. Note that each
+      PVField implements a method getFieldOffset(). this can be used with
+      bitSet to determine which fields have new data values. See BitSet and
+      PVField in org.epics.pvdata for details.
+    </dd>
+</dl>
+
+<h4>ChannelPut</h4>
+<dl>
+  <dt>put</dt>
+    <dd>Put data.
+      pvPutStructure is the data to send to the server,
+      bitSet determines which fields are sent.
+     </dd>
+  <dt>get</dt>
+    <dd>Get the current data from the record. The record is never processed.
+      The request just gets the current values which is put into the
+      pvStructure returned in the call to channelPutConnect.</dd>
+</dl>
+<p>NOTE: Only one of put and get can be outstanding at the same time.
+  Another get or put must not be issued until getDone or putDone is called.</p>
+
+<h3>ChannelPutGet</h3>
+<p>A channelPutGet request puts data into a record, optionally processes the
+record, and gets data from the record.</p>
+
+<p>A channel putGet is created via a call to:</p>
+<pre>interface Channel extends Requester {
+    ChannelPutGet createChannelPutGet(
+        ChannelPutGetRequester channelPutGetRequester,
+        PVStructure pvRequest);
+}</pre>
+
+<p>The definition is:</p>
+<pre>
+ChannelPutGetRequester extends Requester
+    void channelPutGetConnect(
+        Status status,
+        ChannelPutGet channelPutGet,
+        Structure putStructure,
+        Structure getStructure)
+    void putGetDone(
+        Status status,
+        ChannelPutGet channelPutGet,
+        PVStructure getPVStructure,
+        BitSet getBitSet)
+    void getPutDone(
+        Status status,
+        ChannelPutGet channelPutGet,
+        PVStructure putPVStructure,
+        BitSet putBitSet)
+    void getGetDone(
+        Status status,
+        ChannelPutGet channelPutGet,
+        PVStructure getPVStructure,
+        BitSet getBitSet)
+
+ChannelPutGet extends ChannelRequest
+    void putGet(PVStructure pvPutStructure, BitSet putBitSet)
+    void getPut()
+    void getGet()
+</pre>
+<h4>ChannelPutGetRequester</h4>
+<p>The requester must implement this interface.</p>
+<dl>
+  <dt>channelPutGetConnect</dt>
+    <dd>This is called if the createChannelPutGet fails or when the client
+      request is connected to the server. Status provides the result of the
+      createChannelPutGet request. If status is not success than the other
+      arguments are null. channelPutGet is the interface for requesting putGet,
+      getPut and getGet. putStructure is the introspection interface
+      that is used for data sent by the client and getStructure the introspection
+      interface for data received by the client.
+     </dd>
+  <dt>putGetDone</dt>
+    <dd>The putGet request is done.
+     If status is not success then the other arguments may be null.
+     getPVStructure is the data returned to the client and getBitSet shows
+     which fields have changed value since the last putGet request.
+    </dd>
+  <dt>getPutDone</dt>
+    <dd>The getPut request is done.
+     If status is not success then the other arguments may be null.
+     putPVStructure is the data returned to the client and putBitSet shows
+     which fields have changed value since the last getPut request.
+    </dd>
+  <dt>getGetDone</dt>
+    <dd>The getGet request is done.
+     If status is not success then the other arguments may be null.
+     getPVStructure is the data returned to the client and getBitSet shows
+     which fields have changed value since the last getGet request.
+    </dd>
+</dl>
+<h4>ChannelPutGet</h4>
+<dl>
+  <dt>putGet</dt>
+    <dd>First put the pvPutStructure data into the record. Then if process is
+      true process the record. Finally get data from the record and put it into
+      pvGetStructure.
+    </dd>
+  <dt>getPut</dt>
+    <dd>Get current put data from the record and put it into pvPutStructure. The
+      record is never processed.
+    </dd>
+  <dt>getGet</dt>
+    <dd>Get current data from the record and put it into pvGetStructure. The
+      record is never processed.
+    </dd>
+</dl>
+
+<p>NOTE: Only one of putGet, getPut, or getGet can be outstanding at the same
+time. Another request must not be issued until the appropriate xxxDone is
+called.</p>
+
+<h3>ChannelArray</h3>
+<p>ChannelArray provides the ability to read or write a sub-array of an array
+field in a record. Note that all the other transfer methods can also read or
+write arrays but always transfer entire arrays. ChannelArray provides the
+ability to transfer a subarray. A ChannelArray is created via a call to:</p>
+<pre>interface Channel extends Requester {
+    ChannelArray createChannelArray(
+        ChannelArrayRequester channelArrayRequester,
+        PVStructure pvRequest);
+}</pre>
+
+<p>The definition is:</p>
+<pre>
+ChannelArrayRequester extends Requester
+    void channelArrayConnect(
+        Status status,
+        ChannelArray channelArray,
+        Array array)
+    void putArrayDone(
+        Status status,
+        ChannelArray channelArray)
+    void getArrayDone(
+        Status status,
+        ChannelArray channelArray,
+        PVArray pvArray)
+    void getLengthDone(
+        Status status,
+        ChannelArray channelArray,
+        int length,
+        int capacity)
+    void setLengthDone(
+        Status status,
+        ChannelArray channelArray)
+
+ChannelArray extends ChannelRequest
+    void putArray(
+        PVArray putArray,
+        int offset,
+        int count,
+        int stride)
+    void getArray(
+        int offset,
+        int count,
+        int stride)
+    void getLength()
+    void setLength(
+        int length)
+</pre>
+
+<h4>ChannelArrayRequester</h4>
+<p>The requester must implement this interface.</p>
+<dl>
+  <dt>channelArrayConnect</dt>
+    <dd>This is called if the createChannelArray fails or when the client
+      request is connected to the server. Status provides the result of the
+      createChannelArray request. If status is not success than the other
+      arguments are null. channelArray is the interface for requesting puts and
+      gets. array is the interface for the data that transfered between client
+      and server.
+    </dd>
+  <dt>putArrayDone</dt>
+    <dd>The put request is done.</dd>
+  <dt>getArrayDone</dt>
+    <dd>The get request is done.
+      pvArray holds the data.</dd>
+  <dt>getLengthDone</dt>
+     <dd>The getLength request is done. length and capacity hold the result.</dd>
+  <dt>setLengthDone</dt>
+     <dd>The setLength request is done.</dd>
+</dl>
+<h4>ChannelArray</h4>
+<dl>
+  <dt>putArray</dt>
+    <dd>Put array data. The offset and stride are the offset and
+      stride in the server and the count is
+      the total number of elements to write.
+     </dd>
+  <dt>getArray</dt>
+    <dd>Get array data. The offset and stride are the offset and
+      stride in the server and the count is
+      the total number of elements to read.
+    </dd>
+  <dt>getLength</dt>
+    <dd>Get the current length and capacity of the array in the server.</dd>
+  <dt>setLength</dt>
+    <dd>Set the length and capacity of the array in the server.</dd>
+</dl>
+
+
+<h3>Monitor</h3>
+<p>Monitor provides the ability to set monitors on data in a PVRecord. What
+triggers a monitor depends on the monitor support in the server. The standard
+server provides support for the following: onPut, onChange, onAbsoluteChange,
+and onPercentChange.</p>
+
+<p>A Monitor is created via a call to:</p>
+<pre>    void createMonitor(
+        MonitorRequester monitorRequester,
+        PVStructure pvRequest);
+}</pre>
+<p>The definition is:</p>
+
+<pre>
+MonitorRequester extends Requester
+    void monitorConnect(Status status, Monitor monitor, Structure structure))
+    void monitorEvent((Monitor monitor)
+    void unlisten()
+
+Monitor
+    Status start()
+    Status stop()
+    MonitorElement poll()
+    void release(MonitorElement monitorElement)
+
+MonitorElement
+    PVStructure getPVStructure()
+    BitSet getChangedBitSet()
+    BitSet getOverrunBitSet()
+</pre>
+<h4>MonitorRequester</h4>
+<p>The requester must implement this interface.</p>
+<dl>
+  <dt>monitorConnect</dt>
+    <dd>This is called if the createMonitor fails or when the client request is
+      connected to the server.
+       <dl>
+           <dt>status</dt>
+             <dd>The result of the createMonitor request.
+                If status is not success than the other arguments are null.
+             </dd>
+           <dt>monitor</dt>
+               <dd>The interface for the Monitor.</dd>
+           <dt>structure</dt>
+               <dd>The introspection interface for the data that will
+                be returned for each monitor event.</dd>
+        </dl>
+    </dd>
+  <dt>monitorEvent</dt>
+    <dd>monitorEvent is called when a monitor occurs. The client must call
+      monitor.poll to get data for the monitor. See below. </dd>
+  <dt>unlisten</dt>
+    <dd>The server has issued an unlisten request.</dd>
+</dl>
+<p>The following is the Monitor interface which is defined in project pvData</p>
+<pre>interface Monitor extends Destroyable {
+    Status start();
+    Status stop();
+    MonitorElement poll();
+    void release(MonitorElement monitorElement);
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>start</dt>
+    <dd>Start monitoring</dd>
+  <dt>stop</dt>
+    <dd>Stop monitoring</dd>
+  <dt>poll</dt>
+    <dd>Poll for monitor event. Null is returned when no more events are
+      available. The client must call this method in order to get monitor
+    data.</dd>
+  <dt>release</dt>
+    <dd>When the client has processed the monitor event returned by poll the
+      client must call release before again calling poll.</dd>
+</dl>
+<p>A monitorElement is defined as:</p>
+<pre>interface MonitorElement {
+    PVStructure getPVStructure();
+    BitSet getChangedBitSet();
+    BitSet getOverrunBitSet();
+}</pre>
+
+<p>where</p>
+<dl>
+  <dt>getPVStructure</dt>
+    <dd>The data structure.</dd>
+  <dt>getChangedBitSet</dt>
+    <dd>A bitset which has a bit set for each field of the data structure which
+      has changed since the last monitor.</dd>
+  <dt>getOverrunBitSet</dt>
+    <dd>A bitset which has a bit set for each field of the data structure which
+      has changed more than once since the last monitor.</dd>
+</dl>
+<h4>Monitor</h4>
+<dl>
+  <dt>start</dt>
+    <dd>Start monitoring</dd>
+  <dt>stop</dt>
+    <dd>Stop monitoring</dd>
+  <dt>poll</dt>
+    <dd>Poll for monitor event. Null is returned when no more events are
+      available. The client must call this method in order to get monitor
+    data.</dd>
+  <dt>release</dt>
+    <dd>When the client has processed the monitor event returned by poll the
+      client must call release before again calling poll.</dd>
+</dl>
+
+
+<h3>ChannelRPC</h3>
+<p>A ChannelRPC is like a putProcessGet except that a completely different
+PVStructure can be returned for each request. It is created via a call to:</p>
+<pre>interface Channel extends Requester {
+    ChannelRPC createChannelRPC(
+        ChannelRPCRequester channelRPCRequester,
+        PVStructure pvRequest);
+}</pre>
+<p>The definition is:</p>
+<pre>
+ChannelRPCRequester extends Requester
+    void channelRPCConnect(
+        Status status,
+        ChannelRPC channelRPC)
+    void requestDone(
+        Status status,
+        ChannelRPC channelRPC,
+        PVStructure pvResponse)
+
+ChannelRPC extends ChannelRequest
+    void request(PVStructure pvArgument)
+</pre>
+<h4>ChannelRPCRequester</h4>
+<p>The requester must implement this interface.</p>
+<dl>
+  <dt>channelRPCConnect</dt>
+    <dd>Status provides the result of the createChannelRPC request. If status
+      is not success than the other argument is null.</dd>
+  <dt>requestDone</dt>
+    <dd>The request is done. status provides the result of the request. If
+      successful a pvResponse is returned. </dd>
+</dl>
+<h4>ChannelRPC</h4>
+<dl>
+  <dt>request</dt>
+    <dd>pvArgument is the structure that is sent to the server. If lastRequest
+      is true than it is a one time request, i.e. Send it is the same as
+      calling destroy after the request is complete.</dd>
+</dl>
+
+<h2>pvAccess Channel Providers.</h2>
+<p>pvAccessJava and pvAccessCPP implement the following providers:</p>
+<dl>
+   <dt>pva</dt>
+     <dd>This is a provider that trasfers data via the network protocol defined in
+    <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess Protocol Specification </a>
+     <br/>
+      This provides the client and server side of the network protocol.
+      The client side is a complete implementation.
+      The server side requires additional code to access data sources but takes care of all network code.
+     </dd>
+    <dt>ca</dt>
+      <dd>This is client support for transfering data via the EPICS V3 channel access protocol.
+      </dd>
+</dl>
+<p>Providers can be provided for other data sources.
+A provider must implement ChannelProvider and Channel.
+pvAccess supports an arbitrary number of providers.
+On the server side of remote pvAccess providers must be implemented,
+because it calls the providers to implement the CHannel methods.
+</p>
+<p>
+At present C++ provides two server side providers:
+</p>
+<dl>
+   <dt>pvaSrv</dt>
+      <dd>This is a pvAccess server that accesses V3 records,</dd>
+   <dt>local</dt>
+      <dd>This is implemented by pvDatabaseCPP</dd>
+</dl>
+
+<h2>Convert Facility</h2>
+<p>Both pvDataJava and pvDataCPP have a Convert Facility.
+Although they have some common features they are different enough that they
+will be discussed separately.
+They main difference is support for scalar arrays.
+</p>
+<p>
+The Java Convert facility supports sub-array copies between any two numeric
+arrays.
+It does a deep copy except for a complete copy between two array of the same
+type and the source array is immutable.
+In this case to calls the shareData method and also makes the destination
+array immutable.
+</p>
+<p>
+The C++ faclity only supports complete array copies between 
+two scalar arrays of the same type and only does a shallow copy.
+It also does a shallow copy for union, unionArray, and structureArray fields.
+It also has a separate facility that does sub-array copies between two
+arrays of the same type.
+</p>
+<h3>Java</h3>
+<p><b>NOTE:</b> copying immutable array fields. If an entire immutable array
+field is copied to another array that has the same elementType, both offsets
+are 0, and the length is the length of the source array, then the shareData
+method of the target array is called and the target array is set immutable.
+Thus the source and target share the same primitive array.</p>
+
+<p>This section describes the supported conversions between data types.</p>
+<ul>
+  <li>All supported types can be converted to a string. If you ask for a 100
+    megabyte array to be converted to a string expect a lot of output.</li>
+  <li>Conversion from a string to a scalar type.</li>
+  <li>Conversion from an array of strings to an array of scalar types.</li>
+  <li>Copy between the following types of scalar PVs
+    <ul>
+      <li>Numeric type to another numeric type</li>
+      <li>Both have the same type.</li>
+      <li>Either is a string</li>
+    </ul>
+  </li>
+  <li>Copy between PVArrays that satisfy one of the following.
+    <ul>
+      <li>Numeric to numeric</li>
+      <li>Both have the same type.</li>
+      <li>Either is a string.</li>
+    </ul>
+  </li>
+  <li>Conversions between numeric scalar types.</li>
+  <li>Conversions between arrays of numeric type.</li>
+  <li>Conversion between compatible structures.</li>
+  <li>Conversion between compatible unions.</li>
+  <li>Conversion between compatible union arrays.</li>
+  <li>Conversion between compatible structure arrays.</li>
+  <li>Support for unsigned integers. Because Java does primitive unsigned
+   integers the only support is in "widening" operations.
+   For example if a PVUByte is converted to short then the proper conversion will
+   be done.</li>
+  <li>A utility method the returns the full field name of a field.</li>
+</ul>
+<pre>
+interface Convert {
+    void getFullFieldName(StringBuilder builder,PVField pvField)
+    void getString(StringBuilder buf,PVField pv, int indentLevel);
+    void getString(StringBuilder buf,PVField pv);
+    void fromString(PVScalar pv,String from);
+    void fromString(PVScalarArray pv,String from);
+    int fromStringArray(PVScalarArray pv,
+         int offset, int len, String[]from, int fromOffset);
+    int toStringArray(PVScalarArray pv,
+         int offset, int len, String[]to, int toOffset);
+    boolean isCopyCompatible(Field from, Field to);
+    void copy(PVField from,PVField to);
+    boolean isCopyScalarCompatible(Field from, Field to);
+    void copyScalar(PVField from, PVField to);
+    boolean isCopyScalarArrayCompatible(ScalarArray from, ScalarArray to);
+    int copyScalarArray(PVScalarArray from, int offset,
+         PVScalarArray to, int toOffset, int len);
+    boolean isCopyStructureCompatible(Structure from, Structure to);
+    void copyStructure(PVStructure from, PVStructure to);
+    boolean isCopyUnionCompatible(Union from, Union to);
+    void copyUnion(PVUnion from, PVUnion to);
+    boolean isCopyStructureArrayCompatible(StructureArray from, StructureArray to);
+    void copyStructureArray(PVStructureArray from, PVStructureArray to);
+    boolean isCopyUnionArrayCompatible(UnionArray from, UnionArray to);
+    void copyUnionArray(PVUnionArray from, PVUnionArray to);
+    // For the following the pv Type must be PVByte, ...., PVDouble
+    byte toByte(PVField pv);
+    short toShort(PVField pv);
+    int   toInt(PVField pv);
+    long  toLong(PVField pv);
+    float toFloat(PVField pv);
+    double toDouble(PVField pv);
+    String toString(PVScalar pv);
+    void  fromByte(PVField pv, byte from);
+    void  fromShort(PVField pv, short from);
+    void  fromInt(PVField pv, int from);
+    void  fromLong(PVField pv, long from);
+    void  fromUByte(PVField pv, byte from);
+    void  fromUShort(PVField pv, short from);
+    void  fromUInt(PVField pv, int from);
+    void  fromULong(PVField pv, long from);
+    void  fromFloat(PVField pv, float from);
+    void  fromDouble(PVField pv, double from);
+// For the following the element type must be pvByte, ...., pvDouble
+    int toByteArray(PVScalarArray pv,
+        int offset, int len, byte[]to, int toOffset);
+    int toShortArray(PVScalarArray pv,
+        int offset, int len, short[]to, int toOffset);
+    int toIntArray(PVScalarArray pv,
+        int offset, int len, int[]to, int toOffset);
+    int toLongArray(PVScalarArray pv,
+        int offset, int len, long[]to, int toOffset);
+    int toFloatArray(PVScalarArray pv,
+        int offset, int len, float[]to, int toOffset);
+    int toDoubleArray(PVScalarArray pv,
+        int offset, int len, double[]to, int toOffset);
+    int fromByteArray(PVScalarArray pv,
+        int offset, int len, byte[]from, fromOffset);
+    int fromShortArray(PVScalarArray pv,
+        int offset, int len, short[]from, fromOffset);
+    int fromIntArray(PVScalarArray pv,
+        int offset, int len, int[]from, fromOffset);
+    int fromLongArray(PVScalarArray pv,
+        int offset, int len, long[]from, fromOffset);
+    int fromUByteArray(PVScalarArray pv,
+        int offset, int len, byte[]from, fromOffset);
+    int fromUShortArray(PVScalarArray pv,
+        int offset, int len, short[]from, fromOffset);
+    int fromUIntArray(PVScalarArray pv,
+        int offset, int len, int[]from, fromOffset);
+    int fromULongArray(PVScalarArray pv,
+        int offset, int len, long[]from, fromOffset);
+    int fromFloatArray(PVScalarArray pv,
+        int offset, int len, float[]from, fromOffset);
+    int fromDoubleArray(PVScalarArray pv,
+        int offset, int len, double[]from, fromOffset);
+    void newLine(StringBuilder builder, int indentLevel);
+}
+</pre>
+<p>The array methods all return the number of elements copied or converted.
+This can be less than <span>len</span> if the
+PVField array contains less than len elements.</p>
+
+<p><span>newLine</span> is a convenience method
+for code that implements <span>toString</span> It
+generates a newline and inserts blanks at the beginning of the newline.</p>
+
+<p>The getString methods dump the data in the metadata syntax described in the
+pvData project overview. Note that the toString methods of PVField are
+implemented by calling these convert methods.</p>
+
+<h3>C++</h3>
+<h4>convert.h</h4>
+<p>This section describes the supported conversions between data types.</p>
+<ul>
+  <li>All supported types can be converted to a string. If you ask for a 100
+    megabyte array to be converted to a string expect a lot of output.</li>
+  <li>Conversion from a string to a scalar type.</li> 
+  <li>Conversion from an array of strings to an array of scalar types.</li>
+  <li>Copy between the following types of scalar PVs
+    <ul>
+      <li>Numeric type to another numeric type</li>
+      <li>Both have the same type.</li>
+      <li>Either is a string</li>
+    </ul>
+  </li>
+  <li>Conversions between numeric scalar types.</li>
+  <li>Conversion between compatible structures.</li>
+  <li>Conversion between compatible unions.</li>
+  <li>Conversion between compatible union arrays.</li>
+  <li>Conversion between compatible structure arrays.</li>
+  <li>A utility method the returns the full field name of a field</li>
+</ul>
+<pre>
+bool operator==(PVField&amp;, PVField&amp;);
+
+static bool operator!=(PVField&amp; a, PVField&amp; b);
+
+bool operator==(const Field&amp;, const Field&amp;);
+bool operator==(const Scalar&amp;, const Scalar&amp;);
+bool operator==(const ScalarArray&amp;, const ScalarArray&amp;);
+bool operator==(const Structure&amp;, const Structure&amp;);
+bool operator==(const StructureArray&amp;, const StructureArray&amp;);
+bool operator==(const Union&amp;, const Union&amp;);
+bool operator==(const UnionArray&amp;, const UnionArray&amp;);
+
+static inline bool operator!=(const Field&amp; a, const Field&amp; b);
+static inline bool operator!=(const Scalar&amp; a, const Scalar&amp; b);
+static inline bool operator!=(const ScalarArray&amp; a, const ScalarArray&amp; b);
+static inline bool operator!=(const Structure&amp; a, const Structure&amp; b);
+static inline bool operator!=(const StructureArray&amp; a, const StructureArray&amp; b);
+static inline bool operator!=(const Union&amp; a, const Union&amp; b);
+static inline bool operator!=(const UnionArray&amp; a, const UnionArray&amp; b);
+
+class Convert;
+typedef std::tr1::shared_ptr&lt;Convert&gt; ConvertPtr;
+
+class Convert {
+public:
+    static ConvertPtr getConvert();
+    ~Convert();
+    void getFullName(std::string * buf,PVFieldPtr const &amp; pvField);
+    bool equals(PVFieldPtr const &amp;a,PVFieldPtr const &amp;b);
+    bool equals(PVField &amp;a,PVField &amp;b);
+    void getString(std::string * buf,PVFieldPtr const &amp; pvField,int indentLevel);
+    void getString(std::string * buf,PVFieldPtr const &amp; pvField);
+    void getString(std::string * buf,PVField const * pvField,int indentLevel);
+    void getString(std::string * buf,PVField const * pvField);
+    std::size_t fromString(
+        PVStructurePtr const &amp;pv,
+        StringArray const &amp; from,
+        std::size_t fromStartIndex = 0);
+    void fromString(PVScalarPtr const &amp; pv, std::string const &amp; from);
+    std::size_t fromString(PVScalarArrayPtr const &amp; pv, std::string const &amp;from);
+    std::size_t fromStringArray(
+        PVScalarArrayPtr const &amp; pv,
+        std::size_t offset, std::size_t length,
+        StringArray const &amp; from,
+        std::size_t fromOffset);
+    std::size_t toStringArray(PVScalarArrayPtr const &amp; pv,
+        std::size_t offset,
+        std::size_t length,
+        StringArray &amp; to,
+        std::size_t toOffset);
+    bool isCopyCompatible(FieldConstPtr const &amp; from, FieldConstPtr const &amp; to);
+    void copy(PVFieldPtr const &amp; from, PVFieldPtr const &amp; to);
+    bool isCopyScalarCompatible(
+        ScalarConstPtr const &amp; from,
+        ScalarConstPtr const &amp; to);
+    void copyScalar(PVScalarPtr const &amp; from, PVScalarPtr const &amp; to);
+    bool isCopyScalarArrayCompatible(
+        ScalarArrayConstPtr const &amp; from,
+        ScalarArrayConstPtr const &amp; to);
+    bool isCopyStructureCompatible(
+        StructureConstPtr const &amp; from, StructureConstPtr const &amp; to);
+    void copyStructure(PVStructurePtr const &amp; from, PVStructurePtr const &amp; to);
+    bool isCopyStructureArrayCompatible(
+        StructureArrayConstPtr const &amp; from, StructureArrayConstPtr const &amp; to);
+    void copyStructureArray(
+        PVStructureArrayPtr const &amp; from, PVStructureArrayPtr const &amp; to);
+    bool isCopyUnionCompatible(
+        UnionConstPtr const &amp; from, UnionConstPtr const &amp; to);
+    void copyUnion(
+        PVUnionPtr const &amp; from, PVUnionPtr const &amp; to);
+    bool isCopyUnionArrayCompatible(
+        UnionArrayConstPtr const &amp; from, UnionArrayConstPtr const &amp; to);
+    void copyUnionArray(
+        PVUnionArrayPtr const &amp; from, PVUnionArrayPtr const &amp; to);
+    int8 toByte(PVScalarPtr const &amp; pv);
+    int16 toShort(PVScalarPtr const &amp; pv);
+    int32 toInt(PVScalarPtr const &amp; pv);
+    int64 toLong(PVScalarPtr const &amp; pv);
+    uint8 toUByte(PVScalarPtr const &amp; pv);
+    uint16 toUShort(PVScalarPtr const &amp; pv);
+    uint32 toUInt(PVScalarPtr const &amp; pv);
+    uint64 toULong(PVScalarPtr const &amp; pv);
+    float toFloat(PVScalarPtr const &amp; pv);
+    double toDouble(PVScalarPtr const &amp; pv);
+    std::string toString(PVScalarPtr const &amp; pv);
+    void fromByte(PVScalarPtr const &amp; pv,int8 from);
+    void fromShort(PVScalarPtr const &amp; pv,int16 from);
+    void fromInt(PVScalarPtr const &amp; pv, int32 from);
+    void fromLong(PVScalarPtr const &amp; pv, int64 from);
+    void fromUByte(PVScalarPtr const &amp; pv,uint8 from);
+    void fromUShort(PVScalarPtr const &amp; pv,uint16 from);
+    void fromUInt(PVScalarPtr const &amp; pv, uint32 from);
+    void fromULong(PVScalarPtr const &amp; pv, uint64 from);
+    void fromFloat(PVScalarPtr const &amp; pv, float from);
+    void fromDouble(PVScalarPtr const &amp; pv, double from);
+    void newLine(std::string * buf, int indentLevel);
+ ...
+}
+
+extern ConvertPtr getConvert();
+</pre>
+<p>newLine is a convenience method for code that implements toString It
+generates a newline and inserts blanks at the beginning of the newline.</p>
+
+<h4>pvSubArrayCopy.h</h4>
+<p>This supports sub-array copying between arrays that have the same type.</p>
+<pre>
+template&lt;typename T&gt;
+void copy(
+    PVValueArray&lt;T&gt; &amp; pvFrom,
+    size_t fromOffset,
+    size_t fromStride,
+    PVValueArray&lt;T&gt; &amp; pvTo,
+    size_t toOffset,
+    size_t toStride,
+    size_t count);
+
+void copy(
+    PVScalarArray &amp; from,
+    size_t fromOffset,
+    size_t fromStride,
+    PVScalarArray &amp; to,
+    size_t toOffset,
+    size_t toStride,
+    size_t count);
+
+void copy(
+    PVStructureArray &amp; from,
+    size_t fromOffset,
+    size_t fromStride,
+    PVStructureArray &amp; to,
+    size_t toOffset,
+    size_t toStride,
+    size_t count);
+
+void copy(
+    PVArray &amp; from,
+    size_t fromOffset,
+    size_t fromStride,
+    PVArray &amp; to,
+    size_t toOffset,
+    size_t toStride,
+    size_t count);
+</pre>
+<p>The last copy is the only one most client need to call.
+It either throws an error if the element types do not match or calls the
+other copy functions. The arguments are:</p>
+<dl>
+   <dt>from</dt>
+     <dd>The source array.</dd>
+   <dt>fromOffset</dt>
+      <dd>The offset into the source array.</dd>
+   <dt>fromStride</dt>
+       <dd>The interval between source elements.</dd>
+   <dt>to</dt>
+      <dd>The destination array. The element type must be the same
+      as for the source array. If the element type is structure then
+      the introspection interface for the element types must be the same.
+      </dd>
+   <dt>toOffset</dt>
+      <dd>The offset into the destination array.</dd>
+   <dt>toStride</dt>
+       <dd>The interval between destination elements.</dd>
+   <dt>count</dt>
+      <dd>The  number of elements to copy.</dd>
+</dl>
+<p>An exception is thrown if:</p>
+<dl>
+   <dt>type mismatch</dt>
+     <dd>The element types for the source and destination differ.</dd>
+   <dt>immutable</dt>
+      <dd>The destination array is immutable.</dd>
+   <dt>capacity immutable</dt>
+      <dd>The destination array needs to have it's capacity extended
+        but the capacity is immutable.</dd>
+</dl>
+
+
+<h2>Interlude</h2>
+<p>What has been defined prevously is the core part of pvData and pvAccess.
+Any code that is implemented via the above can be used to transfer data via the <b>pva</b> or the <b>ca</b>
+network protocol.</p>
+<p>The remainder of this document describes additional features provided by pvData.
+These additional features make it easier to create services based on the pvAccess network protocol.</p>
+<h2>Standard for Field::ID</h2>
+<p>The introspection interface for every field has an ID, which is available via method:</p>
+<pre>
+class Field {
+...
+    string getID();
+...
+};
+</pre>
+<p>This section describes how the IDs are assigned.</p>
+<h3>Scalar</h3>
+<pre>
+boolean
+byte
+short
+int
+long
+ubyte
+ushort
+ulong
+float
+double
+string
+</pre>
+<h3>Scalar Array</h3>
+<pre>
+boolean[]
+byte[]
+short[]
+int[]
+long[]
+ubyte[]
+ushort[]
+ulong[]
+float[]
+double[]
+string[]
+</pre>
+<h3>Union</h3>
+<pre>
+any        // variant union
+union      // regular union
+</pre>
+<h3>Union Array</h3>
+<pre>
+any[]
+union[]
+</pre>
+<h3>structure</h3>
+<h4>default</h4>
+<pre>
+structure
+</pre>
+<h4>standard fields</h4>
+<pre>
+alarm_t
+time_t
+display_t
+control_t
+enum_t
+alarmLimit_t
+valueAlarm_t
+</pre>
+<p><b>Issues:</b></p>
+<dl>
+   <dt>display_t</dt>
+      <dd>This has field
+      <pre>string format</pre>
+     The allowed syntax should be defined.
+      </dd>
+    <dt>alarmLimit_t,valueAlarm_t</dt>
+      <dd>standardField and standardPVField define
+      valueAlarm for boolean, each numeric scalar type, and for enum_t.
+     alarmLimit_t has the same fields as valueAlarm for double.
+     I suspect that most tools will only use alarmLimit_t.
+     What to do?
+      </dd>
+</dl>
+<h4>Normative Types IDs</h4>
+<pre>
+epics:nt/NTScalar:1.0
+epics:nt/NTScalarArray:1.0
+epics:nt/NTNameValue:1.0
+epics:nt/NTTable:1.0
+epics:nt/NTMultiChannel:1.0
+epics:nt/NTNDArray:1.0
+...
+</pre>
+<h3>structure array</h3>
+<p>Like structure except that <b>[]</b> is appended.
+</p>
+<h2>pvRequest and pvCopy</h2>
+<p>Both pvDataJava and pvDataCPP provide facilities:</p>
+<dl>
+   <dt>CreateRequest</dt>
+      <dd>
+       Creates a PVStructure that is a valid pvRequest
+       to be passed between a client a server.
+       The Channel class of pvAccess has methods
+       that have pvRequest arguments.
+       For example:
+<pre>
+ChannelGet createChannelGet(
+    ChannelGetRequester channelGetRequester,
+    PVStructure pvRequest);
+</pre>
+      </dd>
+   <dt>PVCopy</dt>
+     <dd>
+      A client can request an arbitrary subset of the fields
+      in the top level PVStructure that server provides.
+      PVCopy is a facility that copies data between a top
+      level PVStructure that has the clients data and the
+      top level PVStructure from the server.
+      CreateRequest allows the client to select fields desired.
+      PVCopy is used by the server side of pvAccess to 
+      transfer data between the two top level PVStructures.
+     </dd>
+</dl>
+<h3>CreateRequest</h3>
+<h4>Definition</h4>
+<pre>
+CreateRequest
+    PVStructure createRequest(string request)
+    string getMessage()
+</pre>
+<dl>
+   <dt>createRequest</dt>
+     <dd>
+     Create a pvRequest PVStructure.
+     If an invalid request is made a null PVStructure is returned.
+     </dd>
+    <dt>getMessage</dt>
+     <dd>
+      The reason why the last request failed.
+     </dd>
+</dl>
+<h4>Purpose</h4>
+<p>CreateRequest allows the clients to select an arbitrary subset of the fields in the top level structure
+associated with the channel.
+It also allows the client to specify options.
+Thus the client can specify:</p>
+<dl>
+  <dt>Global Options</dt>
+    <dd>Global options are options that apply to the record itself.</dd>
+  <dt>Desired Fields</dt>
+     <dd>An arbitrary set of fields can be selected from the top level structure that holds the
+      data in the record.</dd>
+  <dt>Field Options</dt>
+     <dd>These are options that apply to a selected field.
+      </dd>
+</dl>
+<p><b>NOTE:</b> The term record is adapted from pvDatabase. A pvDatabase has a memory resident database of <b>smart</b>
+records. A pvAcccess channel is a connection to a record. A record has a top level PVStructure that holds the
+data for the record.
+A pvAcccess server can be implemented that does not use the pvDatabase model but it must provide top level
+PVStructures to which a pvAcccess Channel can be attached.
+<b>pvaSrv</b>, which provides access to iocCore V3 records, is an example that also accepts a pvRequest
+created by a call to createRequest.
+</p>
+<h4>Syntax</h4>
+<p>A request argument has the syntax:</p>
+<pre>
+record[option,...]field(fieldDef,...)putField(fieldDef,...)getField(fieldDef,...)
+OR
+fieldDef,...
+</pre>
+
+<p>Thus a request consists of record options and sets of field definitions or
+just field definitions. A record option is of the form:</p>
+<pre>
+record[name=value,...]
+</pre>
+
+<p>A field,putFeld,getField is a comma separated set of fieldDefs which are of
+the form:</p>
+<pre>
+fullFieldName
+or
+fullFieldName[option,...]
+or
+fullFieldName{fieldDef}     // recursive definition
+</pre>
+
+<p>A fullFieldName is the full name of a field in the PVRecord. The name in a
+generated data structure will have just the field name. If
+<b>fieldName{request}</b> is given then the generated data structure will have
+a structure field with subfields. Note that request is a recursive
+definition.</p>
+
+<p>If request is null or an empty string than the entire top level structure of the PVRecord is
+selected.</p>
+
+<p>The syntax was chosen to be easy to use and to parse:</p>
+<dl>
+   <dt>record[]</dt>
+      <dd>
+      Specifies a set of global options, i. e., options that apply to the record itself. 
+      </dd>
+   <dt>field()</dt>
+   <dt>putField()</dt>
+   <dt>getField()</dt>
+      <dd>
+      Each selects a set of subfields of the top level structure.
+      Each defines a comma separated set of <b>fieldDef</b>s.
+      </dd>
+   <dt>fieldDef</dt>
+     <dd>Selects a single subfield of the current structure.</dd>
+   <dt>option</dt>
+      <dd>
+      A <b>name=value</b> pair. Both <b>name</b> and <b>value</b> are character strings.
+      </dd>
+   <dt>[]</dt>
+      <dd>
+      Holds a comma separated set of <b>option</b>s.
+      </dd>
+   <dt>{}</dt>
+      <dd>
+      Selects a set of subfields of a substructure within the top level structure.
+      Each defines a comma separated set of <b>fieldDef</b>s.
+      This is a recursive definition.
+      Thus a <b>fullFieldName</b> within <b>{}</b> is relative to structure that is referenced
+      by <b>{}</b>.
+      </dd>
+</dl>
+<h4>Standard Options</h4>
+<p>At present the following record options are in use:</p>
+<dl>
+    <dt>queueSize</dt>
+     <dd>
+      This is used to define the queueSize for monitors.
+      The default is:
+<pre>
+record[queueSize=2]
+</pre>
+      A larger size can be specified.
+     </dd>
+    <dt>process</dt>
+     <dd>
+      This is used by pvaSrv and pvDatabaseCPP to specify of records should be processed.
+      The default is <b>false</b> channelGet and <b>true</b> for channelPut and channelPutGet,
+       An example is:
+<pre>
+record[process=false]
+</pre>
+     </dd>
+    <dt>block</dt>
+     <dd>
+      This is used by pvaSrv to specify if a request to process a record should
+      block until the record completes processing.
+      The default is the same as the value ofi the  <b>process</b> option.
+      An example is:
+<pre>
+record[block=false]
+</pre>
+     </dd>
+</dl>
+<h4>Simple Examples</h4>
+<p>Clients like CSS, Synoptic Displays, Alarm, and Archive only want access to
+some combination of the following fields: <b>value</b>, <b>alarm</b>, <b>timeStamp</b>, <b>display</b>, and
+<b>control</b>. If the request is for a record that has these all as top level fields
+the request string is just a comma separated list of the field names. For
+example:</p>
+<pre>
+"value,alarm,timeStamp"
+</pre>
+
+<p>If the record is does not have the desired field at the top level then the
+field can still be accessed but in this case the full structure is preserved.
+For example:</p>
+<pre>
+"alarm,timeStamp,power.value"
+</pre>
+
+<p>Will get the top level alarm and timeStamp and the value from a
+structure named power. Thus the above works for a record that is structured as
+follows:</p>
+<pre>powerSupply
+    alarm
+    timeStamp
+    power
+       value
+       display
+       ...
+    ...
+</pre>
+What is returned to the client is:
+<pre>powerSupply
+    alarm
+    timeStamp
+    power
+       value
+</pre>
+
+<p>The only option most clients want is to request that a record be processed
+as part of a get or put requests. This is done via requests like the
+following:</p>
+<pre>
+"record[process=true]field(value,alarm,timeStamp)"
+</pre>
+<h4>Power Supply Example</h4>
+
+<p>The following examples are for a power supply record:</p>
+<pre>
+powerSupply
+    alarm
+    timeStamp
+    power
+       value
+       alarm
+       .. other fields
+    voltage
+       value
+       alarm
+       .. other fields
+    current
+       value
+       alarm
+       .. other fields
+    .. other fields
+</pre>
+
+
+<p>The following request:</p>
+<pre>
+"field(alarm,timeStamp,power.value)"
+</pre>
+<p>Will return to the client the following:</p>
+<pre>
+record psSimple
+    alarm_t alarm
+        severity NONE status NONE
+        message null
+    time_t 2013-02-27 06:04:30.997 userTag 0
+    structure power
+        double value 10.0
+</pre>
+
+<p>Note that if the actual record does not have a requested field than it will
+not be present in the structure returned to the client.
+</p>
+
+<p>The following is the same except that a record option and an option for the
+value field will be given.</p>
+<pre>
+"record[process=true]field(alarm,timeStamp,power.value[monitorAlgorithm=onChange])"
+</pre>
+
+<p>The options are to process the record and to cause power.value to cause a monitor only if the value changes.</p>
+
+
+<p>The following:</p>
+<pre>
+"field(alarm,timeStamp,power{value,alarm},current{value,alarm},voltage{value,alarm})"
+</pre>
+<p>Will return to the client the following:</p>
+<pre>
+record psEmbeded
+    alarm_t alarm
+        severity NONE status NONE
+        message
+    time_t 1969-12-31 19:00:00.000 userTag 0
+    structure power
+        double value 0.0
+    structure current
+        double value 0.0
+        alarm_t alarm
+            severity NONE status NONE
+            message
+    structure voltage
+        double value 0.0
+        alarm_t alarm
+            severity NONE status NONE
+            message
+</pre>
+
+
+<h4>Syntax for pvRequest structure created by createRequest</h4>
+<p><b>NOTE:</b> This section is only of interest to someone who is implementing code that
+has to introspect a structure generated by createRequest.</p>
+
+<p>pvRequest is a PVStructure that describes 1) record options and 2) field
+requests and options. It has the following structure:</p>
+<pre>
+structure
+  structure record
+    structure _options
+      option
+      ...
+  structure field
+    structure fieldName
+      structure _options
+        option
+        ...
+      structure fieldName
+        structure _options
+          option
+          ...
+        ...
+  structure putField
+    structure fieldName
+      structure _options
+        option
+        ...
+      structure fieldName
+        structure _options
+          option
+          ...
+        ...
+  structure getField
+    structure fieldName
+      structure _options
+        option
+        ...
+      structure fieldName
+        structure _options
+          option
+          ...
+        ...
+</pre>
+<p>where</p>
+<dl>
+  <dt>record</dt>
+    <dd>The options that apply to the entire record.</dd>
+  <dt>option</dt>
+    <dd>This is of the form
+      <b>string &lt;name&gt; &lt;value&gt;</b>
+    </dd>
+  <dt>field</dt>
+    <dd>Definitions that select fields of the PVRecord and options for the
+      fields. This definition is recursive.</dd>
+  <dt>fieldName</dt>
+    <dd>The field name that will appear in the PVStructure that is a copy of
+      the fields selected from the PVRecord. </dd>
+</dl>
+
+<p>Note:</p>
+<ul>
+  <li>The definition is recursive , i.e. an arbitarily complex structure can be
+    defined.</li>
+  <li>If a pvRequest with no fields is specified than all fields if the target
+    PVRecord will appear in the PVCopy.</li>
+</ul>
+
+<p>An example of option is process.</p>
+
+<p>Process is a record option:</p>
+<pre>
+structure
+  structure record
+    structure _options
+      string process true
+
+</pre>
+<p>For example if process is an option to createGet then the record will be
+processed before data is fetched. NOTE: scalarType boolean is also
+supported.</p>
+
+<p>The following is an example of a field option:</p>
+<pre>
+structure
+    structure field
+        structure value
+            structure _options
+                string monitorAlgorithm onChange
+</pre>
+
+<p>Some examples are:</p>
+<pre>
+request
+structure
+
+request alarm,timeStamp,power.value
+structure
+    structure alarm
+    structure timeStamp
+    structure power
+        structure value
+
+request record[process=true]field(alarm,timeStamp,power.value)
+structure
+    structure record
+        structure _options
+            string process true
+    structure field
+        structure alarm
+        structure timeStamp
+        structure power
+            structure value
+request record[process=true]field(alarm,timeStamp[algorithm=onChange,causeMonitor=false],power{value,alarm})
+structure
+    structure record
+        structure _options
+            string process true
+    structure field
+        structure alarm
+        structure timeStamp
+            structure _options
+                string algorithm onChange
+                string causeMonitor false
+        structure power
+            structure value
+            structure alarm
+
+request record[process=true,xxx=yyy]field(alarm,timeStamp[causeMonitor=true],power.value)
+structure
+    structure record
+        structure _options
+            string process true
+            string xxx yyy
+    structure field
+        structure alarm
+        structure timeStamp
+            structure _options
+                string causeMonitor true
+        structure power
+            structure value
+</pre>
+
+<h3>PVCopy</h3>
+<p>This is the interface for mapping between a PVStructure that contain a copy
+of the data for a subset of the fields in a PVRecord. Note that this interface
+is NOT for a single PVStructure but for a single PVRecord and a single
+Structure introspection interface that describes a subset of the fields in the
+PVRecord. For example if a server supports monitor queues then the server will
+allocate a PVStructure for each queue element but will create a single
+PVCopy.</p>
+<pre>
+PVCopy
+    PVMaster getPVMaster()
+    void traverseMaster(PVCopyTraverseMasterCallback callback)
+    Structure getStructure()
+    PVStructure createPVStructure()
+    int getCopyOffset(PVField masterPVField)
+    int getCopyOffset(PVStructure masterPVStructure,PVField masterPVField)
+    PVField getMasterPVField(int structureOffset)
+    void initCopy(PVStructure pvCopy, BitSet bitSet,boolean masterLocked)
+    void updateCopySetBitSet(PVStructure copyPVStructure,BitSet bitSet,boolean lockMaster)
+    void updateCopyFromBitSet(PVStructure copyPVStructure,BitSet bitSet,boolean lockMaster)
+    boolean updateMaster(PVStructure pvCopy,BitSet bitSet,boolean lockMaster)
+    PVStructure getOptions(PVStructure copyPVStructure,int fieldOffset)
+    String dump()
+}
+</pre>
+<p>where</p>
+<dl>
+  <dt>getPVMaster</dt>
+    <dd>Get the PVMaster to which this PVCopy is attached</dd>
+  <dt>traverseMaster</dt>
+     <dd>
+      Traverse all the fields in master.
+      The callback is called for each field in master.
+     </dd>
+  <dt>getStructure</dt>
+    <dd>Get the introspection interface which describes the subset of the
+      fields in the PVMaster.</dd>
+  <dt>createPVStructure</dt>
+    <dd>Create a PVStructure which can hold a subset of the data from the
+      PVMaster. A client may require multiple PVStructures. For example if a
+      monitor request supports a queue than a PVStructure is required for each
+      queue element. </dd>
+  <dt>getCopyOffset(PVField masterPVField)</dt>
+    <dd>Given a PVField from the master determine the offset within the
+      PVStructure where the copy of the data is located.
+      PVStructure.getSubField(offset) can be called to locate the PVField
+      within the PVStructure. </dd>
+  <dt>getCopyOffset(PVStructure masterPVStructure,PVField masterPVField)</dt>
+    <dd>Given a masterPVField within a masterPVStructure determine the offset
+      within the PVStructure where the copy of the data is located.
+      PVStructure.getSubField(offset) can be called to locate the PVField
+      within the PVStructure. </dd>
+  <dt>getMasterPVField</dt>
+    <dd>Given an offset within a PVStructure return the corresponding PVField
+      in the PVMaster.</dd>
+  <dt>initCopy</dt>
+    <dd>Initialize PVStructure with the current data from the PVMaster. The
+      bitSet will have offset 0 set to 1 and all other bits set to 0. </dd>
+  <dt>updateCopySetBitSet</dt>
+    <dd>Update PVStructure from PVMaster. The BitSet shows which fields in
+      PVStructure have changed.</dd>
+  <dt>updateCopyFromBitSet</dt>
+    <dd>Update PVStructure from PVMaster. Only fields that have the offset in
+      bitSet set to true are modified.</dd>
+  <dt>updateMaster</dt>
+    <dd>Update the fields in PVMaster with data from PVStructure. Only fields
+      that have the offset in bitSet set to true are modified. </dd>
+  <dt>getOptions</dt>
+    <dd>Get options for a field in a PVStructure created by pvCopy
+    The arguments are the pvStructure and the offset of the field for which the options are wanted.
+    It returns the options or null if the field did not have options.
+    </dd>
+  <dt>dump</dt>
+    <dd>Provides a dump of the internal pvCopy nodes. This is useful for debugging
+     monitor algorithms.</dd>
+</dl>
+
+<h3>Guidelines for pvDatabase Services</h3>
+<p>This section is for services that use pvDatabaseCPP.
+Such services do not have to provide a top level PVStructure
+and methods init, process, and destroy.
+pvDatabaseCPP and pvAccessCPP provide a complete implementation of the server
+side of pvAccess.
+From the PVStructure a PVRecord is created.
+This record can be locked.
+</p>
+<p>A server is providing data for multiple clients.
+Each client has it's own top level PVStructures that has data
+for a subset of the fields in the servers top level PVStructure.
+The service must be careful of how it updates data in it's top leve
+PVStructure or else data for a client can change after process completes
+and before it is sent to the client.
+</p>
+<p>Previously the mapping between a PVStructure and it's associated
+bitSet as shown:
+<a href="#bitAssignment">bitSet for pvStructure</a>
+</p>
+<p>This can also be used to present guidelines for modifing fields
+in the top level PVStructure for the service:</p>
+<p>The pvRecord must be locked whenever any field is modfied.</p>
+<p>Any union, unionArray, or structureArray field that has a bit
+of the bitSet assigned to it <b>must</b> be replaced.
+Modifing subFields of the field is <b>not</b> permisible.
+</p>
+<h2>Special Fields</h2>
+<h3>enum</h3>
+<p>An enumerated structure is a structure that has fields:</p>
+<pre>
+enum_t
+    int index
+    string[] choices
+</pre>
+<h4>PVEnumerated</h4>
+<pre>
+PVEnumerated
+    boolean attach(PVField pvField)
+    void detach()
+    boolean isAttached()
+    boolean setIndex(int index)
+    int getIndex()
+    String getChoice()
+    boolean choicesMutable()
+    String[] getChoices()
+    boolean setChoices(String[] choices)
+</pre>
+
+<p>where</p>
+<dl>
+  <dt>attach</dt>
+    <dd>Attempts to attach to <span
+     >pvField</span> It returns (false,true) if
+      pvField (is not, is) an enumerated structure.</dd>
+  <dt>detach</dt>
+    <dd>Just detaches from the pvData structure.</dd>
+  <dt>isAttached</dt>
+    <dd>Is there an attachment to an enumerated structure?</dd>
+  <dt>setIndex</dt>
+    <dd>Set the index field in the pvData structure. An exception is thrown if
+      not attached to a pvData structure. </dd>
+  <dt>getIndex</dt>
+    <dd>Get the index field in the pvData structure. </dd>
+  <dt>getChoice</dt>
+    <dd>Get the String value corresponding to the current index field in the
+      pvData structure. An exception is thrown if not attached to a pvData
+      structure. </dd>
+  <dt>choicesMutable</dt>
+    <dd>Can the choices be changed? Note that this is often true. An exception
+      is thrown if not attached to a pvData structure. </dd>
+  <dt>getChoices</dt>
+    <dd>Get the array of choices. An exception is thrown if not attached to a
+      pvData structure. </dd>
+  <dt>getNumberChoices</dt>
+    <dd>Get the number of choices. An exception is thrown if not attached to a
+      pvData structure. </dd>
+  <dt>setChoices</dt>
+    <dd>Change the choices. An exception is thrown if not attached to a pvData
+      structure. </dd>
+</dl>
+
+<h3>alarm</h3>
+<p>An alarm structure is defined as follows:</p>
+<pre>
+alarm_t alarm
+    int severity
+    int status
+    string message
+</pre>
+<p>Note that severity and status are NOT defined as enumerated structures.
+The reason is performance, i. e. prevent passing the array of choice strings everywhere.
+The AlarmStatus and AlarmSeverity provide the equivalent of choices for an
+enumerated structure.</p>
+<h4>AlarmSeverity</h4>
+<p>Alarm Severity defines the possible alarm severities</p>
+<pre>
+enum AlarmSeverity
+    NONE,MINOR,MAJOR,INVALID,UNDEFINED
+    AlarmSeverity getSeverity(int value)
+    final String[] alarmSeverityNames
+    String[] getSeverityNames()
+</pre>
+where
+<dl>
+  <dt>getSeverity</dt>
+    <dd>Get the alarm severity corresponding to the integer value.</dd>
+  <dt>getSeverityNames</dt>
+    <dd>Get the array of severity choices.</dd>
+</dl>
+<h4>AlarmStatus</h4>
+<p>Alarm Status defines the possible alarm status conditions</p>
+<pre>
+enum AlarmStatus
+    NONE,DEVICE,DRIVER,RECORD,DB,CONF,UNDEFINED,CLIENT;
+
+    AlarmStatus getStatus(int value)
+    String[] alarmStatusNames
+    String[] getStatusNames()
+</pre>
+where
+<dl>
+  <dt>getStatus</dt>
+    <dd>Get the alarm status corresponding to the integer value.</dd>
+  <dt>getStatusNames</dt>
+    <dd>Get the array of status choices.</dd>
+</dl>
+<h4>Alarm</h4>
+<pre>
+Alarm
+    String getMessage()
+    void setMessage(String message)
+    AlarmSeverity getSeverity()
+    void setSeverity(AlarmSeverity alarmSeverity)
+    AlarmStatus getStatus()
+    void setStatus(AlarmStatus alarmStatus)
+}</pre>
+where
+<dl>
+  <dt>getMessage</dt>
+    <dd>Get the message.</dd>
+  <dt>setMessage</dt>
+    <dd>Set the message.</dd>
+  <dt>getSeverity</dt>
+    <dd>Get the severity.</dd>
+  <dt>setSeverity</dt>
+    <dd>Set the severity.</dd>
+  <dt>getStatus</dt>
+    <dd>Get the status.</dd>
+  <dt>setStatus</dt>
+    <dd>Set the status.</dd>
+</dl>
+<h4>PVAlarm</h4>
+<pre>
+PVAlarm 
+    boolean attach(PVField pvField)
+    void detach()
+    boolean isAttached()
+    void get(Alarm alarm)
+    boolean set(Alarm alarm)
+</pre>
+<p>where</p>
+<dl>
+  <dt>PVAlarm</dt>
+    <dd>The default constructor. Attach must be called before get or set can be
+      called.</dd>
+  <dt>attach</dt>
+    <dd>Attempts to attach to <span
+     >pvField</span> It returns (false,true) if
+      it found an appropriate pvData structure. It looks first a pvField itself
+      and if is not an appropriate pvData structure but the field name is value
+      it looks to see if the parent structure has an appropriate sub
+    structure.</dd>
+  <dt>detach</dt>
+    <dd>Just detaches from the pvData structure.</dd>
+  <dt>isAttached</dt>
+    <dd>Is there an attachment to an alarm structure?</dd>
+  <dt>get</dt>
+    <dd>Copies data from the pvData structure to an Alarm. An exception is
+      thrown if not attached to a pvData structure. </dd>
+  <dt>set</dt>
+    <dd>Copies data from Alarm to the pvData structure. An exception is thrown
+      if not attached to a pvData structure. </dd>
+</dl>
+
+
+<h3>timeStamp</h3>
+<p>A timeStamp is represented by the following structure</p>
+<pre>
+time_t timeStamp
+    long secondsPastEpoch
+    int nanoseconds
+    int userTag
+</pre>
+
+<p>The Epoch is the POSIX epoch, i.e. Jan 1, 1970 00:00:00 UTC. Both the
+seconds and nanoseconds are signed integers and thus can be negative. Since the
+seconds is kept as a 64 bit integer, it allows for a time much greater than the
+present age of the universe. Since the nanoseconds portion is kept as a 32 bit
+integer it is subject to overflow if a value that corresponds to a value that
+is greater than a little more than 2 seconds of less that about -2 seconds. The
+support code always adjust seconds so that the nanoSecconds part is normalized,
+i. e. it has is 0&lt;=nanoseconds&lt;nanoSecPerSec..</p>
+<h4>TimeStamp</h4>
+<p>The definition of TimeStamp is:</p>
+<pre>
+TimeStamp 
+    void normalize()
+    long getSecondsPastEpoch()
+    long getEpicsSecondsPastEpoch()
+    int getNanoseconds()
+    int getUserTag()
+    void setUserTag(int userTag)
+    void put(long secondsPastEpoch,int nanoseconds)
+    long getMilliSeconds()
+    void put(long milliSeconds)
+    void getCurrentTime()
+    boolean equals(TimeStamp other)
+    boolean lt(TimeStamp other)
+    boolean le(TimeStamp other)
+    void add(long seconds)
+    void add(double seconds)
+    double diff(TimeStamp a,TimeStamp b)
+}
+</pre>
+<p>where:</p>
+<dl>
+  <dt>normalize</dt>
+    <dd>Adjust secondsPastEpoch and nanoseconds so that 0&lt;=nanoseconds&lt;
+      nanoSecPerSec.</dd>
+  <dt>getSecondsPastEpoch</dt>
+    <dd>Get the seconds part of timeStamp</dd>
+  <dt>getEpicsSecondsPastEpoch</dt>
+    <dd>Get seconds relative to the EPICS epoch. The epics epoch starts on Jan
+      1 1990 00:00:00 UTC.</dd>
+  <dt>getNanoseconds</dt>
+    <dd>Get the nanoseconds part of timeStamp.</dd>
+  <dt>getUserTag</dt>
+    <dd>Get the userTag</dd>
+  <dt>setUserTag</dt>
+    <dd>Set the userTag</dd>
+  <dt>put(long secondsPastEpoch,int nanoseconds)</dt>
+    <dd>Put a value into the timeStamp.</dd>
+  <dt>getMilliSeconds</dt>
+    <dd>Get the number of milliseconds since the epoch.</dd>
+  <dt>put(long milliSeconds);</dt>
+    <dd>Put a value into the timeStamp given the number of milliSeconds since
+      the epoch.</dd>
+  <dt>getCurrentTime</dt>
+    <dd>Get the current time.</dd>
+  <dt>equals</dt>
+    <dd>Is this time equal other?</dd>
+  <dt>lt</dt>
+    <dd>Is this time less than other.</dd>
+  <dt>le</dt>
+    <dd>Is this time less that or equal to other.</dd>
+  <dt>add(long seconds)</dt>
+    <dd>Add the specified number of seconds.</dd>
+  <dt>add(double seconds)</dt>
+    <dd>Add the specified number of seconds.</dd>
+  <dt>diff</dt>
+    <dd>Compute a-b. The result is in seconds.</dd>
+</dl>
+<p>The TimeStamp class provides arithmetic and comparison methods for time
+stamps. The result is always kept in normalized form, which means that the
+nanosecond portion is 0&le;=nano&lt;nanoSecPerSec. Note that it is OK to have
+timeStamps for times previous to the epoch.</p>
+
+<h4>PVTimeStamp</h4>
+<pre>
+PVTimeStamp 
+    boolean attach(PVField pvField)
+    void detach()
+    boolean isAttached()
+    void get(TimeStamp timeStamp)
+    boolean set(TimeStamp timeStamp)
+</pre>
+where
+<dl>
+  <dt>attach</dt>
+    <dd>Attempts to attach to <span
+     >pvField</span> It returns (false,true) if a
+      timeStamp structure is found. It looks first at pvField itself and if is
+      not an appropriate pvData structure but the field name is value it looks
+      up the parent structure tree.</dd>
+  <dt>detach</dt>
+    <dd>Detach from the pvData structure.</dd>
+  <dt>isAttached</dt>
+    <dd>Is there an attachment to a timeStamp structure?</dd>
+  <dt>get</dt>
+    <dd>Copies data from the pvData structure to a TimeStamp. An exception is
+      thrown if not attached to a pvData structure. </dd>
+  <dt>set</dt>
+    <dd>Copies data from TimeStamp to the pvData structure. An exception is
+      thrown if not attached to a pvData structure. </dd>
+</dl>
+
+<h3>display</h3>
+<p>Display information is represented by the following structure</p>
+<pre>
+display_t display
+    double limitLow
+    double limitHigh
+    string description
+    string format
+    string units
+</pre>
+<h4>Display</h4>
+<pre>
+Display
+    double getLow()
+    double getHigh()
+    void setLow(double value)
+    void setHigh(double value)
+    String getDescription()
+    void setDescription(String value)
+    String getFormat()
+    void setFormat(String value)
+    String getUnits()
+    void setUnits(String value)
+</pre>
+<p>where</p>
+<dl>
+  <dt>getLow</dt>
+    <dd>Get the low limit.</dd>
+  <dt>getHigh</dt>
+    <dd>Get the high limit.</dd>
+  <dt>setLow</dt>
+    <dd>Set the low limit.</dd>
+  <dt>setHigh</dt>
+    <dd>Set the high limit.</dd>
+  <dt>getDescription</dt>
+    <dd>Get the description.</dd>
+  <dt>setDescription</dt>
+    <dd>Set the description.</dd>
+  <dt>getFormat</dt>
+    <dd>Get the format.</dd>
+  <dt>setFormat</dt>
+    <dd>Set the format.</dd>
+  <dt>getUnits</dt>
+    <dd>Get the units.</dd>
+  <dt>setUnits</dt>
+    <dd>Set the units.</dd>
+</dl>
+
+<h4>PVDisplay</h4>
+<pre>
+PVDisplay
+    boolean attach(PVField pvField)
+    void detach()
+    boolean isAttached()
+    void get(Display display)
+    boolean set(Display display)
+</pre>
+
+<p>where</p>
+<dl>
+  <dt>attach</dt>
+    <dd>Attempts to attach to <span
+     >pvField</span> It returns (false,true) if
+      it found an appropriate pvData structure. It looks first a pvField itself
+      and if is not an appropriate pvData structure but the field name is value
+      it looks to see if the parent structure has an appropriate sub
+    structure.</dd>
+  <dt>detach</dt>
+    <dd>Just detaches from the pvData structure.</dd>
+  <dt>isAttached</dt>
+    <dd>Is there an attachment to a display structure?</dd>
+  <dt>get</dt>
+    <dd>Copies data from the pvData structure to a Display. An exception is
+      thrown if not attached to a pvData structure.</dd>
+  <dt>set</dt>
+    <dd>Copies data from Display to the pvData structure. An exception is
+      thrown if not attached to a pvData structure. </dd>
+  <dt>create</dt>
+    <dd>Create a PVDisplay instance. Attach must be called before get or set
+      can be called.</dd>
+</dl>
+
+<h3>control</h3>
+<p>Control information is represented by the following structure</p>
+<pre>
+structure control
+    double limitLow
+    double limitHigh
+    double minStep
+</pre>
+<h4>Control</h4>
+The definition for Control is:
+<pre>
+Control
+    double getLow()
+    double getHigh()
+    void setLow(double value)
+    void setHigh(double value)
+</pre>
+
+<p>where</p>
+<dl>
+  <dt>getLow</dt>
+    <dd>Get the low limit.</dd>
+  <dt>getHigh</dt>
+    <dd>Get the high limit.</dd>
+  <dt>setLow</dt>
+    <dd>Set the low limit.</dd>
+  <dt>setHigh</dt>
+    <dd>Set the high limit.</dd>
+</dl>
+<h4>PVControl</h4>
+<pre>
+PVControl
+    boolean attach(PVField pvField)
+    void detach()
+    boolean isAttached()
+    void get(Control control)
+    boolean set(Control control)
+</pre>
+<p>where</p>
+<dl>
+  <dt>attach</dt>
+    <dd>Attempts to attach to <span
+     >pvField</span> It returns (false,true) if
+      it found an appropriate pvData structure. It looks first a pvField itself
+      and if is not an appropriate pvData structure but the field name is value
+      it looks to see if the parent structure has an appropriate sub
+    structure.</dd>
+  <dt>detach</dt>
+    <dd>Just detaches from the pvData structure.</dd>
+  <dt>isAttached</dt>
+    <dd>Is there an attachment to a control structure?</dd>
+  <dt>get</dt>
+    <dd>Copies data from the pvData structure to a Control. An exception is
+      thrown if not attached to a pvData structure. </dd>
+  <dt>set</dt>
+    <dd>Copies data from Control to the pvData structure. An exception is
+      thrown if not attached to a pvData structure. </dd>
+  <dt>create</dt>
+    <dd>Create a PVControl instance. Attach must be called before get or set
+      can be called.</dd>
+</dl>
+
+<h3>alarmLimit</h3>
+<p>This has unresolved issues.</p>
+<h2>Normative Types</h2>
+<p>At present only C++ has support for normativeTypes.
+This section discusses the normative types currently supported.
+</p>
+<h3>NT Helper Classes</h3>
+<h4>Naming Convention</h4>
+<p>Code that generates a PVStructure for a NTType must create
+a top level structure that has ID equal to the name of the normative type.
+For example an NTScalar will always appear as:</p>
+<pre>
+epics:nt/NTScalar:1.0
+    ...
+</pre>
+<p>This means that code can always check if the PVStructure is an NTScalar by:</p>
+<pre>
+if(pvStructure-&gt;getStructure()-&gt;getID().compare("epics:nt/NTScalar:1.0") == 0)
+{
+     // It is
+}
+</pre>
+<h4>NTTypeBuilder</h4>
+<p>A builder is available for each NTType.
+The builder makes it easy 
+to create a Structure or a PVStructure for the NTType.
+Perhaps as important is that it makes it much harder to create an invalid
+Structure.
+</p>
+<h4>NTType standard methods</h4>
+<p>Each helper class has the following methods</p>
+<pre>
+class NTType {
+    static NTType wrap(PVStructure pvStructure);
+    boolean mandatoryValid();
+    static string getVersion();
+    //helper methods for each mandatory and optional field
+};
+</pre>
+where
+<dl>
+   <dt>wrap</dt>
+     <dd>This creates a PVField for each mandatory and optional field.
+      The PVField will be null if the corresponding field is not present
+      and refers to the actual field if it is present.
+     </dd>
+   <dt>mandatoryValid</dt>
+     <dd>This returns (true,false) if (all,not all) mandatory fields are present.
+     </dd>
+   <dt>getVersion</dt>
+      <dd>Return the version of the helper class.</dd>
+</dl>
+<p><b>NOTE:</b> The existing semantics need to be changed.</p>
+<h3>Normative Type NTScalar</h3>
+<p>This has the following fields:</p>
+<pre>
+epics:nt/NTScalar:1.0
+    double value                        // mandatory and can be any numeric type
+    string descriptor                   // optional
+    alarm_t alarm                       // optional
+        int severity
+        int status
+        string message
+    time_t timeStamp                    // optional
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+    display_t display                   // optional
+        double limitLow
+        double limitHigh
+        string description
+        string format
+        string units
+    control_t control                   // optional
+        double limitLow
+        double limitHigh
+        double minStep
+    string extra1                       // extra
+    string[] extra2                     //
+</pre>
+
+<h4>NTScalarBuilder</h4>
+<p>This is a class that creates the introspection and data instances for NTScalar and
+an a NTScalar instance itself.</p>
+<p><b>ntscalar.h</b> defines the following:</p>
+<pre>
+class NTScalar;
+typedef std::tr1::shared_ptr&lt;NTScalar&gt; NTScalarPtr;
+
+class NTScalarBuilder
+{
+public:
+    POINTER_DEFINITIONS(NTScalarBuilder);
+    shared_pointer value(ScalarType scalarType);
+    shared_pointer addDescriptor();
+    shared_pointer addAlarm();
+    shared_pointer addTimeStamp();
+    shared_pointer addDisplay();
+    shared_pointer addControl();
+    StructureConstPtr createStructure();
+    PVStructurePtr createPVStructure();
+    NTScalarPtr create();
+    shared_pointer add(
+         string const &amp; name,
+         FieldConstPtr const &amp; field);
+private:
+}
+</pre>
+<dl>
+  <dt>value</dt>
+    <dd>This determines the scalar type for the value field.
+     This must be specified or createStructure will throw an exception.</dd>
+  <dt>addDescriptor</dt>
+     <dd>Add optional field descriptor</dd>
+  <dt>addAlarm</dt>
+     <dd>Add optional field alarm</dd>
+  <dt>addTimeStamp</dt>
+     <dd>Add optional field timeStamp</dd>
+  <dt>addDisplay</dt>
+     <dd>Add optional field display</dd>
+  <dt>addControl</dt>
+     <dd>Add optional field control</dd>
+   <dt>createStructure</dt>
+     <dd>Create a introspection instance.</dd>
+  <dt>createPVStructure</dt>
+     <dd>Create the data instance.</dd>
+   <dt>create</dt>
+      <dd>create an PVScalar instance.</dd>
+  <dt>add</dt>
+     <dd>Add an extra field. As many fields as desired can be added but each must have
+      a unique name that is not the name of any mandatory or possible optional field.</dd>
+</dl>
+<h4>NTScalarBuilder Examples</h4>
+<p>An example of creating an NTScalar instance is:</p>
+<pre>
+NTScalarBuilderPtr builder = NTScalar::createBuilder();
+NTScalarPtr ntScalar = builder-&gt;
+    value(pvInt)-&gt;
+    addDescriptor()-&gt;
+    addAlarm()-&gt;
+    addTimeStamp()-&gt;
+    addDisplay()-&gt;
+    addControl()-&gt;
+    create();
+</pre>
+<p>The same results could be done by:</p>
+<pre>
+NTScalarBuilderPtr builder = NTScalar::createBuilder();
+builder-&gt;value(pvInt);
+builder-&gt;addDescriptor();
+builder-&gt;addAlarm();
+builder-&gt;addTimeStamp();
+builder-&gt;addDisplay();
+builder-&gt;addControl();
+NTScalarPtr ntScalar = builder-&gt;create();
+</pre>
+<h4>NTScalar</h4>
+<p><b>ntscalar.h</b> defines the following:</p>
+<pre>
+class NTScalar;
+typedef std::tr1::shared_ptr&lt;NTScalar&gt; NTScalarPtr;
+
+class NTScalar
+{
+public:
+    POINTER_DEFINITIONS(NTScalar);
+    ~NTScalar() {}
+    static shared_pointer wrap(PVStructurePtr const &amp; structure);
+    static shared_pointer wrapUnsafe(PVStructurePtr const &amp; structure);
+    static bool is_a(StructureConstPtr const &amp; structure);
+    static bool isComparible(PVStructurePtr const &amp;pvStructure);
+    static NTScalarBuilderPtr createBuilder();
+
+    bool attachTimeStamp(PVTimeStamp &amp;pvTimeStamp) const;
+    bool attachAlarm(PVAlarm &amp;pvAlarm) const;
+    bool attachDisplay(PVDisplay &amp;pvDisplay) const;
+    bool attachControl(PVControl &amp;pvControl) const;
+    PVStructurePtr getPVStructure() const;
+    PVStructurePtr getTimeStamp() const;
+    PVStructurePtr getAlarm() const;
+    PVStructurePtr getDisplay() const;
+    PVStructurePtr getControl() const;
+    PVFieldPtr getValue() const;
+    template&lt;typename PVT&gt;
+    std::tr1::shared_ptr&lt;PVT&gt; getValue() const
+private:
+}
+</pre>
+where
+<dl>
+   <dt>wrap</dt>
+     <dd>Given a pvStructure this creates an NTScalar that warps it.
+       It calls <b>isCompatible</b>.
+       It returns a null PVScalar if <b>isCompatible</b> returns false.
+       <br />
+The primary use of wrap is by pvAccess client code.
+The server creates a pvStructure that is valid for an NTScalar
+and passes it to the client.
+The client can call wrap to create an NTScalar for it's own use.
+An example is:
+<pre>
+void myCallback(PVStructurePtr const &amp; pvStructure)
+{
+     NTScalarPtr ntscalar = NTScalar::wrap(pvStructure);
+     if(!ntscalar) {
+       // not a valid NTScalar
+     }
+     ...
+}
+</pre>
+     </dd>
+   <dt>wrapUnsafe</dt>
+     <dd>Given a pvStructure this creates an NTScalar that warps it.
+      It does not check that the introspection interface is compatible.
+      This method is dangerous.</dd>
+   <dt>is_a</dt>
+      <dd>This method checks to see if the structure has an ID that is
+      correct for NTScalar.</dd>
+   <dt>isComparible</dt>
+       <dd>This method checks to see if the pvStructure has appropriate
+       fields to be an NTScalar.
+       </dd>
+   <dt>createBuilder</dt>
+       <dd>This  method creates an NTScalarBuilder.</dd>
+   <dt>attachTimeStamp</dt>
+      <dd>The timeStamp field of the NTScalar is attached to the pvTimeStamp.
+      <br />
+An example is:
+<pre>
+PVTimeStamp pvTimeStamp;
+TimeStamp timeStamp;
+
+ntscalar-&gt;attachTimeStamp(pvTimeStamp);
+pvTimeStamp.get(timeStamp);
+TimeStamp current;
+current.getCurrent();
+double diff = TimeStamp::diff(timeStamp,current); // timeStamp - current
+</pre>
+      </dd>
+   <dt>attachAlarm</dt>
+      <dd>The alarm field of the NTScalar is attached to the pvAlarm.
+       If alarm is not selected as an optional field false is returned.
+      If this is successful then the pvAlarm can be used to access that alarm
+       fields.<br />
+An example is:
+<pre>
+PVAlarm pvAlarm;
+Alarm alarm;
+
+ntscalar-&gt;attachAlarm(pvAlarm);
+pvAlarm.get(alarm);
+int severity = alarm.getSeverity();
+int status = alarm.getStatus();
+string message = alarm.getMessage();
+</pre>
+      </dd>
+   <dt>attachDisplay</dt>
+      <dd>The display field of the NTScalar is attached to the pvDisplay.
+      Used similar to attachAlarm.
+      </dd>
+   <dt>attachControl</dt>
+      <dd>The control field of the NTScalar is attached to the pvControl.
+      Used similar to attachAlarm.
+    </dd>
+   <dt>getPVStructure</dt>
+       <dd>Returns the pvStructure that NTScalar wraps.</dd>
+    <dt>getDescriptor</dt>
+       <dd>Get the descriptor.</dd>
+   <dt>getTimeStamp</dt>
+       <dd>Returns the top level timeStamp.
+       If the timeStamp was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getAlarm</dt>
+       <dd>Returns the top level alarm.
+       If the alarm was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getDisplay</dt>
+       <dd>Returns the top level display.
+       If the display was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getControl</dt>
+       <dd>Returns the top level control.
+       If the control was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getValue</dt>
+       <dd>Returns the value field.</dd>
+</dl>
+<h3>Normative Type NTScalarArray</h3>
+<p>This class is similar to <b>NTScalar</b> except that the value
+field is a scalar array field instead of just a scalar.</p>
+<p>This has the following fields:</p>
+<pre>
+epics:nt/NTScalarArray:1.0
+    double[] value                      // mandatory and can be any numeric type
+    string descriptor                   // optional
+    alarm_t alarm                       // optional
+        int severity
+        int status
+        string message
+    time_t timeStamp                    // optional
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+    display_t display                   // optional
+        double limitLow
+        double limitHigh
+        string description
+        string format
+        string units
+    control_t control                   // optional
+        double limitLow
+        double limitHigh
+        double minStep
+    string extra1                       // extra
+    string[] extra2                     //
+</pre>
+<h4>NTScalarArrayBuilder</h4>
+<p><b>ntscalarArray.h</b> defines the following:</p>
+<pre>
+class NTScalarArray;
+typedef std::tr1::shared_ptr&lt;NTScalarArray&gt; NTScalarArrayPtr;
+
+class NTScalarArrayBuilder
+{
+public:
+    POINTER_DEFINITIONS(NTScalarArrayBuilder);
+    shared_pointer arrayValue(ScalarType elementType);
+    shared_pointer addDescriptor();
+    shared_pointer addAlarm();
+    shared_pointer addTimeStamp();
+    shared_pointer addDisplay();
+    shared_pointer addControl();
+    StructureConstPtr createStructure();
+    PVStructurePtr createPVStructure();
+    NTScalarArrayPtr create();
+    shared_pointer add(
+         string const &amp; name,
+         FieldConstPtr const &amp; field);
+private:
+}
+</pre>
+where
+<dl>
+  <dt>arrayValue</dt>
+    <dd>This determines the element type for the value field.
+     This must be specified or createStructure will throw an exception.</dd>
+  <dt>addDescriptor</dt>
+     <dd>Add optional field descriptor</dd>
+  <dt>addAlarm</dt>
+     <dd>Add optional field alarm</dd>
+  <dt>addTimeStamp</dt>
+     <dd>Add optional field timeStamp</dd>
+  <dt>addDisplay</dt>
+     <dd>Add optional field display</dd>
+  <dt>addControl</dt>
+     <dd>Add optional field control</dd>
+   <dt>createStructure</dt>
+     <dd>Create a introspection instance.</dd>
+  <dt>createPVStructure</dt>
+     <dd>Create the data instance.</dd>
+   <dt>create</dt>
+      <dd>create an PVScalar instance.</dd>
+  <dt>add</dt>
+     <dd>Add an extra field. As many fields as desired can be added but each must have
+      a unique name that is not the name of any mandatory or possible optional field.</dd>
+</dl>
+<h4>NTScalarArray</h4>
+<p><b>ntscalarArray.h</b> defines the following:</p>
+<pre>
+class NTScalarArray;
+typedef std::tr1::shared_ptr&lt;NTScalarArray&gt; NTScalarArrayPtr;
+
+class NTScalarArray
+{
+public:
+    POINTER_DEFINITIONS(NTScalarArray);
+    ~NTScalarArray() {}
+    static shared_pointer wrap(PVStructurePtr const &amp; structure);
+    static shared_pointer wrapUnsafe(PVStructurePtr const &amp; structure);
+    static bool is_a(StructureConstPtr const &amp; structure);
+    static bool isComparible(PVStructurePtr const &amp;pvStructure);
+    static NTScalarArrayBuilderPtr createBuilder();
+
+    bool attachTimeStamp(PVTimeStamp &amp;pvTimeStamp) const;
+    bool attachAlarm(PVAlarm &amp;pvAlarm) const;
+    bool attachDisplay(PVDisplay &amp;pvDisplay) const;
+    bool attachControl(PVControl &amp;pvControl) const;
+    PVStructurePtr getPVStructure() const;
+    PVStructurePtr getTimeStamp() const;
+    PVStructurePtr getAlarm() const;
+    PVStructurePtr getDisplay() const;
+    PVStructurePtr getControl() const;
+    PVFieldPtr getValue() const;
+    template&lt;typename PVT&gt;
+    std::tr1::shared_ptr&lt;PV&gt; getValue() const
+private:
+}
+</pre>
+where
+<dl>
+   <dt>wrap</dt>
+     <dd>Given a pvStructure this creates an NTScalarArray that warps it.
+       It calls <b>isCompatible</b> returns a null PVScalarArray if <b>isCompatible</b> returns false.
+     </dd>
+   <dt>wrapUnsafe</dt>
+     <dd>Given a pvStructure this creates an NTScalarArray that warps it.
+      It does not check that the introspection interface is compatible.
+      This method is dangerous.</dd>
+   <dt>is_a</dt>
+      <dd>This method checks to see if the structure has an ID that is
+      correct for NTScalarArray.</dd>
+   <dt>isComparible</dt>
+       <dd>This method checks to see if the pvStructure has appropriate
+       fields to be an NTScalarArray.
+       </dd>
+   <dt>createBuilder</dt>
+       <dd>This  method creates a NTScalarArrayBuilder.</dd>
+   <dt>attachTimeStamp</dt>
+      <dd>The timeStamp field of the NTScalarArray is attached to the pvTimeStamp.
+      </dd>
+   <dt>attachAlarm</dt>
+      <dd>The alarm field of the NTScalarArray is attached to the pvAlarm.
+       If alarm is not selected as an optional field false is returned.
+      If this is successful then the pvAlarm can be used to access that alarm
+       fields.
+      </dd>
+   <dt>attachDisplay</dt>
+      <dd>The display field of the NTScalarArray is attached to the pvDisplay.
+      Used similar to attachAlarm.
+      </dd>
+   <dt>attachControl</dt>
+      <dd>The control field of the NTScalarArray is attached to the pvControl.
+      Used similar to attachAlarm.
+    </dd>
+   <dt>getPVStructure</dt>
+       <dd>Returns the pvStructure that NTScalarArray wraps.</dd>
+    <dt>getDescriptor</dt>
+       <dd>Get the descriptor.</dd>
+   <dt>getTimeStamp</dt>
+       <dd>Returns the top level timeStamp.
+       If the timeStamp was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+
+   <dt>getAlarm</dt>
+       <dd>Returns the top level alarm.
+       If the alarm was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getDisplay</dt>
+       <dd>Returns the top level display.
+       If the display was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getControl</dt>
+       <dd>Returns the top level control.
+       If the control was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getValue</dt>
+       <dd>Returns the value field.</dd>
+</dl>
+
+<h3>Normative Type NTNameValue</h3>
+<pre>
+epics:nt/NTNameValue:1.0
+    string[] name                 // mandatory
+    double[] value                // madatory, can be any type, must be same length as name
+    string descriptor              // optional
+    alarm_t alarm                  // optional
+        int severity
+        int status
+        string message
+    time_t timeStamp              // optional
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+    string extra1                 // extra
+    string[] extra2               // extra
+</pre>
+<h4>NTNameValueBuilder</h4>
+<p><b>ntnameValue.h</b> defines the following:</p>
+<pre>
+class NTNameValue;
+typedef std::tr1::shared_ptr&lt;NTNameValue&gt; NTNameValuePtr;
+
+class NTNameValueBuilder
+{
+public:
+    POINTER_DEFINITIONS(NTNameValueBuilder);
+    shared_pointer value(ScalarType scalarType);
+    shared_pointer addDescriptor();
+    shared_pointer addAlarm();
+    shared_pointer addTimeStamp();
+    StructureConstPtr createStructure();
+    PVStructurePtr createPVStructure();
+    NTNameValuePtr create();
+    shared_pointer add(
+         string const &amp; name,
+         FieldConstPtr const &amp; field);
+private:
+}
+</pre>
+where
+<dl>
+  <dt>value</dt>
+    <dd>This determines the element type for the value field.
+     This must be specified or createStructure will throw an exception.</dd>
+  <dt>addDescriptor</dt>
+     <dd>Add optional field descriptor</dd>
+  <dt>addAlarm</dt>
+     <dd>Add optional field alarm</dd>
+  <dt>addTimeStamp</dt>
+     <dd>Add optional field timeStamp</dd>
+   <dt>createStructure</dt>
+     <dd>Create a introspection instance.</dd>
+  <dt>createPVStructure</dt>
+     <dd>Create the data instance.</dd>
+   <dt>create</dt>
+      <dd>create an PVScalar instance.</dd>
+  <dt>add</dt>
+     <dd>Add an extra field. As many fields as desired can be added but each must have
+      a unique name that is not the name of any mandatory or possible optional field.</dd>
+</dl>
+<h4>NTNameValue</h4>
+<pre>
+class NTNameValue;
+typedef std::tr1::shared_ptr&lt;NTNameValue&gt; NTNameValuePtr;
+
+class NTNameValue
+{
+public:
+    POINTER_DEFINITIONS(NTNameValue);
+    ~NTNameValue() {}
+    static shared_pointer wrap(PVStructurePtr const &amp; structure);
+    static shared_pointer wrapUnsafe(PVStructurePtr const &amp; structure);
+    static bool is_a(StructureConstPtr const &amp; structure);
+    static bool isComparible(PVStructurePtr const &amp;pvStructure);
+    static NTNameValueBuilderPtr createBuilder();
+
+    bool attachTimeStamp(PVTimeStamp &amp;pvTimeStamp) const;
+    bool attachAlarm(PVAlarm &amp;pvAlarm) const;
+    PVStringPtr getDescriptor() const;
+    PVStructurePtr getPVStructure() const;
+    PVStructurePtr getTimeStamp() const;
+    PVStructurePtr getAlarm() const;
+    PVStringArrayPtr getName() const;
+    PVFieldPtr getValue() const;
+    template&lt;typename PVT&gt;
+    std::tr1::shared_ptr&lt;PV&gt; getValue() const
+private:
+}
+</pre>
+where
+<dl>
+   <dt>wrap</dt>
+     <dd>Given a pvStructure this creates an NTNameValue that warps it.
+       It calls <b>isCompatible</b> returns a null NTNameValue if <b>isCompatible</b> returns false.
+     </dd>
+   <dt>wrapUnsafe</dt>
+     <dd>Given a pvStructure this creates an NTNameValue that warps it.
+      It does not check that the introspection interface is compatible.
+      This method is dangerous.</dd>
+   <dt>is_a</dt>
+      <dd>This method checks to see if the structure has an ID that is
+      correct for NTNameValue.</dd>
+   <dt>isComparible</dt>
+       <dd>This method checks to see if the pvStructure has appropriate
+       fields to be an NTNameValue.
+       </dd>
+   <dt>createBuilder</dt>
+       <dd>This  method creates an NTNameValueBuilder.</dd>
+   <dt>attachTimeStamp</dt>
+      <dd>The timeStamp field of the NTNameValue is attached to the pvTimeStamp.
+      </dd>
+   <dt>attachAlarm</dt>
+      <dd>The alarm field of the NTNameValue is attached to the pvAlarm.
+       If alarm is not selected as an optional field false is returned.
+      If this is successful then the pvAlarm can be used to access that alarm
+       fields.
+      </dd>
+   <dt>getPVStructure</dt>
+       <dd>Returns the pvStructure that NTNameValue wraps.</dd>
+    <dt>getDescriptor</dt>
+       <dd>Get the descriptor.</dd>
+   <dt>getTimeStamp</dt>
+       <dd>Returns the top level timeStamp.
+       If the timeStamp was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getAlarm</dt>
+       <dd>Returns the top level alarm.
+       If the alarm was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getName</dt>
+       <dd>Returns field name.</dd>
+   <dt>getValue</dt>
+</dl>
+
+<h3>Normative Type NTTable</h3>
+<pre>
+epics:nt/NTTable:1.0
+    string[] labels [column0,column1,column2]    // mandatory
+    structure value                              // mandatory;
+        double[] column0 []                      // name=labels[0]; can be any scalar type
+        string[] column1 []                      // name=labels[1]; can be any scalar type
+        int[] column2 []                         // name=labels[2]; can be any scalar type
+    string descriptor                            // optional
+    alarm_t alarm                                // optional
+        int severity
+        int status
+        string
+    time_t timeStamp                             // optional
+        long secondsPastEpoch
+        int nanoseconds 498486530
+        int userTag
+    string extra1                                // extra
+</pre>
+<h4>NTTableBuilder</h4>
+<p><b>nttable.h</b> defines the following:</p>
+<pre>
+class NTTable;
+typedef std::tr1::shared_ptr&lt;NTTable&gt; NTTablePtr;
+
+class NTTableBuilder
+{
+public:
+    POINTER_DEFINITIONS(NTTableBuilder);
+    shared_pointer add(string const &amp; name,ScalarType scalarType);
+    shared_pointer addDescriptor();
+    shared_pointer addAlarm();
+    shared_pointer addTimeStamp();
+    StructureConstPtr createStructure();
+    PVStructurePtr createPVStructure();
+    NTTablePtr create();
+    shared_pointer add(
+         string const &amp; name,
+         FieldConstPtr const &amp; field);
+private:
+}
+</pre>
+where
+<dl>
+  <dt>add</dt>
+    <dd>This is the name and elementType for the next column</dd>
+  <dt>addDescriptor</dt>
+     <dd>Add optional field descriptor</dd>
+  <dt>addAlarm</dt>
+     <dd>Add optional field alarm</dd>
+  <dt>addTimeStamp</dt>
+     <dd>Add optional field timeStamp</dd>
+   <dt>createStructure</dt>
+     <dd>Create a introspection instance.</dd>
+  <dt>createPVStructure</dt>
+     <dd>Create the data instance.</dd>
+   <dt>create</dt>
+      <dd>create an PVScalar instance.</dd>
+  <dt>add</dt>
+     <dd>Add an extra field. As many fields as desired can be added but each must have
+      a unique name that is not the name of any mandatory or possible optional field.</dd>
+</dl>
+<h4>NTTable</h4>
+<pre>
+class NTTable;
+typedef std::tr1::shared_ptr&lt;NTTable&gt; NTTablePtr;
+
+class NTTable
+{
+public:
+    POINTER_DEFINITIONS(NTTable);
+    ~NTTable() {}
+    static shared_pointer wrap(PVStructurePtr const &amp; structure);
+    static shared_pointer wrapUnsafe(PVStructurePtr const &amp; structure);
+    static bool is_a(StructureConstPtr const &amp; structure);
+    static bool isComparible(PVStructurePtr const &amp;pvStructure);
+    static NTTableBuilderPtr createBuilder();
+
+    bool attachTimeStamp(PVTimeStamp &amp;pvTimeStamp) const;
+    bool attachAlarm(PVAlarm &amp;pvAlarm) const;
+    PVStructurePtr getPVStructure() const;
+    PVStringPtr getDescriptor() const;
+    PVStructurePtr getTimeStamp() const;
+    PVStructurePtr getAlarm() const;
+    PVStringArrayPtr getLabels() const;
+    PVFieldPtr getColumn(string const &amp; columnName) const;
+    template&lt;typename PVT&gt;
+    std::tr1::shared_ptr&lt;PV&gt; getColumn(string const &amp; columnName) const;
+private:
+}
+</pre>
+where
+<dl>
+   <dt>wrap</dt>
+     <dd>Given a pvStructure this creates an NTTable that warps it.
+       It calls <b>isCompatible</b> returns a null NTTable if <b>isCompatible</b> returns false.
+     </dd>
+   <dt>wrapUnsafe</dt>
+     <dd>Given a pvStructure this creates an NTTable that warps it.
+      It does not check that the introspection interface is compatible.
+      This method is dangerous.</dd>
+   <dt>is_a</dt>
+      <dd>This method checks to see if the structure has an ID that is
+      correct for NTTable.</dd>
+   <dt>isComparible</dt>
+       <dd>This method checks to see if the pvStructure has appropriate
+       fields to be an NTTable.
+       </dd>
+   <dt>createBuilder</dt>
+       <dd>This  method creates an NTTableBuilder.</dd>
+   <dt>attachTimeStamp</dt>
+      <dd>The timeStamp field of the NTTable is attached to the pvTimeStamp.
+      </dd>
+   <dt>attachAlarm</dt>
+      <dd>The alarm field of the NTTable is attached to the pvAlarm.
+       If alarm is not selected as an optional field false is returned.
+      If this is successful then the pvAlarm can be used to access that alarm
+       fields.
+      </dd>
+   <dt>getPVStructure</dt>
+       <dd>Returns the pvStructure that NTTable wraps.</dd>
+    <dt>getDescriptor</dt>
+       <dd>Get the descriptor.</dd>
+   <dt>getTimeStamp</dt>
+       <dd>Returns the top level timeStamp.
+       If the timeStamp was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getAlarm</dt>
+       <dd>Returns the top level alarm.
+       If the alarm was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getLabels</dt>
+       <dd>Returns the labels field.</dd>
+   <dt>getColumn</dt>
+       <dd>Returns the column with the specified name.</dd>
+</dl>
+
+<h3>Normative Type NTMultiChannel</h3>
+<pre>
+structure NTMultiChannel
+  union_t[] value            // mandatory
+  string[]  channelName      // mandatory; must be same length as value
+  time_t    timeStamp        //optional; time when data collected
+  alarm_t   alarm            //optional; alarm associated with data collection
+  int[]     severity         //optional; alarm severity for each value
+  int[]     status           //optional; alarm status for each value
+  string[]  message          //optional; alarm message for each value
+  long[]    secondsPastEpoch //optional; seconds for each value.
+  int[]     nanoseconds      //optional; nanoseconds for each value
+  string    descriptor       //optional; descriptor data
+</pre>
+<h4>NTMultiChannelBuilder</h4>
+<p><b>ntmultiChannel.h</b> defines the following:</p>
+<pre>
+class NTMultiChannel;
+typedef std::tr1::shared_ptr&lt;NTMultiChannel&gt; NTMultiChannelPtr;
+
+class NTMultiChannelBuilder
+{
+public:
+    POINTER_DEFINITIONS(NTMultiChannelBuilder);
+    shared_pointer value(UnionConstPtr valuePtr);
+    shared_pointer addDescriptor();
+    shared_pointer addAlarm();
+    shared_pointer addTimeStamp();
+    shared_pointer addSeverity();
+    shared_pointer addStatus();
+    shared_pointer addMessage();
+    shared_pointer addSecondsPastEpoch();
+    shared_pointer addNanoseconds();
+    shared_pointer addUserTag();
+    StructureConstPtr createStructure();
+    PVStructurePtr createPVStructure();
+    NTMultiChannelPtr create();
+    shared_pointer add(
+         string const &amp; name,
+         FieldConstPtr const &amp; field);
+private:
+}
+</pre>
+where
+<dl>
+  <dt>value</dt>
+    <dd>This determines the element type for the value field.
+    If not specified the type will be a variant union.
+    </dd>
+  <dt>addDescriptor</dt>
+     <dd>Add optional field descriptor</dd>
+  <dt>addAlarm</dt>
+     <dd>Add optional field alarm</dd>
+  <dt>addTimeStamp</dt>
+     <dd>Add optional field timeStamp</dd>
+  <dt>addSeverity</dt>
+     <dd>Add a field that has the alarm severity for each channel.</dd>
+  <dt>addStatus</dt>
+     <dd>Add a field that has the alarm status for each channel.</dd>
+  <dt>addMessage</dt>
+     <dd>Add a field that has the alarm message for each channel.</dd>
+  <dt>addSecondsPastEpoch</dt>
+     <dd>Add a field that has the secondsPastEpoch for each channel.</dd>
+  <dt>addNanoseconds</dt>
+     <dd>Add a field that has the nanoseconds for each channel.</dd>
+  <dt>addUserTag</dt>
+     <dd>Add a field that has the userTag for each channel.</dd>
+   <dt>createStructure</dt>
+     <dd>Create a introspection instance.</dd>
+  <dt>createPVStructure</dt>
+     <dd>Create the data instance.</dd>
+   <dt>create</dt>
+      <dd>create an PVScalar instance.</dd>
+  <dt>add</dt>
+     <dd>Add an extra field. As many fields as desired can be added but each must have
+      a unique name that is not the name of any mandatory or possible optional field.</dd>
+</dl>
+<h4>NTMultiChannel</h4>
+<pre>
+class NTMultiChannel;
+typedef std::tr1::shared_ptr&lt;NTMultiChannel&gt; NTMultiChannelPtr;
+
+class NTMultiChannel
+{
+public:
+    POINTER_DEFINITIONS(NTMultiChannel);
+    ~NTMultiChannel() {}
+    static shared_pointer wrap(PVStructurePtr const &amp; structure);
+    static shared_pointer wrapUnsafe(PVStructurePtr const &amp; structure);
+    static bool is_a(StructureConstPtr const &amp; structure);
+    static bool isComparible(PVStructurePtr const &amp;pvStructure);
+    static NTMultiChannelBuilderPtr createBuilder();
+
+    bool attachTimeStamp(PVTimeStamp &amp;pvTimeStamp) const;
+    bool attachAlarm(PVAlarm &amp;pvAlarm) const;
+    PVStringPtr getDescriptor() const;
+    PVStructurePtr getPVStructure() const;
+    PVStructurePtr getTimeStamp() const;
+    PVStructurePtr getAlarm() const;
+    PVUnionArrayPtr getValue() const;
+    PVStringArrayPtr getChannelName() const;
+    PVBooleanArrayPtr getIsConnected() const;
+    PVIntArrayPtr getSeverity() const;
+    PVIntArrayPtr getStatus() const;
+    PVStringArrayPtr getMessage() const;
+    PVLongArrayPtr getSecondsPastEpoch() const;
+    PVIntArrayPtr getNanoseconds() const;
+    PVIntArrayPtr getUserTag() const;
+private:
+}
+</pre>
+where
+<dl>
+   <dt>wrap</dt>
+     <dd>Given a pvStructure this creates an NTMultiChannel that warps it.
+       It calls <b>isCompatible</b> returns a null NTMultiChannel if <b>isCompatible</b> returns false.
+     </dd>
+   <dt>wrapUnsafe</dt>
+     <dd>Given a pvStructure this creates an NTMultiChannel that warps it.
+      It does not check that the introspection interface is compatible.
+      This method is dangerous.</dd>
+   <dt>is_a</dt>
+      <dd>This method checks to see if the structure has an ID that is
+      correct for NTMultiChannel.</dd>
+   <dt>isComparible</dt>
+       <dd>This method checks to see if the pvStructure has appropriate
+       fields to be an NTMultiChannel.
+       </dd>
+   <dt>createBuilder</dt>
+       <dd>This  method creates an NTMultiChannelBuilder.</dd>
+   <dt>attachTimeStamp</dt>
+      <dd>The timeStamp field of the NTMultiChannel is attached to the pvTimeStamp.
+      </dd>
+   <dt>attachAlarm</dt>
+      <dd>The alarm field of the NTMultiChannel is attached to the pvAlarm.
+       If alarm is not selected as an optional field false is returned.
+      If this is successful then the pvAlarm can be used to access that alarm
+       fields.
+      </dd>
+   <dt>getPVStructure</dt>
+       <dd>Returns the pvStructure that NTMultiChannel wraps.</dd>
+    <dt>getDescriptor</dt>
+       <dd>Get the descriptor.</dd>
+   <dt>getTimeStamp</dt>
+       <dd>Returns the top level timeStamp.
+       If the timeStamp was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getAlarm</dt>
+       <dd>Returns the top level alarm.
+       If the alarm was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getValue</dt>
+       <dd>Returns the value field.</dd>
+   <dt>getChannelName</dt>
+       <dd>Returns the name of each channel.</dd>
+   <dt>getIsConnected</dt>
+       <dd>Returns connection state of each channel.</dd>
+   <dt>getSeverity</dt>
+       <dd>Returns the severity of each channel.</dd>
+   <dt>getStatus</dt>
+       <dd>Returns the status of each channel.</dd>
+   <dt>getMessage</dt>
+       <dd>Returns the message of each channel.</dd>
+   <dt>getSecondsPastEpoch</dt>
+       <dd>Returns the secondsPastEpoch of each channel.</dd>
+   <dt>getNanoseconds</dt>
+       <dd>Returns the nanoseconds of each channel.</dd>
+   <dt>getUserTag</dt>
+       <dd>Returns the userTag of each channel.</dd>
+</dl>
+<h3>Normative Type NTNDArray</h3>
+<pre>
+epics:nt/NTNDArray:1.0
+    union value                                 //mandatory
+    codec_t codec                               //mandatory
+        string name
+        any parameters
+    long compressedSize                         //mandatory
+    long uncompressedSize                       //mandatory
+    dimension_t[] dimension                     //mandatory
+        dimension_t[]
+            dimension_t
+                int size
+                int offset
+                int fullSize
+                int binning
+                boolean reverse
+    int uniqueId                                //mandatory
+    time_t dataTimeStamp                        //mandatory
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+    epics:nt/NTAttribute:1.0[] attribute //mandatory
+        epics:nt/NTAttribute:1.0[]
+            epics:nt/NTAttribute:1.0
+                string name
+                any value
+                string description
+                int sourceType
+                string source
+    string descriptor                           // optional
+    time_t timeStamp                            // optional
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+    alarm_t alarm                               // optional
+        int severity
+        int status
+        string message
+    display_t display                           // optional
+        double limitLow
+        double limitHigh
+        string description
+        string format
+        string units
+    string extra1                               //extra
+</pre>
+<h4>NTNDArrayBuilder</h4>
+<p><b>ntndArray.h</b> defines the following:</p>
+<pre>
+class NTNDArray;
+typedef std::tr1::shared_ptr&lt;NTNDArray&gt; NTNDArrayPtr;
+
+class NTNDArrayBuilder
+{
+public:
+    POINTER_DEFINITIONS(NTNDArrayBuilder);
+    shared_pointer addDescriptor();
+    shared_pointer addAlarm();
+    shared_pointer addTimeStamp();
+    shared_pointer addDisplay();
+    StructureConstPtr createStructure();
+    PVStructurePtr createPVStructure();
+    NTNDArrayPtr create();
+    shared_pointer add(
+         string const &amp; name,
+         FieldConstPtr const &amp; field);
+private:
+}
+</pre>
+where
+<dl>
+  <dt>addDescriptor</dt>
+     <dd>Add optional field descriptor</dd>
+  <dt>addAlarm</dt>
+     <dd>Add optional field alarm</dd>
+  <dt>addTimeStamp</dt>
+     <dd>Add optional field timeStamp</dd>
+  <dt>addDisplay</dt>
+     <dd>Add optional field display</dd>
+   <dt>createStructure</dt>
+     <dd>Create a introspection instance.</dd>
+  <dt>createPVStructure</dt>
+     <dd>Create the data instance.</dd>
+   <dt>create</dt>
+      <dd>create an PVScalar instance.</dd>
+  <dt>add</dt>
+     <dd>Add an extra field. As many fields as desired can be added but each must have
+      a unique name that is not the name of any mandatory or possible optional field.</dd>
+</dl>
+<h4>NTNDArray</h4>
+<pre>
+class NTNDArray;
+typedef std::tr1::shared_ptr&lt;NTNDArray&gt; NTNDArrayPtr;
+
+class NTNDArray
+{
+public:
+    POINTER_DEFINITIONS(NTNDArray);
+    ~NTNDArray() {}
+    static shared_pointer wrap(PVStructurePtr const &amp; structure);
+    static shared_pointer wrapUnsafe(PVStructurePtr const &amp; structure);
+    static bool is_a(StructureConstPtr const &amp; structure);
+    static bool isComparible(PVStructurePtr const &amp;pvStructure);
+    static NTNDArrayBuilderPtr createBuilder();
+
+    PVStringPtr getDescriptor() const;
+    bool attachTimeStamp(PVTimeStamp &amp;pvTimeStamp) const;
+    bool attachDataTimeStamp(PVTimeStamp &amp;pvTimeStamp) const;
+    bool attachAlarm(PVAlarm &amp;pvAlarm) const;
+    PVStructurePtr getPVStructure() const;
+    PVUnionPtr getValue() const;
+    PVStructurePtr getCodec() const;
+    PVLongPtr getCompressedDataSize() const;
+    PVLongPtr getUncompressedDataSize() const;
+    PVStructureArrayPtr getAttribute() const;
+    PVStructureArrayPtr getDimension() const;
+    PVIntPtr getUniqueId() const;
+    PVStructurePtr getDataTimeStamp() const;
+    PVStringPtr getDescriptor() const;
+    PVStructurePtr getTimeStamp() const;
+    PVStructurePtr getAlarm() const;
+    PVStructurePtr getDisplay() const;
+private:
+}
+</pre>
+where
+<dl>
+   <dt>wrap</dt>
+     <dd>Given a pvStructure this creates an NTNDArray that warps it.
+       It calls <b>isCompatible</b> returns a null NTNDArray if <b>isCompatible</b> returns false.
+     </dd>
+   <dt>wrapUnsafe</dt>
+     <dd>Given a pvStructure this creates an NTNDArray that warps it.
+      It does not check that the introspection interface is compatible.
+      This method is dangerous.</dd>
+   <dt>is_a</dt>
+      <dd>This method checks to see if the structure has an ID that is
+      correct for NTNDArray.</dd>
+   <dt>isComparible</dt>
+       <dd>This method checks to see if the pvStructure has appropriate
+       fields to be an NTNDArray.
+       </dd>
+   <dt>createBuilder</dt>
+       <dd>This  method creates an NTNDArrayBuilder.</dd>
+   <dt>attachTimeStamp</dt>
+      <dd>The timeStamp field of the NTNDArray is attached to the pvTimeStamp.
+      </dd>
+   <dt>attachDataTimeStamp</dt>
+      <dd>The dataTimeStamp field of the NTNDArray is attached to the pvTimeStamp.
+      </dd>
+   <dt>attachAlarm</dt>
+      <dd>The alarm field of the NTNDArray is attached to the pvAlarm.
+       If alarm is not selected as an optional field false is returned.
+      If this is successful then the pvAlarm can be used to access that alarm
+       fields.
+      </dd>
+   <dt>getPVStructure</dt>
+       <dd>Returns the pvStructure that NTNDArray wraps.</dd>
+   <dt>getValue</dt>
+       <dd>Returns the value field.</dd>
+   <dt>getCodec</dt>
+       <dd>Returns the severity of each channel.</dd>
+   <dt>getCompressedDataSize</dt>
+       <dd>Returns the name of each channel.</dd>
+   <dt>getUncompressedDataSize</dt>
+       <dd>Returns connection state of each channel.</dd>
+   <dt>getAttribute</dt>
+       <dd>Returns the status of each channel.</dd>
+   <dt>getDimension</dt>
+       <dd>Returns the message of each channel.</dd>
+   <dt>getUniqueId</dt>
+       <dd>Returns the secondsPastEpoch of each channel.</dd>
+   <dt>getDataTimeStamp</dt>
+       <dd>Returns the data timeStamp.
+       </dd>
+    <dt>getDescriptor</dt>
+       <dd>Get the descriptor.</dd>
+   <dt>getTimeStamp</dt>
+       <dd>Returns the top level timeStamp.
+       If the timeStamp was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getAlarm</dt>
+       <dd>Returns the top level alarm.
+       If the alarm was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+   <dt>getDisplay</dt>
+       <dd>Returns the top level display.
+       If the display was not selected as an optional field
+       a null pvStructure is returned.
+       </dd>
+</dl>
+
+
+<h3>NT Compatibility Overview</h3>
+<p>
+A NTType has  a set of required fields, a set of optional fields, and can also have extra fields.
+For a mandatory or optional field both the field name and type are part of the definition.
+</p>
+<p>
+So now lets consider compatibility.
+The following assumes that no mandatory or optional field has been removed
+or has a different type.
+</p>
+
+<h4>old client and new server</h4>
+<p>
+If the NTType has any of the following changes the client will not care:
+</p>
+<ul>
+<li>
+new mandatory fields
+</li>
+<li>
+new optional fields
+</li>
+<li>
+optional field made mandatory
+</li>
+</ul>
+<p>
+If other changes were made then the new version is incompatible.
+In this case if the client only uses a subset of the fields it can introspect to see if the fields it requires are present.
+</p>
+<h4>new client and old server</h4>
+<p>
+Now the client is affected if there are:
+</p>
+<ul>
+<li>
+new mandatory fields not provided by the server.
+</li>
+<li>
+new optional fields that the server provides
+with a different type,
+</li>
+</ul>
+<p>
+In this case the client can introspect to see if the fields the client requires
+are present and have the correct type. 
+</p>
+<p>Thus by using introspection code can determine
+if an NTType instance provides the fields the code requires.
+</p>
+<h4>making changes to a normative type</h4>
+<p>Before any changes are made to an existing NTType
+compatability must be an important consideration.
+Changing an optional field to a mandatory field can be done
+without impacting existing clients.
+Other changes might.
+Even adding a new optional field might affect old clients
+that use extra fields. If a new optional field has the same field name
+as an extra field used by an old client but different type than the old client
+has to change.</p>
+<p>Thus making changes to widely used NTTypes like NTScalar, NTScalarArray.
+NTNameValue, NTTable, etc. must not be considered lightly.
+</p>
+
+
+<h3>Ease of Use</h3>
+<p>The last section made the case that client code can use introspection
+to find out if a PVStructure has the fields the client expects.
+But the following must also be considered:</p>
+<dl>
+  <dt>What Type?</dt>
+    <dd>Consider an application that knows how to handle multiple NTTypes.
+     It is given a PVStructure and must determine if it has an NTType
+     the application knows how to handle.
+      This can be a very serious introspection challenge.
+     </dd>
+  <dt>Introspection Hard</dt>
+    <dd>It takes effort for client code to introspect.
+     The more complicated the NTType the more introspection required.
+    </dd>
+</dl>
+<p>The next section describes features provided by helper classes
+that help with both issues.
+</p>
+
+
+</div>
+</body>
+</html>
