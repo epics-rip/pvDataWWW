@@ -7,7 +7,11 @@
 #
 # -----------------------------------------------------------------
 # Auth: Greg White, 15-Aug-2013
-# Mod: Greg White, 25-Nov-2014
+# Mod: Greg White, 26-Nov-2014
+#      Add Java 4.4.0-rc1 block. And also revert Java 4.4.0-pre2 block
+#      to as it was first, before change yesterday (25th). Instead we're 
+#      creating rc1.
+#      Greg White, 25-Nov-2014
 #      Updated Java 4.4.0-pre2 block for pvData/pvAccess, easyPVA, exampleJava
 #      Greg White, 15-Nov-2014
 #      Aded 4.4.0-pre2 Java
@@ -26,13 +30,21 @@
 # ------------------         ------------     --------------------
 
 # 4.4 Java
-EPICS-Java-4.4.0-pre2       pvDataJava        4.0.2
-EPICS-Java-4.4.0-pre2       pvAccessJava      4.0.3
-EPICS-Java-4.4.0-pre2       easyPVAJava       0.4.3
+EPICS-Java-4.4.0-rc1        pvDataJava        4.0.2
+EPICS-Java-4.4.0-rc1        pvAccessJava      4.0.3
+EPICS-Java-4.4.0-rc1        easyPVAJava       0.4.3
+EPICS-Java-4.4.0-rc1        exampleJava       4.0.2
+EPICS-Java-4.4.0-rc1        caj               1.1.14
+EPICS-Java-4.4.0-rc1        jca               2.3.6
+EPICS-Java-4.4.0-rc1        directoryService  0.3.3
+
+EPICS-Java-4.4.0-pre2       pvDataJava        4.0.1
+EPICS-Java-4.4.0-pre2       pvAccessJava      4.0.1
+EPICS-Java-4.4.0-pre2       easyPVAJava       0.4.1
 EPICS-Java-4.4.0-pre2       exampleJava       4.0.1
 EPICS-Java-4.4.0-pre2       caj               1.1.14
 EPICS-Java-4.4.0-pre2       jca               2.3.6
-EPICS-Java-4.4.0-pre2       directoryService  0.3.3
+EPICS-Java-4.4.0-pre2       directoryService  0.3.1
 
 EPICS-Java-4.4.0-pre1       pvDataJava        4.0.0
 EPICS-Java-4.4.0-pre1       pvAccessJava      4.0.0
