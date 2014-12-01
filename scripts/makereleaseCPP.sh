@@ -105,7 +105,7 @@ http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/Makefile
 CONFIG_SCRIPT_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/configure.sh
 
-# Remote location of the configuration script
+# Remote location of the CONFIG(_SITE).local
 CONFIG_LOCAL_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/CONFIG_SITE.local
 
