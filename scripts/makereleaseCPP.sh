@@ -179,7 +179,8 @@ if [ ${localreleaseinfo} -eq 1 ]; then
     release_versions_pathname=${scriptdir}/RELEASE_VERSIONS
     readme_pathname=${scriptdir}/../mainPage/README
     makefile_pathname=${scriptdir}/Makefile
-    config_script_pathname=${scriptdir}/configure.sh
+    config_script_name=configure.sh
+    config_script_pathname=${scriptdir}/${config_script_name}
     config_site_local_pathname=${scriptdir}/CONFIG_SITE.local
 else
     # Get the remote version file.
@@ -338,6 +339,7 @@ cp $readme_pathname .
 cp $makefile_pathname .
 cp $config_script_pathname .
 cp $config_site_local_pathname ./CONFIG.local
+chmod +x ${config_script_name}
 cd ..
 
 
