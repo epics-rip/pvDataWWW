@@ -109,6 +109,10 @@ http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/configure.sh
 CONFIG_LOCAL_URL=\
 http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/CONFIG_SITE.local
 
+# Remote location of the RELEASE.local file
+RELEASE_LOCAL_URL=\
+http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE.local
+
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
 
@@ -182,6 +186,7 @@ if [ ${localreleaseinfo} -eq 1 ]; then
     config_script_name=configure.sh
     config_script_pathname=${scriptdir}/${config_script_name}
     config_site_local_pathname=${scriptdir}/CONFIG_SITE.local
+    release_local_pathname=${scriptdir}/RELEASE.local
 else
     # Get the remote version file.
     # Delete the existing file first if it's already there.
@@ -220,6 +225,12 @@ else
     fi
     wget ${CONFIG_LOCAL_URL}
     config_site_local_pathname=${PWD}/CONFIG_SITE.local
+
+    if [ -e RELEASE.local ]; then
+        rm -rf RELEASE.local
+    fi
+    wget ${RELEASE_LOCAL_URL}
+    release_local_pathname=${PWD}/RELEASE.local
 fi
 
 if [ ! -f ${release_versions_pathname} ]; then
@@ -247,6 +258,11 @@ if [ ! -f ${config_site_local_pathname} ]; then
     Exit 6
 fi
 
+if [ ! -f ${release_local_pathname} ]; then
+    echo "Failed to locate the RELEASE.local file ${release_local_pathname}"
+    Exit 6
+fi
+
 # Construct fully qualified pathname of RELEASE_VERSIONS file
 file=$release_versions_pathname
 release_versions_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
@@ -262,6 +278,14 @@ makefile_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 # Construct fully qualified pathname of configure script file
 file=$config_script_pathname
 config_script_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
+
+# Construct fully qualified pathname of CONFIG.local file
+file=$config_site_local_pathname
+config_site_local_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
+
+# Construct fully qualified pathname of RELEASE.local file
+file=$release_local_pathname
+release_local_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
 
 # Read the repos and versions that the release tar must be composed of from the
@@ -339,6 +363,7 @@ cp $readme_pathname .
 cp $makefile_pathname .
 cp $config_script_pathname .
 cp $config_site_local_pathname ./CONFIG.local
+cp $release_local_pathname ExampleRelease.local
 chmod +x ${config_script_name}
 cd ..
 
