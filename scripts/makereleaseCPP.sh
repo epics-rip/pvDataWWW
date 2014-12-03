@@ -16,7 +16,7 @@
 #      For examples see Usage function below.
 #
 #      A user should unpack the resulting tar.gz with, for instance:
-#            tar zxvf EPICS-CPP-4.3.0.tar.gz
+#            tar zxvf EPICS-CPP-4.4.0.tar.gz
 #
 # Ref: http://epics-pvdata.sourceforge.net/release.html
 #
@@ -362,7 +362,7 @@ cp $release_versions_pathname .
 cp $readme_pathname .
 cp $makefile_pathname .
 cp $config_script_pathname .
-cp $config_site_local_pathname ./CONFIG.local
+cp $config_site_local_pathname .
 cp $release_local_pathname ExampleRelease.local
 chmod +x ${config_script_name}
 cd ..
