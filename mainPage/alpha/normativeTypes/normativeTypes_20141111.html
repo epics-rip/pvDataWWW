@@ -816,35 +816,15 @@ displays.</p>
 
 <h3>Normative Type Instance Self Identification</h3>
 
-<p>Normative Type instance data MUST identify themselves as such by including a string in a
-  well known part of their pvData instance datum (see below), that encodes an identifier
-  of the Normative
-  Type to which they conform. This is the <span class="def">Normative Type Identifier</span
-  class="def">, or "Ntype identifier" string for short. Ntype identifiers have the syntax
-  <dfn>&lt;namespace-name&gt;:&lt;type-name&gt;</dfn>. There are two parts to
-  this Ntype identifier:</p>
-
-<dl>
-  <dt>Namespace Name</dt>
-    <dd>The namespace has three roles. The first is the familiar one of simply
-  distinguishing data that are named with the names of EPICS V4 normative types from
-  names that are lexically identical but have a role outside the context of EPICS
-  V4. The second is to give a string which distinguishes the maturity version of the
-  Normative Types definition document (this document) which was used to define the
-  normative type being identified. The third is to provide a basis for extending
-  types. However, at present, in this draft, the mechanism of that type extension
-  system is not defined.
- </dd>
- <dt>Type Name</dt>
-   <dd>The name of the Normative Type to which the datum conforms, as it appears in
-  this document.</dd>
-</dl>
+<p>Normative Type instance data MUST identify themselves as such by including an indentifing string. That is the <span class="def">Normative Type Identifier</span
+  class="def">, or "Ntype identifier" string for short. 
+ In the pvData binding of Normative Types, this string is carried in the "id" field, added automativally to every pvData structure.</p>
 
 <p>A Normative Type Identifier MUST be considered to be "case sensitive."</p>
 
-<p>The Namespace Name corresponding to this draft of the normative types document is: </p>
+<p>The Namespace Name of EPICS normative types (which is used as the prefix for their pvData type id), is the following: </p>
 <pre>
- uri:ev4:nt/2014/pwd
+     epics:nt
 </pre>
 
 <p>The normative list of the Normative Type Identifiers corresponding to <a
@@ -856,7 +836,7 @@ displays.</p>
   NTScalar</a>. It has formal Type Name "NTScalar"
   (see <a href="#normative_ntype_list">Appendix B</a>). Therefore, the Normative Type
   Identifier for an NTScalar,
-  is <span class="literal">uri:ev4:nt/2014/pwd:NTScalar</span>.</p>
+  is presently <span class="literal">epics:nt/NTScalar:1.0</span>.</p>
 
 <p>At present it is envisaged that the same namespace value shall be used for all
    versions of this document prior to <a
@@ -873,7 +853,7 @@ by the pvData structure.  Every pvData datum which is intended to conform to a
 normative type, MUST identify the normative type to which it conforms through its ID
 field. Its ID field MUST have the value of its Normative Type Identifier. For
 instance, a pvData structure conforming to NTScalar, must have ID field equal
-to "<span class="literal">uri:ev4:nt/2014/pwd:NTScalar</span>". Every EPICS V4 agent
+to "<span class="literal">epics:nt/NTScalar:1.0</span>". Every EPICS V4 agent
 which is encoding or decoding pvData data that is described by normative types,
 SHOULD examine the ID field of such data, to establish the normative type to which
 each datum conforms.</p>
