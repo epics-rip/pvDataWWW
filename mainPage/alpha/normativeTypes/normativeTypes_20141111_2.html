@@ -132,26 +132,13 @@ here, named "NTTable", defines a structure for expressing (in <a
 
       <h2 class="nocount">Status of this Document</h2>
       <!-- Statement about why this version exists -->
-      <p class="ed">This file, 20141111_1 is Dave's edited version of 20141111, with changes described in his email of 8-Dec-2104. After review this file should be merged into the latest 20141111. That file has had some edits since this file was created, so they will require merge. </p>
+      <p class="ed">This file, 20141111_2 is Dave's edited version of 20141111, with changes described in his email of 8-Dec-2104 and a few further changes to remove some explicit references to the CPP binding. After review this file should be merged into the latest 20141111. That file has had some edits since this file was created, so they will require merge. </p>
       
       <p>This is the 11 Nov 2014 version of the Normative Types document.
-       This version changes the definitions of timeStamp, control, display, and alarmlimit
-       to match what pvData and normativeTypesCPP implements.
+       This version updates the definitions of timeStamp, control, display, and alarmlimit.
       </p>
 
-      <p>An EPICS V4 modules named normativeTypesCPP (see <a
-      href="http://epics-pvdata.sourceforge.net/literature.html#swdoc"
-      >reference documentation</a>) provides wrappers for
-constructing, populating and extracting data from Normative Types in CPP. At the time of writing it implements the following types:</p>
-      <pre>
-NTScalar
-NTScalarArray
-NTNameValue
-NTMultiChannel
-NTTable
-NTNDArray</pre>
 
-      
       <p>See <a href="#appendix_a:_possible_future_additions_to_this_specification">
       Appendix A</a> for items that may be added to future revisions of this
       specification. </p>
@@ -457,7 +444,7 @@ pvData requires that every element has the same introspection data, i.e. the lis
 <b>any[]</b> is a fully supported by pvData.
 </p>
 
-<h3 id="L269">Structured Normative Fields</h3>
+<h3>Structured Normative Fields</h3>
 
 <p>This subsection defines those fields of a Normative Type structure definition,
  that are themselves structures or arrays of structures.</p>
@@ -534,10 +521,6 @@ class="nterm">time_t</span>, is given by Jan 1, 1970 00:00:00 UTC plus some
 nanoseconds given by its <span class="term">secondsPastEpoch</span>
 times 10<sup>9</sup> plus its <span class="term">nanoseconds</span>.</p>
 
-<!--
-<p>pvData provides two helper classes for a timeStamp structure: timeStamp, and
-PVTimeStamp.</p>
--->
 
 <h4>time_t[]</h4>
 
@@ -882,39 +865,6 @@ to "<span class="literal">uri:ev4:nt/2014/pwd:NTScalar</span>". Every EPICS V4 a
 which is encoding or decoding pvData data that is described by normative types,
 SHOULD examine the ID field of such data, to establish the normative type to which
 each datum conforms.</p>
-
-<h3>pvData: standardField and standardPVField</h3>
-<p>Both pvDataCPP and pvDataJava provide the ability to create introspection and data objects for the following
-normative fields:<p>
-<pre>
-alarm
-timeStamp
-control
-display
-valueAlarm
-</pre>
-<p>Both also provide the ability to create the following normative types:</p>
-<pre>
-NTScalar
-NTScalarArray
-NTEnum
-NTUnion
-NTUnionArray
-</pre>
-<p>Code should always create each of these via standardField and standardPVField rather than creating them
-via fieldCreate and pvDataCreate.</p>
-<h3>normativeTypesCPP</h3>
-<p>normativeTypesCPP has support for the following normative types:</p>
-<pre>
-NTScalar
-NTScalarArray
-NTNameValue
-NTTable
-NTMultiChannel
-NTNDArray
-</pre>
-<p>C++ code should always create each of these via normativeTypesCPP rather than creating them
-via fieldCreate and pvDataCreate.</p>
 
 
 <h4>Example pvAccess/pvData binding</h4>
