@@ -7,7 +7,10 @@
 #
 # -----------------------------------------------------------------
 # Auth: Greg White, 15-Aug-2013
-# Mod: Greg White, 26-Nov-2014
+# Mod: 
+#      Greg White, 09-Dec-2014
+#      Add v4.4.0 java actual release block. No changes from rc1. 
+#      Greg White, 26-Nov-2014
 #      Add Java 4.4.0-rc1 block. And also revert Java 4.4.0-pre2 block
 #      to as it was first, before change yesterday (25th). Instead we're 
 #      creating rc1.
@@ -30,6 +33,14 @@
 # ------------------         ------------     --------------------
 
 # 4.4 Java
+EPICS-Java-4.4.0            pvDataJava        4.0.2
+EPICS-Java-4.4.0            pvAccessJava      4.0.3
+EPICS-Java-4.4.0            easyPVAJava       0.4.3
+EPICS-Java-4.4.0            exampleJava       4.0.2
+EPICS-Java-4.4.0            caj               1.1.14
+EPICS-Java-4.4.0            jca               2.3.6
+EPICS-Java-4.4.0            directoryService  0.3.3
+
 EPICS-Java-4.4.0-rc1        pvDataJava        4.0.2
 EPICS-Java-4.4.0-rc1        pvAccessJava      4.0.3
 EPICS-Java-4.4.0-rc1        easyPVAJava       0.4.3
