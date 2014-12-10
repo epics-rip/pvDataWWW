@@ -15,6 +15,7 @@ Status: This is the 16-Oct-2014 version of the README.
 -----------------------------------------------------------------------------
 Author: 28-Nov-2011 Greg White (GREG@SLAC.STANFORD.EDU) for EPICS V4 team [1]
 Mod:
+     09-Dec-2014, Greg White, Added system requirements section.
      16-Oct-2014, Dave Hickin, Added 4.4.0.
      22-Aug-2013, Greg White, Added 4.3.0.
      22-Jan-2013, Ralph Lange, moved pvaSrv out of pvIOCCPP.
@@ -100,6 +101,14 @@ caj                An all Java implementation of the Channel Access protocol.
 jca                A Java API and wrapper interface to the C++ implementation
                    of the Channel Access protocol.
 
+SYSTEM REQUIREMENTS AND CONFIGURATION
+-------------------------------------
+pvAccess parameters, eg EPICS_PVA_ADDR_LIST, are described in the pvAccess 
+Configuration spreadsheet [23].
+
+CPU Architectures built and tested are listed in [24].
+
+pvAccessJava requires at least Java 1.7. 
 
 FEATURE ADDITIONS AND MAJOR CHANGES SINCE LAST RELEASE
 ------------------------------------------------------
@@ -388,3 +397,5 @@ http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/tip/src
 [20] EPICS V4 directoryService, http://www.epics2013.org/dms/EPICS2013/presentations/wednesday/Session_3/V4_Lange_ChannelFinder.pdf
 [21] EPICS Channel Finder, http://channelfinder.sourceforge.net
 [22] Mercurial repos of EPICS V4, https://sourceforge.net/p/epics-pvdata/_list/hg
+[23] pvAccess Configuration, http://epics-pvdata.sourceforge.net/pvAccessConfig.xlsx
+[24] EPICS V4 CPU architecture compatibilty and test status, http://epics-pvdata.sourceforge.net/Ev4buildtracker.xls
