@@ -103,12 +103,18 @@ jca                A Java API and wrapper interface to the C++ implementation
 
 SYSTEM REQUIREMENTS AND CONFIGURATION
 -------------------------------------
+If you want to use EPICS V4 component pvaSrv (see above) you *must* build 
+V4 with Base 3.14.12.x (preferably 3.14.12.4 or later). The changes that were 
+made in Base 3.15.1 include API changes which have not been implemented in
+pvaSrv yet. If you're not going to build the current version of pvaSrv
+though you can use Base 3.15.1.
+
+pvAccessJava requires at least Java 1.7. 
+
 pvAccess parameters, eg EPICS_PVA_ADDR_LIST, are described in the pvAccess 
 Configuration spreadsheet [23].
 
 CPU Architectures built and tested are listed in [24].
-
-pvAccessJava requires at least Java 1.7. 
 
 FEATURE ADDITIONS AND MAJOR CHANGES SINCE LAST RELEASE
 ------------------------------------------------------

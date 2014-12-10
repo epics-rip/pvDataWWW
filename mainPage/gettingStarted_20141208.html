@@ -164,10 +164,19 @@ site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
 http://sourceforge.net/projects/epics-pvdata/files/</a> or from their reference
 sources.</p>
 
-<p>When we say "EPICS Base", or loosely "V3", in general we mean EPICS Base version 3.14. <em>As of this writing, V4.4.0 is not yet compatible with EPICS 3.15.</em></p>
+<h4>Version Compatibility</h4>
+
+<p>When we say "EPICS Base", or loosely "V3", in general we mean EPICS Base version 3.14.
+More precisely, <strong>if you want to use EPICS V4 component pvaSrv (see above) you *must* build 
+V4 with Base 3.14.12.x</strong> (preferably 3.14.12.4 or later). The changes that were 
+made in Base 3.15.1 include API changes which have not been implemented in
+pvaSrv yet. If you're not going to build the current version of pvaSrv
+though you can use Base 3.15.1. </p>
+
+<p><strong>pvAccessJava requires at least Java 1.7. </strong></p>
 
 <p>Since the development cycle (compile, build, etc) is significantly
-different for each language, and to match suitable language API description to
+vdifferent for each language, and to match suitable language API description to
 suitable use cases, this guide is split into 2 major parts. Firstly, Java
 development and secondly C++ development.
 </p>
@@ -1229,7 +1238,7 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Tue Dec  9 19:04:18 PST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Dec 10 13:13:00 PST 2014 <!-- hhmts end -->
 
 </body>
 </html>
