@@ -183,6 +183,8 @@ V4 connections. After that, email <a href="http://www.aps.anl.gov/epics/tech-tal
 <p>This section is on software development, with and of, the Java implementation of
 EPICS V4. For C++ development, see below. </p>
 
+<p>V4.4 Java requires Java 1.7</p>
+
 <p>The Java implementation of the core EPICS V4 pv* modules, is made available in two
 ways. Firstly, you can download EPICS V4 as a tarball of the jar files directly from
 the EPICS V4 SourceForge site. Alternatively, you can download the Java sources from their Mercurial repos and
@@ -363,6 +365,8 @@ suitable for your platform.</p>
 above, plus the caj/jca jars, and build pv core jars.</p>
 
 <h4 id="prerequisites">Prerequisites</h4>
+
+<p>V4.4 Java requires Java 1.7</p>
 
 <p>You must have Maven and Mercurial clients installed. Mercurial, commonly "hg" on
 the command line comes for free with Mac OS
@@ -1152,6 +1156,11 @@ doesn't work:
 GNU_LDLIBS_YES = 
 </pre>
 
+<p>V4.4 requires Java 1.7. Java on a Mac can be a bit confused since Java from Oracle now installs Java differently to the way Apple did it. The Java Control Panel may not know all the versions known by java_home. You may need to set JAVA_HOME explicity. For example: </p>
+<pre>
+$ export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+</pre>
+
 <!--
 <p>Following the builds of pvCommonCPP, pvDataCPP, pvAccessCPP, pvIOCCPP and pvaSrv detailed above,
 the envPaths file used to run the V3 Channel test example,
@@ -1220,7 +1229,7 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Tue Dec  9 15:50:31 PST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Dec  9 19:04:18 PST 2014 <!-- hhmts end -->
 
 </body>
 </html>
