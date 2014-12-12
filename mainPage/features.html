@@ -106,16 +106,76 @@ Call"</a> like processing pattern has been added, which supports passing argumen
 within the context of asynchronous record processing. In this way services may be
 defined.  </p>
 
-<p>Using EPICS 4.3, an EPICS V4 client can interact with the Process Variables (PV)
+<p>Using EPICS 4.4, an EPICS V4 client can interact with the Process Variables (PV)
        in an Input Output Controller (IOC) more effectively and faster than was
        previously possible. Additionally, data services for PV data processing,
        intensive computation or mediating enterprise data, can be implemented right
        in the EPICS suite.  </p>
 
+<h2>New Features of EPICS V4 added in V4.4</h2>
+
+<ul>
+  <li>In the C++ implementation, arrays are handled more efficiently and safely. The C++ pvData array data types now allow read-only array data to be
+swapped in and shared using a new reference-counted shared_vector facility,
+minimizing computationally expensive copy operations, and enforce
+Copy-On-Write (COW) semantics, helping prevent thread conflicts.</li>
+ 
+  <li>Dynamic data typing is provided by two new union data types (and the two
+corresponding array types). In a "regular" union the dynamic type must be one
+of a fixed set of types, determined by the introspection interface. In a
+variant union it can be any pvData type.</li>
+ 
+  <li>Fixed and bounded scalar arrays have been provided in addition to the
+unbounded arrays implemented previously.</li>
+ 
+  <li>Windows has been added to list of supported platforms.</li>
+ 
+  <li>pvAccess has a new API and implementation, which reflects changes in the
+pvAccess protocol, giving greater flexibility and more informative channel
+data through channel method callbacks.ChannelArray
+now allows a stride to be specified in puts and gets.</li>
+ 
+  <li>A new codec based implementation of pvAccess decouples the pvAccess
+communication layer from the transport layer, allowing alternative transport
+layer protocols such as one using zeroMQ. A codec for the former transport
+layer of pvAccess is provided.</li>
+ 
+  <li>A security plugin API that allows pluggable implementations of
+specific security schemes for pvAccess or Channel Access has been added to
+pvAccess together with one such plugin for Channel Access security.</li>
+
+  <li>A new utility, pvlist, can provide both server information and a list of channels available on that server.</li>
+
+  <li>The pvAccess tools pvget, pvput and eget have better support for enums, timestamps and alarms.</li>
+ 
+  <li>4.4 is up-to-date with the latest normative types specification, including
+using the new naming scheme for their type IDs. In particular the tools and
+examples using normative types follow the current normative type definitions. </li>
+ 
+  <li>In the C++ implementation, Convert, a facility for converting between two
+different pvData objects, has been greatly simplified, and a new facility,
+pvSubArray, can copy a subarray from one PVArray to another of the same
+element type.</li>
+</ul>
+
+<p>The following new alpha software is also bundled:</p>
+
+<ul>
+  <li> A new framework [pvDatabaseCPP], implemented in C++, provides V4 records
+and databases analogous to the records and databases of version 3. These can
+be used to provide V4 services over pvAccess.</li>
+ 
+  <li>A new library [normativeTypesCPP] provides C++ support for the following
+normative types: NTScalar, NTScalarArray, NTTable, NTNameValue, NTMultiChannel
+and NTNDArray.</li>
+ 
+  <li>A new library [pvaPy] provides a Python API for pvAccess and for pvData
+types including support for implementing RPC servers and clients.</li>
+</ul>
+
+
 <h2>New Features of EPICS V4 added in V4.3</h2>
 
-<p>Note that V4.3 is presently in <em>pre</em> release. Please post comments to the
-EPICS V4 Working Group.</p>
 <ul>
   <li>You can access Base IOC PV data over pvAccess. This gives the speed and
 facilities of pvAccess to accesses of Base IOCs, and provides the basis for
