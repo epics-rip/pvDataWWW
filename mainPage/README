@@ -154,26 +154,32 @@ layer of pvAccess is provided.
 specific security schemes for pvAccess or Channel Access has been added to
 pvAccess together with one such plugin for Channel Access security. 
 
-8. 4.4 is up-to-date with the latest normative types specification, including
+8. A new utility, pvlist, can provide both server information and a list of
+channels available on that server.
+
+9. The pvAccess tools pvget, pvput and eget have better support for enums,
+timestamps and alarms.
+
+10. 4.4 is up-to-date with the latest normative types specification, including
 using the new naming scheme for their type IDs. In particular the tools and
 examples using normative types follow the current normative type definitions. 
 
-9. In the C++ implementation, Convert, a facility for converting between two
+11. In the C++ implementation, Convert, a facility for converting between two
 different pvData objects, has been greatly simplified, and a new facility,
 pvSubArray, can copy a subarray from one PVArray to another of the same
 element type.
 
 The following new alpha software is also bundled:
 
-10. A new framework [pvDatabaseCPP], implemented in C++, provides V4 records
+12. A new framework [pvDatabaseCPP], implemented in C++, provides V4 records
 and databases analogous to the records and databases of version 3. These can
 be used to provide V4 services over pvAccess.
 
-11. A new library [normativeTypesCPP] provides C++ support for the following
+13. A new library [normativeTypesCPP] provides C++ support for the following
 normative types: NTScalar, NTScalarArray, NTTable, NTNameValue, NTMultiChannel
 and NTNDArray.
 
-12. A new library [pvaPy] provides a Python API for pvAccess and for pvData
+14. A new library [pvaPy] provides a Python API for pvAccess and for pvData
 types including support for implementing RPC servers and clients. 
 
 
