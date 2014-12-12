@@ -5,7 +5,7 @@
 Auth:  Greg White, SLAC, Nov-2011.
 Vers:  11-Nov-2014, Greg White, SLAC
        Update for new Normative Type identifier syntax and semantics. New syntax is,
-       by example "epics:nt/NTTable:1.0". New semaintics is must be a table which
+       by example "epics:nt/NTTable:1.0". New semantics is must be a table which
        normatively defines, for each type, which types it depends on (if any).
        23-Sep-2014, Dave Hickin, Diamond
        Provided full definition of NTNDArray. Added NTAttribute.
@@ -157,7 +157,7 @@ NTNDArray</pre>
       to review and comment. Resulting comments will drive subsequent revisions of
       the Normative Types specification and the EPICS V4 Working Group's reference
       implementations of software that helps create, populate and exchange Normative
-      Type PVData.  </p>
+      Type pvData.  </p>
 
       <p> Comments are welcome, though bear in mind this is a pre-public release
       version. </p>
@@ -194,19 +194,19 @@ take processing steps appropriate to that data.</p>
    condition for interoperability of using systems.</p>
 
 
-<p>The EPICS version 4 module PVData <a class="bib" href="#bib:pvdata">bib:pvdata</a>
+<p>The EPICS version 4 module pvData <a class="bib" href="#bib:pvdata">bib:pvdata</a>
 supplies a typing mechanism and object management API for efficiently defining,
 creating, accessing and updating memory resident structured data. EPICS V4 module
-PVAccess <a class="bib" href="#bib:pvaccess">bib:pvaccess</a> supports the efficient
-exchange of PVData defined data between EPICS V4 network peers. EPICS V4 Normative
-Types, defines some general purpose data types, that build on PVData. These are
+pvAccess <a class="bib" href="#bib:pvaccess">bib:pvaccess</a> supports the efficient
+exchange of pvData defined data between EPICS V4 network peers. EPICS V4 Normative
+Types, defines some general purpose data types, that build on pvData. These are
 designed to be generally applicable to the process control, and the software
 applications level, of scientific instruments. </p>
 
 <p>A simple example of a normative type described in this document, is the one for
   exchanging any single scalar value, such as one floating point number, one integer
   or one string. That normative type is named "NTScalar". When a client receives a
-  PVData datum which identifies itself as being of type NTScalar, the client will
+  pvData datum which identifies itself as being of type NTScalar, the client will
   know to expect that the structure which carries the NTScalar will include the
   scalar value in question (along with its type), and that value may accompanied up
   to 5 additional fields; a description of the quality in question, a timestamp, an
@@ -223,7 +223,7 @@ applications level, of scientific instruments. </p>
     <span class="nterm">control_t</span>   control     :opt</span>
 </pre>
 
-<p> A more complex example: If a client receives a PVData datum which identifies
+<p> A more complex example: If a client receives a pvData datum which identifies
 itself as being of type NTTable, this document specifies that it should expect the
 datum to contain 0 or more arrays of potentially different types. The description of
 NTTable in this document will say that the client should interpret the arrays as the
@@ -331,7 +331,7 @@ field may be optional, and may be described along with a comment:</p>
     <dd>One of the valid <a href="#normative_type_fields">Normative Type Fields</a> as defined below</dd>
   <dt>fieldName</dt>
     <dd>The identifier of the field. Where the field is a terminal in the grammar
-   (i.e., does not have  &lt;&gt; around its name) then the fieldName is a PVData Field
+   (i.e., does not have  &lt;&gt; around its name) then the fieldName is a pvData Field
    name, as returned by a call to getFieldName() on the Field member object. <span class="ed">must add
    reference to Field, getFieldName when this interface is settled?</span></dd>
    <dt>:opt</dt>
@@ -381,7 +381,7 @@ Fields</a> below). </p>
 
 <h4>scalar_t</h4>
 
-<p>The field is a scalar value. Scalar fields would be implemented with PVData field
+<p>The field is a scalar value. Scalar fields would be implemented with pvData field
   Type <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485" >"scalar"</a>:</p>
 <pre>
 <span class="nterm">scalar_t</span> :=
@@ -403,7 +403,7 @@ Fields</a> below). </p>
 <h4>scalar_t[]</h4>
 
 <p>The field is an array of scalars. Scalar array fields would be implemented with
-  PVData field Type <a
+  pvData field Type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
    >"scalarArray"</a>:</p>
 
@@ -451,7 +451,7 @@ pvData requires that every element has the same introspection data, i.e. the lis
 <p>This subsection defines those fields of a Normative Type structure definition,
  that are themselves structures or arrays of structures.</p>
 
-<p>The structured normative fields would be implemented with type PVData field Type <a
+<p>The structured normative fields would be implemented with type pvData field Type <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
 >"structure"</a> or <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
@@ -489,7 +489,7 @@ structure aname
 
 <p>An <span class="nterm">enum_t[]</span> describes an array of enumerations. The
   field is an array of structures each describing a value drawn from a given set of
-  valid values also given in each. It is implemented as a PVData field of Type <a
+  valid values also given in each. It is implemented as a pvData field of Type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
    >"structureArray"</a> each element of which with the form of <span
   class="nterm">enum_t</span> above.</p>
@@ -532,7 +532,7 @@ PVTimeStamp.</p>
 
 <p>A <span class="nterm">time_t[]</span> describes an array of points in time. The
  field is an array of structures each describing a time relative to January 1st, 1970
- UTC. It is implemented as a PVData field of Type <a
+ UTC. It is implemented as a pvData field of Type <a
   href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
   >"structureArray"</a> each element of which with the form of <span
  class="nterm">time_t</span> above.</p>
@@ -548,7 +548,7 @@ process.</p>
 <p> Processes in EPICS V3 and V4 IOCs include extensive support for evaluating
 alarm conditions. The definition of the fields in an <span class="term">alarm</span>
 are given in <a class="bib" href="#bib:epicsrecref">bib:epicsrecref</a>.  The field is a
-structure describing an alarm. It is implemented as a PVData field of Type
+structure describing an alarm. It is implemented as a pvData field of Type
 <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structure"</a> with the following form: </p>
@@ -591,7 +591,7 @@ PVAlarm.</p>
 
 <p>An <span class="nterm">alarm_t[]</span> is an array of alarm conditions. The field
 is an array of structures each describing an alarm condition. It is implemented as a
-PVData field of Type <a
+pvData field of Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structureArray"</a> each element of which with the form of <span
 class="nterm">alarm_t</span> above.</p>
@@ -606,7 +606,7 @@ class="nterm">alarm_t</span> above.</p>
   specified in the alarmLimit structure. It is usually a value field of type double that appears in
   the same structure as the alarmLimit.
 <span
-class="nterm">alarmLimit_t</span> is implemented as a PVData field of Type <a
+class="nterm">alarmLimit_t</span> is implemented as a pvData field of Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structure"</a> with the following form: </p>
 
@@ -688,7 +688,7 @@ structure someName
     raiseAlarm(0,val,0,"");
 </pre>
 <p>
-<b>NOTE: </b> PVData has support named <b>valueAlarm</b> instead of <b>alarmLimit</b>
+<b>NOTE: </b> pvData has support named <b>valueAlarm</b> instead of <b>alarmLimit</b>
 (alarmLimit is identical to valueAlarm for type double).
 Normative types only defines alarmLimit since this is what
 clients like plot tools use.
@@ -698,7 +698,7 @@ clients like plot tools use.
 <h4>alarmLimit_t[]</h4>
 
 <p>An alarmLimit_t[] is an array of alarm limit conditions. The field is an array of
-structures each describing an alarm limit. It is implemented as a PVData field of
+structures each describing an alarm limit. It is implemented as a pvData field of
 Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structureArray"</a> each element of which with the form of <span
@@ -717,7 +717,7 @@ and <span class="term">limitHigh</span> represent the
 range in between which the value should be presented as adjustable.
 </p>
 <p>
-The field is a structure describing a <span class="nterm">display_t</span>. It is implemented as a PVData field of Type
+The field is a structure describing a <span class="nterm">display_t</span>. It is implemented as a pvData field of Type
 <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
 >"structure"</a> with the following form: </p>
@@ -759,7 +759,7 @@ that have a single numeric "value" field.</p>
 
 <p>A display_t[] is an array of <span class="nterm">display_t</span>. The field is an array of
 structures each describing the display media oriented metadata of some corresponding
-process variable value, as described by <span class="nterm">display_t</span> above. It is implemented as a PVData field of
+process variable value, as described by <span class="nterm">display_t</span> above. It is implemented as a pvData field of
 Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structureArray"</a> each element of which with the form of <span
@@ -773,7 +773,7 @@ given by the interval
 shall bind the control PV to which this Normative Type
 instance's value field refers.</p>
 <p>
-The field is a structure describing a <span class="nterm">control_t</span>. It is implemented as a PVData field of
+The field is a structure describing a <span class="nterm">control_t</span>. It is implemented as a pvData field of
 Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structure"</a> with the following form: </p>
@@ -800,7 +800,7 @@ structure control
 
 <p>A control_t[] is an array of <span class="nterm">control_t</span>. The field is an
 array of structures each describing the setpoint range interval of some process variable. It is
-implemented as a PVData field of Type <a
+implemented as a pvData field of Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
  >"structureArray"</a> each element of which with the form of <span
 class="nterm">control_t</span> above.</p>
