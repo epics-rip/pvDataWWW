@@ -929,7 +929,7 @@ type and populates it with the pvData data interfaces (PVField, PVstructure etc.
 <pre style="font-size:smaller">
    // Create the data type definition, using the pvData introspection interface (Structure etc.).
    FieldCreate fieldCreate = FieldFactory.getFieldCreate();
-   Structure resultStructure = fieldCreate.createStructure( "uri:ev4:nt/2014/pwd:NTScalar", 
+   Structure resultStructure = fieldCreate.createStructure( "epics:nt/NTScalar:1.0", 
        new String[] { "value", "descriptor" },
        new Field[] { fieldCreate.createScalar(ScalarType.pvDouble),
  		     fieldCreate.createScalar(ScalarType.pvString) } );
@@ -974,10 +974,10 @@ field, and then, if it's present, extracts the optional "descriptor" field.</p>
 
    // Examine the returned structure via its introspection interface, to check whether its
    // identifier says that it is a normative type, and the type we expected.
-   if (!result.getStructure().getID().equals("uri:ev4:nt/2014/pwd:NTScalar")) 
+   if (!result.getStructure().getID().equals("epics:nt/NTScalar:1.0")) 
    {
        System.err.println("Unexpected data identifier returned from multiplierService: " + 
-          "Expected Normative Type ID uri:ev4:nt/2014/pwd:NTScalar, but got "
+          "Expected Normative Type ID epics:nt/NTScalar:1.0, but got "
           + result.getStructure().getID());
        System.exit(-1);
    }
@@ -1255,7 +1255,7 @@ Structure queryStructure = fieldCreate.createStructure(
     new Field[] { fieldCreate.createScalar(ScalarType.pvString),
                   fieldCreate.createScalar(ScalarType.pvString)});
 Structure uriStructure =
-    fieldCreate.createStructure("uri:ev4:nt/2014/pwd:NTURI",
+    fieldCreate.createStructure("epics:nt/NTURI:1.0",
          new String[] { "path", "query" },
          new Field[] { fieldCreate.createScalar(ScalarType.pvString), 
                        queryStructure } );
