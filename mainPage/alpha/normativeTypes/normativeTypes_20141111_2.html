@@ -807,9 +807,9 @@ displays.</p>
 
 <h3>Normative Type Instance Self Identification</h3>
 
-<p>Normative Type instance data MUST identify themselves as such by including an indentifing string. That is the <span class="def">Normative Type Identifier</span
+<p>Normative Type instance data MUST identify themselves as such by including an identifying string. That is the <span class="def">Normative Type Identifier</span
   class="def">, or "Ntype identifier" string for short. 
- In the pvData binding of Normative Types, this string is carried in the "id" field, added automativally to every pvData structure.</p>
+ In the pvData binding of Normative Types, this string is carried in the "id" field, added automatically to every pvData structure.</p>
 
 <p>A Normative Type Identifier MUST be considered to be "case sensitive."</p>
 
@@ -908,7 +908,7 @@ type and populates it with the pvData data interfaces (PVField, PVstructure etc.
 
 <h5>Receiver</h5>
 
-<p>Having in some way done a pvaccess get, the receiver could simply extract the
+<p>Having in some way done a pvAccess get, the receiver could simply extract the
 primary value:</p>
 <pre style="font-size:smaller">
    PVStructure result = easyPVA.createChannel("multiplierService").createRPC().request(request);
@@ -916,7 +916,7 @@ primary value:</p>
 </pre>
 
 <p>A well written receiver would check that the introspection interface (Structure
-  etc) says that the received instance is indeed of the type it expects. It may
+  etc.) says that the received instance is indeed of the type it expects. It may
   extract the data fields individually, checking their type. Importantly, it can also
   see which optional fields it received, before attempting to access them. Here is a
   more complete receiver example for the NTScalar sent above. This code might be in
@@ -1149,7 +1149,7 @@ column vector, and non-vector matrices appropriately.</p>
 
 <p>The
   "pva" scheme is introduced here for EPICS V4 interactions. The pva scheme implies
-  but does not require use of the pvaccess protocol. A scheme description for Channel
+  but does not require use of the pvAccess protocol. A scheme description for Channel
   Access (implying the ca protocol) 
   will be added later.  What follows is a description of the syntax and semantics for
   the pva scheme. </p>
@@ -1171,9 +1171,9 @@ scheme is "pva": </p>
 <dl>
   <dt>scheme</dt>
 <dd>The scheme name must be given. For the pva scheme, the scheme name is "pva". The
-  pva scheme implies but does not require use of the pvaccess protocol.</dd>
+  pva scheme implies but does not require use of the pvAccess protocol.</dd>
   <dt>authority</dt>
-<dd>If given, then the IP name or address of an EPICS network pvaccess or channel
+<dd>If given, then the IP name or address of an EPICS network pvAccess or channel
   access server  </dd>
   <dt>path</dt>
 <dd>The path gives the channel from which data is being requested. "path" is the
@@ -1603,7 +1603,7 @@ The value of the <span class="term">uncompressedSize</span> field MUST be equal 
 <p>A <span class="nterm">dimension_t</span> 
   is implemented as a pvData Field of Type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/pvDataJava.html#L485"
-   >"structure"</a> "dimension_t" with the following form:</p>
+   >"structure"</a> of type id  "dimension_t" with the following form:</p>
 <pre>
 <span class="nterm">dimension_t</span> :=
 
