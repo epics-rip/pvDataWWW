@@ -19,7 +19,7 @@
     margin-left: auto;
     margin-right: auto;
     max-width: 70.3333%;
-    color: #FFF
+    color: #000 <!-- #FFF -->
    }
    @media print {
      body { margin-right: 1%;
@@ -38,7 +38,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Tue Dec  9 18:25:17 PST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Dec 16 19:03:34 PST 2014 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -86,7 +86,7 @@
 </table>
 
 <h2 id="whatdoesitbring" style="margin-bottom:10px">New Release EPICS Version 4.4</h2>
-<div style="width=100%;background-color:#6C6BF4; padding-top:10px; padding-bottom:10px">
+<div style="width=100%; padding-top:10px; padding-bottom:10px"> <!-- background-color:#6C6BF4; -->
   <div class="newrel">
     <p>EPICS version 4.4 is the fastest and most versatile EPICS yet. The familiar EPICS you use every day extended with complex data structures, optimized data transfer, high level data and image processing and even Service Oriented Architecture (SOA). 
     </p>
@@ -269,15 +269,15 @@ V4 connections. After that, email <a href="http://www.aps.anl.gov/epics/tech-tal
      
 <h2 id="nutshell">EPICS Version 4 Components in a Nutshell</h2>
 <p>EPICS Version 4 is composed of five parts, the regular <a href="http://www.aps.anl.gov/epics/base/index.php" >EPICS Base</a> (3.14 or 3.15) including the IOC, plus 4 new components: pvData, pvAccess, pvDatabase and pvaSrv.</p>
-    <p>As commonly known to EPICS engineers, an IOC (Input/Output Controller) is the software framework for front-end processors and device facing hardware in an EPICS control system. Optimized for low-latency I/O, IOCs
+    <p><a href="http://www.aps.anl.gov/epics/download/base/index.php">EPICS Base</a>: as commonly known to EPICS engineers, an IOC (Input/Output Controller) is the software framework for front-end processors and device facing hardware in an EPICS control system. Optimized for low-latency I/O, IOCs
 control and/or monitor a collection of devices such as actuators and measurement diagnostics. Each IOC node contains a memory resident real time database. The real time database has a set of "smart" records,
 which are interconnected in a <a href="http://en.wikipedia.org/wiki/Dataflow" > Data
 Flow</a> pattern. The records may contain "device support" code, to interface the processing model to physical devices through device drivers. Much more information can be found on the EPICS base at <a href="http://www.aps.anl.gov/epics/base/index.php" >http://www.aps.anl.gov/epics/base/index.php</a>.</p>
-    <p>pvData is a library for creating, inspecting and decoding structured data beyond the dbr_* structures.</p>
-    <p>pvAccess is a wire protocol added to EPICS in V4, and so is a bit like the "Channel Access", but for pvData. In addition to get/put/monitor it supports put-with-get, an RCP-type callback, through which one can implement high performance data services. Additionally, 
+    <p><a href="literature.html#pvDataJava" >pvData</a> is a library for creating, inspecting and decoding structured data beyond the dbr_* structures.</p>
+    <p><a href="literature.html#pvAccessJava" >pvAccess</a> is a wire protocol added to EPICS in V4, and so is a bit like the "Channel Access", but for pvData. In addition to get/put/monitor it supports put-with-get, an RCP-type callback, through which one can implement high performance data services. Additionally, 
  the client can ask for just a subset of the pvData structure on the server.</p>
-<p> pvaSrv: there are 2 ways one can use the pvAccess software API to talk to an IOC; one can use Channel Access on wire, just through the pvAccess API, or one can use pvaSrv, a module which intermediates pvAccess to the record processing on an IOC. </p>
-<p>pvDatabase is a high performance data processing pipeline engine, one might use it for image processing pvData through a sequence of areaDetector plugins, or online accelerator simulation.</p>
+<p> <a href="literature.html#pvaSrv" >pvaSrv</a>: there are 2 ways one can use the pvAccess software API to talk to an IOC; one can use Channel Access on wire, just through the pvAccess API, or one can use pvaSrv, a module which intermediates pvAccess to the record processing on an IOC. </p>
+<p><a href="literature.html#pvDatabaseCPP" >pvDatabase</a> is a high performance data processing pipeline engine, one might use it for image processing pvData through a sequence of areaDetector plugins, or online accelerator simulation.</p>
 <p><q>So now one can create services on the network that do more than Channel Access,</q> Kay Kasemir. <q>Creativity can only be anarchic, capitalist, Darwinian, based on version 4.4,</q> Umberto Eco. <q>Wow. Fantastic. Let's Go!</q> Tom Cruise. </p>
 
 <h2 id="interop">Version 4 / Base 3.14 Interoperation</h2>
