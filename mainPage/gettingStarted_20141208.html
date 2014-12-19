@@ -112,23 +112,25 @@ Mercurial web site</a>.</p>
   <pre>
 C++ Module Summary:
 
-pvAccessCPP      The EPICS V4 "wire protocol". Supports pvData.
-pvDataCPP        The EPICS V4 support for high performance data interchange.
-pvCommonCPP      Utility libraries.
-pvIOCCPP         Deprecated. Only included in distribution for one part needed by pvaSrv. 
-exampleCPP       Code examples, including use of pvData containers, RPC, demo servers. 
-pvaSrv           An EPICS Base IOC plugin for interfacing CA data to pvAccess. 
+pvAccessCPP        The EPICS V4 "wire protocol". Supports pvData.
+pvDataCPP          Support for high performance data interchange.
+pvCommonCPP        Utility libraries.
+exampleCPP         Code examples, including use of pvData containers, RPC, demo servers. 
+pvaSrv             An EPICS Base IOC plugin interfacing CA data to pvAccess.
+pvDatabaseCPP      EPICS V4 record/database framework for providing services over pvAccess.
+normativeTypesCPP  Support for EPICS V4 normative types.
+pvaPy              Python API for pvAccess.
 
 Java Module Summary:
 
-pvAccessJava     The EPICS V4 "wire protocol". Supports pvData. 
-pvDataJava       The EPICS V4 support for high performance data interchange.
-easyPVAJava      A somewhat easier to use Java API to the facilities of pvAccess. 
-exampleJava      Code examples, including use of pvData containers, RPC, demo servers. 
-directoryService EPICS V4 interface to classic EPICS directoryService.
-caj              An all Java implementation of the Channel Access protocol.
-jca              A Java API and wrapper interface to the C++ implementation of
-                 the Channel Access protocol.
+pvAccessJava       The EPICS V4 "wire protocol". Supports pvData. 
+pvDataJava         The EPICS V4 support for high performance data interchange.
+easyPVAJava        A somewhat easier to use Java API to the facilities of pvAccess. 
+exampleJava        Code examples, including use of pvData containers, RPC, demo servers. 
+directoryService   EPICS V4 interface to classic EPICS directoryService.
+caj                An all Java implementation of the Channel Access protocol.
+jca                A Java API and wrapper interface to the C++ implementation of
+                   the Channel Access protocol.
 </pre>
 <p>The specific versions of these modules that comprise the EPICS V4.4 suite, are
 formally listed in <a href="https://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS">RELEASE_VERSIONS</a>.</p>  
@@ -175,17 +177,21 @@ though you can use Base 3.15.1. </p>
 
 <p><strong>pvAccessJava requires at least Java 1.7. </strong></p>
 
-<p>Since the development cycle (compile, build, etc) is significantly
-vdifferent for each language, and to match suitable language API description to
-suitable use cases, this guide is split into 2 major parts. Firstly, Java
-development and secondly C++ development.
-</p>
+
 
   <h3>Where to find more information</h3>
   <p>The programmers reference documentation for each software component of EPICS V4 is listed in the <a href="http://epics-pvdata.sourceforge.net/literature.html" >Literature</a> page. The pvAccess protocol is described in its <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html" >specification</a>. Environment settings, <kbd>EPICS_PVA_ADDR_LIST</kbd> etc, are described in the <a href="http://epics-pvdata.sourceforge.net/pvAccessConfig.xlsx" >pvAccess Configuration spreadsheet (Excel)</a>. Check cpu architecture compatibility in the <a href="http://epics-pvdata.sourceforge.net/Ev4buildtracker.xls" >Compatibility Tracker (Excel)</a>.</p>
   <p>If you get into trouble, you might first check the <a href="troubleshooting.html">Troubleshooting EPICS V4</a>
 cheatsheet, which lists very first steps in finding and resolving problems with EPICS
 V4 connections. After that, email <a href="http://www.aps.anl.gov/epics/tech-talk/" >EPICS tech-talk</a> or contact the <a href="http://epics-pvdata.sourceforge.net/home.html" >EPICS V4 working group</a>.</p>
+
+<p><br></p>
+
+<p>Since the development cycle (compile, build, etc.) is significantly
+different for each language, and to match suitable language API description to
+suitable use cases, this guide is split into 2 major parts. Firstly, Java
+development and secondly C++ development.
+</p>
  
 <h2>Java Development</h2>
 
@@ -212,7 +218,7 @@ you will need at least those two. The sections below will guide you
 through<a href="#getjars"> acquiring them from Jars</a> or<a href="#sourcedownload">
 building from the source</a>.</p>
 
-<p>If you intend to use EPICS V4's Java client side to talk Channel Access to EPICS base
+<p>If you intend to use EPICS V4's Java client side to talk Channel Access to EPICS Base
 IOCs, then you will additionally need caj and jca. Those two are bundled in the
 Java tar file.</p>
 
@@ -245,7 +251,7 @@ included in the exampleJava repo, since it's assumed Java would mainly be used f
 <p>This section is a guide for acquiring and configuring the files in the Java
 tar.gz. For illustration we test successful execution of the helloWorld client/server example.
 <ol>
-<li>Download the tar.gz from SF <a
+<li>Download the tar.gz from SourceForge <a
 href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.net/projects/epics-pvdata/files/</a></li>
 
 <li>Untar it,
@@ -310,10 +316,10 @@ using the support in the jar files of the EPICS V4 core. <strong>Again note, ver
 
 <ol>
 
-  <li>Set the root dir of the EPICS V4 stuff (ie, the directory created by the untar):
+  <li>Set the root dir of the EPICS V4 stuff (i.e., the directory created by the untar):
     <pre>
 WORKSPACE=$HOME/Temporary/EPICS-Java-4.4.0
-  </pre>
+</pre>
   </li>
 
   <li>Edit CLASSPATH to point to where your examples code class files are, or will
@@ -321,8 +327,7 @@ WORKSPACE=$HOME/Temporary/EPICS-Java-4.4.0
   <pre>
 CLASSPATH=${EXAMPLES}
 CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvDataJava-4.0.0.jar
-CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvAccessJava-4.0.0.jar
-  </pre>
+CLASSPATH=${CLASSPATH}:${WORKSPACE}/pvAccessJava-4.0.0.jar</pre>
   </li>
 </ol>
 
@@ -420,7 +425,7 @@ needing a password from the user.</p>
 to use (HTTP or SSH), now download the source. You'll create a local Mercurial
 "repository" <strong>for each</strong> EPICS V4 module you get.</p>
 
-<p>First, you may want to create a root directory in which to house your repo directories, Eg:</p>
+<p>First, you may want to create a root directory in which to house your repo directories, e.g.:</p>
 
 <pre>
 % pwd
@@ -585,7 +590,7 @@ helloWorld example service</a>. HelloWorld is composed of a server and a client.
   that person and the client prints the received greeting. Start with its <a
   href="http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/tip/src/services/helloWorld/HELLOWORLD_README.txt"
   >HELLOWORLD_README.txt</a>. This demonstrates an EPICS V4 record whose value is subject to
-  a user argument.
+  a user argument. The client and server interoperate with their C++ equivalents in exampleCPP.
 </dd>
 <dt>rdbService<dt>
   <dd>
@@ -618,24 +623,219 @@ back to an EPICS V4 client. rdbService illustrates:</P>
 <h2>C++ Development</h2>
 
 <p>This section is on software development, with and of, the C++ implementation of
-EPICS V4. For Java development, see above. </p>
+EPICS V4. It guides you through the process of acquiring the source, building the modules and running some simple examples.</p>
 
-<p>This section guides you through the process of acquiring the source, building the core modules, building the example services
-and running an EPICS V3 IOC with a pvAccess server included (that is, you can use EPICS V4 client tools to
-access the PVs through the pvAccess network protocol). </p>
+<h4 id="cppprerequisites">Prerequisites</h4>
 
+<p>If you are already an EPICS V3 user, it's likely that, apart from the V4 source, you will already have everything you need to build the EPICS V4 C++ implementation from its source.</p>
 
-<h3>Getting the EPICS V4 C++ Implementation source</h3>
+<p>In addition to the EPICS V4 C++ source, you will need the following:
 
-<p>
-The simplest way to obtain the EPICS V4 C++ source is to download it as a tar from the Sourceforge website 
+<ol>
+<li>
+<p>An installed version of EPICS (V3) Base. You should use 3.14.12 or later. You will also need the variable <code>EPICS_HOST_ARCH</code> appropriately set for your host architecture. See <a href="#appendix_a:_building_epics_v3_base">Appendix
+A</a> for an an example of building a local EPICS Base, 3.14.12.3, and setting <code>EPICS_HOST_ARCH</code>.</p>
+<p>For specific help for building on a Mac, see also <a
+href="#appendix_b:_help_with_mac_os_x_build" >Appendix B: Help with Mac OS X build</a>.</p>
+</li>
+
+<li>
+<p>You'll need gnu make and the C++ compiler used to build EPICS Base.</p>
+</li>
+
+<li>
+<p>To build one example, the Channel Archiver Service, you will also need the EPICS Channel Archiver. See <a href=http://ics-web.sns.ornl.gov/kasemir/archiver/>http://ics-web.sns.ornl.gov/kasemir/archiver/</a>. Nothing else depends on this service and this can be omitted if desired.
+</p>
+</li>
+
+<li>
+<p>Some of the steps below will depend on you having specified the location of your EPICS Base installation through the shell variable <code>EPICS_BASE</code>. For example if your installation is in <code>/epics/R3.14.12.3/base</code>:
+<pre>
+% export EPICS_BASE=/epics/R3.14.12.3/base
+</pre>
+</p>
+</li>
+
+</ol>
+
+<p>The <a
+href="http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide/" >Application Developer's Guide</a> has more details on the set up required for building EPICS applications, including setting the host architecture and the versions of the various tools needed.
+
+<h4 id="cppsource">Obtaining the source</h4>
+
+<p>There are two ways to to get the EPICS V4 C++ source.</p>
+
+<p>The simplest way is to download it as a tar from the Sourceforge website 
 site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
 http://sourceforge.net/projects/epics-pvdata/files/</a>.
-This is a good option if you wish to deploy EPICS V4 services or add a pvAccess server to a V3 IOC and want a stable release, see the section below on <a href="#building_the_epics_v4_c++_implementation_source_with_make" >Building the EPICS V4 C++ implementation source with make</a>.
+This is a good option if you wish to deploy EPICS V4 services and clients and want a stable release. The tar consists of a number of EPICS V4 modules and is designed to be relatively easy to build. This is recommended for those new to EPICS V4.</p>
 
-<p>If you want the latest code or wish to contribute to development you will need to clone the SourceForge Mercurial repositories.
-This will of course give you the full revision history of the modules including previous releases.
-The modules can be obtained using the Mercurial clone command.</p>
+<p>If you want the latest code or wish to contribute to development you will need to clone the SourceForge Mercurial repositories. In this case you can choose which modules you want.</p>
+
+<p>The next two sections describe how to obtain the souce and build it via these two methods.</p>
+
+<h3 id="tarbuild">Building the EPICS V4.4.0 C++ Implementation Tar</h3>
+
+<h4 id="quick start">Quick start instructions</h4>
+
+<p> For those familiar with EPICS V3 and with a V3 base installation and the appropriate toolchain already in place, doing the following should build the source (at least on Linux hosts).</p>
+
+<p>You'll need <code>EPICS_BASE</code> set to point to your V3 base installation and <code>EPICS_HOST_ARCH</code> appropriately set. Download the V4.4.0 C++ tar from the SourceForge site
+<a href="http://sourceforge.net/projects/epics-pvdata/files/4.4.0/">
+http://sourceforge.net/projects/epics-pvdata/files/4.4.0/</a>, untar, configure and build:
+<pre>
+% tar xzf EPICS-CPP-4.4.0.tar.gz
+% cd EPICS-CPP-4.4.0
+% chmod +x configure.sh
+% make configure
+% make
+</pre>
+</p>
+[The command <code>make configure</code> sets your build dependencies. You can aternatively do this by creating and completing a top-level <code>RELEASE.local</code> based on <code>ExampleRelease.local</code>, which will work for other host architectures. ]<p>
+<p>Then do the following to build pvaPy:
+<pre>
+% export EPICS4_DIR=`pwd`
+% cd pvaPy
+% make configure
+% make
+</pre>
+</p>
+<p>
+For how to build the remaining target, the Channel Archiver Service, consult the sub-section of the step-by-step below.
+</p>
+<p><br></p>
+<p>
+For those less familar with EPICS or requiring more information, the following sub-sections will take you through the requirements and build process step-by-step and in a little more detail:
+</p>
+
+
+<h4 id="step-by-step-cpp">Step by step</h4>
+<ol>
+<li>Download the V4.4.0 C++ tar.gz from the SourceForge site:
+
+<a href="http://sourceforge.net/projects/epics-pvdata/files/4.4.0/">
+http://sourceforge.net/projects/epics-pvdata/files/4.4.0/</a>.
+</li>
+
+<li>Untar it
+<p>Move the tar to where you want your installation to be and untar it in the usual way:
+<pre>
+% tar xzf EPICS-CPP-4.4.0.tar.gz
+</pre>
+</p>
+<p>If you <kbd>cd</kbd> into the resulting directory and examine the contents you should see something like
+<pre>
+% cd EPICS-CPP-4.4.0
+% ls
+CONFIG_SITE.local     Makefile           pvaSrv         README
+configure.sh          normativeTypesCPP  pvCommonCPP    RELEASE_IDS
+exampleCPP            pvAccessCPP        pvDatabaseCPP  RELEASE_VERSIONS
+ExampleRelease.local  pvaPy              pvDataCPP
+</pre>
+</p>
+<li>Configure EPICS V4 for your site in CONFIG_SITE.local
+
+<p>You can modify the default configuration for your site by setting this in CONFIG_SITE.local. This file is included by the CONFIG_SITE file in each module's configure directory.</p>
+
+<p>The source tar should in general build out the box without modifying this CONFIG_SITE.local. This should be the case if your EPICS Base installation has no site-specific config. If this is not the case however you may have to modify CONFIG_SITE.local. If you have problems building the source tar you can try building against a clean EPICS Base without site-specific config.</p>
+
+<p>Some site-specific configs may by default cause cross compililation for unsupported target archictectures. To help ensure the tar builds out the box for as many new users as possible the supplied CONFIG_SITE.local sets
+<code>CROSS_COMPILER_TARGET_ARCHS</code> to be an empty string:
+  <pre>CROSS_COMPILER_TARGET_ARCHS=
+</pre>
+turning off any cross compilation. You can remove this line or set cross compilation targets here if you wish.
+</p>
+</li>
+<li>Set your module locations in RELEASE.local,
+<p>The EPICS build system needs you to specify the locations of the dependencies for each module. The easiest way to do this is to specify this in a single RELEASE.local in the top-level. This file will then be included by the RELEASE file in each module's configure directory.
+</p>
+<p>For Linux host development, a script is provided to make it easy to create your RELEASE.local, provided that you have specified the location of your EPICS Base installation through the shell variable <code>EPICS_BASE</code>. If your EPICS Base installation is in /epics/R3.14.12.3/base, from the top level of your EPICS V4 source do the following:
+<pre>
+% export EPICS_BASE=/epics/R3.14.12.3/base
+% chmod +x configure.sh
+% make configure
+</pre>
+</p>
+<p>Alternatively create the RELEASE.local based on the supplied example. Save the file ExampleRelease.local as RELEASE.local and modify so that <code>EPICS_BASE</code> points to your EPICS Base installation and <code>EV4_BASE</code> points to the top-level EPICS V4 directory. So if you've untarred the source tar in /epicsv4 the fiel would look like.
+<pre>
+EV4_BASE=/epicsv4/EPICS-CPP-4.4.0
+PVDATABASE=$(EV4_BASE)/pvDatabaseCPP
+PVASRV=$(EV4_BASE)/pvaSrv
+PVACCESS=$(EV4_BASE)/pvAccessCPP
+NORMATIVETYPES=$(EV4_BASE)/normativeTypesCPP
+PVDATA=$(EV4_BASE)/pvDataCPP
+PVCOMMON=$(EV4_BASE)/pvCommonCPP
+ARCHIVER=
+EPICS_BASE=/epics/R3.14.12.3/base
+</pre>
+</p>
+<p>[ Note: An alternative to a single top-level RELEASE.local is to specify the dependency locations on a per-module basis by creating a RELEASE.local in the configure directory. This allows you to specify only those modules you need and thus avoid recursive dependencies. You can do this through the configure script by typing
+<pre>
+% make config_multi
+</pre>
+instead of <code>make configure</code>. ]<p>
+
+<li>Build the modules
+
+<p>Simple type
+<pre>
+% make
+</pre>
+</p>
+<p>This will build the default target which consist of the modules pvCommonCPP, pvDataCPP, pvAccessCPP, pvaSrv pvDatabaseCPP and normativeTypesCPP followed by exampleCPP/HelloWorld.
+</p>
+<li>Build pvaPy
+<p>pvaPy is built separately as it has its own configuration script. From the top directory of the V4 source, do the following to build pvaPy:
+<pre>
+% export EPICS_BASE=/epics/R3.14.12.3/base
+% export EPICS4_DIR=`pwd`
+% cd pvaPy
+% make configure
+% make
+</pre>
+</p>
+
+<li>Build the Channel Archiver Service (optional)
+
+<p>This is an example EPICS V4 service. It is not part of the default target as it has an external dependency on the EPICS Channel Archiver. See <a href=http://ics-web.sns.ornl.gov/kasemir/archiver/>http://ics-web.sns.ornl.gov/kasemir/archiver/</a>.</p>
+
+<p>The Channel Archiver can also be a little difficult to build. If it isn't part of your existing installation you may wish to leave this example out initially when getting started with EPICS V4.</p>
+
+<p>To build the Channel Archiver Service example you will need to have built the EPICS Channel Archiver and to specify its location in the RELEASE.local. If your archiver is in the src/ChannelArchiver directory of /epics/R3.14.12.3/extensions then set in the <code>make configure</code>
+<pre>
+% ARCHIVER_DIR=/epics/R3.14.12.3/extensions make configure
+</pre>
+or set ARCHIVER in your RELEASE.local
+<pre>
+ARCHIVER=/epics/R3.14.12.3/extensions
+</pre>
+</p>
+
+<p>Then to build the service, from the top directory, do
+<pre>
+% make archSrv
+</pre>
+or 
+<pre>
+% cd exampleCPP/ChannelArchiverService
+% make
+</pre>
+</p>
+</li>
+</ol>
+
+
+<h3>Building the EPICS V4.4.0 C++ Implementation from the Repositories</h3>
+
+<p>For the latest code or to contribute to development you will need to clone the SourceForge Mercurial repositories.
+This will of course give you the full revision history of the modules including previous releases and all branches.
+</p>
+
+<p>Note there is no single, top-level repository, so you will need to obtain the modules you want and build them individually.
+
+<h4>Getting the EPICS V4 C++ Implementation source</h4>
+
+<p>The modules can be obtained using the Mercurial clone command.</p>
 
 <p>
 For this you will <a href="#prerequisites">need the Mercurial client tools, as described above</a>.
@@ -655,69 +855,52 @@ and if using HTTP:
 </pre>
 </p>
 
-<p>To add a pvAccess server to a V3 IOC you'll also need pvaSrv as well as pvIOCCPP.
-pvIOCCPP was a core module, but is no longer being developed. However pvaSrv still has a dependency on this.
-There are also two example V4 services in exampleCPP. These can be obtained in the same way. So for SSH access clone as follows:
+<p>Other modules can be obtained similarly, e.g. for SSH:
 
-<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvIOCCPP
+<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/exampleCPP
 % hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvaSrv	
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/exampleCPP
+% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvDatabaseCPP
+% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvaPy
+% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/normativeTypeCPP
 </pre>
 </p>
 
-<h3>Building the EPICS V4 C++ implementation source with make</h3>
+<h4>Building the EPICS V4 C++ implementation source with make</h4>
 
-<p>
 The C++ implementations of the EPICS V4 modules use the EPICS V3 build system, based on unix <code>make</code>
 (in contrast to the Java implementation, which uses Maven).
 A basic understanding of the EPICS V3 make system is helpful, although the following instructions do not assume this knowledge.
 The build command itself is simple - it's just <kbd>make</kbd>.
-However you will have to do some configuration - specifying where the modules' dependencies are and possibly also which targets are built. 
+However you will have to do some configuration - in particular specifying where the modules' dependencies are and possibly also which targets are built.
 </p>
 
-<h4 id="cppprerequisites">Prerequisites</h4>
+<p>EPICS V4 uses the EPICS build facility. In particular each module has a diectory called <code>configure</code> containg a file, <code>CONFIG_SITE</code>, which is used to specify build choices and target architectures and another, <code>RELEASE</code>, which is used to specify directory structures containing files needed by the module (i.e. the locations of dependencies).</p>
 
-<p><em>First obtain the source</em> as described in the previous section. If you've downloaded a tar,
-once you've put your tar in the desired location you can untar it in the usual way:
-<pre>
-    % tar xzvf EPICS-CPP-4.3.0.tar.gz
-</pre>
+<p>For EPICS V4 modules <code>CONFIG_SITE</code> includes files <code>CONFIG_SITE.local</code> in the <code>configure</code> directory or in the module's parent directory (providing these exist).</p>
+
+<p>Similarly  <code>RELEASE</code> includes files <code>RELEASE.local</code> in the <code>configure</code> directory or in the module's parent directory (again, providing these exist).</p>
+
+
+<p>So you can create a <code>configure/RELEASE.local</code> for each module specifying the module's dependencies or you can create a single <code>RELEASE.local</code> in the parent directory of a group of modules containing all the dependencies for those modules. The former has the advantage that you can specify only those dependencies you need (which prevents issues with recursive dependencies). The latter has the advantage that you only need specify the dependency locations once.
 </p>
 
-<p><em>You will also need an installed version of EPICS V3</em>. You should use 3.14.12 or later. Using an earlier version may not work, depending on the version and the intended application. See <a href="#appendix_a:_building_epics_v3_base">Appendix
-A</a> for an example of building a local EPICS base, 3.14.12.2. For specific help for
-building on a Mac, see also <a
-href="#appendix_b:_help_with_mac_os_x_build" >Appendix B: Help with Mac OS X build</a>.</p>
-
-<h4 id="make_system">The EPICS Build System</h4>
-
-<p>For each EPICS V4  module you wish to build you must specify the locations of all the other modules that it depends on (the build instructions below will explain how to do this in each case).
-The locations of the dependencies are picked up in the build process through the file <code>configure/RELEASE</code> in each module, which in turn includes <code>configure/RELEASE.local</code> and <code>../RELEASE.local</code> (relative to the top-level of the module, i.e. in the module's parent directory).
-</p>
-
-<p>So you can create a <code>configure/RELEASE.local</code> for each module specifying the module's dependencies or you can create a single <code>RELEASE.local</code> in the parent directory of a group of modules containing all the dependencies for those modules.
-</p>
-
-<p>
-The instructions below for building the core modules, pvaSrv and their dependencies assume that all the modules are in the same parent directory and you specify the dependency locations by creating a single <code>RELEASE.local</code> file in the parent directory which contains the locations of all the dependencies for all the modules in that directory.
-</p>
-
-
-<p>
-The other part of configuration is specifying the build targets.
-This guide also assumes you're just building for your host architecture (i.e. that you're not cross-compiling).
-Depending on your EPICS installation may well not need to do anything to ensure this.
-However if your local EPICS installation has been set up by default to cross-compile for additional target architectures  you will need to edit the <code>configure/CONFIG_SITE</code> file in each module to include a line that defines
-<code>CROSS_COMPILER_TARGET_ARCHS</code> to be an empty string:
+<p>Similarly if you need to, you can create <code>configure/CONFIG_SITE.local</code> for each module specifying build choices and targets or you can create a single <code>CONFIG_SITE.local</code> in the parent directory of the group of modules. For example the line
   <pre>CROSS_COMPILER_TARGET_ARCHS=
 </pre>
-or equivalently add this in a file <code>configure/CONFIG_SITE.local</code> for each module. Alternatively you can add this in a file <code>CONFIG.local</code> in the parent directory. Again this has the advantage that you need only do this once for all the modules in that directory. The instructions below use this last method.
+specifies that there are no cross compililation targets, i.e. the only target is the host architecture.
 </p>
 
-
-<p>
-If a module fails to build check the output to see what the target architecture is (look at the value of <samp>T_A</samp> in the <samp>make</samp> commands) and if necessary set <code>CROSS_COMPILER_TARGET_ARCHS</code>.
+<p>You may which to create a top-level makefile to simplify your build process. You can get an example makefile and configuration script, as well as an example <code>RELEASE.local</code> and <code>CONFIG_SITE.local</code> from the source tar (see <a href="#tarbuild">Building the EPICS V4.4.0 C++ Implementation Tar</a>)
+ or from the EPICS V4 website. For example on Linux using wget:
+<pre>
+% wget http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/Makefile
+% wget http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/configure.sh
+% wget http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/CONFIG_SITE.local
+% wget http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE.local
+</pre>
 </p>
+
+<p>The instructions below do not assume a top-level Makefile.</p>
 
 <h4 id="cppbuild">EPICS V4 Core C++ Implementation Build</h4>
 
@@ -734,28 +917,19 @@ The module interdependencies require that they are <b>built in the
 following order: first pvCommonCPP, then pvDataCPP, and finally pvAccessCPP</b>, as detailed below.
 </p>
 <p>
-It is assumed that your EPICS V4 modules are all in a single parent directory. This will be the case if you have downloaded a release of the source from the SourceForge website and unpacked it.
+It is assumed that your EPICS V4 modules are all in a single parent directory.
 </p>
-</>To build the core modules
+<p>To build the core modules
 <ol>
   <li><p>Specify the dependencies for all the modules: In the parent directory (i.e. the directory containing pvCommonCPP, pvDataCPP and pvAccessCPP) create a
-  <code>RELEASE.local file</code> which sets <code>EPICS_BASE</code> to point to your EPICS release and PVCOMMON and PVDATA to point to the locations of pvCommon and pvData respectively. So if your EPICS V4 source is in <code>/epics/v4/4.3</code> and your EPICS base in <code>/epics/R3.14.12.2/base</code> your <code>RELEASE.local</code> will be
+  <code>RELEASE.local file</code> which sets <code>EPICS_BASE</code> to point to your EPICS release and PVCOMMON and PVDATA to point to the locations of pvCommon and pvData respectively. So if your EPICS V4 source is in <code>/epics/v4/latest</code> and your EPICS Base in <code>/epics/R3.14.12.3/base</code> your <code>RELEASE.local</code> will be
 <pre>
-PVDATA=/epics/v4/4.3/pvDataCPP
-PVCOMMON=/epics/v4/4.3/pvCommonCPP
-EPICS_BASE=/epics/R3.14.12.2/base
+PVDATA=/epics/v4/latest/pvDataCPP
+PVCOMMON=/epics/v4/latest/pvCommonCPP
+EPICS_BASE=/epics/R3.14.12.3/base
 </pre>
-If you intend to build pvaSrv then you should also include the locations of pvAccess and pvIOC:
-<pre>
-PVIOC=/epics/v4/4.3/pvIOCCPP
-PVACCESS=/epics/v4/4.3/pvAccessCPP
-PVDATA=/epics/v4/4.3/pvDataCPP
-PVCOMMON=/epics/v4/4.3/pvCommonCPP
-EPICS_BASE=/epics/R3.14.12.2/base
-</pre>
-</p>
 
-<p> In addition, if you need to prevent cross-compiling set <code>CROSS_COMPILER_TARGET_ARCHS</code> to be the empty string by creating a <code>CONFIG.local</code> in the parent directory which contains the line<p>
+<p> In addition set any targets or build choices. For example, if you need to prevent cross-compiling set <code>CROSS_COMPILER_TARGET_ARCHS</code> to be the empty string by creating a <code>CONFIG_SITE.local</code> in the parent directory which contains the line<p>
   <pre>CROSS_COMPILER_TARGET_ARCHS=
 </pre>
 </p>
@@ -779,24 +953,86 @@ EPICS_BASE=/epics/R3.14.12.2/base
 <pre>[from the top level directory of pvAccessCPP, issue make]
 % make </pre>
 </p>
-<p> pvAccess should build without errors, although there may be some warnings.</p>
+<p>pvAccess should build without errors.</p>
  </li>
 </ol>
- 
-<p>This completes the build of the EPICS V4 core modules (and their dependent modules).</p>
+</p>
 
-<h4 id="cppexamples">C++ Examples</h4>
+<h4 id="exampleCPP">Building exampleCPP</h4>
+
+<p>The module exampleCPP currently contains two C++ examples of RPC-style clients and servers.
+
+These services require that you have built the core modules as described above.
+In addition the Channel Archiver Service has a dependency on the EPICS V3 Channel Archiver. See <a href=http://ics-web.sns.ornl.gov/kasemir/archiver/>http://ics-web.sns.ornl.gov/kasemir/archiver/</a>.</p>
+
+<p>To build the HelloWorld, you need to specify the dependency locations in a <code>RELEASE.local</code>, e.g. this should include the lines like:
+<pre>
+EV4_BASE=/epicsv4/latest
+PVACCESS=$(EV4_BASE)/pvAccessCPP
+PVDATA=$(EV4_BASE)/pvDataCPP
+PVCOMMON=$(EV4_BASE)/pvCommonCPP
+EPICS_BASE=/epics/R3.14.12.3/base
+</pre>
+depending on your EPICS Base and V4 module locations. This file can be located in the parent directory of exampleCPP, in the parent of HelloWorld (i.e. in exampleCPP) or in <code>HelloWorld/configure</code>.
+</p>
+<p>Then <kbd>cd</kbd> into the HelloWorld directory and type <kbd>make<kbd>.
+
+<p>
+The instructions are similar for ChannelArchiverService, except that you will need to specify the location of the Archiver, e.g.
+<pre>
+EV4_BASE=/epicsv4/latest
+PVACCESS=$(EV4_BASE)/pvAccessCPP
+PVDATA=$(EV4_BASE)/pvDataCPP
+PVCOMMON=$(EV4_BASE)/pvCommonCPP
+ARCHIVER=/epics/R3.14.12.3/extensions
+EPICS_BASE=/epics/R3.14.12.3/base
+</pre>
+before you <kbd>cd</kbd> into the ChannelArchiverService directory and type <kbd>make</kbd>.
+</p>
+
+<p>
+More detailed instructions for building and running the services are in their respective READMEs <a
+  href="http://epics-pvdata.sourceforge.net/hgweb/exampleCPP/file/tip/HelloWorld/HELLOWORLD_README.txt"
+  >HELLOWORLD_README.txt</a> and <a
+  href="http://epics-pvdata.sourceforge.net/hgweb/exampleCPP/file/tip/ChannelArchiverService/CHANNEL_ARCHIVER_SERVICE__README.txt"
+  >CHANNEL_ARCHIVER_SERVICE__README.txt</a> (and also available in the source).
+</p>
+
+
+<h4 id="exampleCPP">Building the other EPICS V4 C++ modules</h4>
+
+<p>The other modules are built in a similar fashion, typing <kbd>make</kbd> in each module, after first specifying dependencies in a <code>RELEASE.local</code> and build choices and targets in a <code>CONFIG_SITE.local</code> in either each module's <code>configure</code> directory or in the parent directory.<p>
+
+<p>The EPICS V4 modules have the following dependencies:
+<ul>
+<li>pvaSrv depends on EPICS Base, pvCommonCPP, pvDataCPP and pvAccessCPP.
+</li>
+<li>pvDatabase depends on EPICS Base, pvCommonCPP, pvDataCPP, pvAccessCPP and pvaSrv.
+</li>
+<li>pvaPy depends on EPICS Base, pvCommonCPP, pvDataCPP and pvAccessCPP.
+</li>
+<li>normativeTypesCPP depends on EPICS Base, pvCommonCPP and pvDataCPP.
+</li>
+</ul>
+
+<h3>Running the C++ Examples</h3>
+
+<p>A number of examples of C++ EPICS V4 clients and servers are available, either included in the source tar or in EPICS V4 modules cloned from SourceForge.
+</p>
+
+<p>This section describes running a few of these. It assumes you have built the EPICS V4 core modules either from the tar or from clones of the repositories and have put <code>pvAccess/bin/$EPICS_HOST_ARCH</code> in your path, e.g.
+<pre>
+PATH=$PATH:/epicsv4/EPICS-CPP-4.4.0
+</pre>
+</p>
+
+<h4 id="cppexamples">C++ Example RPC services</h4>
 
 <p>
 The module exampleCPP contains examples of C++ clients and servers.
 You can find this on the epics-pvdata web site
 [<a href="#ev4examples-cpp">ev4examples-cpp</a>].
 As of release 4.3 it is also included in the downloaded sourcefile tar.
-<p>
-These services require that you have built the core modules as described above.
-In addition the Channel Archiver Service has a dependency on the EPICS V3 Channel Archiver.
-Instructions for building and running the services are in their respective READMEs.
-These services can be used a model for starting to write your own services.
 </p>
 
 <p>
@@ -808,9 +1044,9 @@ Currently examplesCPP contains 2 examples of RPC-style servers.</p>
 <a href="http://epics-pvdata.sourceforge.net/hgweb/exampleCPP/file/tip/HelloWorld">
 HelloWorld example service</a>. The HelloWorld in exampleCPP is the C++ equivalent of the one in exampleJava,
 i.e. is composed of a server and a client. The client sends the server a name and prints the response from
-the server which is a greeting addressed to the supplied name. Start with <a
+the server which is a greeting addressed to the supplied name. See <a
   href="http://epics-pvdata.sourceforge.net/hgweb/exampleCPP/file/tip/HelloWorld/HELLOWORLD_README.txt"
-  >HELLOWORLD_README.txt</a>.
+  >HELLOWORLD_README.txt</a>. The client and server interoperate with their Java equivalents in exampleJava.
 </dd>
 
 <dt>ChannelArchiverService<dt>
@@ -833,131 +1069,118 @@ ChannelArchiverService illustrates:</P>
   <li>Illustration of the idea of using the NTTable EPICS V4 "normative type"</li>
   <li>Formatting pvStructure encoded data for printing.</li>
 </ol>
-Start with <a
+See <a
   href="http://epics-pvdata.sourceforge.net/hgweb/exampleCPP/file/tip/ChannelArchiverService/CHANNEL_ARCHIVER_SERVICE__README.txt"
   >CHANNEL_ARCHIVER_SERVICE__README.txt</a>.
 </dd>
-</dl> 
+</dl>
+
+<p><strong>Running the HelloWorld example</strong>.</p>
+
+<p>Having built the HelloWorld example you can the server and client. The service is very simple. The client supplies a string and the server responds with a greeting based on the string.</p>
+
+<p>To run the HelloWorld example, start the HelloWorld server: <kbd>cd</kbd> to the directory containing HelloWorld and start the server in one terminal 
+<pre>
+% cd /epicsV4/EPICS-CPP-4.4.0/exampleCPP/HelloWorld
+% ./helloServerRunner
+</pre>
+</p>
+<p>
+You should something like:
+<pre>
+pvAccess Server v4.0.3
+VERSION : pvAccess Server v4.0.3
+PROVIDER_NAMES : rpcService
+BEACON_ADDR_LIST : 
+AUTO_BEACON_ADDR_LIST : 1
+BEACON_PERIOD : 15
+BROADCAST_PORT : 5076
+SERVER_PORT : 5075
+RCV_BUFFER_SIZE : 16384
+IGNORE_ADDR_LIST: 
+STATE : INITIALIZED
+</pre>
+</p>
+
+<p>Then on the  client, run the HelloWorld Client in a terminal
+<pre>
+% cd /epicsV4/EPICS-CPP-4.4.0/exampleCPP/HelloWorld
+% ./helloClientRunner Dave
+</pre>
+and you should see
+<pre>
+Hello Dave
+</pre>
+</p>
+<p>
+You can also use the eget utility in pvAccess:
+<pre>
+% eget -z -N -s helloService -a "personsname=Dave"
+</pre>
+which produces
+<pre>
+structure 
+    string greeting Hello Dave
+</pre>
+</p>
+<p>After you've finished testing the server you can terminate it with a SIGTERM like CTRL-C in the server process window.
+</p>
+
+
+<p>
+More detailed instructions for building and running the services are in their respective READMEs.
+These services can be used a model for starting to write your own services.
+</p>
 
 <h4>Adding pvAccess support to an IOC</h4>
 
 <p>This section describes an example of the use of pvaSrv, the C++ implementation of EPICS
  V4 to access EPICS V3 PVs. That is, a version 3 IOC makes the values of its V3 channels
 available through pvAccess to EPICS V4 pvAccess clients.</p> 
-<p>
-The build dependencies are:</p>
-<ul>
-<li>pvIOCCPP depends on pvCommonCPP, pvDataCPP, pvAccessCPP and EPICS Base</li>
-<li>pvaSrv depends on pvCommonCPP, pvDataCPP, pvAccessCPP, pvIOCCPP and EPICS Base</li>
-</ul>
-
-</p>
-<p>
-The module interdependencies require that they are <b>built in the
-following order: first the core modules and dependencies, then pvIOCCPP, and finally pvaSrv</b>, as detailed below.
-</p>
-<p>It is assumed that pvIOCCPP and pvaSrv, as well as pvCommonCPP, pvDataCPP and pvAccessCPP are in a common parent directory. 
+<p>You should already have built pvaSrv, either from the SourceForge tar or as a module cloned from the mercurial repository. The pvaSrv build (assuming it was successful) has created a ready-to-run example.
+  The source code for it is in the directory <code>pvaSrv/testApp/dbPv</code>. To run it do the following:
 
 <p>
-To deploy an IOC with pvAccess support:
-
- <ol>
-  <li>If you haven't already done so, follow the instructions above for building the core modules.
-  As part of this, you should have already created a RELEASE.local in the parent directory. It should specify the locations of your EPICS base installation as well as the locations of pvCommonCPP, pvDataCPP, pvAccessCPP and pvIOCCPP. For example if your EPICS V4 source is in <code>/epics/v4/4.3</code> and your EPICS base in <code>/epics/R3.14.12.2/base</code> your <code>RELEASE.local</code> will be
- <pre>
-PVIOC=/epics/v4/4.3/pvIOCCPP
-PVACCESS=/epics/v4/4.3/pvAccessCPP
-PVDATA=/epics/v4/4.3/pvDataCPP
-PVCOMMON=/epics/v4/4.3/pvCommonCPP
-EPICS_BASE=/epics/R3.14.12.2/base
-</pre>
-</p>
-<p> In addition, if you need to prevent cross-compiling and you have not already done so set <code>CROSS_COMPILER_TARGET_ARCHS</code> to be the empty string by creating a <code>CONFIG.local</code> in the parent directory which contains the line
-  <pre>CROSS_COMPILER_TARGET_ARCHS=
-</pre>
-</p>
-</li> 
-  
-  <li>Build pvIOCCPP: <kb>cd</kb> into  <code>pvIOCCPP</code> and build the module: </p>
-<pre>[from the top level directory of pvIOCCPP, issue make]
-% make </pre>
- <p> It should build without errors.</p>
- </li>
-   <li>Build pvaSrv: <kb>cd</kb> into <code>pvaSrv</code>  and build the module: </p>
-<pre>[from the top level directory of pvaSrv, issue make]
-% make </pre>
- <p> It should build without errors.</p>
- </li>
-  <li>   
-  The pvaSrv build (assuming it was successful) has created a ready-to-run example.
-  The source code for it is in the directory <code>pvaSrv/testApp/dbPv</code>.
-  <!--</li>
-
-  <li>Create or modify a file named <code>envPaths</code>. This file contains a number of epicsEnvSet commands
-  to set the correct paths. For example, For Linux it might be like the following. For
-  the Mac OS example consistent with the build examples above, see
-  <a href="#appendix_b:_help_with_mac_os_x_build">Help with Mac OS X build</a>:</li>
-<pre>
-epicsEnvSet("ARCH","linux-x86")
-epicsEnvSet("IOC","testV3Channel")
-epicsEnvSet("TOP","/epics/v4/4.3/pvaSrv")
-epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
-epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
-epicsEnvSet("PVDATA","$(TOP)/../pvDataCPP")
-epicsEnvSet("PVCOMMON","$(TOP)/../pvCommonPP")
-epicsEnvSet("EPICS_BASE","/epics/R3.14.12.2/base")
-</pre>
-<li>
--->
-
-From <code>pvaSrv</code> <kbd>cd</kbd> to <code>testApp/iocBoot/testDbPv</code>.
+From <code>pvaSrv</code> <kbd>cd</kbd> to <code>testTop/iocBoot/testDbPv</code>.
 From here you can start the test IOC (on the host, as a "soft" IOC):
 <pre>
-% ../../bin/&ltarch&gt/testDbPv st.cmd
+% ../../bin/$EPICS_HOST_ARCH/testDbPv st.cmd
 </pre>
-("arch" refers to the architecture for which you have built, e.g. linux-x86)
-</li>
-<!-- <li>
-The EPICS databases are under the pvaSrv root, in <code>pvaSrv/db</code>. You can add db files, templates etc. there.
-Edit the st.cmd to make it load your EPICS databases.
-</li>
--->
-<li>
+</p>
+<p>
 The EPICS databases are in <code>pvaSrv/testApp/db</code>. You can add db files, templates etc. there.
 Edit the st.cmd to make it load your EPICS databases.
-</li>
+</p>
 
-</ol>
 
 <p><strong>sample output from running the IOC</strong>.</p>
 
 <pre>
-[testDbPv]$ ../../bin/linux-x86/testDbPv st.cmd 
+% ../../bin/$EPICS_HOST_ARCH/testDbPv st.cmd
 < envPaths
-epicsEnvSet("ARCH","linux-x86")
+epicsEnvSet("ARCH","linux-x86_64")
 epicsEnvSet("IOC","testDbPv")
-epicsEnvSet("TOP","/epics/v4/4.3/pvaSrv/testApp")
-epicsEnvSet("PVASRV","/epics/v4/4.3/pvaSrv/testApp/..")
-epicsEnvSet("PVIOC","/epics/v4/4.3/pvIOCCPP")
-epicsEnvSet("PVACCESS","/epics/v4/4.3/pvAccessCPP")
-epicsEnvSet("PVDATA","/epics/v4/4.3/pvDataCPP")
-epicsEnvSet("PVCOMMON","/epics/v4/4.3/pvCommonCPP")
-epicsEnvSet("EPICS_BASE","/epics/R3.14.11/base")
-cd /epics/v4/4.3/pvaSrv/testApp
+epicsEnvSet("TOP","/epicsv4/EPICS-CPP-4.4.0/latest/pvaSrv/testTop")
+epicsEnvSet("PVASRV","/home/jms68266/epicsv4/release/4.4/pvaSrv/testTop/..")
+epicsEnvSet("EV4_BASE","/epicsv4/EPICS-CPP-4.4.0")
+epicsEnvSet("PVACCESS","/epicsv4/EPICS-CPP-4.4.0/pvAccessCPP")
+epicsEnvSet("PVDATA","/epicsv4/EPICS-CPP-4.4.0/pvDataCPP")
+epicsEnvSet("PVCOMMON","/epicsv4/EPICS-CPP-4.4.0/pvCommonCPP")
+epicsEnvSet("EPICS_BASE","/dls_sw/epics/R3.14.12.3/base")
+cd /epicsv4/EPICS-CPP-4.4.0/pvaSrv/testTop
 ## Register all support components
 dbLoadDatabase("dbd/testDbPv.dbd")
 testDbPv_registerRecordDeviceDriver(pdbbase)
 ## Load record instances
-dbLoadRecords("db/synchronous.db")
-filename="../dbLexRoutines.c" line number=241
-No such file or directory dbRead opening file db/synchronous.dbdbLoadRecords("db/dbInteger.db","name=byte01,type=byte")
+dbLoadRecords("db/dbInteger.db","name=byte01,type=byte")
 dbLoadRecords("db/dbInteger.db","name=short01,type=short")
 dbLoadRecords("db/dbInteger.db","name=ubyte01,type=ubyte")
 dbLoadRecords("db/dbInteger.db","name=ushort01,type=ushort")
 dbLoadRecords("db/dbInteger.db","name=uint01,type=ulong")
 dbLoadRecords("db/dbInteger.db","name=int01,type=longout")
+dbLoadRecords("db/dbInteger.db","name=wait01,type=wait")
 dbLoadRecords("db/dbScalar.db","name=float01,type=float")
-dbLoadRecords("db/dbScalar.db","name=double01,type=ao")
+dbLoadRecords("db/dbScalar.db","name=double01,type=ai")
 dbLoadRecords("db/dbArray.db","name=byteArray01,type=CHAR")
 dbLoadRecords("db/dbArray.db","name=shortArray01,type=SHORT")
 dbLoadRecords("db/dbArray.db","name=intArray01,type=LONG")
@@ -977,8 +1200,9 @@ dbLoadRecords("db/dbInteger.db","name=ubyte02,type=ubyte")
 dbLoadRecords("db/dbInteger.db","name=ushort02,type=ushort")
 dbLoadRecords("db/dbInteger.db","name=uint02,type=ulong")
 dbLoadRecords("db/dbInteger.db","name=int02,type=longout")
+dbLoadRecords("db/dbInteger.db","name=wait02,type=wait")
 dbLoadRecords("db/dbScalar.db","name=float02,type=float")
-dbLoadRecords("db/dbScalar.db","name=double02,type=ao")
+dbLoadRecords("db/dbScalar.db","name=double02,type=ai")
 dbLoadRecords("db/dbArray.db","name=byteArray02,type=CHAR")
 dbLoadRecords("db/dbArray.db","name=shortArray02,type=SHORT")
 dbLoadRecords("db/dbArray.db","name=intArray02,type=LONG")
@@ -994,8 +1218,9 @@ dbLoadRecords("db/dbInteger.db","name=ubyte03,type=ubyte")
 dbLoadRecords("db/dbInteger.db","name=ushort03,type=ushort")
 dbLoadRecords("db/dbInteger.db","name=uint03,type=ulong")
 dbLoadRecords("db/dbInteger.db","name=int03,type=longout")
+dbLoadRecords("db/dbInteger.db","name=wait03,type=wait")
 dbLoadRecords("db/dbScalar.db","name=float03,type=float")
-dbLoadRecords("db/dbScalar.db","name=double03,type=ao")
+dbLoadRecords("db/dbScalar.db","name=double03,type=ai")
 dbLoadRecords("db/dbArray.db","name=byteArray03,type=CHAR")
 dbLoadRecords("db/dbArray.db","name=shortArray03,type=SHORT")
 dbLoadRecords("db/dbArray.db","name=intArray03,type=LONG")
@@ -1005,140 +1230,63 @@ dbLoadRecords("db/dbString.db","name=string03")
 dbLoadRecords("db/dbStringArray.db","name=stringArray03")
 dbLoadRecords("db/dbEnum.db","name=enum03")
 dbLoadRecords("db/dbCounter.db","name=counter03");
-cd /epics/v4/4.3/pvaSrv/testApp/iocBoot/testDbPv
+cd /epicsv4/EPICS-CPP-4.4.0/pvaSrv/testTop/iocBoot/testDbPv
 iocInit()
 Starting iocInit
 ############################################################################
-## EPICS R3.14.11 $R3-14-11$ $2009/08/28 18:47:36$
-## EPICS Base built Nov  4 2011
+## EPICS R3.14.12.3 $Date: Mon 2012-12-17 14:11:47 -0600$
+## EPICS Base built Feb 11 2014
 ############################################################################
 iocRun: All initialization complete
 epicsThreadSleep(2.0)
-casr
-Channel Access Server V4.11
-No clients connected.
-pvaSrvSetDebugLevel 0
-new level 0
-setChannelBaseDebugLevel 0
-new level 0
-pvaSrvStart
-pvaSrv v0.9.1 starting
-VERSION : pvAccess Server v3.0.4
-PROVIDER_NAMES : dbPv
-BEACON_ADDR_LIST : 
-AUTO_BEACON_ADDR_LIST : 1
-BEACON_PERIOD : 15
-BROADCAST_PORT : 5076
-SERVER_PORT : 5075
-RCV_BUFFER_SIZE : 16384
-IGNORE_ADDR_LIST: 
-STATE : INITIALIZED
-startExampleService serviceRPC
-startPVServiceChannel
-2013-10-15T15:32:57.792 Using dynamically assigned TCP port 49625.
-VERSION : pvAccess Server v3.0.4
-PROVIDER_NAMES : pvService
-BEACON_ADDR_LIST : 
-AUTO_BEACON_ADDR_LIST : 1
-BEACON_PERIOD : 15
-BROADCAST_PORT : 5076
-SERVER_PORT : 49625
-RCV_BUFFER_SIZE : 16384
-IGNORE_ADDR_LIST: 
-STATE : INITIALIZED
-dbpf string01 10.1
-DBR_STRING:          "10.1"   
-epics> 
 </pre>
 
 
-<p id="recordlist" class="caption">The "out of the box" record list:</p>
-<pre>
-pics> dbl
-double01
-double02
-double03
-counter01
-counter02
-counter03
-int01
-int02
-int03
-enum01
-enum02
-enum03
-string01
-string02
-string03
-byteArray01
-byteArray02
-byteArray03
-doubleArray01
-doubleArray02
-doubleArray03
-floatArray01
-floatArray02
-floatArray03
-intArray01
-intArray02
-intArray03
-shortArray01
-shortArray02
-shortArray03
-stringArray01
-stringArray02
-stringArray03
-ubyteArray01
-uintArray01
-ushortArray01
-byte01
-byte02
-byte03
-short01
-short02
-short03
-ubyte01
-ubyte02
-ubyte03
-ushort01
-ushort02
-ushort03
-uint01
-uint02
-uint03
-float01
-float02
-float03
-bigstring01
-</pre>
 
-
-<h2 class="nocount" id="appendix:a">Appendix A: Building EPICS V3 base</h3>
+<h2 class="nocount" id="appendix:a">Appendix A: Building EPICS Base</h3>
 <p>An example of downloading and building EPICS V3 version 3.14.12, on Mac OS X, is
-given below. An EPICS V3 base install is a prerequisite for compilation of
-the C++ implementations of
-the EPICS V4 core modules.</p>
-<p>Begin by downloading the tar file of the EPICS V3 base from the EPICS main
+given below. An EPICS Base install is a prerequisite for compilation of
+the C++ implementations of the EPICS V4 core modules.</p>
+<p>Begin by downloading the tar file of the EPICS Base from the EPICS main
 web site at Argonne: <a href="http://www.aps.anl.gov/epics/base/R3-14/12.php"
 >http://www.aps.anl.gov/epics/base/R3-14/12.php</a>. In this example, having
 downloaded
-the tar,  it is moved into the directory where EPICS V3 base is to be built. Then it
-is built. </p>
+the tar,  it is moved into the directory where EPICS Base is to be built.</p>
 <pre>
-    % mkdir epicsV3
-    % cd epicsV3
-    % mv ~/Downloads/baseR3.14.12.2.tar .
-    % tar xvf baseR3.14.12.2.tar
-    % cd base-3.14.12.2/
-    % make
+% mkdir epicsV3
+% cd epicsV3
+% mv ~/Downloads/baseR3.14.12.3.tar .
+% tar xvf baseR3.14.12.3.tar
+% cd base-3.14.12.3/
 </pre>
+<p>
+You will also need gnu make, perl and, of course, a C++ compiler e.g. g++.
+</p>
+<p>
+To build you will need to specify your host architecture by setting your host architecture. A script is provided to help you select this. For example for Linux:
+<pre>
+% ./startup/EpicsHostArch
+linux-x86_64
+% export EPICS_HOST_ARCH=linux-x86_64
+</pre>
+</p>
+<p>
+Then build:
+<pre>
+% make
+</pre>
+</p>
+<p>
+See the  <a
+href="http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide/" >Application Developer's Guide</a>, especially the Build Facility" section for more details on the setting the host architecture and the required tools. 
+</p>
 <p>See below for help with Mac build in Mac OS 10.8 (Mountain Lion) is you have
   issues with make, compiling or linking.</p>
 
 
 <h2 class="nocount" id="appendix:b">Appendix B: Help with Mac OS X build</h2>
 
-<p id="lionhelp">The EPICS base build ran perfectly on the author's Mac running Mac
+<p id="lionhelp">The EPICS Base build ran perfectly on the author's Mac running Mac
   OS X 10.7.3. However, for Mac OS 10.8 (Mountain Lion), there were 2
   issues. Firstly, it seems make is no longer distributed and installed by default in
   10.8. One can however choose to install the Mac OS command line tools,
@@ -1165,12 +1313,12 @@ doesn't work:
 GNU_LDLIBS_YES = 
 </pre>
 
-<p>V4.4 requires Java 1.7. Java on a Mac can be a bit confused since Java from Oracle now installs Java differently to the way Apple did it. The Java Control Panel may not know all the versions known by java_home. You may need to set JAVA_HOME explicity. For example: </p>
+<p>V4.4 requires Java 1.7. Java on a Mac can be a bit confused since Java from Oracle now installs Java differently to the way Apple did it. The Java Control Panel may not know all the versions known by java_home. You may need to set JAVA_HOME explicitly. For example: </p>
 <pre>
 $ export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
 </pre>
 
-<!--
+<! --
 <p>Following the builds of pvCommonCPP, pvDataCPP, pvAccessCPP, pvIOCCPP and pvaSrv detailed above,
 the envPaths file used to run the V3 Channel test example,
 pvIOCCPP/iocBoot/testV3Channel, was as follows:</p>
@@ -1180,12 +1328,13 @@ pvIOCCPP/iocBoot/testV3Channel, was as follows:</p>
 epicsEnvSet("ARCH","darwin-x86")
 epicsEnvSet("IOC","testV3Channel")
 epicsEnvSet("TOP","/Users/greg/Development/epicsV4/ev4hg/pvIOCCPP")
-epicsEnvSet("EPICS_BASE","/Users/greg/Development/epicsV3/base-3.14.12.2")
+epicsEnvSet("EPICS_BASE","/Users/greg/Development/epicsV3/base-<br/>")
 epicsEnvSet("PVCOMMON","$(TOP)/../pvCommonCPP")
 epicsEnvSet("PVDATA","$(TOP)/../pvDataCPP")
 epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
 </pre>
+-- >
 -->
 
 <h2 class="nocount">References</h2>
@@ -1228,12 +1377,14 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
   <dd>JCA and CAJ, Sourceforge, Matej Sekoranja,  
     <a href="http://epics-jca.sourceforge.net">http://epics-jca.sourceforge.net</a>
     </dd>
-</div>
 
 <dt id="bib:relver">[relver]</dt>
   <dd>RELEASE_VERSIONS, the files which defines which modules are in each release of EPICS V4 (apart from EPICS Base),  
     <a href="https://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS">RELEASE_VERSIONS</a>
     </dd>
+  <dt id="bib:epicsappdev">[epicsappdev]</dt>
+      <dd>EPICS
+Input / Output Controller (IOC) Application Developer's Guide, Marty Kraimer, <a href="http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide/">http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide/</a></dd>
 </div>
 
 <hr />
@@ -1241,4 +1392,4 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
 <!-- hhmts start -->Last modified: Wed Dec 10 13:13:00 PST 2014 <!-- hhmts end -->
 
 </body>
-</html>
+</html><pre>
