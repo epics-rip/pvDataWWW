@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS V4 PVArray Issues</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+  </script>
+</head>
+<body>
+
+<div class="head">
+<h1>EPICS V4 PVArray Issues</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 19-Dec-2014</h2>
+
+  <dl>
+    <dt>Latest version:</dt>
+    <dd><a
+      href="pvArrayIssues.html">pvArrayIssues.html</a>
+    </dd>
+    <dt>This version:</dt>
+    <dd><a
+      href="pvArrayIssues_20141219.html">pvArrayIssues_20141219.html</a>
+    </dd>
+    <dt>Previous version:</dt>
+    <dd><a
+      href="pvArrayIssues_20141218.html">pvArrayIssues_20141218.html</a>
+    </dd>
+    <dt>Editors:</dt>
+   <dd> Marty Kraimer, BNL<br />
+      </dd>
+  </dl>
+
+<h2 class="nocount">Abstract</h2>
+
+<p>This is PVArray Issues for EPICS V4</p>
+
+<h2 class="nocount">Status of this Document</h2>
+
+<p>This is the 19-Dec-2014 version of the PVArray Issues.
+</p>
+
+
+
+</div>
+
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+<div id="contents" class="contents">
+
+<h2>Introduction</h2>
+<p>How arrays are supported has a big impact on performance and memory usage.
+areaDetector applications are a good example.
+A detector image can have hundreds of megaPixels.
+If each areaDetector plugin, each channelMonitor, etc has it's own copy of the image
+than a lot of memory is required and a lot of time will be spent copying data between
+the various copies of the image.
+</p>
+<p>
+This document describes how arrays are currently implemented
+and then discuss possible improvements.
+pvDataCPP already has good support for scalarArray data but some problems remain
+for union, unionArray, and structureArray fields.
+pvDataJava has no good support for improving array performance and memory usage.
+</p>
+<p>This introduction provides the background for the remaining sections.</p>
+<h3>Monitor</h3>
+<p>pvAccess monitors provide a good example of how memory and performance can
+be impacted by implementation.
+</p>
+<p>Monitor are implemented via a finite queue of monitorElements.
+A channel connects to a PVRecord in a pvAccess server.
+The PVRecord has a pvStructure that has the data provided by the server.
+The monitor implementation creates a monitorElement queue and is the producer, i. e. it puts things
+into the queue. The client is the consumer, i. e. it takes monitorElements out of the queue.
+When the producer is created it allocates a monitorElement queue.
+A monitorElement queue has the following methods:</p>
+<pre>
+MonitorElement getFree();
+void setUsed(MonitorElement element);
+MonitorElement getUsed();
+void releaseUsed(MonitorElement element);
+</pre>
+where
+<dl>
+   <dt>getFree</dt>
+     <dd>
+      Called by producer to get an unused element.
+      If a null is returned that the queue is full.
+     </dd>
+   <dt>setUsed</dt>
+     <dd>
+      Called by the producer to set element as used.
+     </dd>
+   <dt>getUsed</dt>
+     <dd>
+       Called by consumer to get the next used element.
+      If a null is returned there are no more used elements.
+     </dd>
+   <dt>releaseUsed</dt>
+     <dd>
+      Called by the consumer to release the element returned by the call to getUsed.
+     </dd>
+</dl>
+<p><b>Important Note:</b>
+A producer can only modify a monitor element between calls to getFree and setUsed.
+A client can only access the values in a monitor element between calls to getUsed
+and releaseUsed.</p>
+<p>
+When the producer is active it always owns one element of the queue.
+This is so that if the consumer does not keep up the producer can keep usimg
+the element it uses when data changes.
+Since at any goven time the consumer may or may not own a monitorElement,
+the queue size must be at least two.</p>
+<p>A MonitorElement has the following:</p>
+<pre>
+monitorElement
+    PVStructure pvStructure
+    BitSet changedBitSet
+    BitSet overrunBitSet
+</pre>
+where
+<dl>
+   <dt>pvStructure</dt>
+     <dd>A pvStructure with fields that are subset of the fields in the PVStructure of the PVRecord.
+      pvCopy described below copies data between the two pvStructures.
+      </dd>
+   <dt>changedBitSet</dt>
+     <dd>Set by the provider to show which fields have changed value since the previous monitor.
+     </dd>
+   <dt>overrunBitSet</dt>
+     <dd>Set by the provider to show which fields have changed value more than once
+       since the previous monitor.
+     </dd>
+</dl>
+<p>Comments:</p>
+<ul>
+    <li>
+    Since each monitor has allocated at least two monitorElements it has
+    allocated at least two pvStructures.
+    If one of the fields of each pvStructure is a array with many elements
+    then lots of memory can be requred and lots of time copying data.
+    </li>
+    <li>
+    The producer must only modify data in a monitorElement between <b>getFree</b> and <b>setUsed</b>.
+    This is why the discussion of unionArray and structureArray is important,
+    </li>
+</ul>
+
+<h3>BitSet and PVStructure</h3>
+<p>Some important features of pvAccess are:</p>
+<dl>
+  <dt>PVAccess Transmits Top Level PVStructures</dt>
+    <dd>
+     For example a monitor event sends data from server to client as a top
+     level PVStructure.
+     </dd>
+  <dt>Top Level Introspection Immutable</dt>
+     <dd>
+     Once a top level PVStructure is created it's introspection
+     can not be modified.
+    Thus pvAccess has no need to send introspection information
+    with data. Consider channelGet as an example.
+    When a channelGet is created the server creates a top level
+    pvStructure for get requests.
+    The server sends the introspection info back to the client
+    side of pvAccess, which also creates a top level pvStructure.
+    Each time the client issues a get request the data is
+    copied into the top level pvStructure of the server and
+    transmitted to the client side of pvAccess,
+    which puts the data in it's top level pvStructure,
+    and finally presented to the client.
+     </dd>
+  <dt>Only fields that change are transmitted.</dt>
+    <dd>
+      Only the data for fields that change value between requests
+      are sent.
+     </dd>
+  <dt>Clients can request an arbitrary set of fields from server.</dt>
+    <dd>
+     The client does not have to receive all fields provided by the
+     server but can request an arbitrary subset of the fields.
+     </dd>
+</dl>
+<p>In order to implement the above features pvAccess uses bitSets,
+where each bit is associated with a field.
+The following is a top level pvStructure and how bits from a bitSet
+are assigned:</p>
+<a name="bitAssignment"></a>
+<pre>
+bit#    field
+0    structure
+1        double scalarValue
+2        structure timeStamp
+3            long secondsPastEpoch
+4            int nanoSeconds
+5            int userTag
+6        union unionValue
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+7        structure[] structureValue
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+8        any[] unionValue
+             any
+                 structure timeStamp
+                     long secondsPastEpoch
+                     int nanoSeconds
+                     int userTag
+             any
+                 double value
+9        string lastValue
+</pre>
+<p>Note that bits for structure subfields are assigned recursively.
+But each scalar, union, scalarArray, structureArray, and unionArray field
+are assigned a single bit.
+This means that each subfield of a union, structuctureArray, or unionArray
+is treated just like a new top level field.
+If ANY change is made to a union, scalarArray, structureArray,
+or unionArray, the complete set of data for that field is sent.
+</p>
+<p><b>Comment:</b>
+A pvAccess client can ask for a subset of the fields in the pvStructure from  the
+PVRecord.
+But if a field is a union, unionArray, or structureArray then that entire field must be
+selected, i. e. is is not possible to recurse into these field types.
+</p>
+<h3>Convert and pvCopy</h3>
+<h4>pvCopy</h4>
+
+<p>The pvAccess providers use the pvCopy facility to copy data between 
+a clients pvStructure and the pvStructure in the PVRecord.
+When an instance of PVCopy is created it creates a reference to
+the PVStructure in the PVRecord.
+It's methods have arguments that include the pvStructure and changedBitSet for the client.
+What pvCopy does is look for matching fields in the two pvStructures
+and call the Convert facility to copy data between the matching fields.
+</p>
+<h4>Convert</h4>
+<p>Amoung the methods provided by the convert facility
+are methods to copy pvFields with compatible field types.`
+This means:</p>
+<dl>
+   <dt>scalar</dt>
+     <dd>
+      The scalarTypes must be the same or both must be numeric.
+     </dd>
+   <dt>scalarArray</dt>
+     <dd>
+      For C++ the elementTypes must be the same.
+      Java also converts between numeric types.
+     </dd>
+   <dt>structure</dt>
+     <dd>
+     The introspection interfaces must be equal.
+     </dd>
+   <dt>union</dt>
+     <dd>
+     The introspection interfaces must be identical.
+     </dd>
+   <dt>unionArray</dt>
+     <dd>
+     The introspection interfaces must be identical.
+     </dd>
+   <dt>structureArray</dt>
+     <dd>
+     The introspection interfaces must be identical.
+     </dd>
+</dl>
+
+
+<h2>pvDataCPP: Existing Implementation of PVArray</h2>
+<p>
+For arrays the C++ implementation enforces COW (Copy On Write) semantics.
+It implements <b>shared_vector</b>, which is simlar to <b>std::vector</b>
+except that is uses <b>std::shared_ptr</b> to hold the raw array.
+All PVArray fields use a <b>const shared_vector</b> to hold the raw array.
+This means that is is not possible to modify the array element.
+Instead to change the raw data a new <b>shared_vector</b> must be created,
+converted to a <b>const shared_vector</b>, and then used to replace the original
+<b>const shared_vector</b>
+</p>
+<p>
+Convert does deep copies between scalar and structure fields
+but shallow copies between union, scalarArray, structureArray, and unionArray fields.
+For scalarArray fields this is safe because the implementation of
+arrays implements COW (Copy on Write) by making the array data <b>const</b>.
+This forces code to create new raw data in order to change a scalar array
+field.
+It also uses <b>const</b> for structureArray and unionArray fields
+but this does not force all elements of the array to be <b>const</b>.
+Thus the elements can be changed.
+Thus any code that wants to share a top level PVStructure
+must be very careful when changing the value of a union,
+structureArray, or unionArray field.
+The rule is that the union, structureArray, or unionArray
+must be replaced with a new value.
+</p>
+<p>Convert doing a shallow copy
+means is that instead of copying each element it just has the
+destination pvField share the same underlying data as the source.
+Another way to state this is to say that the two shared pointers
+reference the same data,
+Thus both memory usage and the time to copy the data is saved.
+</p>
+<p>Since the pvCopy facility makes extensive use of Convert
+the same rules apply to it.</p>
+<p><b>Problem:</b>
+The fact that convert does a shallow copy for union, unionArray, and structureArray
+fields means that code that puts to any of these field types must
+create a new instance of the underlying data and than use it to replace
+the original underlying data.</p>
+<p>Lets take structureArray as an example.
+Assume some code gets the interface to the value field.
+The code can not change the value array element themselves but it
+can modify subfields of the array elements.
+For example the following:</p>
+<pre>
+static void test()
+{   
+    FieldCreatePtr fieldCreate = getFieldCreate();
+    PVDataCreatePtr pvDataCreate = getPVDataCreate();
+    StandardFieldPtr standardField = getStandardField();
+    StandardPVFieldPtr standardPVField = getStandardPVField();
+    ConvertPtr convert = getConvert();
+    
+    FieldBuilderPtr fieldBuilder = fieldCreate-&gt;createFieldBuilder();
+    StructureConstPtr valueStructure = fieldBuilder -&gt;
+       add("short",pvShort) -&gt;
+       add("long",pvLong) -&gt;
+       createStructure();
+    PVStructurePtr top = pvDataCreate-&gt;createPVStructure(
+       fieldBuilder-&gt;
+       addArray("value",valueStructure) -&gt;
+       createStructure());
+    size_t n = 2;
+    PVStructureArray::svector values(n); 
+    for(size_t i=0; i&lt;n ; ++i) values[i] = pvDataCreate-&gt;createPVStructure(valueStructure);
+    PVStructureArrayPtr pvValue = top-&gt;getSubField&lt;PVStructureArray&gt;("value");
+    pvValue-&gt;replace(freeze(values));
+    cout &lt;&lt; *top &lt;&lt; endl;
+    PVStructureArray::const_svector cvalues(pvValue-&gt;view());
+    PVStructurePtr pvSubField = cvalues[0];
+    pvSubField-&gt;getSubField&lt;PVShort&gt;("short")-&gt;put(10);
+    cout &lt;&lt; *top &lt;&lt; endl;
+}
+</pre>
+produces:
+<pre>
+structure 
+    structure[] value
+        structure 
+            short short 0
+            long long 0
+        structure 
+            short short 0
+            long long 0
+
+structure 
+    structure[] value
+        structure 
+            short short 10
+            long long 0
+        structure 
+            short short 0
+            long long 0
+</pre>
+Look at the last three lines of the sample code.
+Note that the value of the short field of the first structure element
+changed value even though
+cvalues is a constant shared vector.
+
+<h2>pvDataJava: Existing Implementation of PVArray</h2>
+<p>
+pvDataJava does a deep copy of all fields 
+with the possible exception of scalar array fields.
+If the source and destination have the same scalarType
+and the source is immutable then the raw data array is shared
+and the destination is made immutable.
+</p>
+<h2>pvDataCPP: Issues</h2>
+<p>The following discuses a number of array related issues.
+Some of the ideas may coflict with other ideas.
+</p>
+<h3>PVUnion</h3>
+<p>Should convert do a deep copy instead of a shallow copy?</p>
+<p>After all a union has at most a single subfield.
+The cost of a deep copy depends on the complexity of the subfield
+and whether or not it changes type.
+If it does not change type no new memory needs to be created.
+This is a strong argument for deep copy.
+</p>
+<h3>PVUnionArray and PVStructureArray</h3>
+<h4>Possible Changes To Convert</h4>
+<p>
+Perhaps convert should allow the caller to specify
+if shallow or deep copies are desired.
+A posibility is to add deepCopy to the  following methods:</p>
+<pre>
+class Convert 
+{
+...
+    void copy(PVFieldPtr const &amp; from, PVFieldPtr const &amp; to,bool deepCopy = false);
+    void copyStructure(
+        PVStructurePtr const &amp; from, PVStructurePtr const &amp; to,bool deepCopy = false);
+    void copyStructureArray(
+        PVStructureArrayPtr const &amp; from, PVStructureArrayPtr const &amp; to,bool deepCopy = false);
+    void copyUnion(
+        PVUnionPtr const &amp; from, PVUnionPtr const &amp; to,bool deepCopy = false);
+    void copyUnionArray(
+        PVUnionArrayPtr const &amp; from, PVUnionArrayPtr const &amp; to,bool deepCopy = false);
+}
+</pre>
+<p><b>NOTE:</b> If some combination of the ideas in the next three sections are
+adapted then there should be enough information  for convert to know when
+it should do a shallow or a deep copy.
+<p>
+<h4>Make PVStructureArray and PVUnionArray immutable</h4>
+<p>When a producer puts data into a PVStructureArray or PVUnionArray
+can we develop a way to make not just the array but all elements
+and all fields in each element immuttable?
+</p>
+<p>
+One way is to call setImmutable on the PVStructureArray or PVUnionArray.
+Then the only way to change anything is to call the replace method.
+</p>
+<p>Is to possible to have all fields under a PVStructureArray or PVUnionArray
+be dynamically changed to be <b>const</b>?
+</p>
+<p>
+If it is how expensive is it?
+</p>
+<h4>Allow all arrays to be mutable or immutable.</h4>
+<p>This means PVScalarArray, PVStructureArray, and PVUnionArray.
+<b>shared_vector</b> would still be used to hold the raw array
+but it would not be forced to be a <b>const shared_vector</b>.
+</p>
+<p>An argument is favor is where a top level PVStructure, which has an array subfield,
+is passed through a processing chain and each member of the chain modifies the
+array data.</p>
+<p>How hard is this to implement?
+It it worthwhile?
+</p>
+<h3>Possible Bugs</h3>
+<h4>method replace</h4>
+<p>Currently this is implemented by DefaultPVArray, PVStructureArray, and PVUnionArray.
+Each has the code:</p>
+<pre>
+        checkLength(other.size());
+        value = other;
+        PVField::postPut();
+</pre>
+<p>Each should be changed to also check for type compatibilitty.
+Thus:</p>
+<ul>
+  <li>
+      DefaultPVArray should check that introspection interfaces are identical.
+  </li>
+  <li>
+    PVStructureArray should also check that element introspection interfaces are identical.
+  </li>
+  <li>
+    PVUnionArray should also check that element introspection interfaces are identical.
+  </li>
+</ul>
+<p
+>While doing this other methods that modify any PVArray should be checked for similar problems.
+</p>
+
+<h4>setImmutable</h4>
+<p>This has problems. The following:</p>
+<pre>
+static void tesyModify(const PVStructurePtr & pvStructure)
+{
+   PVDoublePtr pvDouble = pvStructure-&gt;getSubField&lt;PVDouble&gt;("value");
+   pvDouble-&gt;put(10.0);
+}
+
+static void test()
+{
+    StandardPVFieldPtr standardPVField = getStandardPVField();
+
+    PVStructurePtr doubleRecord = standardPVField-&gt;scalar(pvDouble,"");
+    doubleRecord-&gt;getSubField("value")-&gt;setImmutable();
+    cout&lt;&lt; *doubleRecord &lt;&lt; endl;
+    tesyModify(doubleRecord);
+    cout&lt;&lt; *doubleRecord &lt;&lt; endl;
+}
+
+int main(int argc,char *argv[])
+{
+    test();
+    return 0;
+}
+</pre>
+Produces:
+<pre>
+epics:nt/NTScalar:1.0 
+    double value 0
+
+epics:nt/NTScalar:1.0 
+    double value 10
+</pre>
+<p>Thus even though a scala field is immutable it was modified.
+Both the implementation of PVData and Convery need to be looked at carefully so that
+they enforce immutability.
+</p>
+<h2>pvDataJava: Issues</h2>
+<p>The shareData method has never been properly tested.
+Also it should have the same semantics as pvDataCPP.
+If shareData is requested then after the shallow copy the field must be
+make immutable.
+Note that immutable can substitute for <b>const shared_vector</b>.
+</p>
+
+
+</div>
+</body>
+</html>
