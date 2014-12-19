@@ -37,7 +37,7 @@
 <h1>EPICS V4 PVArray Issues</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 19-Dec-2014</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 18-Dec-2014</h2>
 
   <dl>
     <dt>Latest version:</dt>
@@ -46,12 +46,10 @@
     </dd>
     <dt>This version:</dt>
     <dd><a
-      href="pvArrayIssues_20141219.html">pvArrayIssues_20141219.html</a>
-    </dd>
-    <dt>Previous version:</dt>
-    <dd><a
       href="pvArrayIssues_20141218.html">pvArrayIssues_20141218.html</a>
     </dd>
+    <dt>Previous version:</dt>
+    <dd>None</dd>
     <dt>Editors:</dt>
    <dd> Marty Kraimer, BNL<br />
       </dd>
@@ -63,7 +61,7 @@
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 19-Dec-2014 version of the PVArray Issues.
+<p>This is the 18-Dec-2014 version of the PVArray Issues.
 </p>
 
 
@@ -415,17 +413,8 @@ and the source is immutable then the raw data array is shared
 and the destination is made immutable.
 </p>
 <h2>pvDataCPP: Issues</h2>
-<p>The following discuses a number of array related issues.
-Some of the ideas may coflict with other ideas.
-</p>
 <h3>PVUnion</h3>
 <p>Should convert do a deep copy instead of a shallow copy?</p>
-<p>After all a union has at most a single subfield.
-The cost of a deep copy depends on the complexity of the subfield
-and whether or not it changes type.
-If it does not change type no new memory needs to be created.
-This is a strong argument for deep copy.
-</p>
 <h3>PVUnionArray and PVStructureArray</h3>
 <h4>Possible Changes To Convert</h4>
 <p>
@@ -447,10 +436,6 @@ class Convert
         PVUnionArrayPtr const &amp; from, PVUnionArrayPtr const &amp; to,bool deepCopy = false);
 }
 </pre>
-<p><b>NOTE:</b> If some combination of the ideas in the next three sections are
-adapted then there should be enough information  for convert to know when
-it should do a shallow or a deep copy.
-<p>
 <h4>Make PVStructureArray and PVUnionArray immutable</h4>
 <p>When a producer puts data into a PVStructureArray or PVUnionArray
 can we develop a way to make not just the array but all elements
@@ -462,84 +447,7 @@ Then the only way to change anything is to call the replace method.
 </p>
 <p>Is to possible to have all fields under a PVStructureArray or PVUnionArray
 be dynamically changed to be <b>const</b>?
-</p>
-<p>
 If it is how expensive is it?
-</p>
-<h4>Allow all arrays to be mutable or immutable.</h4>
-<p>This means PVScalarArray, PVStructureArray, and PVUnionArray.
-<b>shared_vector</b> would still be used to hold the raw array
-but it would not be forced to be a <b>const shared_vector</b>.
-</p>
-<p>An argument is favor is where a top level PVStructure, which has an array subfield,
-is passed through a processing chain and each member of the chain modifies the
-array data.</p>
-<p>How hard is this to implement?
-It it worthwhile?
-</p>
-<h3>Possible Bugs</h3>
-<h4>method replace</h4>
-<p>Currently this is implemented by DefaultPVArray, PVStructureArray, and PVUnionArray.
-Each has the code:</p>
-<pre>
-        checkLength(other.size());
-        value = other;
-        PVField::postPut();
-</pre>
-<p>Each should be changed to also check for type compatibilitty.
-Thus:</p>
-<ul>
-  <li>
-      DefaultPVArray should check that introspection interfaces are identical.
-  </li>
-  <li>
-    PVStructureArray should also check that element introspection interfaces are identical.
-  </li>
-  <li>
-    PVUnionArray should also check that element introspection interfaces are identical.
-  </li>
-</ul>
-<p
->While doing this other methods that modify any PVArray should be checked for similar problems.
-</p>
-
-<h4>setImmutable</h4>
-<p>This has problems. The following:</p>
-<pre>
-static void tesyModify(const PVStructurePtr & pvStructure)
-{
-   PVDoublePtr pvDouble = pvStructure-&gt;getSubField&lt;PVDouble&gt;("value");
-   pvDouble-&gt;put(10.0);
-}
-
-static void test()
-{
-    StandardPVFieldPtr standardPVField = getStandardPVField();
-
-    PVStructurePtr doubleRecord = standardPVField-&gt;scalar(pvDouble,"");
-    doubleRecord-&gt;getSubField("value")-&gt;setImmutable();
-    cout&lt;&lt; *doubleRecord &lt;&lt; endl;
-    tesyModify(doubleRecord);
-    cout&lt;&lt; *doubleRecord &lt;&lt; endl;
-}
-
-int main(int argc,char *argv[])
-{
-    test();
-    return 0;
-}
-</pre>
-Produces:
-<pre>
-epics:nt/NTScalar:1.0 
-    double value 0
-
-epics:nt/NTScalar:1.0 
-    double value 10
-</pre>
-<p>Thus even though a scala field is immutable it was modified.
-Both the implementation of PVData and Convery need to be looked at carefully so that
-they enforce immutability.
 </p>
 <h2>pvDataJava: Issues</h2>
 <p>The shareData method has never been properly tested.
