@@ -691,7 +691,7 @@ http://sourceforge.net/projects/epics-pvdata/files/4.4.0/</a>, untar, configure 
 % make
 </pre>
 </p>
-[The command <code>make configure</code> sets your build dependencies. You can aternatively do this by creating and completing a top-level <code>RELEASE.local</code> based on <code>ExampleRelease.local</code>, which will work for other host architectures. ]<p>
+[The command <code>make configure</code> sets your build dependencies. You can alternatively do this by creating and completing a top-level <code>RELEASE.local</code> based on <code>ExampleRelease.local</code>, which will work for other host architectures. ]<p>
 <p>Then do the following to build pvaPy:
 <pre>
 % export EPICS4_DIR=`pwd`
@@ -739,7 +739,7 @@ ExampleRelease.local  pvaPy              pvDataCPP
 
 <p>The source tar should in general build out the box without modifying this CONFIG_SITE.local. This should be the case if your EPICS Base installation has no site-specific config. If this is not the case however you may have to modify CONFIG_SITE.local. If you have problems building the source tar you can try building against a clean EPICS Base without site-specific config.</p>
 
-<p>Some site-specific configs may by default cause cross compililation for unsupported target archictectures. To help ensure the tar builds out the box for as many new users as possible the supplied CONFIG_SITE.local sets
+<p>Some site-specific configs may by default cause cross compilation for unsupported target architectures. To help ensure the tar builds out the box for as many new users as possible the supplied CONFIG_SITE.local sets
 <code>CROSS_COMPILER_TARGET_ARCHS</code> to be an empty string:
   <pre>CROSS_COMPILER_TARGET_ARCHS=
 </pre>
@@ -874,7 +874,7 @@ The build command itself is simple - it's just <kbd>make</kbd>.
 However you will have to do some configuration - in particular specifying where the modules' dependencies are and possibly also which targets are built.
 </p>
 
-<p>EPICS V4 uses the EPICS build facility. In particular each module has a diectory called <code>configure</code> containg a file, <code>CONFIG_SITE</code>, which is used to specify build choices and target architectures and another, <code>RELEASE</code>, which is used to specify directory structures containing files needed by the module (i.e. the locations of dependencies).</p>
+<p>EPICS V4 uses the EPICS build facility. In particular each module has a directory called <code>configure</code> containg a file, <code>CONFIG_SITE</code>, which is used to specify build choices and target architectures and another, <code>RELEASE</code>, which is used to specify directory structures containing files needed by the module (i.e. the locations of dependencies).</p>
 
 <p>For EPICS V4 modules <code>CONFIG_SITE</code> includes files <code>CONFIG_SITE.local</code> in the <code>configure</code> directory or in the module's parent directory (providing these exist).</p>
 
@@ -887,7 +887,7 @@ However you will have to do some configuration - in particular specifying where 
 <p>Similarly if you need to, you can create <code>configure/CONFIG_SITE.local</code> for each module specifying build choices and targets or you can create a single <code>CONFIG_SITE.local</code> in the parent directory of the group of modules. For example the line
   <pre>CROSS_COMPILER_TARGET_ARCHS=
 </pre>
-specifies that there are no cross compililation targets, i.e. the only target is the host architecture.
+specifies that there are no cross compilation targets, i.e. the only target is the host architecture.
 </p>
 
 <p>You may which to create a top-level makefile to simplify your build process. You can get an example makefile and configuration script, as well as an example <code>RELEASE.local</code> and <code>CONFIG_SITE.local</code> from the source tar (see <a href="#tarbuild">Building the EPICS V4.4.0 C++ Implementation Tar</a>)
