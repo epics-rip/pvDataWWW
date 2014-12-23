@@ -179,11 +179,11 @@ fi
 # Locate the RELEASE_VERSIONS file, to tell which modules are in the release,
 # and the README file to be added to the bundle
 #
+config_script_name=configure.sh
 if [ ${localreleaseinfo} -eq 1 ]; then
     release_versions_pathname=${scriptdir}/RELEASE_VERSIONS
     readme_pathname=${scriptdir}/../mainPage/README
     makefile_pathname=${scriptdir}/Makefile
-    config_script_name=configure.sh
     config_script_pathname=${scriptdir}/${config_script_name}
     config_site_local_pathname=${scriptdir}/CONFIG_SITE.local
     release_local_pathname=${scriptdir}/RELEASE.local
@@ -218,7 +218,7 @@ else
         rm -rf configure.sh
     fi
     wget ${CONFIG_SCRIPT_URL}
-    config_script_pathname=${PWD}/configure.sh
+    config_script_pathname=${PWD}/${config_script_name}
 
     if [ -e CONFIG_SITE.local ]; then
         rm -rf CONFIG_SITE.local
