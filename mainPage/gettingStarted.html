@@ -534,12 +534,11 @@ in your local Maven repository (<kbd>~/.m2/repository/</kbd> by default).</p>
 <p>The minimum EPICS V4 runtime is composed of only 2 Jars, for the core, plus
 2 if you want to access EPICS V3 IOCs, so you can
 check the outcome of the builds with the find command below, to verify that from the 100s now
-in <code>~/.m2/</code>, you have the few you really need. Again, <strong>actual
+in your local maven (probably <code>~/.m2/</code>), you have the few you really need. Again, <strong>actual
 version tags, i.e. "2.1-SNAPSHOT" in the example below, will vary as EPICS V4 matures</strong>:</p>
 
 <pre>
-% cd ~
-% find . -name "pv*SNAPSHOT.jar" -o -name "*caj*.jar" -o -name "*jca*.jar"
+% find ~/.m2 -name "pv*SNAPSHOT.jar" -o -name "*caj*.jar" -o -name "*jca*.jar"
 .m2/repository/epics/pvData/2.1-SNAPSHOT/pvData-2.1-SNAPSHOT.jar
 .m2/repository/epics/jca/2.3.6/jca-2.3.6.jar
 .m2/repository/epics/caj/1.1.10/caj-1.1.10.jar
@@ -1389,7 +1388,7 @@ Input / Output Controller (IOC) Application Developer's Guide, Marty Kraimer, <a
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Wed Dec 10 13:13:00 PST 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Jan 28 16:48:46 PST 2015 <!-- hhmts end -->
 
 </body>
 </html><pre>
