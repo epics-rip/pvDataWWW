@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords" content="EPICS, EPICSv4" />
+
+<!-- Include the epicsv4 base.css, and the css for epics v4 documents -->
+<link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/base.css">
+<link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/epicsv4.css">
+
+<title>Modifying and copying PVFields in pvData</title>
+
+<style type="text/css">
+/*<![CDATA[*/
+h2 { page-break-before : always; }
+/*]]>*/
+
+</style>
+<!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+</head>
+
+<div class="head">
+<h1>MODIFYING AND COPYING PVFIELDS IN PVDATA</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+<h2 class="nocount">
+  Modifying and copying PVFields in pvData, Editors Draft, 23-Feb-2015</h2>
+<dl>
+<dt>This version:</dt>
+<dd><a href="modify_copy_20150212.html">
+modify_copy_20150212.html</a></dd>
+<dt>Latest version:</dt>
+<dd><a href="modify_copy_20150212.html">modify_copy.html</a></dd>
+<dt>Previous version:</dt>
+<dd>
+<a href="modify_copy_20150212.html">
+modify_copy_20150212.html</a>
+</dd>
+<dt>Editors:</dt>
+<dd>Dave Hickin, Diamond<br>
+</dl>
+<hr />
+</div> <!-- Header material -->
+
+<h2 class="nocount" id="abstract">Abstract</h2>
+
+<p>This document describes rules on how to modify, copy and share data in EPICS V4.
+</p>
+
+<h2 class="nocount" id="status">Status of this Document</h2>
+
+<p>This is the 23-Feb-2015 version of Modifying and copying PVFields in pvData.</p>
+
+
+
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+
+<div id="contents" class="contents">	  
+<hr />
+<h2>Introduction</h2>
+
+<p>To write safe and efficient program using EPICS V4 it is necessary to have a consistent set of rules for manipulation pvData objects. Sharing data enables efficient programs to be written. However without rules for when it is safe to modify data and how, it is impossible to do this safely.</p>
+
+<p>Making data immutable increases safety, but there is a desire to allow mutable data in some cases to improve performance.</p>
+
+<p>Previously there has been a lack of such rules, with different developers sometimes making different assumptions. Even when rules are established, some of the subtler points are not always known. These factors combined have caused unexpected behaviour and the odd crash.</p>
+
+
+<h2>Rules for the PVFields</h2>
+
+<h3>PVScalar</h3>
+
+<p>PVScalar fields are easy:<p>
+<ol>
+<li>Write using <code>put</code></li>
+<li>Copy by reading using from the source using <code>get</code> (or similar function such as <code>getAs</code>) and writing using <code>put</code> </li>
+</ol>
+
+<h3>PVScalarArray</h3>
+
+<p>The value data of PVScalarArrays consists of a shared_vector of appropriate type. The data is essentially immutable and is swapped in using <code>replace</code>.<p>
+<p>So
+<ol>
+<li>To modify a PVScalarArray
+<ol type=i>
+<li>Get a PVScalarArray::const_svector. E.g. use an existing const_svector; create an svector, set the data  and freeze; create an const_svector around an existing buffer.</li>
+<li>Call replace with the const_svector</li>
+</ol>
+</li>
+<li>To copy a PVScalarArray
+<ol type=i>
+<li>Get a the const_svector from the source.</li>
+<li>Call replace on the destination with the const_svector.</li>
+</ol>
+</li>
+</ol>
+<p>The data is "immutable" except that the following performance optimisation is allowed: When the use count of the shared_vector is 1 the buffer can be reused by calling thaw to make it mutable.</p>
+
+<p class="ed">Is this safe. What about if you construct a shared_vector around an existing buffer e.g. NDArray.</p>
+
+<p>It is assumed if the use count is one the buffer can be safely recycled, so you shouldn't do anything that breaks that assumption (see PVUnion for an example of this).</p>
+
+ 
+<h3>PVUnion</h3>
+
+<p>A PVUnion field stores another PVField and can be one of two type regular or variant. For a regular union the type of the stored field, that is, its introspection data, must be one of a finite list of types specified in the introspection data of the PVUnion field. Each of these choices is labelled by an index and a field name. For a variant union the stored field can be of arbitrary type.
+
+<p>You can use the <code>get</code> function to obtain the stored value.</p>
+
+<p>Since it stores a PVField, there are two ways of modifying a PVUnion field. Either the PVField currently stored in the PVUnion can be modified (value semantics), or a new PVField is created and stored in the PVUnion (reference semantics).</p>
+
+<p>For reference semantics the new field is stored using the <code>set</code> function.</p>
+
+<p> For value semantics you can use the <code>get</code> function to obtain the stored value and modify it. This is how you would modify a PVField stored in a variant union. It can also be used to modify a PVField stored in a regular union, but for regular unions you can also obtain the stored field using the <code>select</code> function with the index or field name of the desired choice of stored field. If the selected index has not changed then calling select gets the PVField stored in the PVUnion. If the index has changed it creates the new PVField and the new index is selected and thus using select allows you to modify a regular union, even if the type of the stored value has changed.</p>
+
+
+<p>Note also that when a PVField is modified postPut() must be called. When a PVField has a PostHandler registered, this triggers the its postPut. Further <b><code>postPut</code> should be called precisely once and after the data has been modified</b>. PostHandlers may make the assumption that data is modified only before postPut is called. If postPut is called twice then the PostHandler's <code>postPut</code> will be called twice, and this may have undesired consequences.<p>
+
+<p>For most PVFields <code>postPut</code> is called automatically. This is true for calling put on PVScalars or replace on PVArrays. It is also true for PVUnions when using reference semantics (i.e. when <code>set</code> is called) but not when the modification is done through value semantics. In this case <code>postPut</code> must be called explicitly or implicitly by calling <code>set</code> afterwards.</p>
+
+<p>To copy a PVUnion field there are potentially two methods. The first would be for the destination PVField to store the same PVField as the source PVUnion. The other is for each PVField to maintain a separate stored PVField. In this second case a copy can be done either by creating a new PVField with the same introspection and value data as the PVField stored in the source, or, if the PVFields stored in the source and destination PVUnions already match, by simply copying from one to the other using the rules for the appropriate types.</p>
+
+<p>The first method is referred to as shallow copy and the second is sometimes referred to as 'deep' copy. Note however that in this context deep means at the level of PVUnion only, rather than implying the value of the stored field is necessarily deep copied. So if the stored fields are PVScalar arrays, for example, a deep copy of the PVUnion can (and should) be done by shallow copying the scalar array data from the source PVScalar to the destination PVScalar using <code>replace</code>.</p>
+
+<p>Note:
+<ul>
+<li>Shallow copying a PVUnion field is incompatible with modifying it by modifying its stored value.</li>
+<li>Shallow copying breaks assumptions about the safety of reusing shared_vectors when the reference count is 1.</li>
+<li>When the source and destination PVUnions store PVFields with the same introspection data the 'deep' copy can be very efficient, e.g. when the value is a scalar or an array.</li>
+<li>When a PVUnion's stored PVField does not change type value semantics are also efficient, especially when the stored field is a PVScalar or PVArray.</li>
+</ul>
+</p>
+
+<p>Therefore for PVUnions fields <b>value semantics are allowed and shallow copies are not</b>. Each PVUnion field must maintain a separate stored PVField.<p>
+
+<p>Modification and copying can be done by value semantics where this is possible.<p>
+
+<p>Therefore the rules for PVUnion can be summarised as:
+<ol>
+<li>
+The PVField stored in a PVUnion should be a top-level PVField (i.e. not a subfield of another PVStructure). It should not be stored in more than one PVUnion, nor should it be stored in the shared_vector of a PVStructureArray or PVUnionArray. 
+</li>
+<li>
+To modify a PVUnion:<br>
+either use reference semantics
+<ol  type = i>
+<li>Create a new PVField of the desired type</li>
+<li>Set the PVField's value data</li>
+<li>Store in the PVUnion by calling <code>set</code></li>
+</ol>
+or for regular unions
+<ol type = i>
+<li>Select and get the PVField by calling <code>select</code> with the chosen field name or index.</li>
+<li>Set the PVField's value data</li>
+<li>Call <code>postPut</code> (or ensure it's called by calling <code>set</code> with the selected field)</li>
+</ol>
+or if the existing stored field is already of the desired type
+<ol type = i>
+<li>Get the PVField by calling <code>get</code></li>
+<li>Set the PVField's value data</li>
+<li>Call <code>postPut</code> (or ensure it's called by calling <code>set</code> with the selected field)</li>
+</ol>
+<li>
+To copy a PVUnion:<br>
+either
+<ol  type = i>
+<li>Create a new PVField of the same type as that of the PVField stored in the source PVUnion</li>
+<li>Set the PVField's value data</li>
+<li>Store in the destinations PVUnion by calling <code>set</code></li>
+</ol>
+or for regular unions
+<ol type = i>
+<li>Select and get the PVField by calling <code>select</code> with the same index as the </li>
+<li>Copy the PVField's value data</li>
+<li>Call <code>postPut</code> (or ensure it's called by calling <code>set</code> with the selected field)</li>
+</ol>
+or if the existing stored field is already of the desired type
+<ol type = i>
+<li>Get the PVField by calling <code>get</code></li>
+<li>Copy the source PVField's value data to the destination PVField</li>
+<li>Call <code>postPut</code> (or ensure it's called by calling <code>set</code> with the selected field)</li>
+</ol>
+If the PVField stored in the source is NULL then the selected index should be set to INVALID (regular unions) or the stored value set to NULL (variant unions).
+</li>
+</ol>
+</p>
+<h4>Examples</h4>
+<pre>void PVUnion::copyUnchecked(const PVUnion& from)
+{
+    PVFieldPtr fromValue = from.get();
+    if (from.getUnion()->isVariant())
+    {
+        if (fromValue.get() == 0)
+        {
+            set(PVField::shared_pointer());
+        }
+        else
+        {
+            PVFieldPtr toValue = get();
+            if (toValue.get() == 0 || *toValue->getField() != *fromValue->getField())
+            {
+                toValue = pvDataCreate->createPVField(fromValue->getField());
+                toValue->copyUnchecked(*fromValue);
+                set(toValue);
+            }
+            else
+            {
+                toValue->copyUnchecked(*fromValue);
+                postPut();
+            }
+        }
+    }
+    else
+    {
+        if (fromValue.get() == 0)
+        {
+            select(PVUnion::UNDEFINED_INDEX);
+        }
+        else
+        {
+            select(from.getSelectedIndex())->copyUnchecked(*fromValue);
+        }
+        postPut();
+    }
+}</pre>
+
+<h3>PVStructureArray</h3>
+
+<p>The value of PVStructureArrays consists of a (const) shared_vector of shared pointers to PVStructures.<p>
+
+
+<p>The PVStructure elements should be top-level structures (i.e. not subfields of other structures) and not stored in PVUnions.<p>
+
+<p>The data in PVStructureArrays should be immutable as for scalar arrays. That means both the shared_vector and the structures stored in it. Therefore you <b>must not modify a PVStructure pointed to by an element of a PVStructureArray's shared_vector</b>. (There is an example where a PVStructure may be modified if it is pointed by an element of a non-const shared_vector in some circumstances - this is described below).</p>
+
+<p>You can use the same shared vector as value data in multiple PVStructureArrays. In particular you can, and indeed should, copy by performing a shallow copy, i.e. calling replace on the destination supplying the sources shared_vector as an argument.<p>
+
+<p>You may also call <code>replace</code> supplying a sub-slice of another shared_vector, including another PVStructureArray's shared_vector.<p>
+
+<p>You may place pointers to the same PVStructure in multiple shared_vectors and use these for the value data of PVStructureArrays.
+</p>
+
+
+<ol>
+<li>To modify a PVStructureArray
+<ol type=i>
+<li>Create a new shared vector</li>
+<li>For each existing PVStructure you wish to modify and each new structure you wish to add, create a new PVStructure and set its value data.</li>
+<li>Add each structure to the shared_vector.</li>
+<li>Call freeze to obtain the const_svector.</li>
+<li>Call <code>replace</code> with the const_svector</li>
+</ol>
+</li>
+<li>To copy a PVStructureArray
+<ol type=i>
+<li>Get a the const_svector from the source.</li>
+<li>Call <code>replace</code> on the destination with the const_svector.</li>
+</ol>
+</li>
+</ol>
+
+<p>As an optimisation, if the use count of the shared_vector is 1 it may be thawed and reused.</p>
+
+<p>When the use count is 1 and the shared_vector has been thawed a PVStructure pointed to by an element of the shared_vector may be reused if, and only if, its use count is also 1.</p>
+
+<h3>PVUnionArray</h3>
+
+<p>TODO: Similar to PVStructureArray.</p>
+
+<h3>PVStructure</h3>
+
+<p>The above rules are applied to the subfields of PVStructures.</p>
+
+
+</h3>
+
+</body>
+</html>
