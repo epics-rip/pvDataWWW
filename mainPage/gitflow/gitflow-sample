@@ -1,0 +1,269 @@
+#!/bin/sh
+#
+# git flow example
+#
+# creates a complete example git repository for git flow in ./sample,
+# and runs the usual commands necessary for a development and release schedule
+#
+# Author    Ralph Lange <Ralph.Lange@gmx.de>
+# Copyright (C) 2013 Helmholtz-Zentrum Berlin für Materialien und Energie
+#
+# Converted to git flow by:
+#           Matej Sekoranja <matej.sekoranja@cosylab.com>
+
+
+# Exit on failure
+set -e
+# Show what you're doing
+set -x
+
+REPO=sample
+
+# no support for non-interactive (feature finish) in origianl git flow 
+export GIT_MERGE_AUTOEDIT=no
+
+die () {
+  echo "$1"
+  return 1
+}
+
+################################################################################
+# Check for hg flow extension being installed
+
+git flow version >/dev/null 2>&1 || die "git flow extension not installed (http://danielkummer.github.io/git-flow-cheatsheet/)"
+
+################################################################################
+# Create empty repository and add a few "legacy" commits
+
+rm -fr $REPO/* $REPO/.git*
+mkdir -p $REPO
+cd $REPO
+
+git init
+
+cat > file1 << EOF
+This is a file called file1.
+EOF
+
+git add file1
+git commit -m "Initial commit"
+
+cat >> file1 << EOF
+It has a history of previous develpment.
+EOF
+
+git commit -am "Legacy: add second line to file1"
+
+cat > file2 << EOF
+This is a second legacy file, called file2.
+EOF
+
+git add file2
+git commit -m "Legacy: add second file named file2"
+
+sed -i -e 's/develpment/development/' file1
+# Mac OS X incompatibility
+rm file1-e
+git commit -am "Legacy: fix spelling in file1"
+
+################################################################################
+# Enable git flow
+
+# using default settings
+git flow init -d
+
+################################################################################
+# Simple development on develop trunk
+
+git checkout develop
+
+cat >> file1 << EOF
+Added with a simple development commit directly on develop trunk.
+EOF
+
+git commit -am "Simple development on develop trunk"
+
+################################################################################
+# Start development on a feature branch   1
+
+git flow feature start addFile3
+
+cat > file3 << EOF
+This file added with a feature branch called 'addFile3'.
+EOF
+
+git add file3
+git commit -m "Adding file3 on a feature branch"
+
+cat >> file3 << EOF
+Another change within the same feature branch.
+The quick brown fox jumps over the lazy frog.
+EOF
+
+git commit -am "Updating file3 on the feature branch"
+
+################################################################################
+# Start development on a feature branch   2
+
+git flow feature start renameFile2
+
+git mv file2 file2b
+
+cat >> file2b << EOF
+This was renamed to 'file2b' in a feature branch called 'renameFile2'
+EOF
+git commit -am "Renamed file2 -> file2b on a feature branch"
+
+################################################################################
+# Merging feature branch   1
+
+git checkout feature/addFile3
+git flow feature finish addFile3 
+
+################################################################################
+# Release process
+
+# Start the release branch
+
+git flow release start 1.0
+
+# Prepare the -pre1 release
+
+cat > RELEASE << EOF
+Release: 1.0.0-pre1
+EOF
+
+git add RELEASE
+git commit -m "Add RELEASE file"
+
+git tag 1.0.0-pre1
+
+
+################################################################################
+# During the release process, development can continue
+
+git checkout develop
+
+cat >> file3 << EOF
+Added with another development commit directly on develop trunk.
+EOF
+
+git commit -am "Another development on develop trunk (add to file3)"
+
+################################################################################
+# Merging feature branch   2
+
+git checkout feature/renameFile2
+git flow feature finish renameFile2
+
+# End of development intermezzo
+################################################################################
+
+
+git checkout release/1.0
+
+# Fix things and prepare the -rc1 release
+
+cat >> file1 << EOF
+This was fixed for the 1.0.0-rc1 release
+EOF
+cat > RELEASE << EOF
+Release: 1.0.0-rc1
+EOF
+
+git commit -am "Fix missing thing in file1"
+
+git tag 1.0.0-rc1
+
+################################################################################
+# Merge bugfixes from release back to develop trunk
+
+
+git checkout develop
+git merge release/1.0
+
+git commit -am "Merged fixes from release/1.0 (1.0.0) to <develop>"
+
+git checkout release/1.0
+
+# Prepare final release
+
+cat > RELEASE << EOF
+Release: 1.0.0
+EOF
+
+git commit -am "Prepare for release 1.0.0"
+
+# Release
+
+git tag 1.0.0
+
+################################################################################
+# Bugfix/support: fix an urgent bug in the release
+
+git checkout release/1.0
+
+# Fix the bug
+
+sed -i -e 's/frog/dog/' file3
+rm file3-e
+git commit -am "Fix canine issue in file3"
+
+cat > RELEASE << EOF
+Release: 1.0.1-rc1
+EOF
+
+git commit -am "Prepare 1.0.1-rc1"
+
+git tag 1.0.1-rc1
+
+# Prepare bugfix release
+
+cat > RELEASE << EOF
+Release: 1.0.1
+EOF
+
+git commit -am "Prepare bugfix release 1.0.1"
+
+# Release
+
+git tag 1.0.1
+
+################################################################################
+# Again: merge bugfixes from release back to develop trunk
+
+git checkout develop
+git merge release/1.0
+
+git commit -am "Merged fixes from release/1.0 (1.0.1) to <develop>"
+
+
+################################################################################
+# Start branch from dirty workspace using --dirty
+
+git checkout develop
+
+cat >> file1 << EOF
+I started adding a new feature called flumm. Should be developed in a feature branch.
+EOF
+
+git flow feature start flumm
+
+cat >> file1 << EOF
+Continuing feature flumm.
+EOF
+
+git commit -am "Applied the flumm changes to feature branch 'flumm'"
+
+git flow feature finish flumm
+
+
+
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
