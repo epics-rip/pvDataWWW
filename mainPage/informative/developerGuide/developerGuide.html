@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 01-Dec-2014</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 02-Apr-2015</h2>
 
   <dl>
     <dt>Latest version:</dt>
@@ -50,6 +50,7 @@
     <dd>None</dd>
     <dt>Editors:</dt>
    <dd> Marty Kraimer, BNL<br />
+      David Hickin, Diamond Light Source<br />
       Matej Sekoranja, CosyLab
       </dd>
   </dl>
@@ -65,10 +66,11 @@ related set of products:<br />
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 01-Dec-2014 version of the Developer's Guide.
-It is for EPICS V4 Release 4.4.
-This version of the Developer's Guide is only a rough draft.
-It still needs lots of work but hopefull will be useful for understanding EPICS V4.
+<p>This is the 02-Apr-2015 version of the Developer's Guide.
+It is for EPICS V4 Release 4.4 but also includes components that are intentended for
+the next release of V4.
+This document is actively being  developed and is subject to being updated at any time.
+It should be stable by the May EPICS meeting.
 </p>
 
 
@@ -81,47 +83,41 @@ It still needs lots of work but hopefull will be useful for understanding EPICS 
 </div>
 <div id="contents" class="contents">
 
-<h2>Introduction</h2>
-<p>This document is intended for EPICS V4 software developers: both Java and C++.
-The main topics are:</p>
+<h2>Overview of V4</h2>
+<p>This document is intended for EPICS V4 software developers: both Java and C++.</p>
+<h3>V4 Modules</h3>
+V4 consists of the following core components:
 <dl>
    <dt>pvData</dt>
       <dd>
        The EPICS V4 type system.
       </dd>
+   <dt>normativeTypes</dt>
+      <dd>
+        A set of standard V4 structures.
+      </dd>
    <dt>pvAccess</dt>
       <dd>
-       The V4 network support for transporting pvData between client and server,
+       The V4 network support for transporting pvData between client and server.
       </dd>
+   <dt>easyPVA</dt>
+      <dd>
+       A synchronous wrapper for the pvAccess API.
+      </dd>
+   <dt>pvDatabase</dt>
+      <dd>
+       A pvAccess server for accessing pvData.
+      </dd>
+   <dt>pvaSrv</dt>
+      <dd>
+       A pvAccess server for iocCore DBRecords.
+      </dd>
+    <dt>pvaPy</dt>
+       <dd>
+       Python wrapper for pvData and pvAccess.
+       </dd>
 </dl>
-<p>
-<b>pvData</b> supports structured data.
-It is not an object oriented type system, i. e.
-it does not support user extensible methods attached to data objects.
-</p>
-<p>
-<b>pvAccess</b>, which  provides network transport for pvData,
-provides methods for transporting pvData.
-</p>
-<p>
-pvData/pvAccess has a complete implemantion in both Java and C++.
-A client written in either Java or C++ can communicate with a server written in either Java or C++.
-All communication between client and server is done via the methods provided by pvAccess and by pvData
-objects.
-</p>
-<p>
-pvAccess provides two interfaces, channelPutGet and channelRPC,
-that provide the equivalent of a Remote Procedure Call.s
-The client passes a pvData object to the server.
-This pvData object is the argument for the RPC.
-The server uses this to decide what to do
-and sends a pvData object back to the client, which is the RPC result.
-</p>
-<p>
-The type system supports arbitary structures of data composed of a fixed set of primitive types
-or arrays of the supported types.
-</p>
-<p>This document uses the following terminology:</p>
+<h3>Terminology</h3>
 <dl>
    <dt>API</dt>
      <dd>This is how a client accesses the type system and data objects for the type.
@@ -130,7 +126,8 @@ or arrays of the supported types.
        This document uses a combination of <b>psuedo</b> code, Java code, and C++ code for describing
        APIs. It uses <b>psuedo</b> code when there is equivalent code in Java and in C++.
       The <b>psuedo</b> code is similar to Java interface definitions.
-       The language specific APIs are provided in projects  pvDataJava, pvAccessJava, pvDataCPP, and pvAccessCPP.
+       The language specific APIs are provided in separate projects.
+       For example pvDataJava, pvAccessJava, pvDataCPP, and pvAccessCPP.
       </dd>
    <dt>Introspection API</dt>
       <dd>The type system supports both introspection and data interfaces.
@@ -146,7 +143,7 @@ or arrays of the supported types.
         </dd>
      <dt>PVScalarType</dt>
        <dd>Generic name for the data type for a scalar.
-        This a generic name for one of PVBoolean, PVByte, ..., PVString.
+        Thus a generic name for one of PVBoolean, PVByte, ..., PVString.
         </dd>
      <dt>PVScalarArrayType</dt>
        <dd>Generic name for the data type for a scalarArray.
@@ -160,10 +157,137 @@ or arrays of the supported types.
         </dd>
      <dt>Special Field</dt>
         <dd>These are a set of widely used structure definitions:
-        enum, alarm, timeStamp, control, display, and alarmLimit.
+        <b>enum</b>, <b>alarm</b>, <b>timeStamp</b>, <b>control</b>, <b>display</b>, and <b>alarmLimit</b>.
         </dd>
 </dl>
-<h2>Reference Documentation</h2>
+<h3>Overview: pvData</h3>
+pvData supports structured data where a structure is a set of fields each of which is
+is composed of one of the following types:
+<dl>
+   <dt>scalar</dt>
+      <dd>
+        The field holds data that has a scalarType:
+        <dl>
+            <dt>boolean</dt>
+               <dd>Can be <b>true</b> of <b>false</b>.
+               </dd>
+            <dt>Signed Integer</dt>
+               <dd>Integers of 8, 16, 32, and 64 bits are supported.</dd>
+            <dt>Unsigned Integer</dt>
+                <dd>Unsigned integers of 8, 16, 32, and 64 bits are supported.</dd>
+            <dt>float</dt>
+                <dd>IEEE 32 bit floating point.</dd>
+            <dt>double</dt>
+                <dd>IEEE 64 bit floating point.</dd>
+            <dt>string</dt>
+                <dd>In C++ std::string and in Java String. On network UTF8.</dd>
+        </dl>
+      </dd>
+   <dt>scalarArray</dt>
+      <dd>An array of one of the scalar types.</dd>
+   <dt>structure</dt>
+      <dd>A set of fields and a name for each field.
+       Each field can have any valid type but the type can not change.
+      </dd>
+   <dt>structureArray</dt>
+      <dd>
+       An array of structures. Each element must have the same introspection interface.
+      </dd>
+   <dt>union</dt>
+      <dd>
+        A field that has a single sub field which can dynamically change type.
+      A variant union allows any valid type. A regular union allows for a set of valid types.
+      </dd>
+   <dt>unionArray</dt>
+      <dd>
+       A array of unions. Each element must have the same introspection interface.
+      </dd>
+</dl>
+<h3>Overview: normativeTypes</h3>
+<p>Each normative type defines a structure that has a set of standard field.
+For example NTScalar defines:</p>
+<pre>
+epics:nt/NTScalar:1.0
+    double value                        // mandatory and can be any numeric type
+    string descriptor                   // optional
+    alarm_t alarm                       // optional
+        int severity
+        int status
+        string message
+    time_t timeStamp                    // optional
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+    display_t display                   // optional
+        double limitLow
+        double limitHigh
+        string description
+        string format
+        string units
+    control_t control                   // optional
+        double limitLow
+        double limitHigh
+        double minStep
+    string extra1                       // extra
+    string[] extra2                     //
+</pre>
+<h3>Overview: pvAccess</h3>
+<p>
+A client written in either Java or C++ can communicate with a server written in either Java or C++.
+All communication between client and server is done via the methods provided by pvAccess and by pvData
+objects.
+</p>
+<p>
+pvAccess provides:</p>
+<dl>
+   <dt>channelProvider</dt>
+     <dd>A way to communicate with a pvData data source.</dd>
+   <dt>channel</dt>
+      <dd>A way to create each of the following.</dd>
+   <dt>getField</dt>
+      <dd>Get the pvData introspection information.</dd>
+   <dt>channelGet</dt>
+      <dd>Get data.</dd>
+   <dt>channelPut</dt>
+       <dd>Put data.</dd>
+   <dt>channelPutGet</dt>
+       <dd>put some data, let server process it, and then get result.</dd>
+   <dt>monitor</dt>
+       <dd>Monitor pvData changes.</dd>
+   <dt>channelArray</dt>
+       <dd>get/put subArray data.</dd>
+   <dt>channelRPC</dt>
+       <dd>Like channelPutGet but on each request pvData interfaces for put and get
+        can change.</dd>
+</dl>
+<p>
+channelPutGet and channelRPC provide the equivalent of a Remote Procedure Call.
+The client passes a pvData object to the server.
+This pvData object is the argument for the RPC.
+The server uses this to decide what to do
+and sends a pvData object back to the client, which is the RPC result.
+</p>
+<h3>Overview: easyPVA</h3>
+<p>easyPVA is a synchronous wrapper for the pvAccess API.
+In addition it provides many convenience methods.
+Thus it is easier to use than pvAccess itself.
+</p>
+<h3>Overview: pvDatabase</h3>
+<p>A framework for implementing a network accessible database of smart memory resident
+records. Network access is via pvAccess. The data in each record is a top level PVStructure as defined by
+pvData. The framework includes a complete implementation of ChannelProvider as defined by pvAccess.
+The framework can be extended in order to create record instances that implements services.
+The minimum that an extension must provide is a top level PVStructure and a process method.
+</p>
+
+<h3>Overview: pvaSrv</h3>
+<p>A  is a pvAccess server that runs in the EPICS V3 IOC.
+pvaSrv allows you to get, put and monitor V3 PVs (fields of EPICS DB records) over pvAccess, translating
+the value and its meta data (graphics limits, alarm status, timestamp) to or from V4 Normative Type (NT)
+pvData structures (NTScalar, NTScalarArray).</p>
+<h3>Overview: pvaPy</h3>
+<p>A Python wrapper for pvData and pvAccess.</p>
+<h3>EPICS V4 resources and website</h3>
 <p>This document is a tutorial rather then a detailed reference manual.
 The following should be consulted for detailed documentation:</p>
 <ul>
@@ -192,15 +316,58 @@ The following should be consulted for detailed documentation:</p>
 as normative types whenever possible.
 See the following for details:</p>
 <ul>
-    <li><b><a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">
-  Normative Types Specification</a></b>.
+    <li><a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">
+  Normative Types Specification</a>
+   </li>
    <li>
     <a target="_top"
     href="http://epics-pvdata.sourceforge.net/docbuild/normativeTypesCPP/tip/documentation/ntCPP.html">
     normativeTypesCPP</a>
     </li>
 </ul>
-<h2>pvData</h2>
+<h3>Current Status</h3>
+<dl>
+   <dt>pvData</dt>
+      <dd>
+       Release 4.4 has a complete implementation for both Java and C++.
+      </dd>
+   <dt>normativeTypes</dt>
+      <dd>
+       Release 4.4 has C++ helper classes  for some of the normative types.
+      There are no helper classes for Java.
+      </dd>
+   <dt>pvAccess</dt>
+      <dd>
+       Release 4.4 has a complete implementation for both C++ and Java.
+      </dd>
+   <dt>easyPVA</dt>
+      <dd>
+       Release 4.4 has an implementation for Java.
+       For C++ an implementation is being developed.
+      </dd>
+   <dt>pvDatabase</dt>
+      <dd>
+       Release 4.4 has an implementation for C++.
+       For Java an implementation is being developed.
+      </dd>
+   <dt>pvaSrv</dt>
+      <dd>
+       Release 4.4 has an implementation for C++.
+       Since this is for iocCore a Java implementation is not necessary.
+      </dd>
+    <dt>pvaPy</dt>
+       <dd>
+       Release 4.4 has an implementation for C++.
+       Since this is for Python a Java implementation is not necessary.
+       What about Jython?
+       </dd>
+</dl>
+<h2>Building and running EPICS V4</h2>
+<h3>Building from tar</h3>
+<h3>Building From mercurial repository</h3>
+<h3>Running examples and  pvAccess tools</h3>
+
+<h2>API: pvData</h2>
 <h3>ScalarType</h3>
 <p>This defines the pvData primitive types:</p>
 <dl>
@@ -2263,8 +2430,7 @@ This produces the same result as structureArray.
    </dd>
 
 </dl>
-
-<h2>BitSet and PVStructure</h2>
+<h3>BitSet and PVStructure</h3>
 <p>Some important features of pvAccess are:</p>
 <dl>
   <dt>PVAccess Transmits Top Level PVStructures</dt>
@@ -2388,7 +2554,8 @@ must be replaced with a new value.
 <p>Since the pvCopy facility makes extensive use of Convert
 the same rules apply to it.</p>
 
-<h2>pvAccess</h2>
+<h2>API: normativeType</h2>
+<h2>API: pvAccess</h2>
 <h3>ChannelProvider</h3>
 <pre>
 ChannelProviderRegistry
@@ -3108,6 +3275,8 @@ ChannelRPC extends ChannelRequest
       is true than it is a one time request, i.e. Send it is the same as
       calling destroy after the request is complete.</dd>
 </dl>
+
+<h2>API: easyPVA</h2>
 
 <h2>pvAccess Channel Providers.</h2>
 <p>pvAccessJava and pvAccessCPP implement the following providers:</p>
