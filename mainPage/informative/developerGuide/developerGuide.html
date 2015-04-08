@@ -204,7 +204,7 @@ is composed of one of the following types:
       </dd>
 </dl>
 <h3>Overview: normativeTypes</h3>
-<p>Each normative type defines a structure that has a set of standard field.
+<p>Each normative type defines a structure that has a set of standard fields.
 For example NTScalar defines:</p>
 <pre>
 epics:nt/NTScalar:1.0
@@ -241,7 +241,9 @@ objects.
 pvAccess provides:</p>
 <dl>
    <dt>channelProvider</dt>
-     <dd>A way to communicate with a pvData data source.</dd>
+     <dd>Code that provides access to a pvData data source.
+      It creates channels where a channel provides access to pvData structure that has an associated channelName.
+     </dd>
    <dt>channel</dt>
       <dd>A way to create each of the following.</dd>
    <dt>getField</dt>
@@ -251,7 +253,7 @@ pvAccess provides:</p>
    <dt>channelPut</dt>
        <dd>Put data.</dd>
    <dt>channelPutGet</dt>
-       <dd>put some data, let server process it, and then get result.</dd>
+       <dd>Put data, let server process it, and then get result.</dd>
    <dt>monitor</dt>
        <dd>Monitor pvData changes.</dd>
    <dt>channelArray</dt>
@@ -268,8 +270,8 @@ The server uses this to decide what to do
 and sends a pvData object back to the client, which is the RPC result.
 </p>
 <h3>Overview: easyPVA</h3>
-<p>easyPVA is a synchronous wrapper for the pvAccess API.
-In addition it provides many convenience methods.
+<p>easyPVA is a synchronous wrapper for the pvAccess API, which is a callback based API.
+In addition easyPVA provides many convenience methods.
 Thus it is easier to use than pvAccess itself.
 </p>
 <h3>Overview: pvDatabase</h3>
@@ -282,7 +284,7 @@ The minimum that an extension must provide is a top level PVStructure and a proc
 
 <h3>Overview: pvaSrv</h3>
 <p>A  is a pvAccess server that runs in the EPICS V3 IOC.
-pvaSrv allows you to get, put and monitor V3 PVs (fields of EPICS DB records) over pvAccess, translating
+pvaSrv allows you to get, put and monitor V3 PVs (fields of EPICS DB records) via pvAccess, translating
 the value and its meta data (graphics limits, alarm status, timestamp) to or from V4 Normative Type (NT)
 pvData structures (NTScalar, NTScalarArray).</p>
 <h3>Overview: pvaPy</h3>
@@ -311,19 +313,37 @@ The following should be consulted for detailed documentation:</p>
     href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessCPP/tip/documentation/pvAccessJava.html">
     pvAccessCPP</a>
     </li>
-</ul>
-<p>In addition normative types defines a set of standard structures. Applications should pass data
-as normative types whenever possible.
-See the following for details:</p>
-<ul>
-    <li><a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">
-  Normative Types Specification</a>
-   </li>
+   <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/easyPVAJava/tip/documentation/easyPVA.html">
+    easyPVAJava</a>
+    </li>
+   <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/easyPVACPP/tip/documentation/easyPVACPP.html">
+    easyPVACPP</a>
+    </li>
+   <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvDatabaseJava/tip/documentation/pvDatabaseJava.html">
+    pvDatabaseJava</a>
+    </li>
+   <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvDatabaseCPP/tip/documentation/pvDatabaseCPP.html">
+    pvDatabaseCPP</a>
+    </li>
    <li>
     <a target="_top"
     href="http://epics-pvdata.sourceforge.net/docbuild/normativeTypesCPP/tip/documentation/ntCPP.html">
     normativeTypesCPP</a>
     </li>
+</ul>
+<p>In addition a standard for normativeTypes exists:</p>
+<ul>
+    <li><a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">
+  Normative Types Specification</a>
+   </li>
 </ul>
 <h3>Current Status</h3>
 <dl>
@@ -1036,12 +1056,11 @@ System.out.println(structure);
 structure
     double value
 </pre>
-<p>The next example shows how to create a Structurre
+<p>The next example shows how to create a structure
 that has three field: a value field that is a scalarArray with
 element type double, an alarm structure, and a timeStamp structure.
-Later standardField will be discussed and
-show that what takes many lines of code using fieldCreate can be done
-easily via standardFields.
+Later examples show that fieldBuilder and standard fields make it much easier to
+create complex structures.
 </p>
 <pre>
 String[] fieldName = new String[3];
@@ -1105,12 +1124,9 @@ cout &lt;&lt; *structure &lt;&lt; endl;
 structure
     double value
 </pre>
-<p>The next example shows how to create a Structurre
+<p>The next example shows how to create a structure
 that has three field: a value field that is a scalarArray with
 element type double, an alarm structure, and a timeStamp structure.
-Later standardField will be discussed and
-show that what takes many lines of code using fieldCreate can be done
-easily via standardFields.
 </p>
 <pre>
 size_t n = 3;
@@ -1305,10 +1321,9 @@ This produces:
 unionArray
 structure
     union[] value
-        union[]
-            union
-                short short
-                long long
+        union
+            short short
+            long long
 </pre>
     </dd>
 
@@ -1347,10 +1362,9 @@ This produces:
 structureArray
 structure
     structure[] value
-        structure[]
-            structure
-                short short
-                long long
+        structure
+            short short
+            long long
 </pre>
    </dd>
 
@@ -1521,10 +1535,9 @@ This produces:
 unionArray
 structure
     union[] value
-        union[]
-            union
-                short short
-                long long
+        union
+            short short
+            long long
 </pre>
     </dd>
 
@@ -1563,10 +1576,9 @@ This produces:
 structureArray
 structure
 structure[] value
-    structure[]
-            structure
-                short short
-                long long
+        structure
+            short short
+            long long
 </pre>
    </dd>
 
@@ -1676,7 +1688,7 @@ PVField
       </dd>
    <dt>string getFullName()</dt>
       <dd>
-       Fully expand the name of this field using the names of its parent fields with a dot '.' seperating each name.
+       Fully expand the name of this field using the names of its parent fields with a dot '.' separating each name.
       For example if an alarm is a top level field named alarm then the
       status field has the name <b>alarm.status</b>.
       </dd>
@@ -2062,13 +2074,13 @@ Each scalarType, PVUnionArray, and PVStructureArray have similar psuedo code.
 <pre>
 class PVDoubleArray
     ...
-    shared_vector&gt;const double&lt; view()
-    void swap(shared_vector&gt;const double&lt; other)
-    void replace(const shared_vector&gt;const double&lt; next)
-    shared_vector&gt;double&lt; reuse()
+    shared_vector&lt;const double&gt; view()
+    void swap(shared_vector&lt;const double&gt; other)
+    void replace(const shared_vector&lt;const double&gt; next)
+    shared_vector&lt;double&gt; reuse()
     ...
 // to change the raw array use code like:
-shared_vector&gt;const double&lt; data(n)
+shared_vector&lt;const double&gt; data(n)
 // put values into data and then
 pvDoubleArray-&gt;replace(freeze(data))
 </pre>
