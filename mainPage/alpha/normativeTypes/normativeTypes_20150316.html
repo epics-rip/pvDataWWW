@@ -136,13 +136,16 @@ here, named "NTTable", defines a structure for expressing (in <a
       <!-- Statement about why this version exists -->
       
       <p>This is the 16 Mar 2015 version of the Normative Types document.
-       This version updates the definitions of timeStamp, control, display, and alarmLimit, replaces NTImage with NTNDArray, adds NTAttribute, NTMultiChannel and NTUnion and removes NTVariantArray and a number of types proposed in earlier drafts.</p>
+       This version updates the definitions of timeStamp, control, display, and alarmLimit,
+       replaces NTImage with NTNDArray, adds NTAttribute, NTMultiChannel and NTUnion and
+       removes NTVariantArray and a number of types proposed in earlier drafts.</p>
 
-<p>This version contains a number of types which use pvData unions.</p>
+      <p>This version contains a number of types which use pvData unions.</p>
 
-<p>It describes the new conventions for normative type IDs including versioning and namespaces. Type IDs for normative type structure fields are given.</p>
+      <p>It describes the new conventions for normative type IDs including versioning and
+      namespaces. Type IDs for normative type structure fields are given.</p>
 
-<p>The linguistic conventions used in the document have been overhauled.</p> 
+      <p>The linguistic conventions used in the document have been overhauled.</p> 
 
 
       <p>See <a href="#appendix_a:_possible_future_additions_to_this_specification">
@@ -322,7 +325,9 @@ or a label. The Meta language keywords consist of <span class="term">structure</
 <span class="term">float</span>,
 <span class="term">double</span> and
 <span class="term">string</span>)
-and the corresponding arrays  <span class="term">structure[]</span>, <span class="term">union[]</span>, <span class="term">any[]</span>, and scalar arrays (e.g. <span class="term">int[]</span>, <span class="term">double[]</span>).
+and the corresponding arrays <span class="term">structure[]</span>, <span class="term">union[]</span>,
+<span class="term">any[]</span>, and scalar arrays (e.g. <span class="term">int[]</span>,
+<span class="term">double[]</span>).
 </li>
 
 <li>
@@ -338,9 +343,12 @@ number of occurrences follows, 0+ means 0 or more, 1+ means
 </li>
 </ul>
 
-<p>So, for example, <a href="#scalar_t"><span class="nterm">scalar_t</span></a> is non-terminal as it stands for a choice of pvData type and <a href="#time_t"><span class="nterm">time_t</span></a> is non-terminal because it stands for a particular structure.
+<p>So, for example, <a href="#scalar_t"><span class="nterm">scalar_t</span></a> is non-terminal
+ as it stands for a choice of pvData type and <a href="#time_t"><span class="nterm">time_t</span></a> is non-terminal because it stands for a particular structure.
 
-On the other hand, in the definition of <span class="nterm">time_t</span>, <span class="term">long</span> and <span class="term">secondsPastEpoch</span> are a keyword and a label respectively, and so are terminal, and the columns of <a href="#nttable"><span class="nterm">NTTable</span></a>, <span
+On the other hand, in the definition of <span class="nterm">time_t</span>, <span class="term">long</span>
+and <span class="term">secondsPastEpoch</span> are a keyword and a label respectively, and so are terminal,
+and the columns of <a href="#nttable"><span class="nterm">NTTable</span></a>, <span
   class="user">colname</span>, are user provided labels.</p>
 
 
@@ -515,9 +523,10 @@ structure
 
 <h4 id = "time_t" >time_t</h4>
 
-<p>A <span class="nterm">time_t</span> describes a defined point in time. The field is a structure describing a time relative to
-midnight on January 1st, 1970 UTC. It is implemented as a pvData field of Type
-<a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure" >"structure"</a> of type id "time_t" and with the following form: </p>
+<p>A <span class="nterm">time_t</span> describes a defined point in time. The field is a structure
+describing a time relative to midnight on January 1st, 1970 UTC. It is implemented as a pvData field of Type
+<a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure" >"structure"</a>
+of type id "time_t" and with the following form: </p>
 
 <pre>
 <span class="nterm">time_t</span> :=
@@ -557,9 +566,8 @@ times 10<sup>9</sup> plus its <span class="term">nanoseconds</span>.</p>
 <h4>alarm_t</h4>
 
 <p>An <span class="nterm">alarm_t</span> describes a diagnostic of the value of a
-control system process variable. It indicates essentially whether the associated value is good or
-bad, and whether agent systems should alert people to the status of the
-process.</p>
+control system process variable. It indicates essentially whether the associated value
+is good or bad, and whether agent systems should alert people to the status of the process.</p>
 
 <p> Processes in EPICS V3 and V4 IOCs include extensive support for evaluating
 alarm conditions. The definition of the fields in an <span class="term">alarm</span>
@@ -767,10 +775,10 @@ that have a single numeric "value" field.</p>
 
 <h4>display_t[]</h4>
 
-<p>A <span class="nterm">display_t[]</span> is an array of <span class="nterm">display_t</span>. The field is an array of
-structures each describing the display media oriented metadata of some corresponding
-process variable value, as described by <span class="nterm">display_t</span> above. It is implemented as a pvData field of
-Type <a
+<p>A <span class="nterm">display_t[]</span> is an array of <span class="nterm">display_t</span>.
+The field is an array of structures each describing the display media oriented metadata of some
+corresponding process variable value, as described by <span class="nterm">display_t</span> above.
+It is implemented as a pvData field of Type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
  >"structureArray"</a> each element of which with the form of <span
 class="nterm">display_t</span> above.</p>
@@ -878,7 +886,6 @@ union
 </pre>
 
 
-
 <h4>union_t[]</h4>
 
 <p>A <span class="nterm">union_t[]</span> stands for an array of unions, where the union is any regular union of 1 or more pvData fields. It is implemented as a pvData field of Type <a
@@ -900,7 +907,9 @@ any | <span class="nterm">union_t</span>
 
 <h4>anyunion_t[]</h4>
 
-<p>An <span class="nterm">anyunion_t[]</span> stands for a variant union array or a regular union array of any type an array of unions, where the union is any regular union of 1 or more pvData fields. It is implemented as a pvData field of Type <a
+<p>An <span class="nterm">anyunion_t[]</span> stands for a variant union array or a regular union
+array of any type an array of unions, where the union is any regular union of 1 or more pvData fields.
+It is implemented as a pvData field of Type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union_array"
    >"structureArray"</a> each element of which is a union (the same one in each case) of the form <span
   class="nterm">union_t</span> above:</p>
@@ -922,11 +931,13 @@ displays.</p>
 
 <p>Normative Type instance data MUST identify themselves as such by including an identifying string.
 That is the <span class="def">Normative Type Identifier</span>, or "Ntype identifier" string for short. 
- In the pvData binding of Normative Types, this string is carried in the "id" field, added automatically to every pvData structure.</p>
+ In the pvData binding of Normative Types, this string is carried in the "id" field, added automatically
+ to every pvData structure.</p>
 
 <p>A Normative Type Identifier MUST be considered to be "case sensitive."</p>
 
-<p>The namespace Name of EPICS normative types (which is used as the prefix for their pvData type id), is the following: </p>
+<p>The namespace Name of EPICS normative types (which is used as the prefix for their pvData type id),
+is the following: </p>
 <pre>
      epics:nt
 </pre>
@@ -1456,14 +1467,15 @@ of a table would also be easily described by NTNameValue.
 
 <p>The number of <span class="nterm">scalar_t[]</span> fields in the value
 structure, and the length of <span class="term">labels</span> MUST be the same. All
-<span class="nterm">scalar_t[]</span> fields in the <span class="term">value</span> structure MUST have the
-same length, which is the number of "rows" in the table.</p>
+<span class="nterm">scalar_t[]</span> fields in the <span class="term">value</span> structure
+MUST have the same length, which is the number of "rows" in the table.</p>
 
 <h3>NTAttribute</h3>
 
-<p>NTAttribute is the EPICS V4 Normative Type for a named attribute of any type. It is is essentially a key-value pair which optionally can be tagged with additional strings.</p>
-<p>
-This allows, for example, a collection of attributes to be queried on the basis of attribute name or tags.</p>
+<p>NTAttribute is the EPICS V4 Normative Type for a named attribute of any type. It is is essentially
+a key-value pair which optionally can be tagged with additional strings.</p>
+<p>This allows, for example, a collection of attributes to be queried on the basis of attribute
+ name or tags.</p>
 
 <pre><span class="nterm">NTAttribute</span> := 
 
@@ -1559,7 +1571,8 @@ structure
 <h3>NTNDArray</h3>
 
 <p>
-NTNDArray is an EPICS Version 4 normative type designed to encode data from detectors and cameras, especially
+NTNDArray is an EPICS Version 4 normative type designed to encode data from detectors
+and cameras, especially
 <a
  href="http://cars9.uchicago.edu/software/epics/areaDetector.html">areaDetector</a> applications.
 
@@ -1588,7 +1601,10 @@ structure
     <span class="nterm">display_t</span>     display     :opt</span>
 </pre>
 
-<p>The meaning of the above fields, the definition of <span class="nterm">value_t</span> and of <span class="nterm">dimension_t</span> and the additional requirements for NDAttribute are described below. To simplify this the NTNDArray can be regarded as being composed of the following parts:</p>
+<p>The meaning of the above fields, the definition of <span class="nterm">value_t</span>
+and of <span class="nterm">dimension_t</span> and the additional requirements for NDAttribute
+are described below. To simplify this the NTNDArray can be regarded as being composed of the
+following parts:</p>
 <pre><span class="nterm">NTNDArray</span> := 
 
 structure
@@ -1659,32 +1675,55 @@ structure
     <dd>Any additional information required to interpret the data</dd>
 </dl>
 <p>
-The <span class="term">value</span> field stores a scalar array of one of the scalar types permitted by the definition of <span class="term">value</span> above whose value MUST represent an N-dimensional scalar array of one of the permitted scalar types whose dimensions are given by the <span class="term">dimension</span> field (see below). Note that the scalar type of the array stored in <span class="term">value</span> MAY be different from that of the array it represents.
+The <span class="term">value</span> field stores a scalar array of one of the scalar types
+permitted by the definition of <span class="term">value</span> above whose value MUST represent
+an N-dimensional scalar array of one of the permitted scalar types whose dimensions are given by
+the <span class="term">dimension</span> field (see below). Note that the scalar type of the array
+stored in <span class="term">value</span> MAY be different from that of the array it represents.
 </p>
 <p>
-The <span class="term">codec</span> field is a structure which describes how the N-dimensional scalar array is represented by the value of the scalar array stored in the <span class="term">value</span> field.
+The <span class="term">codec</span> field is a structure which describes how the N-dimensional
+scalar array is represented by the value of the scalar array stored in the
+<span class="term">value</span> field.
 </p>
 <p>
-The <span class="term">name</span> field of the <span class="term">codec</span> field (<span class="term">codec.name</span>) is a string which identifies the scheme by which the data in <span class="term">value</span> is encoded, such as an algorithm used to compress the data. If it is not the empty string, the value of the <span class="term">codec.name</span> field SHOULD be namespace qualified. 
+The <span class="term">name</span> field of the <span class="term">codec</span> field
+(<span class="term">codec.name</span>) is a string which identifies the scheme by which the
+data in <span class="term">value</span> is encoded, such as an algorithm used to compress the data.
+If it is not the empty string, the value of the <span class="term">codec.name</span> field SHOULD
+be namespace qualified. 
 </p>
 <p>
-The <span class="term">parameters</span> field of the <span class="term">codec</span> field (<span class="term">codec.parameters</span>) is a field which contains any additional information required to interpret the data in
-<span class="term">value</span>. The format and meaning of <span class="term">codec.parameters</span> is <span class="term">codec.name</span>-dependent.
+The <span class="term">parameters</span> field of the <span class="term">codec</span> field
+(<span class="term">codec.parameters</span>) is a field which contains any additional information required to interpret the data in <span class="term">value</span>. The format and meaning of
+<span class="term">codec.parameters</span> is <span class="term">codec.name</span>-dependent.
 </p>
 
 <p>
-When the value of the <span class="term">codec.name</span> field is the empty string the data in <span class="term">value</span> MUST represent an N-dimensional array of the same scalar type as the scalar array stored in <span class="term">value</span> whose dimensions are given by the
-<span class="term">dimension</span> field. The elements of the array stored in <span class="term">value</span> MUST be the elements of the N-dimensional array laid out in row major order.
-In this case the length of the <span class="term">value</span> array SHOULD equal the product of the dimensions and MUST be greater than or equal to it.
+When the value of the <span class="term">codec.name</span> field is the empty string the data in
+<span class="term">value</span> MUST represent an N-dimensional array of the same scalar type as the
+scalar array stored in <span class="term">value</span> whose dimensions are given by the
+<span class="term">dimension</span> field. The elements of the array stored in
+<span class="term">value</span> MUST be the elements of the N-dimensional array laid out
+in row major order. In this case the length of the <span class="term">value</span> array
+SHOULD equal the product of the dimensions and MUST be greater than or equal to it.
 </p>
 <p>
-When the <span class="term">codec.name</span> field value is not the empty string the interpretation of the data in the <span class="term">value</span> field is dependent on the <span class="term">codec</span> field. Any requirements on the type or length of the array stored in the <span class="term">value</span> field are <span class="term">codec</span>-dependent.
+When the <span class="term">codec.name</span> field value is not the empty string the interpretation
+of the data in the <span class="term">value</span> field is dependent on the
+<span class="term">codec</span> field. Any requirements on the type or length of the array
+stored in the <span class="term">value</span> field are <span class="term">codec</span>-dependent.
 </p>
-<p>Any endianness information associated with a compression algorithm or other encoding SHOULD be encoded via the <span class="term">codec</span> field, either through the <span class="term">codec.name</span> or <span class="term">codec.parameters</span> fields.
+<p>Any endianness information associated with a compression algorithm or other encoding SHOULD be
+encoded via the <span class="term">codec</span> field, either through the
+<span class="term">codec.name</span> or <span class="term">codec.parameters</span> fields.
 </p>
-<p>Similarly any information required to determine the scalar type of the N-dimensional array when the value of <span class="term">codec.name</span> field  is non-empty SHOULD also be encoded in the <span class="term">codec</span> field.
+<p>Similarly any information required to determine the scalar type of the N-dimensional array when
+the value of <span class="term">codec.name</span> field  is non-empty SHOULD also be encoded in
+the <span class="term">codec</span> field.
 </p>
-<p>Except for the above requirements, the meaning of the <span class="term">codec</span> field, beyond the case of the empty <span class="term">codec.name</span> string, is not currently specified.</p>
+<p>Except for the above requirements, the meaning of the <span class="term">codec</span> field,
+beyond the case of the empty <span class="term">codec.name</span> string, is not currently specified.</p>
 
 <h4>Data sizes</h4>
 
@@ -1700,15 +1739,24 @@ When the <span class="term">codec.name</span> field value is not the empty strin
     <dd>The size of the data in bytes before any compression or other encoding.</dd>
 </dl>
 <p>
-The value of the <span class="term">compressedSize</span> field MUST be equal to the product of the length of the scalar array field stored in the <span class="term">value</span> field and the size of the scalar type in bytes (i.e. 1, 2, 4 or 8 for signed or unsigned byte, short, int or long respectively, 1 for boolean, 4 for float and 8 for double).
+The value of the <span class="term">compressedSize</span> field MUST be equal to the product of
+the length of the scalar array field stored in the <span class="term">value</span> field and the
+size of the scalar type in bytes (i.e. 1, 2, 4 or 8 for signed or unsigned byte, short, int
+or long respectively, 1 for boolean, 4 for float and 8 for double).
 </p>
 <p>
-The value of the <span class="term">uncompressedSize</span> field MUST be equal to the product of the value of the <span class="term">size</span> field of each element  in the structure array <span class="term">dimension</span> field (described below) and the size in bytes of the scalar type of the scalar array represented by <span class="term">value</span>. If the number of elements of the <span class="term">dimension</span> field is 0 the value of the <span class="term">uncompressedSize</span> MUST be 0. 
+The value of the <span class="term">uncompressedSize</span> field MUST be equal to the product of
+the value of the <span class="term">size</span> field of each element  in the structure
+array <span class="term">dimension</span> field (described below) and the size in bytes of
+the scalar type of the scalar array represented by <span class="term">value</span>. If the
+number of elements of the <span class="term">dimension</span> field is 0 the value of the
+<span class="term">uncompressedSize</span> MUST be 0. 
 </p>
 
 <h4>Dimensions</h4>
 
-<p>The <span class="nterm">Dimensions</span> part of an NTNDArray is composed of the <span class="term">dimension</span> field 
+<p>The <span class="nterm">Dimensions</span> part of an NTNDArray is composed of the
+<span class="term">dimension</span> field 
 </p>
 <pre>    <span class="nterm">dimension_t[]</span> dimension
 </pre>
@@ -1745,10 +1793,14 @@ source</dd>
 </dl>
 
 <p>
-The number of elements in the value of the <span class="term">dimension</span> field MAY be 0. A client SHOULD check for this case and take appropriate action.
+The number of elements in the value of the <span class="term">dimension</span> field MAY be 0. A
+client SHOULD check for this case and take appropriate action.
 </p>
 <p>
-If an NTNDArray represents a subregion of a larger region of interest of an original image, its <span class="term">offset</span>, <span class="term">binning</span> and <span class="term">reverse</span> field values SHOULD be relative to the original image and its <span class="term">fullSize</span> field value SHOULD be the size of the original.
+If an NTNDArray represents a subregion of a larger region of interest of an original image,
+its <span class="term">offset</span>, <span class="term">binning</span>
+and <span class="term">reverse</span>field values SHOULD be relative to the original image
+and its <span class="term">fullSize</span> field value SHOULD be the size of the original.
 </p>
 <span class="nterm">dimension_t</span> is analogous to <a
  href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/struct_n_d_dimension.html">NDDimension_t</a>  in areaDetector.
@@ -1773,7 +1825,8 @@ following fields:</p>
 The value of <span class="term">dataTimeStamp</span> MAY be different from that of the (optional) <span class="term">timeStamp</span> field below.
 </p>
 <p>
-The <span class="term">uniqueId</span> and <span class="term">dataTimeStamp</span> fields of NTNDArray correspond to the uniqueId and timeStamp fields respectively of an NDArray.
+The <span class="term">uniqueId</span> and <span class="term">dataTimeStamp</span> fields of
+NTNDArray correspond to the uniqueId and timeStamp fields respectively of an NDArray.
 </p>
 <h4>NTNDArray Attributes</h4>
 <p>
@@ -1815,34 +1868,49 @@ NDAttrSourceFunct    = 3    /** Attribute is obtained from a user-specified func
 
 <p>Note that the optional descriptor field of NTAttribute is mandatory for attributes of an NTNDArray.</p>
 
-<p>NTAttribute here is extended by the addition of the <span class="term">sourceType</span> and <span class="term">source</span> fields.
-<span class="term">source</span> is a string which gives the origin of the attribute according to the value of the integer <span class="term">sourceType</span> field as follows:</p>
+<p>NTAttribute here is extended by the addition of the <span class="term">sourceType</span>
+and <span class="term">source</span> fields.
+<span class="term">source</span> is a string which gives the origin of the attribute according
+to the value of the integer <span class="term">sourceType</span> field as follows:</p>
 <ul>
-<li>For a <span class="term">sourceType</span> of value <span class="term">NDAttrSourceDriver</span> the <span class="term">source</span> string SHOULD be the empty string.</li>
-<li>For a <span class="term">sourceType</span> of value <span class="term">NDAttrSourceParam</span> the <span class="term">source</span> string SHOULD be the name of the <a
- href="http://www.aps.anl.gov/epics/modules/soft/asyn/">asyn</a> parameter from which the attribute value was obtained.</li>
-<li> For a <span class="term">sourceType</span> of value <span class="term">NDAttrSourceEPICSPV</span> the <span class="term">source</span> string SHOULD be the name of the EPICS PV from which the attribute value was obtained.</li>
-<li> For a <span class="term">sourceType</span> of value <span class="term">NDAttrSourceFunct</span> the <span class="term">source</span> string SHOULD be the name of the user function from which the attribute value was obtained.</li>
+<li>For a <span class="term">sourceType</span> of value <span class="term">NDAttrSourceDriver</span>
+the <span class="term">source</span> string SHOULD be the empty string.</li>
+<li>For a <span class="term">sourceType</span> of value <span class="term">NDAttrSourceParam</span>
+the <span class="term">source</span> string SHOULD be the name of the <a
+ href="http://www.aps.anl.gov/epics/modules/soft/asyn/">asyn</a> parameter from which the attribute
+ value was obtained.</li>
+<li> For a <span class="term">sourceType</span> of value <span class="term">NDAttrSourceEPICSPV</span>
+the <span class="term">source</span> string SHOULD be the name of the EPICS PV from which the attribute
+ value was obtained.</li>
+<li> For a <span class="term">sourceType</span> of value <span class="term">NDAttrSourceFunct</span>
+the <span class="term">source</span> string SHOULD be the name of the user function from which the
+attribute value was obtained.</li>
 </ul>
 
 
 <p>The extension of NTAttribute is analogous to <a
- href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/class_n_d_attribute.html">NDAttribute</a>  in areaDetector. The <span class="term">name</span>, <span class="term">descriptor</span>, <span class="term">sourceType</span> and <span class="term">source</span> fields correspond to the pName, pDescription, sourceType, pSource members of an NDAttribute respectively.
+ href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/class_n_d_attribute.html">NDAttribute</a>
+ in areaDetector. The <span class="term">name</span>, <span class="term">descriptor</span>,
+ <span class="term">sourceType</span> and <span class="term">source</span> fields correspond
+ to the pName, pDescription, sourceType, pSource members of an NDAttribute respectively.
 </p>
 
 <p>
 The attributes themselves are not defined by this standard.
 </p>
 
-<p>For areaDetector applications the <span class="term">attribute</span> field encodes the linked list of NDAttributes in an NDArray. 
+<p>For areaDetector applications the <span class="term">attribute</span> field encodes the
+linked list of NDAttributes in an NDArray. 
 </p>
 
 
 
-[Note: areaDetector currently defines two integer attributes, colorMode and bayerPattern, with descriptions "Color mode" and "Bayer pattern" respectively:
+[Note: areaDetector currently defines two integer attributes, colorMode and bayerPattern,
+with descriptions "Color mode" and "Bayer pattern" respectively:
 <dl>
   <dt>colorMode</dt>
-    <dd>An attribute that describes how an N-d array is to be interpreted as an image, taking one of the values in this enumeration: 
+    <dd>An attribute that describes how an N-d array is to be interpreted as an image, taking
+    one of the values in this enumeration: 
       <pre>
 NDColorModeMono   = 0,    /** Monochromatic image */
 NDColorModeBayer  = 1,    /** Bayer pattern image,
@@ -1942,7 +2010,8 @@ scale), would be communicated using a range array of decades (1.0E01,
 </p>
 
 <h4>Validation</h4>
-<p>The array length of <span class="term">range</span> MUST be the array length of <span class="term">value</span> + 1. </p>
+<p>The array length of <span class="term">range</span> MUST be the array length
+of <span class="term">value</span> + 1. </p>
 
 
 <h3>NTAggregate</h3>
@@ -2069,8 +2138,9 @@ the corresponding definition carried in this specification document.
     epics:nt
 </pre>
 
-<p>The Normative Type Identifier "Type Name" and version number parts corresponding to <a href="#thisversion" >this
-draft</a> of the Normative Types Document (this document), MUST be valued as following:</p>
+<p>The Normative Type Identifier "Type Name" and version number parts corresponding
+to <a href="#thisversion" >this draft</a> of the Normative Types Document (this document),
+MUST be valued as following:</p>
 
 <table>
   <caption>Type Names that may be used in the Type Name part of a Normative Type
