@@ -31,7 +31,7 @@ Vers:  16-Mar-2014, Dave Hickin
        19-Sep-2012, Greg White, SLAC,PSI.
        Changed NTTable substruct from named "columns" to named "value" to keep
        consistency of primary field.
-Todo: Add multichannelvariantarray. Check order of fields.
+Todo: Check order of fields.
        
 ============================================================= 
 -->
@@ -104,7 +104,7 @@ Todo: Add multichannelvariantarray. Check order of fields.
       
       <h2 class="nocount">Abstract</h2>
 
-      <p>This document defines a set of standard high level data types, to
+      <p>This document defines a set of standard high level data types to
       aid interoperability of peers at the application level of an EPICS V4
       network.</p>
       
@@ -136,7 +136,7 @@ here, named "NTTable", defines a structure for expressing (in <a
       <!-- Statement about why this version exists -->
       
       <p>This is the 16 Mar 2015 version of the Normative Types document.
-       This version updates the definitions of timeStamp, control, display, and alarmLimit, replaces NTImage with NTNDArray, adds NTAttribute, NTMulti and NTUnion and removes NTVariantArray and a number of types proposed in earlier drafts.</p>
+       This version updates the definitions of timeStamp, control, display, and alarmLimit, replaces NTImage with NTNDArray, adds NTAttribute, NTMultiChannel and NTUnion and removes NTVariantArray and a number of types proposed in earlier drafts.</p>
 
 <p>This version contains a number of types which use pvData unions.</p>
 
@@ -990,7 +990,7 @@ each datum conforms.</p>
 
 <p>The sender typically first creates an introspection definition, using the pvData
 introspection interfaces (Field, Structure etc.). It then creates an instance of the
-type and populates it with the pvData data interfaces (PVField, PVstructure etc.).</p>
+type and populates it with the pvData data interfaces (PVField, PVStructure etc.).</p>
 
 <p class="caption">Example of creating the introspection interface of an NTScalar, as
   may be done on a server that will be returning one. In this example, only one of
@@ -1298,7 +1298,7 @@ scheme is "pva": </p>
   normative statement about where in the NTURI is encoded the name of the entity
   <em>about which</em> the RPC service is being called. For instance, an archive
 service, that gives the historical values of channels, may advertise itself
-as being on a single channel called say "archiveservice" (so the NTURI path field in 
+as being on a single channel called say "archive service" (so the NTURI path field in 
 that case would 
   be set to "archiveservice", and in that case, the name
   of the EPICS channel about which archive data is wanted might well be encoded into
@@ -1365,7 +1365,7 @@ scalar values. </p>
 
 
 <p>Use cases: In a school, a single NTNamedValue might describe the grades from a
- number of classes for for one student. </p>
+ number of classes for one student. </p>
 
 <pre><span class="nterm">NTNameValue</span> := 
 
@@ -1659,7 +1659,7 @@ structure
     <dd>Any additional information required to interpret the data</dd>
 </dl>
 <p>
-The <span class="term">value</span> field stores a scalar array of one of the scalar types permitted by the definition of <span class="term">value</span> above whose value MUST represent an N-dimensional scalar array of one of the these permitted scalar types whose dimensions are given by the <span class="term">dimension</span> field (see below). Note that the scalar type of the array stored in <span class="term">value</span> MAY be different from that of the array it represents.
+The <span class="term">value</span> field stores a scalar array of one of the scalar types permitted by the definition of <span class="term">value</span> above whose value MUST represent an N-dimensional scalar array of one of the permitted scalar types whose dimensions are given by the <span class="term">dimension</span> field (see below). Note that the scalar type of the array stored in <span class="term">value</span> MAY be different from that of the array it represents.
 </p>
 <p>
 The <span class="term">codec</span> field is a structure which describes how the N-dimensional scalar array is represented by the value of the scalar array stored in the <span class="term">value</span> field.
@@ -1839,7 +1839,7 @@ The attributes themselves are not defined by this standard.
 
 
 
-[Note: areaDetector currently defines two integer attributes, colorMode and bayerPattern, with descriptions "Color mode" and"Bayer pattern" respectively:
+[Note: areaDetector currently defines two integer attributes, colorMode and bayerPattern, with descriptions "Color mode" and "Bayer pattern" respectively:
 <dl>
   <dt>colorMode</dt>
     <dd>An attribute that describes how an N-d array is to be interpreted as an image, taking one of the values in this enumeration: 
@@ -2070,7 +2070,7 @@ the corresponding definition carried in this specification document.
 </pre>
 
 <p>The Normative Type Identifier "Type Name" and version number parts corresponding to <a href="#thisversion" >this
-vdraft</a> of the Normative Types Document (this document), MUST be valued as following:</p>
+draft</a> of the Normative Types Document (this document), MUST be valued as following:</p>
 
 <table>
   <caption>Type Names that may be used in the Type Name part of a Normative Type
