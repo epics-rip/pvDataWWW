@@ -1561,15 +1561,13 @@ currently defined types are each described in a section below.</p>
 <h3>NTMultiChannel</h3>
 
 <p>NTMultiChannel is an EPICS V4 Normative Type that aggregates an array of 
-values from different EPICS Process Variable (PV) channel sources, into a single variable. </p>
+values from different EPICS Process Variable (PV) channel sources, not
+necessarily of the same type, into a single variable. </p>
 
-<p>Use cases; in a particle accelerator, a single NTMultiChannel might include
-the data of a number of Beam Position Monitors' X offset values, or of a number of
-quadrupoles' desired field values. </p>
 
 <pre><span class="nterm">NTMultiChannel</span> := 
 
-structure 
+structure
     <span class="nterm">anyunion_t[]</span>  value              // The channel values
     string[]      channelName        // The channel names    <span class="opt">
     string        descriptor         :opt
@@ -1585,17 +1583,17 @@ structure
 <p>where:</p>
 <dl>
   <dt>value</dt>
-    <dd>The array of value from each channel </dd>
+    <dd>The value from each channel </dd>
   <dt>channelName</dt>
-      <dd>The name of each of channel.
+      <dd>The name of each of channel
 	</dd>
-  <dt>timeStamp</dt>
-     <dd>The timeStamp associated with the NTMultiChannel itself.
-      secondsPastEpoch, nanoseconds, and userTag show the timeStamp for each channel.
-      </dd>
   <dt>alarm</dt>
      <dd>The alarm associated with the NTMultiChannel itself.
-      severity, status, and message show the alarm for each channel.
+      severity, status, and message show the alarm for each channel
+      </dd>
+  <dt>timeStamp</dt>
+     <dd>The timeStamp associated with the NTMultiChannel itself.
+      secondsPastEpoch, nanoseconds, and userTag show the timeStamp for each channel
       </dd>
   <dt>severity</dt>
     <dd>The alarm severity associated with each channel</dd>
@@ -2159,7 +2157,62 @@ structure
     <span class="nterm">time_t</span>       timeStamp        :opt</span>
 </pre>
 
- 
+anyunion_t[]
+scalar_t[]  
+<h3>NTScalarMultiChannel</h3>
+
+<p>NTScalarMultiChannel is an EPICS V4 Normative Type that aggregates an array of 
+values from different EPICS Process Variable (PV) channel sources of the same scalar type into a single variable. </p>
+
+<p>Use cases; in a particle accelerator, a single NTScalarMultiChannel might include
+the data of a number of Beam Position Monitors' X offset values, or of a number of
+quadrupoles' desired field values. </p>
+
+<pre><span class="nterm">NTScalarMultiChannel</span> := 
+
+structure 
+    <span class="nterm">scalar_t[]  </span>  value              // The channel values
+    string[]      channelName        // The channel names    <span class="opt">
+    string        descriptor         :opt
+    <span class="nterm">alarm_t</span>       alarm              :opt
+    <span class="nterm">time_t</span>        timeStamp          :opt
+    int[]         severity           :opt
+    int[]         status             :opt
+    string[]      message            :opt
+    long[]        secondsPastEpoch   :opt
+    int[]         nanoseconds        :opt
+    int[]         userTag            :opt</span></pre>
+
+<p>where:</p>
+<dl>
+  <dt>value</dt>
+    <dd>The value from each channel </dd>
+  <dt>channelName</dt>
+      <dd>The name of each of channel
+	</dd>
+  <dt>alarm</dt>
+     <dd>The alarm associated with the NTScalarMultiChannel itself.
+      severity, status, and message show the alarm for each channel
+      </dd>
+  <dt>timeStamp</dt>
+     <dd>The timeStamp associated with the NTScalarMultiChannel itself.
+      secondsPastEpoch, nanoseconds, and userTag show the timeStamp for each channel
+      </dd>
+  <dt>severity</dt>
+    <dd>The alarm severity associated with each channel</dd>
+  <dt>status</dt>
+    <dd>The alarm status associated with each channel</dd>
+  <dt>message</dt>
+    <dd>The alarm message associated with each channel</dd>
+  <dt>secondsPastEpoch</dt>
+    <dd>The timeStamp secondsPastEpoch associated with each channel</dd>
+  <dt>nanoseconds</dt>
+    <dd>The timeStamp nanoseconds associated with each channel</dd>
+  <dt>userTag</dt>
+    <dd>The timeStamp userTag associated with each channel</dd>
+</dl>
+
+
 <h2>Appendix B: Normative Type Identifiers</h2>
 <a id="normative_ntype_list"></a>
 
