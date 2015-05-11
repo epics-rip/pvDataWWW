@@ -1526,17 +1526,17 @@ quadrupoles' desired field values. </p>
 <pre><span class="nterm">NTMultiChannel</span> := 
 
 structure 
-    union_t[]   value              // The channel values
-    string[]    channelName        // The channel names    <span class="opt">
-    string      descriptor         :opt
-    <span class="nterm">time_t</span>      timeStamp          :opt
-    <span class="nterm">alarm_t</span>     alarm              :opt
-    int[]       severity           :opt
-    int[]       status             :opt
-    string[]    message            :opt
-    long[]      secondsPastEpoch   :opt
-    int[]       nanoseconds        :opt
-    int[]       userTag            :opt</span></pre>
+    <span class="nterm">anyunion_t[]</span>  value              // The channel values
+    string[]      channelName        // The channel names    <span class="opt">
+    string        descriptor         :opt
+    <span class="nterm">time_t</span>        timeStamp          :opt
+    <span class="nterm">alarm_t</span>       alarm              :opt
+    int[]         severity           :opt
+    int[]         status             :opt
+    string[]      message            :opt
+    long[]        secondsPastEpoch   :opt
+    int[]         nanoseconds        :opt
+    int[]         userTag            :opt</span></pre>
 
 <p>where:</p>
 <dl>
