@@ -218,9 +218,9 @@ applications level, of scientific instruments. </p>
 
 structure
     <span class="nterm">scalar_t</span>    value<span class="opt">
-    string      descriptor  :opt 
-    <span class="nterm">time_t</span>      timeStamp   :opt
+    string      descriptor  :opt
     <span class="nterm">alarm_t</span>     alarm       :opt
+    <span class="nterm">time_t</span>      timeStamp   :opt
     <span class="nterm">display_t</span>   display     :opt
     <span class="nterm">control_t</span>   control     :opt</span>
 </pre>
@@ -1175,9 +1175,9 @@ particular use cases.</p>
 
 structure
     <span class="nterm">scalar_t</span>    value<span class="opt">
-    string      descriptor  :opt 
-    <span class="nterm">time_t</span>      timeStamp   :opt
+    string      descriptor  :opt
     <span class="nterm">alarm_t</span>     alarm       :opt
+    <span class="nterm">time_t</span>      timeStamp   :opt
     <span class="nterm">display_t</span>   display     :opt
     <span class="nterm">control_t</span>   control     :opt</span>
 </pre>
@@ -1197,9 +1197,9 @@ plus metadata. All the elements of the array of the same scalar type. </p>
 
 structure  
     <span class="nterm">scalar_t[]</span>  value<span class="opt">
-    string      descriptor  :opt 
-    <span class="nterm">time_t</span>      timeStamp   :opt
+    string      descriptor  :opt
     <span class="nterm">alarm_t</span>     alarm       :opt
+    <span class="nterm">time_t</span>      timeStamp   :opt
     <span class="nterm">display_t</span>   display     :opt
     <span class="nterm">control_t</span>   control     :opt</span>
 </pre>
@@ -1221,8 +1221,9 @@ of possible values each described by an n-tuple).</p>
 structure
     <span class="nterm">enum_t</span>      value<span class="opt">
     string      descriptor  :opt
+    <span class="nterm">alarm_t</span>     alarm       :opt
     <span class="nterm">time_t</span>      timeStamp   :opt
-    <span class="nterm">alarm_t</span>     alarm       :opt</span>
+    </span>
 </pre>
  
 <p>where:</p>
@@ -1244,8 +1245,8 @@ structure
     double[]    value
     int[2]      dim         :opt<span class="opt">
     string      descriptor  :opt
-    <span class="nterm">time_t</span>      timeStamp   :opt
     <span class="nterm">alarm_t</span>     alarm       :opt
+    <span class="nterm">time_t</span>      timeStamp   :opt
     <span class="nterm">display_t</span>   display     :opt</span>
 </pre>
 
@@ -1427,8 +1428,8 @@ structure
     string[]     name
     <span class="nterm">scalar_t[]</span>   value   <span class="opt">
     string       descriptor   :opt
-    <span class="nterm">time_t</span>       timeStamp    :opt
-    <span class="nterm">alarm_t</span>      alarm        :opt</span>
+    <span class="nterm">alarm_t</span>      alarm        :opt
+    <span class="nterm">time_t</span>       timeStamp    :opt</span>
 </pre>
 
 <p>where:</p>
@@ -1572,8 +1573,8 @@ structure
     <span class="nterm">anyunion_t[]</span>  value              // The channel values
     string[]      channelName        // The channel names    <span class="opt">
     string        descriptor         :opt
-    <span class="nterm">time_t</span>        timeStamp          :opt
     <span class="nterm">alarm_t</span>       alarm              :opt
+    <span class="nterm">time_t</span>        timeStamp          :opt
     int[]         severity           :opt
     int[]         status             :opt
     string[]      message            :opt
@@ -1639,8 +1640,8 @@ structure
     <span class="nterm">time_t</span>        dataTimeStamp
     <span class="nterm">NTAttribute[]</span> attribute<span class="opt">
     string        descriptor  :opt
-    <span class="nterm">time_t</span>        timeStamp   :opt
     <span class="nterm">alarm_t</span>       alarm       :opt
+    <span class="nterm">time_t</span>        timeStamp   :opt
     <span class="nterm">display_t</span>     display     :opt</span>
 </pre>
 
@@ -2154,8 +2155,8 @@ essentially any data structure, plus description, alarm and timeStamp.</p>
 structure
     <span class="nterm">anyunion_t</span>   value<span class="opt">
     string       descriptor       :opt
-    <span class="nterm">time_t</span>       timeStamp        :opt
-    <span class="nterm">alarm_t</span>      alarm            :opt</span>
+    <span class="nterm">alarm_t</span>      alarm            :opt
+    <span class="nterm">time_t</span>       timeStamp        :opt</span>
 </pre>
 
  
