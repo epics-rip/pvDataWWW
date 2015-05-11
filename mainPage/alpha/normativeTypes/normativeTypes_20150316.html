@@ -295,9 +295,9 @@ agent that is doing the sending.</p>
 <p>The word "Ntype" is used as a short form of "Normative Type".</p>
 
 <p>The Normative Type data descriptions are given with the syntactic
-conventions and grammar given below. This is a hybrid of the <a
+conventions and grammar given below. The types are described with the <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#pvdata_meta_language">pvData
-"Meta" Language</a> and BNF, in order to add clear distinctions between symbol types,
+"Meta" Language</a>, using a BNF-like syntax, in order to add clear distinctions between symbol types,
 particularly terminality, recurrence, which names a user is expected to add and which
 are predefined.</p>
 
@@ -382,6 +382,49 @@ structure
       <dt>// <span class="term">comment text</span></dt>
       <dd>A field production element may be followed by a comment </dd>
 </dl>
+
+<p>The following rule (a production rule of the grammar) is employed. When a structure is defined using a non-terminal term</p>
+<pre>
+structure
+    ...
+    <span class="nterm">&lt;non-terminal&gt;</span> <span class="user">field-name</span>
+    ...
+</pre>
+<p>where the non-terminal term is defined to be a structure of the form</p>
+<pre>
+structure
+    {<span class="user">subfield</span>}0+
+</pre>
+</p>
+then the structure derived is 
+</p>
+<pre>
+structure 
+    ...
+    structure <span class="user">field-name</span>
+        {<span class="user">subfield</span>}0+
+    ...
+</pre>
+<p>with a similar rule for unions.</p>
+
+<p>Thus the structure derived form the definition of
+<a href="#ntenum"><span class="nterm">NTEnum</span></a>
+below, with all optional fields present,  is</p>
+<pre>
+structure
+    structure  value
+        int      index
+        string[] choices
+    string     descriptor
+    structure  timeStamp
+        long     secondsPastEpoch
+        int      nanoseconds
+        int      userTag
+    structure   alarm
+        int      severity
+        int      status
+        string   message
+</pre> 
 
 <h2>Normative Type Fields</h2>
 
