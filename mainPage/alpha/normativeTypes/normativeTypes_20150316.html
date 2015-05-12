@@ -6,7 +6,7 @@ Auth:  Greg White, SLAC, Nov-2011.
 Vers:  16-Mar-2014, Dave Hickin
        General clean-up of document.
        08-Dec-2014, Dave Hickin
-       Edited proposed changes to meta data non-terminal definitions. 
+       Edited proposed changes to metadata non-terminal definitions. 
        11-Nov-2014, Greg White, SLAC
        Update for new Normative Type identifier syntax and semantics. New syntax is,
        by example "epics:nt/NTTable:1.0". New semantics is must be a table which
@@ -20,8 +20,8 @@ Vers:  16-Mar-2014, Dave Hickin
        15-Sep-2014, Greg White
        Changed Type version identifier from uri:ev4:nt/2012/pwd to uri:ev4:nt/2014/pwd.  
        20-Aug-2014, Marty Kraimer
-       Changed definitions of timeStamp, control, display, alarmLimit (previously alarmlimit)
-       to agree with implementation in pvData.
+       Changed definitions of time_t, control_t, display_t, alarmLimit_t
+       (previously alarmlimit_t) to agree with implementation in pvData.
        13-Oct-2012, Greg White, SLAC,PSI
        Normatively defined encoding order of NTMatrix value as row major order.
        04-Oct-2012,  Greg White, SLAC,PSI
@@ -104,16 +104,16 @@ Todo: Check order of fields.
       
       <h2 class="nocount">Abstract</h2>
 
-      <p>This document defines a set of standard high level data types to
+      <p>This document defines a set of standard high-level data types to
       aid interoperability of peers at the application level of an EPICS V4
       network.</p>
       
       <p>The abstract type definition and function of each such
       standard type is described. For instance, one such type defined
 here, named "NTTable", defines a structure for expressing (in <a
- href="http://epics-pvdata.sourceforge.net/literature.html#swdoc"
+ href="http://epics-pvdata.sourceforge.net/literature.html#pvDataJava"
  >pvData</a>) and communicating (using <a
- href="http://epics-pvdata.sourceforge.net/literature.html#swdoc"
+ href="http://epics-pvdata.sourceforge.net/literature.html#pvAccessJava"
  >pvAccess</a>) a table of numeric or string data. </p>
 
     
@@ -136,14 +136,19 @@ here, named "NTTable", defines a structure for expressing (in <a
       <!-- Statement about why this version exists -->
       
       <p>This is the 16 Mar 2015 version of the Normative Types document.
-       This version updates the definitions of timeStamp, control, display, and alarmLimit,
-       replaces NTImage with NTNDArray, adds NTAttribute, NTMultiChannel and NTUnion and
-       removes NTVariantArray and a number of types proposed in earlier drafts.</p>
+       This version updates the definitions of time_t, control_t, display_t,
+       and alarmLimit_t and changes the order of optional fields in a
+       number of Normative Types.</p>
+       
+       <p>It replaces NTImage with NTNDArray, adds NTAttribute, NTMultiChannel,
+       NTUnion and NTScalarMultiChannel and removes
+       NTVariantArray and a number of types proposed in earlier drafts.</p>
 
       <p>This version contains a number of types which use pvData unions.</p>
 
-      <p>It describes the new conventions for normative type IDs including versioning and
-      namespaces. Type IDs for normative type structure fields are given.</p>
+      <p>It describes the new conventions for Normative Type IDs including 
+      versioning and namespaces. Type IDs for Normative Type structure
+      fields are given.</p>
 
       <p>The linguistic conventions used in the document have been overhauled.</p> 
 
@@ -178,8 +183,8 @@ here, named "NTTable", defines a structure for expressing (in <a
 <h2 id="introduction">Introduction</h2>
 
 <p>The Normative Types described in this document are a set of software designs for
-high level <a href="http://en.wikipedia.org/wiki/Data_type#Composite_types">
-composite data types</a> suitable for the application level data exchange between
+high-level <a href="http://en.wikipedia.org/wiki/Data_type#Composite_types">
+composite data types</a> suitable for the application-level data exchange between
 EPICS V4 network endpoints. In particular, they are intended for use in online
 scientific data services. The intention is that where the endpoints in an EPICS V4
 network use only Normative Types, each peer in the network should be able to
@@ -203,9 +208,9 @@ Types specification defines some general purpose data types that build on pvData
 designed to be generally applicable to the process control, and the software
 applications level, of scientific instruments. </p>
 
-<p>A simple example of a normative type described in this document is the one for
+<p>A simple example of a Normative Type described in this document is the one for
   exchanging any single scalar value, such as one floating point number, one integer
-  or one string. That normative type is named "NTScalar". When a client receives a
+  or one string. That Normative Type is named "NTScalar". When a client receives a
   pvData datum which identifies itself as being of type NTScalar, the client will
   know to expect that the structure which carries the NTScalar will include the
   scalar value in question (along with its type), and that value may be accompanied by up
@@ -213,7 +218,7 @@ applications level, of scientific instruments. </p>
   indication of alarm severity, fields that help in how to display the value, and
   data about its operating limits. See the example below.</p>
 
-<p>An example of a simple normative type is the NTScalar:</p>
+<p>An example of a simple Normative Type is the NTScalar:</p>
 <pre><span class="nterm">NTScalar</span> := 
 
 structure
@@ -254,15 +259,15 @@ structure
 definitions of a pvData <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
  >structure</a>. This is true even of the Normative Types describing simple values
-like a single int, since all Normative Types optionally include descriptor, alarm and 
-timestamp. The fields of any given
+like a single int, since all Normative Types optionally include descriptor,
+alarm and timestamp. The fields of any given
 Ntype datum instance can be ascertained at runtime using the <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#introspection_interfaces">
 pvData Field introspection interface</a> <a class="bib"
 href="#bib:pvdata">bib:pvdata</a>.</p>
 
-<p>See the <a href="#normative_type_instance_self_identification">Normative Type
-    Instance Self Identification</a> section below for more on how to examine a given
+<p>See the <a
+   href="#normative_type_instance_self-identification">Normative Type instance self-identification</a> section below for more on how to examine a given
     pvData instance to see which fields it includes. That section also includes how
     to mark a pvData instance as a Normative Type, and how to look for that
     mark. </p>
@@ -270,15 +275,14 @@ href="#bib:pvdata">bib:pvdata</a>.</p>
 <p><span style="font-weight:bold;">Definition</span>: Normative Type</p>
 <p>The Normative Types definitions in this document each have the following general form:</p>
 <ol>
-  <li>They are defined as structures, composed of fields</li>
+  <li>They are defined as structures, composed of fields.</li>
   <li>They usually have one primary field called "value", which encodes the most
-  important data of the type</li>
-  <li>They are composed of required fields, and optional fields. The required fields
-  come first,
-  the optional fields follow</li>
+  important data of the type.</li>
+  <li>They are composed of required fields, and optional fields. The required
+ fields come first, the optional fields follow.</li>
   <li>The order of fields matters. Although the Normative Types pvData binding allows
   for access though an <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#introspection_interfaces">introspection API</a>, senders must encode the fields in the order
-  described in this document</li>
+  described in this document.</li>
 </ol>
 
 
@@ -331,14 +335,14 @@ and the corresponding arrays <span class="term">structure[]</span>, <span class=
 </li>
 
 <li>
-<span class="user">name</span> - A user provided label name. This is a kind of
+<span class="user">name</span> - A user-provided label name. This is a kind of
 terminal. A programmer using the Normative Type will choose what goes in the &lt;&gt;
 </li>
 
 
 <li>
 &#123; &#125; - a sequence of occurrences of the item or items in the braces. The
-number of occurrences follows, 0+ means 0 or more, 1+ means
+number of occurrences follows. 0+ means 0 or more. 1+ means
 1 or more.
 </li>
 </ul>
@@ -349,14 +353,10 @@ number of occurrences follows, 0+ means 0 or more, 1+ means
 On the other hand, in the definition of <span class="nterm">time_t</span>, <span class="term">long</span>
 and <span class="term">secondsPastEpoch</span> are a keyword and a label respectively, and so are terminal,
 and the columns of <a href="#nttable"><span class="nterm">NTTable</span></a>, <span
-  class="user">colname</span>, are user provided labels.</p>
+  class="user">colname</span>, are user-provided labels.</p>
 
 
-<p>&#123; &#125; - a sequence of occurrences of the item or items in the braces. The
-number of occurrences is given in the following subscript, 0+ means 0 or more, 1+ means
-1 or more.</p>
-
-<p>The grammar for a normative type definition follows the pattern
+<p>The grammar for a Normative Type definition follows the pattern
 below. That is, a Normative Type is defined as a structure composed of fields. A
 field may be optional, and may be described along with a comment:</p>
 
@@ -369,18 +369,15 @@ structure
 <p>where:</p>
 <dl>
   <dt><span class="nterm">NTname</span></dt>
-    <dd>The name of the Normative Type</dd>
+    <dd>The name of the Normative Type.</dd>
   <dt><span class="nterm">ntfield</span></dt>
-    <dd>One of the valid <a href="#normative_type_fields">Normative Type Fields</a> as defined below</dd>
+    <dd>One of the valid <a href="#normative_type_fields">Normative Type Fields</a> as defined below.</dd>
   <dt>fieldName</dt>
-    <dd>The identifier of the field. Where the field is a terminal in the grammar
-   (i.e., does not have  &lt;&gt; around its name) then the fieldName is a pvData Field
-   name, as returned by a call to getFieldName() on the Field member object. <span class="ed">must add
-   reference to Field, getFieldName when this interface is settled?</span></dd>
+    <dd>The identifier of the field.</dd>
    <dt>:opt</dt>
-    <dd>Indicates that the preceding field is optional in the normative type</dd>
+    <dd>Indicates that the preceding field is optional in the Normative Type.</dd>
       <dt>// <span class="term">comment text</span></dt>
-      <dd>A field production element may be followed by a comment </dd>
+      <dd>A field production element may be followed by a comment.</dd>
 </dl>
 
 <p>The following rule (a production rule of the grammar) is employed. When a structure is defined using a non-terminal term</p>
@@ -395,7 +392,7 @@ structure
 structure
     {<span class="user">subfield</span>}0+
 </pre>
-</p>
+<p>
 then the structure derived is 
 </p>
 <pre>
@@ -405,9 +402,9 @@ structure
         {<span class="user">subfield</span>}0+
     ...
 </pre>
-<p>with a similar rule for unions.</p>
+<p>with a similar rule for non-terminal union terms.</p>
 
-<p>Thus the structure derived form the definition of
+<p>Thus the structure derived from the definition of
 <a href="#ntenum"><span class="nterm">NTEnum</span></a>
 below, with all optional fields present,  is</p>
 <pre>
@@ -431,7 +428,7 @@ structure
 <p>This section defines the fields that may appear in a Normative Type's
 definition.</p>
 
-<p>Each field of a normative type will typically be
+<p>Each field of a Normative Type will typically be
 one of the following: </p>
 
 <pre>
@@ -463,13 +460,13 @@ one of the following: </p>
 
 <p>although more complicated examples may have fields of other types.</p>
 
-<h3>Simple Normative Type Fields - scalar and scalar array types</h3>
+<h3>Simple Normative Type fields - scalar and scalar array types</h3>
 
 <p>Note that of all the Normative Type fields only <span class="nterm">scalar_t</span> and <span class="nterm">scalar_t[]</span> are of simple type,
 that is, having a single scalar or scalar array value of a fixed type. All the others are represented by a
-complex type, i.e. a structure or union or arrays of structures or unions (see <a href="#structured_normative_fields">Structured Normative
-Fields</a> and <a href="#union_type_fields">Union Type
-Fields</a> below). </p>
+complex type, i.e. a structure or union or arrays of structures or unions (see <a href="#structured_normative_type_fields">Structured Normative
+Type fields</a> and <a href="#union_normative_type_fields">Union Normative Type fields</a>
+ below). </p>
 
 <h4 id ="scalar_t">scalar_t</h4>
 
@@ -495,7 +492,7 @@ Fields</a> below). </p>
 <h4>scalar_t[]</h4>
 
 <p>The field is an array of scalars. Scalar array fields would be implemented with
-  pvData field Type <a
+  a pvData field of type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_scalar_array"
    >"scalarArray"</a>:</p>
 
@@ -517,12 +514,12 @@ Fields</a> below). </p>
 
 
 
-<h3>Structured Normative Fields</h3>
+<h3>Structured Normative Type fields</h3>
 
 <p>This subsection defines those fields of a Normative Type structure definition
  that are themselves structures or arrays of structures.</p>
 
-<p>The structured normative type fields would be implemented with type pvData field Type <a
+<p>The structured Normative Type fields would be implemented with type pvData field type <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
 >"structure"</a> or <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
@@ -532,9 +529,9 @@ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/
 
 <p>An <span class="nterm">enum_t</span> describes an enumeration. The field is a
   structure describing a value drawn from a given set of valid values also given. It
-  is implemented as a pvData Field of Type <a
+  is implemented as a pvData Field of type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
-   >"structure"</a> of type id "enum_t" with the following form:</p>
+   >"structure"</a> of type ID "enum_t" with the following form:</p>
 
 <pre>
 <span class="nterm">enum_t</span> :=
@@ -548,7 +545,7 @@ structure
 <dl>
   <dt>index</dt>
     <dd>The index of the current value of the enumeration in the array
-      choices below</dd>
+      choices below.</dd>
   <dt>choices</dt>
     <dd>An array of strings specifying the set of labels for the valid values
       of the enumeration.</dd>
@@ -558,18 +555,18 @@ structure
 
 <p>An <span class="nterm">enum_t[]</span> describes an array of enumerations. The
   field is an array of structures each describing a value drawn from a given set of
-  valid values also given in each. It is implemented as a pvData field of Type <a
-   href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
-   >"structureArray"</a> each element of which with the form of <span
+  valid values also given in each. It is implemented as a pvData field of type <a
+  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
+  >"structureArray"</a>, each element of which is a structure of the form <span
   class="nterm">enum_t</span> above.</p>
 
 
 <h4 id = "time_t" >time_t</h4>
 
 <p>A <span class="nterm">time_t</span> describes a defined point in time. The field is a structure
-describing a time relative to midnight on January 1st, 1970 UTC. It is implemented as a pvData field of Type
+describing a time relative to midnight on January 1st, 1970 UTC. It is implemented as a pvData field of type
 <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure" >"structure"</a>
-of type id "time_t" and with the following form: </p>
+of type ID "time_t" and with the following form: </p>
 
 <pre>
 <span class="nterm">time_t</span> :=
@@ -582,12 +579,12 @@ structure
 <p>where:</p>
 <dl>
   <dt>secondsPastEpoch</dt>
-    <dd>Seconds since Jan 1, 1970 00:00:00 UTC</dd>
+    <dd>Seconds since Jan 1, 1970 00:00:00 UTC.</dd>
   <dt>nanoseconds</dt>
-    <dd>Nanoseconds relative to the <span class="term">secondsPastEpoch</span> field</dd>
+    <dd>Nanoseconds relative to the <span class="term">secondsPastEpoch</span> field.</dd>
   <dt>userTag</dt>
     <dd>An integer value whose interpretation is deliberately undefined and therefore MAY be
-      used by EPICS V4 agents in a user defined way</dd>
+      used by EPICS V4 agents in a user defined way.</dd>
 </dl>
 
 <p>Interpretation: The point in time being identified by a <span
@@ -600,9 +597,9 @@ times 10<sup>9</sup> plus its <span class="term">nanoseconds</span>.</p>
 
 <p>A <span class="nterm">time_t[]</span> describes an array of points in time. The
  field is an array of structures each describing a time relative to January 1st, 1970
- UTC. It is implemented as a pvData field of Type <a
+ UTC. It is implemented as a pvData field of type <a
   href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
-  >"structureArray"</a> each element of which with the form of <span
+  >"structureArray"</a>, each element of which is a structure of the form <span
  class="nterm">time_t</span> above.</p>
 
 
@@ -615,10 +612,10 @@ is good or bad, and whether agent systems should alert people to the status of t
 <p> Processes in EPICS V3 and V4 IOCs include extensive support for evaluating
 alarm conditions. The definition of the fields in an <span class="term">alarm</span>
 are given in <a class="bib" href="#bib:epicsrecref">bib:epicsrecref</a>.  The field is a
-structure describing an alarm. It is implemented as a pvData field of Type
+structure describing an alarm. It is implemented as a pvData field of type
 <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
- >"structure"</a> of type id "alarm_t" with the following form: </p>
+ >"structure"</a> of type ID "alarm_t" with the following form: </p>
 
 <pre>
 <span class="nterm">alarm_t</span> :=
@@ -636,7 +633,7 @@ structure
       MUST be functionally interpreted as the enumeration
 	{noAlarm, minorAlarm, majorAlarm, invalidAlarm, undefinedAlarm } indexed from
 	noAlarm=0  <a
-class="bib" href="#bib:epicsrecref">bib:epicsrecref</a></dd>
+class="bib" href="#bib:epicsrecref">bib:epicsrecref</a>.</dd>
   <dt>status</dt>
       <dd>status is defined as an int (not an <span class="nterm">enum_t</span>), but
       MUST be functionally interpreted as the enumeration {noStatus, deviceStatus,
@@ -655,10 +652,9 @@ class="bib" href="#bib:epicsrecref">bib:epicsrecref</a>.</p>
 <h4>alarm_t[]</h4>
 
 <p>An <span class="nterm">alarm_t[]</span> is an array of alarm conditions. The field
-is an array of structures each describing an alarm condition. It is implemented as a
-pvData field of Type <a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
- >"structureArray"</a> each element of which with the form of <span
+is an array of structures each describing an alarm condition. It is implemented as a pvData field of type <a
+  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
+  >"structureArray"</a>, each element of which is a structure of the form <span
 class="nterm">alarm_t</span> above.</p>
 
 
@@ -671,9 +667,9 @@ class="nterm">alarm_t</span> above.</p>
   specified in the alarmLimit structure. It is usually a value field of type double that appears in
   the same structure as the alarmLimit.
 <span
-class="nterm">alarmLimit_t</span> is implemented as a pvData field of Type <a
+class="nterm">alarmLimit_t</span> is implemented as a pvData field of type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
- >"structure"</a> of type id "alarmLimit_t" with the following form: </p>
+ >"structure"</a> of type ID "alarmLimit_t" with the following form: </p>
 
 
 <pre><span class="nterm">alarmLimit_t</span> :=
@@ -751,8 +747,14 @@ structure
     raiseAlarm(0,val,0,"");
 </pre>
 <p>
-<b>NOTE: </b> pvData has support named <b>valueAlarm</b> instead of <b>alarmLimit</b>
-(alarmLimit is identical to valueAlarm for type double).
+<b>NOTE: </b> The current pvData implementations have a structure
+named <b>valueAlarm_t</b> instead of <b>alarmLimit_t</b>.
+<span class="nterm">valueAlarm_t</span> is similar to <span class="nterm">alarmLimit_t</span>, except that the former's alarm limit fields (<span class="term">lowAlarmLimit</span>,
+<span class="term">lowWarningLimit</span>,
+<span class="term">highWarningLimit</span> and
+<span class="term">highAlarmLimit</span>)
+can be any integer or floating point scalar type (the same type for all the limit fields in each case), rather than only double. There is also a separate form for alarm limits for boolean values. <span class="nterm">alarmLimit_t</span> is identical to the <span class="nterm">valueAlarm_t</span> for type double, except that
+the type ID of <span class="nterm">valueAlarm_t</span> is "valueAlarm_t").
 Normative types only defines alarmLimit since this is what
 clients like plot tools use.
 </p>
@@ -761,10 +763,9 @@ clients like plot tools use.
 <h4>alarmLimit_t[]</h4>
 
 <p>An <span class="nterm">alarmLimit_t[]</span> is an array of alarm limit conditions. The field is an array of
-structures each describing an alarm limit. It is implemented as a pvData field of
-Type <a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
- >"structureArray"</a> each element of which with the form of <span
+structures each describing an alarm limit. It is implemented as a pvData field of type <a
+  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
+  >"structureArray"</a>, each element of which is a structure of the form <span
 class="nterm">alarmLimit_t</span> above.</p>
 
 
@@ -780,10 +781,11 @@ and <span class="term">limitHigh</span> represent the
 range in between which the value should be presented as adjustable.
 </p>
 <p>
-The field is a structure describing a <span class="nterm">display_t</span>. It is implemented as a pvData field of Type
+The field is a structure describing a <span class="nterm">display_t</span>.
+It is implemented as a pvData field of type
 <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
->"structure"</a> of type id "display_t" with the following form: </p>
+>"structure"</a> of type ID "display_t" with the following form: </p>
 
 <pre><span class="nterm">display_t</span> :=
 
@@ -798,15 +800,15 @@ structure
 <p>where:</p>
 <dl>
   <dt>limitLow</dt>
-    <dd>The lower bound of range within which the value must be set, to be presented to a user </dd>
+    <dd>The lower bound of range within which the value must be set, to be presented to a user.</dd>
   <dt>limitHigh</dt>
-    <dd>The upper bound of range within which the value must be set, to be presented to a user </dd>
+    <dd>The upper bound of range within which the value must be set, to be presented to a user.</dd>
   <dt>description</dt>
-    <dd>A textual summary of the variable that the value quantifies</dd>
+    <dd>A textual summary of the variable that the value quantifies.</dd>
   <dt>format</dt>
     <dd>A format for converting the value field to a string <span class="ed">Needs
       work: What is display.format? What's it for and what are examples? If it's a sprintf pattern, which syntax must
-it conform to - C or Java? </span></dd>
+it conform to - C or Java?</span></dd>
   <dt>units</dt>
     <dd>The units for the value field.</dd>
 </dl>
@@ -821,9 +823,9 @@ that have a single numeric "value" field.</p>
 <p>A <span class="nterm">display_t[]</span> is an array of <span class="nterm">display_t</span>.
 The field is an array of structures each describing the display media oriented metadata of some
 corresponding process variable value, as described by <span class="nterm">display_t</span> above.
-It is implemented as a pvData field of Type <a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
- >"structureArray"</a> each element of which with the form of <span
+It is implemented as a pvData field of type <a
+  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
+  >"structureArray"</a>, each element of which is a structure of the form <span
 class="nterm">display_t</span> above.</p>
 
 
@@ -835,9 +837,9 @@ shall bind the control PV to which this Normative Type
 instance's value field refers as well as a minimum step change of the control PV.</p>
 <p>
 The field is a structure describing a <span class="nterm">control_t</span>. It is implemented as a pvData field of
-Type <a
+type <a
  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
- >"structure"</a> of type id "control_t" with the following form: </p>
+ >"structure"</a> of type ID "control_t" with the following form: </p>
 
 <pre><span class="nterm">control_t</span> :=
 
@@ -850,7 +852,7 @@ structure
 <p>where:</p>
 <dl>
   <dt>lowLimit</dt>
-    <dd>The control low limit for the value field</dd>
+    <dd>The control low limit for the value field.</dd>
       <dt>highLimit</dt>
     <dd>The control high limit for the value field.</dd>
       <dt>minStep</dt>
@@ -860,37 +862,38 @@ structure
 <h4>control_t[]</h4>
 
 <p>A <span class="nterm">control_t[]</span> is an array of <span class="nterm">control_t</span>. The field is an
-array of structures each describing the setpoint range interval of some process variable. It is
-implemented as a pvData field of Type <a
- href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
- >"structureArray"</a> each element of which with the form of <span
+array of structures each describing the setpoint range interval of some process
+ variable. It is implemented as a pvData field of type <a
+  href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure_array"
+  >"structureArray"</a>, each element of which is a structure of the form <span
 class="nterm">control_t</span> above.</p>
 
-<h3>Union Type Fields</h3>
+<h3>Union Normative Type fields</h3>
 
 <p>This subsection defines those fields of a Normative Type structure definition
  that are unions or arrays of unions.</p>
 
-<p>The union normative fields would be implemented with type pvData field Type <a
+<p>The union NormativeType fields are implemented with pvData fields of type <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union"
 >"union"</a> or <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union_array"
 >"unionArray"</a>.</p>
 
 
-The union normative type fields consist of the variant union <span class="term">any</span> and variant union array <span class="term">any[]</span> as well as a number of non-terminal terms:
+The union Normative Type fields consist of the variant union <span class="term">any</span>
+and variant union array <span class="term">any[]</span> as well as a number of non-terminal terms:
 
 <h4>any</h4>
 <p>This is a field which is a variant union and is implemented using the pvData field type <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union"
->"union"</a>
+>"union"</a>.
 </p>
 
 <h4>any[]</h4>
 <p>This is a field that is an array of <span class="term">any</span>, implemented using the pvData field type
  <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union_array"
-   >"unionArray"</a>
+   >"unionArray"</a>.
 </p>
 
 <h4>ntunion_t</h4>
@@ -909,7 +912,7 @@ union
 
 <h4>ntunion_t[]</h4>
 
-<p>An <span class="nterm">ntunion_t[]</span> stands for an array of unions, where the union is any regular union of 1 or more ntfields. It is implemented as a pvData field of Type <a
+<p>An <span class="nterm">ntunion_t[]</span> stands for an array of unions, where the union is any regular union of 1 or more ntfields. It is implemented as a pvData field of type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union_array"
    >"unionArray"</a> each element of which is a union (the same one in each case) of the form <span
   class="nterm">ntunion_t</span> above.</p>
@@ -917,7 +920,7 @@ union
 
 <h4>union_t</h4>
 
-<p><span class="nterm">union_t</span> stands for any regular union of pvData fields and is implemented using the pvData field type <a
+<p><span class="nterm">union_t</span> stands for any regular union of pvData fields and is implemented using the pvData field of type <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union"
 >"union"</a>:
 </p>
@@ -931,9 +934,12 @@ union
 
 <h4>union_t[]</h4>
 
-<p>A <span class="nterm">union_t[]</span> stands for an array of unions, where the union is any regular union of 1 or more pvData fields. It is implemented as a pvData field of Type <a
+<p>A <span class="nterm">union_t[]</span> stands for an array of unions,
+   where the union is any regular union of 1 or more pvData fields. It is
+   implemented as a pvData field of type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union_array"
-   >"structureArray"</a> each element of which is a union (the same one in each case) of the form <span
+   >"unionArray"</a> each element of which is a union (the same one in each
+  case) of the form <span
   class="nterm">union_t</span> above.</p>
 
 
@@ -952,10 +958,10 @@ any | <span class="nterm">union_t</span>
 
 <p>An <span class="nterm">anyunion_t[]</span> stands for a variant union array or a regular union
 array of any type an array of unions, where the union is any regular union of 1 or more pvData fields.
-It is implemented as a pvData field of Type <a
+It is implemented as a pvData field of type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union_array"
-   >"structureArray"</a> each element of which is a union (the same one in each case) of the form <span
-  class="nterm">union_t</span> above:</p>
+   >"unionArray"</a> each element of which is a union (the same one in each case) of the form <span
+  class="nterm">anyunion_t</span> above:</p>
 
 <pre><span class="nterm">anyunion_t[]</span>:=
 
@@ -970,16 +976,18 @@ includes to which Normative Type the structure instance conforms, version
 information, and other data to aid efficient processing, diagnostics and
 displays.</p>
 
-<h3>Normative Type Instance Self Identification</h3>
+<h3>Normative Type instance self-identification</h3>
 
-<p>Normative Type instance data MUST identify themselves as such by including an identifying string.
-That is the <span class="def">Normative Type Identifier</span>, or "Ntype identifier" string for short. 
- In the pvData binding of Normative Types, this string is carried in the "id" field, added automatically
- to every pvData structure.</p>
+<p>Normative Type instance data MUST identify themselves as such by including
+ an identifying string.
+ That is the <span class="def">Normative Type Identifier</span>, or
+ "Ntype Identifier" string for short. 
+ In the pvData binding of Normative Types, this string is carried in the type
+ ID, added automatically to every pvData structure.</p>
 
 <p>A Normative Type Identifier MUST be considered to be "case sensitive."</p>
 
-<p>The namespace Name of EPICS normative types (which is used as the prefix for their pvData type id),
+<p>The namespace Name of EPICS Normative Types (which is used as the prefix for their pvData type ID),
 is the following: </p>
 <pre>
      epics:nt
@@ -988,11 +996,10 @@ is the following: </p>
 <p>The normative list of the Normative Type Identifiers corresponding to <a
     href="#thisversion" >this draft</a> of the EPICS V4 Normative Types specification
    document (this document), is given in <a href="#normative_ntype_list">Appendix
-   B</a>.</p>
+   B</a></p>
 
-<p>As an example, one of the simplest normative types is <a href="#ntscalar">
-  NTScalar</a>. It has formal Type Name "NTScalar"
-  (see <a href="#normative_ntype_list">Appendix B</a>). Therefore, the Normative Type
+<p>As an example, one of the simplest Normative Types is <a href="#ntscalar">
+  NTScalar</a>. It has formal Type Name "NTScalar". Therefore, the Normative Type
   Identifier for an NTScalar,
   is presently <span class="literal">epics:nt/NTScalar:1.0</span>.</p>
 
@@ -1008,12 +1015,11 @@ is the following: </p>
 <p>In the EPICS v4 pvData/pvAccess binding, the structure identification string (ID)
 of pvData structures is used to communicate the Normative Type of the datum carried
 by the pvData structure.  Every pvData datum which is intended to conform to a
-normative type, MUST identify the normative type to which it conforms through its ID
-field. Its ID field MUST have the value of its Normative Type Identifier. For
-instance, a pvData structure conforming to NTScalar, must have ID field equal
+Normative Type, MUST identify the Normative Type to which it conforms through its type ID. Its ID MUST have the value of its Normative Type Identifier. For
+instance, a pvData structure conforming to NTScalar, must have ID equal
 to "<span class="literal">epics:nt/NTScalar:1.0</span>". Every EPICS V4 agent
-which is encoding or decoding pvData data that is described by normative types,
-SHOULD examine the ID field of such data, to establish the normative type to which
+which is encoding or decoding pvData data that is described by Normative Types,
+SHOULD examine the ID of such data, to establish the Normative Type to which
 each datum conforms.</p>
 
 
@@ -1025,7 +1031,7 @@ each datum conforms.</p>
   interface</a>, in which data types are defined, and
   the <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#data_interfaces">data
   interface</a>, in which instance variables are created and populated. The introspection interface can
-  be used to examine an existing instance, to see what fields it posses. Getting and
+  be used to examine an existing instance, to see what fields it possesses. Getting and
   setting values, is done through the data interface. As a programmer, you
   have to define both parts, the introspection interface of your type, and its data
   interface. Both the data and the introspection interfaces are exchanged by
@@ -1064,7 +1070,7 @@ type and populates it with the pvData data interfaces (PVField, PVStructure etc.
   may be done on a data server, and populating it.</p>
 <pre style="font-size:smaller">
    // If a and b were arguments to this service, the following creates an instance of
-   // a resultStructure, which conforms to the NTScalar normative type definition,
+   // a resultStructure, which conforms to the NTScalar Normative Type definition,
    // and populates it. It would then return this PVStructure instance.  
    PVStructure result = PVDataFactory.getPVDataCreate().createPVStructure(resultStructure);
    result.getDoubleField("value").put(a * b);
@@ -1098,7 +1104,7 @@ field, and then, if it's present, extracts the optional "descriptor" field.</p>
    PVStructure result = easyPVA.createChannel("multiplierService").createRPC().request(request);
 
    // Examine the returned structure via its introspection interface, to check whether its
-   // identifier says that it is a normative type, and the type we expected.
+   // identifier says that it is a Normative Type, and the type we expected.
    if (!result.getStructure().getID().equals("epics:nt/NTScalar:1.0")) 
    {
        System.err.println("Unexpected data identifier returned from multiplierService: " + 
@@ -1133,27 +1139,30 @@ namespace, though it may extend a type in this namespace.</p>
 <h3>Standard optional metadata fields</h3>
 
 <p>All of the Normative Types defined below, optionally include a descriptor, alarm
-and timeStamp field. There is no required interpretation of these fields, and
+and timestamp. There is no required interpretation of these fields, and
 therefore their meaning is not further described in the Normative Type
 definitions. Additionally, Normative Types may have other optional fields, as
 defined individually below.</p>
 
-<h4>Optional Descriptor field</h4>
+<h4>Optional descriptor field</h4>
+
 <p>An object of Normative Type may optionally include a field
-named "descriptor" and of type string, to be used to give identity, name, or sense
-information. For instance, it may be valued with the name of a device associated with control data, or
-the run number of a table of model data.</p>
+named "descriptor" and of type string, to be used to give identity, name, or
+sense information. For instance, it may be valued with the name of a device
+associated with control data, or the run number of a table of model data.</p>
 <pre>
 string descriptor  :opt     // Contextual information 
 </pre>
 
 <h4>Optional alarm field</h4>
+
 <p>An object of Normative Type may optionally include an alarm field. </p>
 <pre>
 <span class="nterm">alarm_t</span> alarm      :opt     // Control system event summary
 </pre>
 
 <h4>Optional timeStamp field</h4>
+
 <p>An object of Normative Type may optionally include a timeStamp
 field. </p>
 <pre>
@@ -1325,6 +1334,7 @@ structure
 </pre>
 
 <h4>Interpretation of NTURI under the "pva" scheme</h4>
+
 <p>The following describes how the fields of the NTURI must be interpreted when the
 scheme is "pva": </p>
 <dl>
@@ -1333,10 +1343,10 @@ scheme is "pva": </p>
   pva scheme implies but does not require use of the pvAccess protocol.</dd>
   <dt>authority</dt>
 <dd>If given, then the IP name or address of an EPICS network pvAccess or channel
-  access server  </dd>
+  access server.</dd>
   <dt>path</dt>
 <dd>The path gives the channel from which data is being requested. "path" is the
-  only required field of NTURI</dd>
+  only required field of NTURI.</dd>
   <dt>query</dt>
 <dd>A name value system for passing parameters. The types of the argument value MUST
   be drawn from the following restricted set of scalar types: double, int, or
@@ -1437,7 +1447,8 @@ structure
   <dt>name</dt>
     <dd>The keys associated with the  <span class="term">value</span> field. Each
       element of <span class="term">name</span>  identifies the
-      same indexed element of the <span class="term">value</span> field, using a string label. </dd>
+      same indexed element of the <span class="term">value</span> field, using a
+      string label.</dd>
   <dt>value</dt>
     <dd>The data values, each element of which is associated with the correspondingly
       indexed element of the  <span class="term">name</span> field.</dd>
@@ -1480,13 +1491,13 @@ structure
   <dt>labels</dt>
     <dd>The table column headings of each column, each heading given as one element
       of the array of strings. The order of labels MUST match the intended order of the
-      <span class="nterm">scalar_t[]</span> data
+      <span class="nterm">scalar_t[]</span> data.
     </dd>
     <dt>value</dt>
     <dd>The data of the table are encoded in a structure named "value" (that is,
     the pvData binding, whose field name is "value"). We call the columnar data Field
     "value" (rather than for instance "columndata") so that the primary field of the
-      type is named the same for all normative types, and so to help general purpose clients
+      type is named the same for all Normative Types, and so to help general purpose clients
       identify the primary field.</dd>
 </dl>
 
@@ -1546,8 +1557,8 @@ structure
 <h2>Specific Normative Types</h2>
 
 
-<p>The "specific normative types" below are types oriented towards application level
-scientific and engineering use cases. Compare to <a
+<p>The "Specific Normative Types" below are types oriented towards
+application-level scientific and engineering use cases. Compare to <a
 href="#general_normative_types">General Normative Types</a> defined above. The
 currently defined types are each described in a section below.</p>
 
@@ -1583,42 +1594,42 @@ structure
 <p>where:</p>
 <dl>
   <dt>value</dt>
-    <dd>The value from each channel </dd>
+    <dd>The value from each channel.</dd>
   <dt>channelName</dt>
-      <dd>The name of each of channel
+      <dd>The name of each channel.
 	</dd>
   <dt>alarm</dt>
      <dd>The alarm associated with the NTMultiChannel itself.
-      severity, status, and message show the alarm for each channel
+      <span class="term">severity</span>, <span class="term">status</span>, and <span class="term">message</span> show the alarm for each channel.
       </dd>
   <dt>timeStamp</dt>
-     <dd>The timeStamp associated with the NTMultiChannel itself.
-      secondsPastEpoch, nanoseconds, and userTag show the timeStamp for each channel
+     <dd>The timestamp associated with the NTMultiChannel itself.
+      <span class="term">secondsPastEpoch</span>, <span class="term">nanoseconds</span> and <span class="term">userTag</span> show the timestamp for each channel.
       </dd>
   <dt>severity</dt>
-    <dd>The alarm severity associated with each channel</dd>
+    <dd>The alarm severity associated with each channel.</dd>
   <dt>status</dt>
-    <dd>The alarm status associated with each channel</dd>
+    <dd>The alarm status associated with each channel.</dd>
   <dt>message</dt>
-    <dd>The alarm message associated with each channel</dd>
+    <dd>The alarm message associated with each channel.</dd>
   <dt>secondsPastEpoch</dt>
-    <dd>The timeStamp secondsPastEpoch associated with each channel</dd>
+    <dd>The <span class="term">secondsPastEpoch</span> field of the timestamp associated with each channel.</dd>
   <dt>nanoseconds</dt>
-    <dd>The timeStamp nanoseconds associated with each channel</dd>
+    <dd>The <span class="term">nanoseconds</span> field of the timestamp associated with each channel.</dd>
   <dt>userTag</dt>
-    <dd>The timeStamp userTag associated with each channel</dd>
+    <dd>The <span class="term">userTag</span> field of the timestamp associated with each channel.</dd>
 </dl>
 
 
 <h3>NTNDArray</h3>
 
 <p>
-NTNDArray is an EPICS Version 4 normative type designed to encode data from detectors
+NTNDArray is an EPICS Version 4 Normative Type designed to encode data from detectors
 and cameras, especially
 <a
  href="http://cars9.uchicago.edu/software/epics/areaDetector.html">areaDetector</a> applications.
 
-The type is heavily modelled on areaDetector's <a
+The type is heavily modeled on areaDetector's <a
  href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/class_n_d_array.html">NDArray</a> class.
 
 One NTNDArray gives one frame.
@@ -1634,7 +1645,7 @@ structure
     long          compressedSize
     long          uncompressedSize
     <span class="nterm">dimension_t[]</span> dimension
-    int           uniqueID
+    int           uniqueId
     <span class="nterm">time_t</span>        dataTimeStamp
     <span class="nterm">NTAttribute[]</span> attribute<span class="opt">
     string        descriptor  :opt
@@ -1653,7 +1664,7 @@ structure
     <span class="nterm">Image data and codec</span>
     <span class="nterm">Data sizes</span>
     <span class="nterm">Dimensions</span>
-    <span class="nterm">Unique Id and data time Stamp</span>
+    <span class="nterm">Unique ID and data timestamp</span>
     <span class="nterm">Attributes</span>
     <span class="nterm">Optional fields</span>
 </pre>
@@ -1672,11 +1683,11 @@ following fields:</p>
   <dt>value</dt>
     <dd>An array which encodes an N-dimensional array containing the data for the image itself.</dd>
   <dt>codec</dt>
-    <dd>Information on the how the data in value encodes the N-dimensional array</dd>
+    <dd>Information on the how the data in value encodes the N-dimensional array.</dd>
 </dl>
 
 <p>A <span class="nterm">value_t</span> 
-  is implemented as a pvData Field of Type <a
+  is implemented as a pvData Field of type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union"
    >"union"</a> with the following form:</p>
 
@@ -1697,9 +1708,9 @@ union
 </pre>
 
 <p>A <span class="nterm">codec_t</span> 
-  is implemented as a pvData Field of Type <a
+  is implemented as a pvData Field of type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
-   >"structure"</a> of type id "codec_t" with the following form:</p>
+   >"structure"</a> of type ID "codec_t" with the following form:</p>
 
 <pre>
 <span class="nterm">codec_t</span> :=
@@ -1712,9 +1723,9 @@ structure
 <p>where:</p>
 <dl>
   <dt>name</dt>
-    <dd>The encoding scheme, e.g. the codec in the case of compressed data. </dd>
+    <dd>The encoding scheme, e.g. the codec in the case of compressed data.</dd>
   <dt>parameters</dt>
-    <dd>Any additional information required to interpret the data</dd>
+    <dd>Any additional information required to interpret the data.</dd>
 </dl>
 <p>
 The <span class="term">value</span> field stores a scalar array of one of the scalar types
@@ -1803,9 +1814,9 @@ number of elements of the <span class="term">dimension</span> field is 0 the val
 <pre>    <span class="nterm">dimension_t[]</span> dimension
 </pre>
 <p>A <span class="nterm">dimension_t</span> 
-  is implemented as a pvData Field of Type <a
+  is implemented as a pvData Field of type <a
    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_structure"
-   >"structure"</a> of type id  "dimension_t" with the following form:</p>
+   >"structure"</a> of type ID  "dimension_t" with the following form:</p>
 <pre>
 <span class="nterm">dimension_t</span> :=
 
@@ -1819,19 +1830,19 @@ structure
 <p>where:</p>
 <dl>
   <dt>size</dt>
-    <dd>The number of elements in this dimension of the array</dd>
+    <dd>The number of elements in this dimension of the array.</dd>
   <dt>offset</dt>
     <dd>The offset in this dimension relative to the origin of the original data
-source</dd>
+source.</dd>
   <dt>fullSize</dt>
     <dd>The number of elements in this dimension of the the original data
-source</dd>
+source.</dd>
   <dt>binning</dt>
     <dd>The binning (pixel summation, 1=no binning) in this dimension relative to original data source
-      source</dd>
+      source.</dd>
   <dt>reverse</dt>
     <dd>The orientation (false=normal, true=reversed) in this dimension relative to the original data source
-      source</dd>
+      source.</dd>
 </dl>
 
 <p>
@@ -1847,9 +1858,9 @@ and its <span class="term">fullSize</span> field value SHOULD be the size of the
 <span class="nterm">dimension_t</span> is analogous to <a
  href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/struct_n_d_dimension.html">NDDimension_t</a>  in areaDetector.
 
-<h4>Unique ID and Data Time Stamp</h4>
+<h4>Unique ID and data timestamp</h4>
 
-<p>The <span class="nterm">Unique ID and Data Time Stamp</span> parts of an NTNDArray are composed of the
+<p>The <span class="nterm">Unique ID and data timestamp</span> parts of an NTNDArray are composed of the
 following fields:</p>
 <pre>    int     uniqueId
     time_t  dataTimeStamp
@@ -1859,9 +1870,9 @@ following fields:</p>
 <dl>
   <dt>uniqueId</dt>
     <dd>A number that SHOULD be unique for all NTNDArrays produced by a source
-      after it has started</dd>
+      after it has started.</dd>
   <dt>dataTimeStamp</dt>
-    <dd>Time stamp of the data</dd>
+    <dd>Timestamp of the data.</dd>
 </dl>
 <p>
 The value of <span class="term">dataTimeStamp</span> MAY be different from that of the (optional) <span class="term">timeStamp</span> field below.
@@ -1870,7 +1881,7 @@ The value of <span class="term">dataTimeStamp</span> MAY be different from that 
 The <span class="term">uniqueId</span> and <span class="term">dataTimeStamp</span> fields of
 NTNDArray correspond to the uniqueId and timeStamp fields respectively of an NDArray.
 </p>
-<h4>NTNDArray Attributes</h4>
+<h4>NTNDArray attributes</h4>
 <p>
 
 
@@ -1905,7 +1916,7 @@ NDAttrSourceEPICSPV  = 2,   /** Attribute is obtained from an EPICS PV */
 NDAttrSourceFunct    = 3    /** Attribute is obtained from a user-specified function  */</pre>
     </dd>
   <dt>source</dt>
-    <dd>The source string of this attribute</dd>
+    <dd>The source string of this attribute.</dd>
 </dl>
 
 <p>Note that the optional descriptor field of NTAttribute is mandatory for attributes of an NTNDArray.</p>
@@ -1982,21 +1993,22 @@ Other areaDetector attributes are user-defined.]
 <p>NTContinuum is the  EPICS V4 Normative Type used to express a sequence of point
   values in time or frequency domain.  Each point has N values (N>=1) 
 and an additional value which describes the index of the list.  The 
-additional value is carried in the 'base' field.  The 'value' field 
+additional value is carried in the <span class="term">base</span>
+ field.  The <span class="term">value</span> field 
 carries the values which make up the point in index order.</p>
 <p>
-An additional 'units' field gives a units string for the N values and 
-the additional value.
+An additional <span class="term">units</span> field gives a units string
+for the N values and the additional value.
 </p>
 <pre><span class="nterm">NTContinuum</span> := 
 
 structure
-    double[] base
-    double[] value
-    string[] units<span class="opt">
-    string      descriptor    :opt
-    <span class="nterm">alarm_t</span>     alarm         :opt
-    <span class="nterm">time_t</span>      timeStamp     :opt</span>
+    double[]   base
+    double[]   value
+    string[]   units<span class="opt">
+    string     descriptor    :opt
+    <span class="nterm">alarm_t</span>    alarm         :opt
+    <span class="nterm">time_t</span>     timeStamp     :opt</span>
 </pre>
 <p>
 The number of values in a point must be derived as:</p>
@@ -2008,7 +2020,7 @@ And the following invariant must be preserved:</p>
 len(units)-1 == Nvals</dfn>
 <p>
 The order of the point (A, B, C) for indices 1, 2, 3 the order of the 
-'value' array is:</p>
+<span class="term">value</span> array is:</p>
 <samp>
 [A1, B1, C1, A2, B2, C2, A3, B3, C3] </samp>
 
@@ -2052,7 +2064,7 @@ scale), would be communicated using a range array of decades (1.0E01,
 </p>
 
 <h4>Validation</h4>
-<p>The array length of <span class="term">range</span> MUST be the array length
+<p>The array length of <span class="term">ranges</span> MUST be the array length
 of <span class="term">value</span> + 1. </p>
 
 
@@ -2079,7 +2091,7 @@ any help for indicating the extent of dependency on another variable
 
 structure
     double     value                 // The center point of the observations,
-                                      // nominally the mean.         
+                                     // nominally the mean.         
     long       N                     // Number of observations
     double     dispersion      :opt  // Dispersion of observations;
                                       // nominally the Standard Deviation or RMS
@@ -2108,17 +2120,17 @@ structure
      variance or the standard deviation. The <span class="term">descriptor</span>
      should indicate which.</dd>
   <dt>first</dt>
-  <dd>The value of the temporally first observation conveyed by this NTAggregate </dd>
+  <dd>The value of the temporally first observation conveyed by this NTAggregate.</dd>
   <dt>firstTimeStamp</dt>
-    <dd>The time of observation of the temporally first observation conveyed by this NTAggregate</dd>
+    <dd>The time of observation of the temporally first observation conveyed by this NTAggregate.</dd>
   <dt>last</dt>
-  <dd>The value of the temporally final observation conveyed by this NTAggregate </dd>
+  <dd>The value of the temporally final observation conveyed by this NTAggregate.</dd>
   <dt>lastTimeStamp</dt>
-   <dd>The time of observation of the temporally final observation conveyed by this NTAggregate</dd>
+   <dd>The time of observation of the temporally final observation conveyed by this NTAggregate.</dd>
   <dt>max</dt>
-    <dd>The numerically largest value in the set of observations conveyed by this NTAggregate</dd>
+    <dd>The numerically largest value in the set of observations conveyed by this NTAggregate.</dd>
   <dt>min</dt>
-    <dd>The numerically smallest value in the set of observations conveyed by this NTAggregate</dd>
+    <dd>The numerically smallest value in the set of observations conveyed by this NTAggregate.</dd>
 </dl>
 
 <h4>Interpretation</h4>
@@ -2146,7 +2158,7 @@ standard deviation [1/N or 1/(N-1)] was used, is also not defined normatively.</
 <h3>NTUnion</h3>
 
 <p><span class="nterm">NTUnion</span> would be a Normative Type for interoperation of
-essentially any data structure, plus description, alarm and timeStamp.</p>
+essentially any data structure, plus description, alarm and timestamp fields.</p>
 
 <pre><span class="nterm">NTUnion</span> := 
 
@@ -2157,16 +2169,14 @@ structure
     <span class="nterm">time_t</span>       timeStamp        :opt</span>
 </pre>
 
-anyunion_t[]
-scalar_t[]  
 <h3>NTScalarMultiChannel</h3>
 
 <p>NTScalarMultiChannel is an EPICS V4 Normative Type that aggregates an array of 
 values from different EPICS Process Variable (PV) channel sources of the same scalar type into a single variable. </p>
 
-<p>Use cases; in a particle accelerator, a single NTScalarMultiChannel might include
-the data of a number of Beam Position Monitors' X offset values, or of a number of
-quadrupoles' desired field values. </p>
+<p>Use cases: In a particle accelerator, a single NTScalarMultiChannel might
+ include the data of a number of Beam Position Monitors' X offset values,
+or of a number of quadrupoles' desired field values. </p>
 
 <pre><span class="nterm">NTScalarMultiChannel</span> := 
 
@@ -2186,42 +2196,41 @@ structure
 <p>where:</p>
 <dl>
   <dt>value</dt>
-    <dd>The value from each channel </dd>
+    <dd>The value from each channel.</dd>
   <dt>channelName</dt>
-      <dd>The name of each of channel
+      <dd>The name of each channel.
 	</dd>
   <dt>alarm</dt>
      <dd>The alarm associated with the NTScalarMultiChannel itself.
-      severity, status, and message show the alarm for each channel
+      <span class="term">severity</span>, <span class="term">status</span>, and <span class="term">message</span> show the alarm for each channel.
       </dd>
   <dt>timeStamp</dt>
-     <dd>The timeStamp associated with the NTScalarMultiChannel itself.
-      secondsPastEpoch, nanoseconds, and userTag show the timeStamp for each channel
+     <dd>The timestamp associated with the NTScalarMultiChannel itself.
+      <span class="term">secondsPastEpoch</span>, <span class="term">nanoseconds</span> and <span class="term">userTag</span> show the timestamp for each channel.
       </dd>
   <dt>severity</dt>
-    <dd>The alarm severity associated with each channel</dd>
+    <dd>The alarm severity associated with each channel.</dd>
   <dt>status</dt>
-    <dd>The alarm status associated with each channel</dd>
+    <dd>The alarm status associated with each channel.</dd>
   <dt>message</dt>
-    <dd>The alarm message associated with each channel</dd>
+    <dd>The alarm message associated with each channel.</dd>
   <dt>secondsPastEpoch</dt>
-    <dd>The timeStamp secondsPastEpoch associated with each channel</dd>
+    <dd>The <span class="term">secondsPastEpoch</span> field of the timestamp associated with each channel.</dd>
   <dt>nanoseconds</dt>
-    <dd>The timeStamp nanoseconds associated with each channel</dd>
+    <dd>The <span class="term">nanoseconds</span> field of the timestamp associated with each channel.</dd>
   <dt>userTag</dt>
-    <dd>The timeStamp userTag associated with each channel</dd>
+    <dd>The <span class="term">userTag</span> field of the timestamp associated with each channel.</dd>
 </dl>
 
-
-<h2>Appendix B: Normative Type Identifiers</h2>
 <a id="normative_ntype_list"></a>
+<h2>Appendix B: Normative Type Identifiers</h2>
 
 <p>This Appendix describes the Normative Type Identifiers of the abstract
 data types defined by this document. These are the strings which identify the
 type carried by a structure. In the pvAccess binding (which is at
-present the only one implemented for EPICS V4), the required "id"
-field of the pvStructure MUST carry one of these identifier strings.
-In doing so, the pvStructure instance declares itself to conform to
+present the only one implemented for EPICS V4), the type ID
+of the structure MUST carry one of these identifier strings.
+In doing so, the structure instance declares itself to conform to
 the corresponding definition carried in this specification document. 
 </p>
 
@@ -2253,37 +2262,37 @@ MUST be valued as following:</p>
     <td>NTScalar</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>A single scalar value</td>
+    <td>A single scalar value.</td>
   </tr>
   <tr>
     <td>NTScalarArray</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>An array of scalar values of some single type</td>
+    <td>An array of scalar values of some single type.</td>
   </tr>
   <tr>
     <td>NTEnum</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>An enumeration list and a value of that enumeration</td>
+    <td>An enumeration list and a value of that enumeration.</td>
   </tr>
   <tr>
     <td>NTMatrix</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>A real number matrix</td>
+    <td>A real number matrix.</td>
   </tr>
   <tr>
     <td>NTURI</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>A structure for encapsulating a Uniform Resource Identifier (URI) </td>
+    <td>A structure for encapsulating a Uniform Resource Identifier (URI).</td>
   </tr>
   <tr>
     <td>NTNameValue</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>An array of scalar values where each element is named</td>
+    <td>An array of scalar values where each element is named.</td>
   </tr>
   <tr>
     <td>NTTable</td>
@@ -2295,13 +2304,13 @@ MUST be valued as following:</p>
     <td>NTAttribute</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>A key-value pair, with optional string tags, where the value is of any type</td>
+    <td>A key-value pair, with optional string tags, where the value is of any type.</td>
   </tr>
   <tr>
     <td>NTMultiChannel</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>An array of PV names, their values, and metadata</td>
+    <td>An array of PV names, their values, and metadata.</td>
   </tr>
   <tr>
     <td>NTNDArray</td>
@@ -2313,7 +2322,7 @@ MUST be valued as following:</p>
     <td>NTContinuum</td>
     <td>1.0</td>
     <td>(none)</td>
-    <td>Expresses a sequence of data points in time or frequency domain</td>
+    <td>Expresses a sequence of data points in time or frequency domain.</td>
   </tr>
   <tr>
     <td>NTHistogram</td>
@@ -2327,11 +2336,11 @@ MUST be valued as following:</p>
     <td>1.0</td>
     <td>(none)</td>
     <td>A mean value, standard deviation, and other metadata. Expresses the central
-        tendency and dispersion of a set of data points</td>
+        tendency and dispersion of a set of data points.</td>
   </tr>
 </table>
-<p>For example, the id field of a pvStructure describing an NTScalar, must be valued
-"epics:nt/NTScalar:1.0". The id field of a pvStructure describing an NTNDArray, must be valued
+<p>For example, the type ID of a structure describing an NTScalar, must be valued
+"epics:nt/NTScalar:1.0". The type ID of a structure describing an NTNDArray, must be valued
 "epics:nt/NTNDArray:1.0".</p>
 <p>Following drafts of this document MAY well correspond to the same Namespace Name
 and Type Names as used in this draft. Also note that the same namespace may well be
@@ -2341,27 +2350,27 @@ used for a different collection of types or Type Names, as this document matures
 <dl>
   <dt id="bib:pvdata">[bib:pvdata]</dt>
     <dd><a href="http://epics-pvdata.sourceforge.net/literature.html#pvDataJava">EPICS
-      V4 Documentation page, Programmers' Reference Documentation section (pvData)</a>
+      V4 Documentation page, Programmers' Reference Documentation section (pvData)</a>.
     </dd>
   <dt id="bib:pvaccess">[bib:pvaccess]</dt>
-  <dd><a href="http://epics-pvdata.sourceforge.net/literature.html#pvAccessJava">V4 Documentation page, Programmers' Reference Documentation section (pvAccess)</a>
+  <dd><a href="http://epics-pvdata.sourceforge.net/literature.html#pvAccessJava">V4 Documentation page, Programmers' Reference Documentation section (pvAccess)</a>.
   </dd>
   <dt id="bib:epicsrecref">[bib:epicsrecref]</dt>
   <dd><a
     href="https://wiki-ext.aps.anl.gov/epics/index.php/RRM_3-14">EPICS
     Reference Manual</a>, Philip Stanley, Janet Anderson, Marty Kraimer, APS,
-    https://wiki-ext.aps.anl.gov/epics/index.php/RRM_3-14</dd>
+    <span style="white-space: nowrap;">https://wiki-ext.aps.anl.gov/epics/index.php/RRM_3-14.</span></dd>
   <dt id="bib:epicsappdev">[bib:epicsappdev]</dt>
       <dd><a href="http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide/">EPICS
 Input / Output Controller (IOC) Application Developer's Guide</a> Marty Kraimer, APS,
-	1994, http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide/</dd>
+	1994,  <span style="white-space: nowrap;">http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide/</span>.</dd>
   <dt class="bib" id="bib:agg">bib:agg</dt>
   <dd>Aggregate data, Wikipedia article, <a
-    href="http://en.wikipedia.org/wiki/Aggregate_data">http://en.wikipedia.org/wiki/Aggregate_data</a>
+    href="http://en.wikipedia.org/wiki/Aggregate_data"><span style="white-space: nowrap;">http://en.wikipedia.org/wiki/Aggregate_data</span></a>.
   </dd>
   <dt class="bib" id="bib:rdbservice">bib:rdbservice</dt>
   <dd>
-    rdbService, example EPICS V4 service, <a href="http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/default/src/services/rdbService">http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/default/src/services/rdbService</a>
+    rdbService, example EPICS V4 service, <a href="http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/default/src/services/rdbService"><span style="white-space: nowrap;">http://epics-pvdata.sourceforge.net/hgweb/exampleJava/file/default/src/services/rdbService</span></a>.
   </dd>
    <dt class="bib" id="bib:uri">bib:uri</dt>
    <dd>Uniform Resource Identifiers (URI): Generic Syntax, <a href="http://www.ietf.org/rfc/rfc2396.txt" >http://www.ietf.org/rfc/rfc2396.txt</a>.
