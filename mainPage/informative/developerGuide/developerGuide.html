@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 02-Apr-2015</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 14-May-2015</h2>
 
   <dl>
     <dt>Latest version:</dt>
@@ -66,7 +66,7 @@ related set of products:<br />
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 02-Apr-2015 version of the Developer's Guide.
+<p>This is the 14-May-2015 version of the Developer's Guide.
 It is for EPICS V4 Release 4.4 but also includes components that are intentended for
 the next release of V4.
 This document is actively being  developed and is subject to being updated at any time.
@@ -83,10 +83,17 @@ It should be stable by the May EPICS meeting.
 </div>
 <div id="contents" class="contents">
 
+<h2>Preface</h2>
+<p>
+This document briefly describes the 
+application programming interface (API) of the core components
+of EPICS V4.
+It is intended for EPICS V4 software developers: both Java and C++.
+</p>
+
 <h2>Overview of V4</h2>
-<p>This document is intended for EPICS V4 software developers: both Java and C++.</p>
 <h3>V4 Modules</h3>
-V4 consists of the following core components:
+V4 includes the following core components:
 <dl>
    <dt>pvData</dt>
       <dd>
@@ -119,15 +126,18 @@ V4 consists of the following core components:
 </dl>
 <h3>Terminology</h3>
 <dl>
-   <dt>API</dt>
-     <dd>This is how a client accesses the type system and data objects for the type.
+   <dt>API - Application Programming Interface </dt>
+     <dd>
+      The pvData API is how a client accesses the type system
+      and data objects for each type.
       In Java this consists mainly of Java interfaces.
       In C++ this is via mainly via C++ classes.
        This document uses a combination of <b>psuedo</b> code, Java code, and C++ code for describing
        APIs. It uses <b>psuedo</b> code when there is equivalent code in Java and in C++.
       The <b>psuedo</b> code is similar to Java interface definitions.
-       The language specific APIs are provided in separate projects.
-       For example pvDataJava, pvAccessJava, pvDataCPP, and pvAccessCPP.
+       The language specific APIs are provided in separate projects
+       e. g. pvDataJava, and pvDataCPP.
+       This document also describes the APIs for the other V4 core modules.
       </dd>
    <dt>Introspection API</dt>
       <dd>The type system supports both introspection and data interfaces.
@@ -245,22 +255,25 @@ pvAccess provides:</p>
       It creates channels where a channel provides access to pvData structure that has an associated channelName.
      </dd>
    <dt>channel</dt>
-      <dd>A way to create each of the following.</dd>
-   <dt>getField</dt>
-      <dd>Get the pvData introspection information.</dd>
-   <dt>channelGet</dt>
-      <dd>Get data.</dd>
-   <dt>channelPut</dt>
-       <dd>Put data.</dd>
-   <dt>channelPutGet</dt>
-       <dd>Put data, let server process it, and then get result.</dd>
-   <dt>monitor</dt>
-       <dd>Monitor pvData changes.</dd>
-   <dt>channelArray</dt>
-       <dd>get/put subArray data.</dd>
-   <dt>channelRPC</dt>
-       <dd>Like channelPutGet but on each request pvData interfaces for put and get
-        can change.</dd>
+      <dd>A way to create each of the following:
+        <dl>
+           <dt>getField</dt>
+              <dd>Get the pvData introspection information.</dd>
+           <dt>channelGet</dt>
+              <dd>Get data.</dd>
+           <dt>channelPut</dt>
+               <dd>Put data.</dd>
+           <dt>channelPutGet</dt>
+               <dd>Put data, let server process it, and then get result.</dd>
+           <dt>monitor</dt>
+               <dd>Monitor pvData changes.</dd>
+           <dt>channelArray</dt>
+               <dd>get/put subArray data.</dd>
+           <dt>channelRPC</dt>
+               <dd>Like channelPutGet but on each request pvData
+                 interfaces for put and get can change.</dd>
+        </dl>
+       </dd>
 </dl>
 <p>
 channelPutGet and channelRPC provide the equivalent of a Remote Procedure Call.
@@ -283,8 +296,8 @@ The minimum that an extension must provide is a top level PVStructure and a proc
 </p>
 
 <h3>Overview: pvaSrv</h3>
-<p>A  is a pvAccess server that runs in the EPICS V3 IOC.
-pvaSrv allows you to get, put and monitor V3 PVs (fields of EPICS DB records) via pvAccess, translating
+<p><b>pvaSrc</b> is a pvAccess server that runs in a EPICS V3 IOC.
+pvaSrv allows clients to get, put and monitor V3 PVs (fields of EPICS DB records) via pvAccess, translating
 the value and its meta data (graphics limits, alarm status, timestamp) to or from V4 Normative Type (NT)
 pvData structures (NTScalar, NTScalarArray).</p>
 <h3>Overview: pvaPy</h3>
@@ -300,7 +313,7 @@ The following should be consulted for detailed documentation:</p>
     </li>
    <li>
     <a target="_top"
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/tip/documentation/pvDataJava.html">
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/tip/documentation/pvDataCPP.html">
     pvDataCPP</a>
     </li>
    <li>
@@ -310,7 +323,7 @@ The following should be consulted for detailed documentation:</p>
     </li>
    <li>
     <a target="_top"
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessCPP/tip/documentation/pvAccessJava.html">
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessCPP/tip/documentation/pvAccessCPP.html">
     pvAccessCPP</a>
     </li>
    <li>
@@ -363,12 +376,12 @@ The following should be consulted for detailed documentation:</p>
    <dt>easyPVA</dt>
       <dd>
        Release 4.4 has an implementation for Java.
-       For C++ an implementation is being developed.
+       For C++ an implementation is now available.
       </dd>
    <dt>pvDatabase</dt>
       <dd>
        Release 4.4 has an implementation for C++.
-       For Java an implementation is being developed.
+       For Java an implementation is is now available.
       </dd>
    <dt>pvaSrv</dt>
       <dd>
@@ -379,13 +392,433 @@ The following should be consulted for detailed documentation:</p>
        <dd>
        Release 4.4 has an implementation for C++.
        Since this is for Python a Java implementation is not necessary.
-       What about Jython?
        </dd>
 </dl>
-<h2>Building and running EPICS V4</h2>
-<h3>Building from tar</h3>
-<h3>Building From mercurial repository</h3>
-<h3>Running examples and  pvAccess tools</h3>
+<h2>pvlist, pvget, pvput, and eget</h2>
+<p>pvAccessCPP provides command line tools. Each provides help. For example:</p>
+<pre>
+pvlist -help
+</pre>
+<p>
+The examples shown in this section assume that the example database described in the next secton is running.
+Also your <b>PATH</b> environment variable must include the appropriate bin directory from pvAccessCPP.
+For example:</p>
+<pre>
+export PATH=$PATH:${EPICSV4}/pvAccessCPP/bin/${EPICS_HOST_ARCH}
+</pre>
+<h3>pvlist</h3>
+<p>Without any arguments this shows the location of all V4 servers it can locate.
+For example:</p>
+<pre>
+pvlist
+GUID 0x3989545500000000B14EFE12, version 1: tcp@[10.0.0.11:36448]
+</pre>
+<p>This only shows one line because only the exampleDatabase server is running.
+In an operational system the output could be quite extensive.</p>
+<p>
+Once the location of a server is known the list of channel names can be shown by asking for either
+the GUID or tcp address.
+This either:</p>
+<pre>
+pvlist 0x3989545500000000B14EFE12
+</pre>
+or
+<pre>
+pvlist 10.0.0.11:36448
+</pre>
+produces:
+<pre>
+ao01
+double00
+double01
+bo00
+bo01
+calc00
+...
+</pre>
+<p>The options are:</p>
+<pre>
+mrk&gt; pvlist -help
+
+Usage: pvlist [options] [&lt;server address or GUID starting with '0x'&gt;]...
+
+  -h: Help: Print this message
+options:
+  -i                 Print server info (when server address list/GUID is given)
+  -w &lt;sec&gt;:          Wait time, specifies timeout, default is 3.000000 second(s)
+  -q:                Quiet mode, print only error messages
+  -d:                Enable debug output
+
+examples:
+	pvlist
+	pvlist ioc0001
+	pvlist 10.5.1.205:10000
+	pvlist 0x83DE3C540000000000BF351F
+</pre>
+for details.
+<h3>pvget</h3>
+<p>pvget provides functionality similar to caget.
+For example:</p>
+<pre>
+mrk&gt; caget double01
+double01                       0
+mrk&gt; pvget double01
+double01                       0
+</pre>
+<p>The options are:</p>
+<pre>
+mrk&gt; pvget -help
+
+Usage: pvget [options] &lt;PV name&gt;...
+
+  -h: Help: Print this message
+options:
+  -r &lt;pv request&gt;:   Request, specifies what fields to return and options, default is 'field(value)'
+  -w &lt;sec&gt;:          Wait time, specifies timeout, default is 3.000000 second(s)
+  -t:                Terse mode - print only value, without names
+  -i:                Do not format standard types (enum_t, time_t, ...)
+  -m:                Monitor mode
+  -p &lt;provider&gt;:     Set default provider name, default is 'pva'
+  -q:                Quiet mode, print only error messages
+  -d:                Enable debug output
+  -F &lt;ofs&gt;:          Use &lt;ofs&gt; as an alternate output field separator
+  -f &lt;input file&gt;:   Use &lt;input file&gt; as an input that provides a list PV name(s) to be read, use '-' for stdin
+  -c:                Wait for clean shutdown and report used instance count (for expert users)
+ enum format:
+  -n: Force enum interpretation of values as numbers (default is enum string)
+
+example: pvget double01
+</pre>
+<p>Some examples are:</p>
+<pre>
+mrk&gt; pvget enum01
+enum01                         zero
+mrk&gt; pvget -i enum01
+enum01
+epics:nt/NTEnum:1.0 
+    enum_t value
+        int index 0
+        string[] choices [zero,one,two,three]
+
+
+mrk&gt; pvget -i -r "value,alarm,timeStamp" enum01
+enum01
+epics:nt/NTEnum:1.0 
+    enum_t value
+        int index 0
+        string[] choices [zero,one,two,three]
+    alarm_t alarm
+        int severity 3
+        int status 0
+        string message UDF
+    time_t timeStamp
+        long secondsPastEpoch 631152000
+        int nanoseconds 0
+        int userTag 0
+</pre>
+<p>Multiple channels can be accessed witn a single command. For example:</p>
+<pre>
+mrk&gt; pvget double01 double02
+double01                       0
+double02                       0
+</pre>
+<p>The above examples all used the pva server, i. e. the pvAccess server for network
+communication.
+It is also possible to use ca, i. e. the channel access server that comes with iocCore.
+Thus it can access a V3 IOC even if the IOC has no V4 support.
+</p>
+<pre>
+mrk&gt; pvget -p ca double01
+double01                       0
+mrk&gt; pvget -p ca -r "value,alarm,timeStamp" double01
+double01
+epics:nt/NTScalar:1.0 
+    double value 0
+    alarm_t alarm INVALID RECORD UDF_ALARM
+    time_t timeStamp &lt;undefined&gt; 0
+</pre>
+<p>pvget can also be used to monitor, i. e. it also has functionality similer to camonitor.</p>
+<pre>
+mrk&gt; pvget -m -r "value,alarm,timeStamp" double02
+'double02
+epics:nt/NTScalar:1.0 
+    double value 0
+    alarm_t alarm INVALID NO_STATUS UDF
+    time_t timeStamp &lt;undefine&gt;> 0
+
+
+double02
+epics:nt/NTScalar:1.0 
+    double value 1
+    alarm_t alarm NO_ALARM NO_STATUS NO_ALARM
+    time_t timeStamp 2015-05-14T08:29:55.769 0
+</pre>
+
+<h3>pvput</h3>
+<p>pvput provides functionality similar to caput.
+For example:</p>
+<pre>
+mrk&gt; caput double01 1.0
+Old : double01                       1
+New : double01                       1
+mrk&gt; pvput double01 1.0
+Old : double01                       1
+New : double01                       1
+</pre>
+<p>The options are:</p>
+<pre>
+mrk&gt; pvput -help
+
+Usage: pvput [options] &lt;PV name&gt; &lt;values&gt;...
+
+  -h: Help: Print this message
+options:
+  -r &lt;pv request&gt;:   Request, specifies what fields to return and options, default is 'field(value)'
+  -w &lt;sec&gt;:          Wait time, specifies timeout, default is 3.000000 second(s)
+  -t:                Terse mode - print only successfully written value, without names
+  -p &lt;provider&gt;:     Set default provider name, default is 'pva'
+  -q:                Quiet mode, print only error messages
+  -d:                Enable debug output
+  -F &lt;ofs&gt;:          Use &lt;ofs&gt; as an alternate output field separator
+  -f &lt;input file&gt;:   Use &lt;input file&gt; as an input that provides a list PV name(s) to be read, use '-' for stdin
+ enum format:
+  default: Auto - try value as enum string, then as index number
+  -n: Force enum interpretation of values as numbers
+  -s: Force enum interpretation of values as strings
+
+example: pvput double01 1.234
+</pre>
+<p>At the present time it is not possible to send output to multiple
+channels with one command.
+</p>
+<h3>eget</h3>
+<p>eget provides many of the same features but in addition supports
+channelRPC and understands some of the normativeb types.
+</p>
+<p>The options are:</p>
+<pre>
+mrk&gt; eget -h
+
+Usage: eget [options] [&lt;PV name&gt;... | -s &lt;service name&gt;]
+
+  -h: Help: Print this message
+
+options:
+  -s &lt;service name&gt;:   Service API compliant based RPC service name (accepts NTURI request argument)
+  -a &lt;service arg&gt;:    Service argument in 'name[=value]' or 'name value' form
+  -r &lt;pv request&gt;:     Get request string, specifies what fields to return and options, default is 'field(value)'
+  -w &lt;sec&gt;:            Wait time, specifies timeout, default is 3.000000 second(s)
+  -z:                  Pure pvAccess RPC based service (send NTURI.query as request argument)
+  -N:                  Do not format NT types, dump structure instead
+  -i:                  Do not format standard types (enum_t, time_t, ...)
+  -t:                  Terse mode
+  -T:                  Transpose vector, table, matrix
+  -m:                  Monitor mode
+  -x:                  Use column-major order to decode matrix
+  -p &lt;provider&gt;:       Set default provider name, default is 'pva'
+  -q:                  Quiet mode, print only error messages
+  -d:                  Enable debug output
+  -F &lt;ofs&gt;:            Use &lt;ofs&gt; as an alternate output field separator
+  -f &lt;input file&gt;:     Use &lt;input file&gt; as an input that provides a list PV name(s) to be read, use '-' for stdin
+  -c:                  Wait for clean shutdown and report used instance count (for expert users)
+ enum format:
+  -n: Force enum interpretation of values as numbers (default is enum string)
+
+
+examples:
+
+#! Get the value of the PV corr:li32:53:bdes
+&gt; eget corr:li32:53:bdes
+
+#! Get the table of all correctors from the rdb service
+&gt; eget -s rdbService -a entity=swissfel:devicenames
+
+#! Get the archive history of quad45:bdes;history between 2 times, from the archive service
+&gt; eget -s archiveService -a entity=quad45:bdes;history -a starttime=2012-02-12T10:04:56 -a endtime=2012-02-01T10:04:56
+
+#! Get polynomials for bunch of quads using a stdin to give a list of PV names
+&gt; eget -s names -a pattern=QUAD:LTU1:8%:POLYCOEF | eget -f -
+</pre>
+
+<h2>exampleDatabase</h2>
+<p>pvDatabaseCPP has an exampleDatabase.
+This section explains what is in it.
+</p>
+<p>
+easyPVACPP has a file <b>exampleDatabaseEasyPVA.zip</b>.
+It is like exampleDatabase but creates a few extra records.
+It also has two extra example servers:</p>
+<dl>
+   <dt>exampleHello</dt>
+     <dd>A hello world example that is accessed via a channelPutGet.
+     It can also be accessed via a pvput followed by a pvget.
+     </dd>
+   <dt>exampleHelloRPC</dt>
+     <dd>This is a  hello world example that is accessed via a channelRPC request.</dd>
+</dl>
+<p>I suggest looking at <b>exampleDatabaseEasyPVA.zip</b>
+Most of this section describes both.
+</p>
+<p>The example can be run either as a standalone main program
+or as part of a V3 IOC (Input Output Controller).
+If as part of a V3 IOC the IOC has both V3 and V4 records.
+It also starts pvaSrv so that the V3 records can be accessed via either
+ca or pva.
+</p>
+<h3>Starting the example</h3>
+<p>To run the example as a main program:</p>
+<pre>
+mrk&gt; pwd
+/home/mrk/pvcpp/exampleDatabaseEasyPVA
+mrk&gt; bin/linux-x86_64/exampleDatabaseMain 
+</pre>
+<p>To start the example as part of a V3 IOC:</p>
+<pre>
+mrk&gt; pwd
+/home/mrk/pvcpp/exampleDatabaseEasyPVA/iocBoot/exampleDatabase
+mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
+</pre>
+<h3>source code</h3>
+The src directory has the following file:
+<dl>
+   <dt>exampleDatabaseMain.cpp</dt>
+      <dd>code to run example as main program</dd>
+   <dt>exampleDatabaseInclude.dbd<br />
+       exampleDatabaseRegister.cpp</dt>
+      <dd>code to run example as part of V3 IOC</dd>
+   <dt>exampleDatabase - both .h and .cpp</dt>
+      <dd>example records</dd>
+</dl>
+<b>exampleDatabaseEasyPVA.zip</b> has the additional files:
+<dl>
+   <dt>exampleHello - both .h and .cpp</dt>
+     <dd>example for channelPutGet</dd>
+   <dt>exampleHelloRPC - both .h and .cpp</dt>
+      <dd>example for channelRPC</dd>
+</dl>
+<h4>exampleDatabaseMain.cpp</h4>
+<p>This is the file that runs the example as a main program.
+The main program is:</p>
+<pre>
+int main(int argc,char *argv[])
+{
+    ExampleDatabase::create();
+
+    ContextLocal::shared_pointer contextLocal = ContextLocal::create();
+    contextLocal-&gt;start();
+
+    cout &lt;&lt; "pvAccess server exampleDatabase running..." &lt;&lt; endl;
+    epics::pvData::PVStringArrayPtr pvNames =
+        PVDatabase::getMaster()-&gt;getRecordNames();
+    cout &lt;&lt; "Hosted records: " &lt;&lt; endl &lt;&lt; *pvNames &lt;&lt; endl;
+
+    contextLocal-&gt;waitForExit();
+
+    return 0;
+}
+</pre>
+The only code that is not generic is:
+<pre>
+    ExampleDatabase::create();
+</pre>
+<h3>exampleDatabaseRegister.cpp</h3>
+This is used to create an iocshell command to start the example database as part
+of a V3 IOC.
+It is almost generic.
+The guts of the code is:
+<pre>
+static const iocshArg testArg0 = { "prefix", iocshArgString };
+static const iocshArg *testArgs[] = {
+    &amp;testArg0};
+
+static const iocshFuncDef exampleDatabaseFuncDef = {
+    "exampleDatabase", 1, testArgs};
+static void exampleDatabaseCallFunc(const iocshArgBuf *args)
+{
+    ExampleDatabase::create();
+}
+
+static void exampleDatabaseRegister(void)
+{
+    static int firstTime = 1;
+    if (firstTime) {
+        firstTime = 0;
+        iocshRegister(&amp;exampleDatabaseFuncDef, exampleDatabaseCallFunc);
+    }
+}
+
+extern "C" {
+    epicsExportRegistrar(exampleDatabaseRegister);
+}
+</pre>
+Other than <b>exampleDatabase</b> as part of the names it is boiler plate code.
+<h3>exampleDatabaseInclude.dbd</h3>
+This is just:
+<pre>
+registrar("exampleDatabaseRegister")
+</pre>
+It again is generic except for <b>exampleDatabase</b> as part of the name.
+<h3>Makefile</h3>
+Look at the Make file to see how each other file is used.
+<h3>exampleDatabase</h3>
+<b>exampleDatabase.h</b> is almost completely generic.
+It has the code:
+<pre>
+class epicsShareClass  ExampleDatabase{
+public:
+    static void create();
+};
+</pre>
+It defines a factory methods for creating the example database.
+<p>
+<b>exampleDatabase.cpp</b> is not generic.
+It shows how to create records of various types.
+Most examples create records witn only the default process method.
+The default process does nothing except that if a timeStamp field is present
+it sets the time to the current time.
+Look at the code to see examples of how to create records.
+</p>
+<h3>ioc</h3>
+This directory has two subdirectories:
+<dl>
+  <dt>Db</dt>
+    <dd>This creates some V3 records.</dd>
+  <dt>src</dt>
+    <dd>This has to files to load the V3 and V4 support for a V3 IOC.</dd>
+</dl>
+<h4>ioc/src</h4>
+<p>exampleDatabaseMain.cpp is standard code to start a V3 IOC</p>
+<p>exampleDatabaseInclude.dbd contains:</p>
+<pre>
+include "base.dbd"
+include "PVAServerRegister.dbd"
+include "registerChannelProviderLocal.dbd"
+include "dbPv.dbd"
+registrar("exampleDatabaseRegister")
+</pre>
+<p><b>base.dbd</b> is standard way to include the base V3 code.
+<b>PVAServerRegister.dbd</b> is how the pvAccess Server code is included.
+<b>registerChannelProviderLocal.dbd</b> is how the local pva server is started.
+The local server is implemented by pvDatabaseCPP.
+<b>dbPv.dbd</b> is how pvaSrv, the pva server that accesses V3 revords, is started.
+</p>
+<p><b>registrar("exampleDatabaseRegister")</b> is the only example specific statement.
+It is used to start the example database.</p>
+<h3>iocBoot/exampleDatabase</h3>
+<p>This is where the V3 IOC is started.
+The <b>st.cmd</b> starts with normal way to start a V3 IOC.
+What is different is the statements after iocInit:</p>
+<pre>
+exampleDatabase
+startPVAServer
+</pre>
+<p>The first statement creates the example database.
+The second statement starts the pva server.
+After it is started clients can access the V4 records and the V3 records via pva.
+</p>
+
+
+
 
 <h2>API: pvData</h2>
 <h3>ScalarType</h3>
@@ -967,7 +1400,7 @@ The methods are:</p>
 <dl>
     <dt>FieldBuilder setId(string id)</dt>
        <dd>
-       Specfy the ID for the next Structure or Union to create.
+       Specify the ID for the next Structure or Union to create.
        </dd>
     <dt>FieldBuilder add(string name, ScalarType scalarType)</dt>
        <dd>
@@ -2067,7 +2500,8 @@ interface PVUnionArray extends PVArray{
 }
 </pre>
 <h3>C++ Array API</h3>
-<p>The actual definition is template based.
+<p>The C++ Array API inforces Copy On Write (COW) semantics.
+The actual definition is template based.
 But the following is the psuedo code for PVDoubleArray.
 Each scalarType, PVUnionArray, and PVStructureArray have similar psuedo code.
 </p>
@@ -2080,7 +2514,7 @@ class PVDoubleArray
     shared_vector&lt;double&gt; reuse()
     ...
 // to change the raw array use code like:
-shared_vector&lt;const double&gt; data(n)
+shared_vector&lt;double&gt; data(n)
 // put values into data and then
 pvDoubleArray-&gt;replace(freeze(data))
 </pre>
@@ -2488,16 +2922,17 @@ are assigned:</p>
 bit#    field
 0    structure
 1        double scalarValue
-2        structure timeStamp
-3            long secondsPastEpoch
-4            int nanoSeconds
-5            int userTag
-6        union unionValue
+2        double[] scalarArrayValue
+3        structure timeStamp
+4            long secondsPastEpoch
+5            int nanoSeconds
+6            int userTag
+7        union unionValue
              structure timeStamp
                  long secondsPastEpoch
                  int nanoSeconds
                  int userTag
-7        structure[] structureValue
+8        structure[] structureValue
              structure timeStamp
                  long secondsPastEpoch
                  int nanoSeconds
@@ -2506,7 +2941,7 @@ bit#    field
                  long secondsPastEpoch
                  int nanoSeconds
                  int userTag
-8        any[] unionValue
+9        any[] unionValue
              any
                  structure timeStamp
                      long secondsPastEpoch
@@ -2514,7 +2949,7 @@ bit#    field
                      int userTag
              any
                  double value
-9        string lastValue
+10       string lastValue
 </pre>
 <p>Note that bits for structure subfields are assigned recursively.
 But each scalar, union, scalarArray, structureArray, and unionArray field
@@ -2567,6 +3002,65 @@ must be replaced with a new value.
 the same rules apply to it.</p>
 
 <h2>API: normativeType</h2>
+<p><b>normativeTypes</b> defines a set of standard structures.
+Each normative type consists of a set of mandatory fields, a set of optional fields,
+and any arbitrary number of extra fields.
+The mandatory and optional fields are meant for use by standard tools such
+as Display Managers and Alarm Handlers.
+The extra fields are for specialized tools.
+</p>
+<p>normativeTypesCPP provides a set of helper classes for implementing
+and using normative types.
+At present it has support for the following:</p>
+<dl>
+  <dt>NTScalar</dt>
+     <dd>This has a value field that has type scalar</dd>
+  <dt>NTScalarArray</dt>
+     <dd>This has a value field that has type scalarArray</dd>
+  <dt>NTNameValue</dt>
+      <dd>This has a field name that is a string array
+       and a field value that has type scalarArray.
+       Each name[i] is associated with value[i].
+      </dd>
+  <dt>NTTable</dt>
+      <dd>This has a string array field named labels
+       For each label there is a scalar array field with name = label.
+     </dd>
+  <dt>NTMultiChannel</dt>
+     <dd>This has a value field that is a union array.
+      A primary use of this type is to access data from a set of pvAccess channels.
+      Each element of value holds data from a channel.</dd>
+  <dt>NTNDArray</dt>
+     <dd>This type holds NDArray data as defined by the areaDetector facility.
+     </dd>
+</dl>
+<p>For example <b>NTScalar</b> is defined as :</p>
+<pre>
+epics:nt/NTScalar:1.0
+    double value                        // mandatory and can be any numeric type
+    string descriptor                   // optional
+    alarm_t alarm                       // optional
+        int severity
+        int status
+        string message
+    time_t timeStamp                    // optional
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+    display_t display                   // optional
+        double limitLow
+        double limitHigh
+        string description
+        string format
+        string units
+    control_t control                   // optional
+        double limitLow
+        double limitHigh
+        double minStep
+    string extra1                       // extra
+    string[] extra2                     //
+</pre>
+
 <h2>API: pvAccess</h2>
 <h3>ChannelProvider</h3>
 <pre>
@@ -3249,8 +3743,8 @@ MonitorElement
 
 
 <h3>ChannelRPC</h3>
-<p>A ChannelRPC is like a putProcessGet except that a completely different
-PVStructure can be returned for each request. It is created via a call to:</p>
+<p>A ChannelRPC is like a channelPutGet except that a completely different
+pvStructure can be sent and returned for each request. It is created via a call to:</p>
 <pre>interface Channel extends Requester {
     ChannelRPC createChannelRPC(
         ChannelRPCRequester channelRPCRequester,
@@ -3289,6 +3783,115 @@ ChannelRPC extends ChannelRequest
 </dl>
 
 <h2>API: easyPVA</h2>
+<p>EasyPVA is a synchronous API for accessing PVData via PVAccess.
+It also provides a number of convenience methods.
+It allows the client to request access without checking for failure,
+but throws an exception when a reuest fails.
+A client can also check for failues and thus prevent failures.</p>
+
+<p>The EasyPVA API has the following features:</p>
+<ol>
+  <li>Provides a synchronous API rather than the callback API provided by pvAccess.</li>
+  <li>Makes common requests easy.</li>
+  <li>Provides full access to the pvAccess API for more demanding
+  applications</li>
+  <li>Allows efficient client side programs.</li>
+  <li>Takes care of most object resource management problems.</li>
+</ol>
+<p>Simple examples of using easyPVA:</p>
+<pre>
+// easyGet
+EasyPVAPtr easyPVA = EasyPVA::create();
+double value = easyPVA-&gt;channel("exampleDouble")-&gt;get()-&gt;getData()-&gt;getDouble();
+
+// easyPut
+EasyChannelPtr channel = easyPVA-&gt;channel("exampleDouble");
+EasyPutPtr put = channel-&gt;put();
+EasyPutDataPtr putData = put-&gt;getData();
+putData-&gt;putDouble(3.0); put-&gt;put();
+
+// easyMonitor
+EasyMonitorPtr monitor = easyPVA-&gt;channel("examplePowerSupply")-&gt;monitor("");
+EasyMonitorDataPtr easyData = monitor-&gt;getData();
+while(true) {
+    monitor-&gt;waitEvent();
+    cout &lt;&lt; "changed\n";
+    easyData-&gt;showChanged(cout);
+    cout &lt;&lt; "overrun\n";
+    easyData-&gt;showOverrun(cout);
+    monitor-&gt;releaseEvent();
+}
+// easyProcess
+EasyChannelPtr channel = easyPVA-&gt;channel("exampleDouble");
+EasyProcessPtr process = channel-&gt;createProcess();
+process-&gt;process();
+</pre>
+
+
+<h2>API: pvDatabase</h2>
+<p>A brief description of a pvDatabase is that it is a set of network accessible, smart, memory resident records. Each record has data composed of a top level PVStructure. Each record has a name which is the channelName for pvAccess. A local Channel Provider implements the complete ChannelProvider and Channel interfaces as defined by pvAccess. The local provider provides access to the records in the pvDatabase. This local provider is accessed by the remote pvAccess server. A record is smart because code can be attached to a record, which is accessed via a method named process.</p>
+<p>Implementations for both Java and C++ are available.
+With the C++ implementation (pvDatabaseCPP) the pvDatabase
+can be provided via a Main program or can be part of a V3IOC. In the later case the IOC has both a database of V3 Records and a pvDatabase.
+This version allows the development of V4 services for V3IOCs.
+</p>
+<p><b>exampleDatabaseEasyPVA.zip</b> provides a good example of
+creating C++ PVRecords that are part of a V3IOC or run as a Main program.
+It has the following examples:</p>
+<dl>
+   <dt>exampleHello</dt>
+      <dd>This is an hello world example that is meant to be accesed via
+      a channelPutGet request. It can also be accessed via pvput
+      followed by a pvget.</dd>
+   <dt>exampleHelloRPC</dt>
+       <dd>
+         The is an hello world example that is accessed via a channelRPC request.
+       </dd>
+   <dt>exampleDatabase</dt>
+      <dd>This creates an exampleHello record.
+       It also creates a large set of records of all possible types that
+       have only the default process semantics, which only sets the timeStamp when
+       the record is processed.
+      </dd>
+</dl>
+<p>If the database is running then the following can access exampleHello:</p>
+<pre>
+pvput -r "argument" exampleHello World
+pvget -r "result.value" exampleHello
+exampleHello
+structure 
+    structure result
+        string value Hello World
+</pre>
+
+<h2>API: pvaSrv</h2>
+<p>pvaSrv is a pvAccess server that runs in the EPICS V3 IOC</p>
+<p>pvaSrv allows you to get, put and monitor V3 PVs (fields of EPICS DB records) over pvAccess, translating the value and its meta data (graphics limits, alarm status, timestamp) to or from V4 Normative Type (NT) pvData structures (NTScalar, NTScalarArray).</p>
+
+<h2>API: pvaPy</h2>
+<p><b>pvaPy</b> provides a python interface to pvData and pvAccess.</p>
+<p>The following:</p>
+<pre>
+#!/usr/bin/env python
+
+from pvaccess import Channel
+
+c = Channel('double01')
+oldValue = c.get().getDouble()
+print 'Got old value: ', oldValue
+value = oldValue + 1.1
+print 'Putting value via putDouble(): ', value
+c.putDouble(value) 
+newValue = c.get().getDouble()
+print 'Got new value: ', newValue
+</pre>
+produces:
+<pre>
+python examplePut.py
+Got old value:  5.3
+Putting value via putDouble():  6.4
+Got new value:  6.4
+</pre>
 
 <h2>pvAccess Channel Providers.</h2>
 <p>pvAccessJava and pvAccessCPP implement the following providers:</p>
@@ -3672,7 +4275,50 @@ other copy functions. The arguments are:</p>
       <dd>The destination array needs to have it's capacity extended
         but the capacity is immutable.</dd>
 </dl>
+<h4>PVField::copy</h4>
+<p>PVField has a method copy.
+It allows copying between any two compatible fields.
+Both fields must have the same type.
+For scalar and scalarArray conversion between the various scalarTypes is supported.
+</p>
+<p>The following:</p>
+<pre>
+    PVDataCreatePtr create = getPVDataCreate();
+    PVDoublePtr pvDouble = create-&gt;createPVScalar&lt;PVDouble&gt;();
+    PVBytePtr pvByte = create-&gt;createPVScalar&lt;PVByte&gt;();
+    pvByte-&gt;put(10);
+    pvDouble-&gt;copy(*pvByte);
+    cout &lt;&lt; "double " &lt;&lt; pvDouble &lt;&lt; " byte " &lt;&lt; pvByte &lt;&lt; endl;
 
+    PVStringPtr pvString = create-&gt;createPVScalar&lt;PVString&gt;();
+    pvString-&gt;copy(*pvByte);
+    cout &lt;&lt; "string " &lt;&lt; pvString &lt;&lt; " byte " &lt;&lt; pvByte &lt;&lt; endl;
+</pre>
+produces:
+<pre>
+double 10 byte 10
+string 10 byte 10
+</pre>
+<p>Likewise for scalarArray:</p>
+<pre>
+    PVDataCreatePtr create = getPVDataCreate();
+    PVDoubleArrayPtr pvDoubleArray = create-&gt;createPVScalarArray&lt;PVDoubleArray&gt;();
+    PVByteArrayPtr pvByteArray = create-&gt;createPVScalarArray&lt;PVByteArray&gt;();
+    shared_vector&lt;int8&gt; data(2);
+    data[0] = 1; data[1] = 10;
+    pvByteArray-&gt;replace(freeze(data));
+    pvDoubleArray-&gt;copy(*pvByteArray);
+    cout &lt;&lt; "double " &lt;&lt; pvDoubleArray &lt;&lt; " byte " &lt;&lt; pvByteArray &lt;&lt; endl;
+
+    PVStringArrayPtr pvStringArray = create-&gt;createPVScalarArray&lt;PVStringArray&gt;();
+    pvStringArray-&gt;copy(*pvByteArray);
+    cout &lt;&lt; "string " &lt;&lt; pvStringArray &lt;&lt; " byte " &lt;&lt; pvByteArray &lt;&lt; endl;
+</pre>
+produces:
+<pre>
+double [1,10] byte [1,10]
+string [1,10] byte [1,10]
+</pre>
 
 <h2>Interlude</h2>
 <p>What has been defined prevously is the core part of pvData and pvAccess.
@@ -4709,6 +5355,7 @@ PVControl
 
 <h3>alarmLimit</h3>
 <p>This has unresolved issues.</p>
+
 
 
 </div>
