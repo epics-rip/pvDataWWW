@@ -302,22 +302,27 @@ agent that is doing the sending.</p>
 <p>The word "Ntype" is used as a short form of "Normative Type".</p>
 
 <p>The Normative Type data descriptions are given with the syntactic
-conventions and grammar given below. The types are described with the <a
+conventions and grammar given below. The types are described in the <a
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#pvdata_meta_language">pvData
-"Meta" Language</a>, using a BNF-like syntax, in order to add clear distinctions between symbol types,
-particularly terminality, recurrence, which names a user is expected to add and which
-are predefined.</p>
+"Meta" Language</a>. A BNF-like syntax is used in order to add clear
+distinctions between symbol types, particularly terminality, recurrence,
+which names a user is expected to add and which
+are predefined. This syntax is essentially Extended Backus-Naur Form (EBNF),
+with some slight modifications to preserve the order of terms and the rules for line ends and indentation in the pvData Meta language.</p>
 
-<p>The syntactic conventions are:</p>
+<p>The syntactic conventions are as follows.<p>
+
+<p>First, the conventions for terminal and non-terminal types are:</p>
 
 <ul style="list-style: none;">
 <li>
-<span class="nterm">italics</span> - a non-terminal. Used to stand for a choice of
-pvData type, or named sequence of fields, or for a specific structure or union, and hence non-terminal.
+<span class="nterm">italics</span> - a non-terminal. These are used to stand for a choice 
+of pvData type, or named sequence of fields, or for a specific structure or union, and 
+hence non-terminal.
 </li>
 
 <li>
-<span class="term">plaintext</span> - terminals, either a pvData Meta Language keyword 
+<span class="term">plaintext</span> - terminals. These will be either a pvData Meta Language keyword 
 or a label. The Meta language keywords consist of <span class="term">structure</span>, <span class="term">union</span>, <span class="term">any</span>, the scalar type keywords
 (<span class="term">boolean</span>,
 <span class="term">byte</span>,
@@ -338,15 +343,7 @@ and the corresponding arrays <span class="term">structure[]</span>, <span class=
 </li>
 
 <li>
-<span class="user">name</span> - A user-provided label name. This is a kind of
-terminal. A programmer using the Normative Type will choose what goes in the &lt;&gt;
-</li>
-
-
-<li>
-&#123; &#125; - a sequence of occurrences of the item or items in the braces. The
-number of occurrences follows. 0+ means 0 or more. 1+ means
-1 or more.
+<span class="user">name</span> - A user-provided label name.A programmer using the Normative Type will choose what goes in the &lt;&gt;. 
 </li>
 </ul>
 
@@ -358,54 +355,76 @@ and <span class="term">secondsPastEpoch</span> are a keyword and a label respect
 and the columns of <a href="#nttable"><span class="nterm">NTTable</span></a>, <span
   class="user">colname</span>, are user-provided labels.</p>
 
+<p>In this section &lt;&gt; will also be used for describing patterns of definitions or
+ meta rules such as production rules of the grammar to indicate a choice of terminal or
+ non-terminal terms in the pattern or rule.</p>
 
-<p>The grammar for a Normative Type definition follows the pattern
-below. That is, a Normative Type is defined as a structure composed of fields. A
-field may be optional, and may be described along with a comment:</p>
+<p>The EBNF-like syntax for definitions is used. A description consists of 3
+terms - a left-hand side (LHS), a right-hand side (RHS), and the symbol ":="
+separating them, which is to be interpreted as "LHS is defined as RHS". The LHS
+will be the non-terminal being defined. The RHS will be a sequence of terminal or non-terminal terms.</p>
+
+<p>Note that in the definitions below line-ends (EOLs) are not explicitly specified.
+They are implied except when multiple lines are used to specify alternatives separated
+by |, where only the final EOL is implied.</p>
+
+<p>The following EBNF symbols are also used
+
+<ul style="list-style: none;">
+<li>| - used to separate alternative items; one item is chosen from this list of
+alternatives.
+</li>
+[] - optional items are enclosed between square brackets [ and ]; the item can either be included or discarded. Note, optional fields of structures are marked as such by the use of <span class="term">:opt</span> instead of square brackets.
+<li>
+&#123; &#125; - a sequence of occurrences of the item or items in the braces. The
+number of occurrences follows. 0+ means 0 or more. 1+ means 1 or more.
+</li>
+</ul>
 
 
-<pre><span class="nterm">NTname</span>:=
 
-structure 
-   { ( <span class="nterm">ntfield</span> fieldName [:opt] [// comment text] ) }1+
+<p>The following production rules are employed:<p> 
+
+<ol>
+<li>Replace a non-terminal by its definition, except where the non-terminal defines a structure or union and is followed by a field name. (The modified rule for non-terminal structures and unions is described below.)</li>
+<li>Choose an alternative for items separated by |.</li>
+<li>Choose a user supplied label for items between angle brackets (&lt; and &gt;).</li>
+<li>Include or discard items between square brackets ([ and ]).</li>
+<li>Include or discard fields marked <span class="term">:opt</span>.</li>
+<li>For items between braces ({ and }) replace with an appropriate number of
+occurences of the item. For a sequence of pvData fields a line-end (EOL) is implied after each one.</li>
+</ol>
+
+<p>In the case of structure and union fields, to preserve the order of terms in
+ the pvData Meta language, as well as obtaining appropriate indentation, 
+ the usual EBNF rule of replacing a non-terminal by its definition requires the following modification:</p>
+
+<p>Suppose a non-terminal term has a definition of the form</p>
+
+<pre>
+&lt;<span class="nterm">non-terminal</span>&gt;:=
+
+structure
+    <span class="user">fieldList</span>
 </pre>
 <p>where:</p>
 <dl>
-  <dt><span class="nterm">NTname</span></dt>
-    <dd>The name of the Normative Type.</dd>
-  <dt><span class="nterm">ntfield</span></dt>
-    <dd>One of the valid <a href="#normative_type_fields">Normative Type Fields</a> as defined below.</dd>
-  <dt>fieldName</dt>
-    <dd>The identifier of the field.</dd>
-   <dt>:opt</dt>
-    <dd>Indicates that the preceding field is optional in the Normative Type.</dd>
-      <dt>// <span class="term">comment text</span></dt>
-      <dd>A field production element may be followed by a comment.</dd>
+  <dt>&lt;<span class="nterm">non-terminal</span>&gt;</dt>
+    <dd>The non-terminal term being defined.</dd>
+  <dt><span class="user">fieldName</span></dt>
+    <dd>A choice of terminal or non-terminal terms describing a a list or 0 or more pvData fields.</dd>
 </dl>
+Then for a label (a field name), <span class="user">fieldName</span>, the terms
+<pre>
+&lt;<span class="nterm">non-terminal</span>&gt; <span class="user">fieldName</span>
+</pre>
+are replaced by 
+<pre>
+structure <span class="user">fieldName</span>
+    <span class="user">fieldList</span>
+</pre>
+<p>The result of the any substitution is suitably indented to preserve the logic of the pvData meta language.</p>
 
-<p>The following rule (a production rule of the grammar) is employed. When a structure is defined using a non-terminal term</p>
-<pre>
-structure
-    ...
-    <span class="nterm">&lt;non-terminal&gt;</span> <span class="user">field-name</span>
-    ...
-</pre>
-<p>where the non-terminal term is defined to be a structure of the form</p>
-<pre>
-structure
-    {<span class="user">subfield</span>}0+
-</pre>
-<p>
-then the structure derived is 
-</p>
-<pre>
-structure 
-    ...
-    structure <span class="user">field-name</span>
-        {<span class="user">subfield</span>}0+
-    ...
-</pre>
-<p>with a similar rule for non-terminal union terms.</p>
 
 <p>Thus the structure derived from the definition of
 <a href="#ntenum"><span class="nterm">NTEnum</span></a>
@@ -425,6 +444,57 @@ structure
         int      status
         string   message
 </pre> 
+
+<p>The same rule also applies with <span class="term">union</span> in place of <span class="term">structure</span>.
+
+<p>The grammar for a Normative Type definition follows the pattern
+below. That is, a Normative Type is defined as a structure composed of fields. A
+field may be optional, and may be described along with a comment:</p>
+
+<pre>&lt;<span class="nterm">NormativeType</span>&gt;:=
+
+structure 
+   { <span class="user">pvDataField</span> [:opt] [// <span class="user">commentText]</span>] }1+
+</pre>
+<p>where:</p>
+<dl>
+  <dt>&lt;<span class="nterm">NormativeType</span>&gt;</dt>
+    <dd>The name of the Normative Type being defined.</dd>
+  <dt><span class="user">pvDataField</span></dt>
+    <dd>A choice of terms defining a pvData field</dd>
+   <dt>:opt</dt>
+    <dd>Indicates that the preceding field is optional in the Normative Type.</dd>
+      <dt>// <span class="user">commentText</span></dt>
+      <dd>A field production element may be followed by a comment.</dd>
+</dl>
+
+<p>In most cases a Normative Type definition will be of the form
+
+<pre>&lt;<span class="nterm">NTname</span>&gt;:=
+
+structure 
+   { <span class="user">ntfieldChoice</span> <span class="user">fieldName</span> [:opt] [// <span class="user">commentText</span>] }1+
+</pre>
+<p>where:</p>
+<dl>
+  <dt><span class="user">ntfieldChoice</span></dt>
+    <dd>Terminal or non-terminal terms, possibly sepated by |, from the valid
+  <a href="#normative_type_fields">Normative Type Fields</a> as defined below.</dd>
+  <dt><span class="user">fieldName</span></dt>
+    <dd>The identifier of the field. Usually a terminal label.</dd>
+</dl>
+
+For example, a definition meeting this pattern would be
+
+<pre><span class="nterm">NTExample</span> := 
+
+structure
+    <span class="nterm">enum_t</span> | <span class="nterm">scalar_t</span>   value<span class="opt">
+    int                 N                  // this field has a comment
+    string              descriptor  :opt
+    <span class="nterm">alarm_t</span>             alarm       :opt
+    <span class="nterm">time_t</span>              timeStamp   :opt</span>
+</pre>
 
 <h2>Normative Type Fields</h2>
 
@@ -461,7 +531,7 @@ one of the following: </p>
 | <span class="nterm">anyunion_t[]</span>    // any variant or regular union array
 </pre>
 
-<p>although more complicated examples may have fields of other types.</p>
+<p>although some examples may have fields of other types.</p>
 
 <h3>Simple Normative Type fields - scalar and scalar array types</h3>
 
@@ -905,7 +975,7 @@ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/
 href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#metalang_union"
 >"union"</a>:
 </p>
-<pre><span class="nterm">ntunion_t</span>:=
+<pre><span class="nterm">ntunion_t</span> :=
 
 union 
     {<span class="nterm">ntfield</span>  <span
@@ -928,12 +998,16 @@ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/
 >"union"</a>:
 </p>
 
-<pre><span class="nterm">union_t</span>:=
+<pre><span class="nterm">union_t</span> :=
 
 union 
-    {&lt;field-type&gt; &lt;field-name&gt;}1+ // 1 or more pvData fields.
+    {<span class="nterm">pvDataField</span>}1+ // 1 or more pvData fields.
 </pre>
-
+<p>where:</p>
+<dl>
+  <dt><span class="nterm">pvDataField</span></dt>
+    <dd>Stands for any pvData field.</dd>
+</dl>
 
 <h4>union_t[]</h4>
 
