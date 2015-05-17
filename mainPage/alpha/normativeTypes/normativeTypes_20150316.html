@@ -390,7 +390,7 @@ number of occurrences follows. 0+ means 0 or more. 1+ means 1 or more.
 <li>Replace a non-terminal by its definition, except where the non-terminal defines a structure or union and is followed by a field name. (The modified rule for non-terminal structures and unions is described below.)</li>
 <li>Choose an alternative for items separated by |.</li>
 <li>Choose a user supplied label for items between angle brackets (&lt; and &gt;).</li>
-<li>Include or discard items between square brackets ([ and ]).</li>
+<li>Include or discard items between square brackets ([ and ]). Note this excludes a pair of square brackets ([]) used to signify an array.</li>
 <li>Include or discard fields marked <span class="term">:opt</span>.</li>
 <li>For items between braces ({ and }) replace with an appropriate number of
 occurences of the item. For a sequence of pvData fields a line-end (EOL) is implied after each one.</li>
@@ -1966,12 +1966,12 @@ NTNDArray correspond to the uniqueId and timeStamp fields respectively of an NDA
 The <span class="nterm">Attributes</span> part of an NTNDArray is composed of the
 field:</p>
 
-<pre>    NTAttribute[] attribute
+<pre>    <span class="nterm">NTAttribute[]</span> attribute
 </pre>
 
-<p>where NTAttribute is as defined by this standard, but is extended in this case as follows:</p>
+<p>where <span class="nterm">NTAttribute</span> is as defined by this standard, but is extended in this case as follows:</p>
 
-<pre>NTAttribute :=
+<pre><span class="nterm">NTAttribute</span> :=
 
 structure
     string    name              
@@ -1997,9 +1997,9 @@ NDAttrSourceFunct    = 3    /** Attribute is obtained from a user-specified func
     <dd>The source string of this attribute.</dd>
 </dl>
 
-<p>Note that the optional descriptor field of NTAttribute is mandatory for attributes of an NTNDArray.</p>
+<p>Note that the optional descriptor field of <span class="nterm">NTAttribute</span> is mandatory for attributes of an NTNDArray.</p>
 
-<p>NTAttribute here is extended by the addition of the <span class="term">sourceType</span>
+<p><span class="nterm">NTAttribute</span> here is extended by the addition of the <span class="term">sourceType</span>
 and <span class="term">source</span> fields.
 <span class="term">source</span> is a string which gives the origin of the attribute according
 to the value of the integer <span class="term">sourceType</span> field as follows:</p>
@@ -2019,7 +2019,7 @@ attribute value was obtained.</li>
 </ul>
 
 
-<p>The extension of NTAttribute is analogous to <a
+<p>The extension of <span class="nterm">NTAttribute</span> is analogous to <a
  href="http://cars9.uchicago.edu/software/epics/areaDetectorDoxygenHTML/class_n_d_attribute.html">NDAttribute</a>
  in areaDetector. The <span class="term">name</span>, <span class="term">descriptor</span>,
  <span class="term">sourceType</span> and <span class="term">source</span> fields correspond
