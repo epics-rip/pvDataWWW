@@ -1210,7 +1210,62 @@ int main (int argc, char *argv[])
 </pre>
 
 
+<pre>
+#include &lt;pv/pvData.h&gt;
+#include &lt;pv/standardField.h&gt;
+#include &lt;pv/timeStamp.h&gt;
+#include &lt;pv/pvTimeStamp.h&gt;
+#include &lt;pv/alarm.h&gt;
+#include &lt;pv/pvAlarm.h&gt;
 
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+
+using namespace epics::pvData;
+using namespace std;
+
+int main (int argc, char *argv[])
+{
+    FieldCreatePtr fieldCreate = getFieldCreate();
+    FieldBuilderPtr builder = fieldCreate-&gt;createFieldBuilder();
+    StandardFieldPtr standardField = getStandardField();
+
+    StructureConstPtr ntscalarStruc = builder-&gt;setId("NTScalar")
+                                  -&gt;add("value", pvDouble)
+                                  -&gt;add("description", pvString)
+                                  -&gt;add("alarm", standardField-&gt;alarm())
+                                  -&gt;add("timeStamp", standardField-&gt;timeStamp())
+                                  -&gt;createStructure();
+
+    cout &lt;&lt; *ntscalarStruc &lt;&lt; endl &lt;&lt; endl;
+
+    PVStructurePtr ntscalar1 = getPVDataCreate()-&gt;createPVStructure(ntscalarStruc);
+
+    PVTimeStamp pvTimeStamp;
+    TimeStamp timeStamp;
+    pvTimeStamp.attach(ntscalar1-&gt;getSubField("timeStamp"));
+
+    timeStamp.getCurrent();
+    pvTimeStamp.set(timeStamp);    
+
+    PVAlarm pvAlarm;
+    PVStructurePtr alarmField = ntscalar1-&gt;getSubField&lt;PVStructure&gt;("alarm");
+    pvAlarm.attach(alarmField);
+
+    Alarm alarm;
+    alarm.setSeverity(majorAlarm);
+    alarm.setStatus(dbStatus);
+    alarm.setMessage("LINK_ALARM");
+    pvAlarm.set(alarm);
+    //alarmField-&gt;getSubField&lt;PVInt&gt;("severity")-&gt;put(2);
+    //alarmField-&gt;getSubField&lt;PVInt&gt;("status")-&gt;put(4);
+    //alarmField-&gt;getSubField&lt;PVString&gt;("message")-&gt;put("LINK_ALARM");
+
+    cout &lt;&lt; *ntscalar1 &lt;&lt; endl;
+
+    return 0;
+}
+</pre>
 
 <h4>Scalar arrays</h4>
 <pre>
