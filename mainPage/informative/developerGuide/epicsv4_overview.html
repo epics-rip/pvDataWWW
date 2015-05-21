@@ -81,7 +81,7 @@
 <li>Creating pvDatabase and RPC service examples.</li>
 <!--<li>Creating a monitored client.</li> -->
 </ul>
-<p>The focus will be on the C++ implementation.<p><br>
+<p>The focus will be on the C++ implementation.</p><p></p>
 <p>A summary, in advance, of the talk is:</p>
 <ul>
 <li>It's easy to build and run EPICS V4.</li>
@@ -120,55 +120,55 @@
 <ul>
 <li>EPICS Version 4 website: <a href="http://epics-pvdata.sourceforge.net">http://epics-pvdata.sourceforge.net</a>
   <ul>
-  <li>This is the most important resource. Most of the documents mentioned can be found there.</li>
-  </ul><br>
+  <li>This is the most important resource. Most of the documents mentioned can be found there.<br/><br/></li>
+  </ul>
 </li>
 
 <li>Getting started guide: <a href=
 "http://epics-pvdata.sourceforge.net/gettingStarted.html">http://epics-pvdata.sourceforge.net/gettingStarted.html</a>
   <ul>
-  <li>This is the first document you should look at. It tells you how to obtain EPICS V4 and build it and simple examples.</li>
-  </ul><br>
+  <li>This is the first document you should look at. It tells you how to obtain EPICS V4 and build it and simple examples.<br/><br/></li>
+  </ul>
 </li>
 
 <li>Developer guide: <a href="http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html">http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html</a>
   <ul>
-  <li>Currently being developed. More comprehensive API-level doc.</li>
-  </ul><br>
+  <li>Currently being developed. More comprehensive API-level doc.<br/><br/></li>
+  </ul>
 </li>
 <li>Programmers reference documentation: <a href="http://epics-pvdata.sourceforge.net/literature.html">http://epics-pvdata.sourceforge.net/literature.html</a>
   <ul>
-  <li>Includes Javadoc/Doxygen. "Documentation" link on EPICS V4 home page.</li>
-  </ul><br>
+  <li>Includes Javadoc/Doxygen. "Documentation" link on EPICS V4 home page.<br/><br/></li>
+  </ul>
 </li>
 <li>pvAccess Specification: <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html</a>:
   <ul>
-  <li>The most important standards doc in EPICS V4.</li>
-  </ul><br>
+  <li>The most important standards doc in EPICS V4.<br/><br/></li>
+  </ul>
 </li>
 
 <li>Normative Types Specification: <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html</a>
   <ul>
-  <li>Definitions of the Normative Types.</li>
-  </ul><br>
+  <li>Definitions of the Normative Types.<br/><br/></li>
+  </ul>
 </li>
 
 <li>Downloads page: <a href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.net/projects/epics-pvdata/files/</a>
   <ul>
-  <li>All the released tars are here.</li>
-  </ul><br>
+  <li>All the released tars are here.<br/><br/></li>
+  </ul>
 </li>
 
 <li>SourceForge Mercurial repos:
 <ul>
   <li>hg clone http://hg.code.sf.net/p/epics-pvdata/&lt;repo-name&gt;</li>
-  <li>hg clone ssh://&ltyour-sourceforge-userid&gt@hg.code.sf.net/p/epics-pvdata/&lt;repo-name&gt;</li>
-  </ul><br>
+  <li>hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/&lt;repo-name&gt;<br/><br/></li>
+  </ul>
 </li>
 <li>Hgweb:<a href="http://epics-pvdata.sourceforge.net/hgweb">http://epics-pvdata.sourceforge.net/hgweb</a>
 <ul>
-  <li>Web access to source.</li>
-  </ul><br>
+  <li>Web access to source.<br/><br/></li>
+  </ul>
 </li>
 </ul>
 
@@ -995,15 +995,77 @@ float03
 
 <p>This is similar to pvget, but has more support for normative types. It can also be used to query services using the "-s" option. It supports the -p provider option and URI syntax in both 4.4.0 and the current code. See <code>eget -h</code> for more details.</p>
 
-<!--
 
-<h4_>Service example</h4_>
+
+<h4>Service example</h4>
+
+<!--
 
 <ul>
 <li>Run hello world service</li>
 <li>eget channel archiver service</li>
 </ul>
 -->
+
+<h5>HelloWorld example</h5>
+
+<p>exampleCPP contains an extremely simple example of an RPC service. It's based on the equivalent Java service in exampleJava.</p>
+
+<p>The client sends a structure containing a person's name, e.g.:</p>
+<pre>
+structure 
+    string personsname Dave
+</pre>
+<p>and the server responds with a structure containing a greeting:</p>
+<pre>
+structure 
+    string greeting Hello Dave
+</pre>
+<p>which the client prints.</p>
+
+<p>To run the example, on the server <code>cd</code> to exampleCPP/HelloWorld and then start the server:</p>
+<pre>
+[pc0046 HelloWorld]$ ./helloServerRunner
+</pre>
+<p>You should see something like:</p>
+<pre>
+[pc0046 HelloWorld]$ ./helloServerRunner 
+pvAccess Server v4.1.0-SNAPSHOT
+VERSION : pvAccess Server v4.1.0-SNAPSHOT
+PROVIDER_NAMES : rpcService
+BEACON_ADDR_LIST : 
+AUTO_BEACON_ADDR_LIST : 1
+BEACON_PERIOD : 15
+BROADCAST_PORT : 5076
+SERVER_PORT : 5075
+RCV_BUFFER_SIZE : 16384
+IGNORE_ADDR_LIST: 
+STATE : INITIALIZED
+</pre>
+
+<p>Then on the client (also in exampleCPP/HelloWorld) send the request:</p>
+<pre>
+[pc0012 HelloWorld]$ ./helloClientRunner Dave
+Hello Dave
+</pre>
+
+<p>The service can be queried using eget with the -z and -N options (to send as a "pure query", i.e. not an NTURI) and to turn off error messages about non-normative types:"</p>
+
+<pre>
+[pc0012 HelloWorld]$ eget -zN -s helloService -a "personsname=Dave"
+structure 
+    string greeting Hello Dave
+</pre>
+<p>You can also use pvinfo:</p>
+<pre>
+[pc0012 HelloWorld]$ pvinfo helloService
+CHANNEL  : helloService
+STATE    : CONNECTED
+ADDRESS  : 172.23.244.46:5075
+(null introspection data)
+</pre>
+
+
 
 <h2>APIs for pvData</h2>
 
@@ -1071,7 +1133,7 @@ int main (int argc, char *argv[])
 
     PVStructurePtr aggregate1 = getPVDataCreate()-&gt;createPVStructure(aggregateStruc);
 
-    PVDoublePtr valueField = aggregate1-&gt;getSubField&gtPVDouble&gt;("value");
+    PVDoublePtr valueField = aggregate1-&gt;getSubField&gt;PVDouble&gt;("value");
     valueField-&gt;put(3.14);
 
     aggregate1-&gt;getSubField&lt;PVInt&gt;("N")-&gt;put(42);
