@@ -20,7 +20,7 @@ for Jenkins configuration
  : MK: originally the project overview was generated with Eclipse
  Greg White: https://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvDataJava%20-%20Build/javadoc/
  : MK: the question is content of the project of overview
- Greg White: http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html
+ Greg White: http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html
 
  : MK: plan to update the project overview
  James Rowland: http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/1.0-BETA/documentation/html/index.html

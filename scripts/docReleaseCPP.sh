@@ -106,7 +106,7 @@ declare -a buildmodulesa
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release.
 RELEASE_VERSIONS_URL=\
-http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE_VERSIONS
+https://github.com/epics-base/pvDataWWW/tree/default/scripts/RELEASE_VERSIONS
 
 
 file=$0
