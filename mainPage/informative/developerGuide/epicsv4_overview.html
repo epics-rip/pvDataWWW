@@ -1340,7 +1340,7 @@ int main (int argc, char *argv[])
 }
 </pre>
 
-<h4>Regular Unions</h4>
+<h4>Varaint Unions</h4>
 
 <pre>
 /**
@@ -1441,6 +1441,85 @@ int main (int argc, char *argv[])
 }
 </pre>
 
+<h4>StructureArrays</h4>
+
+<pre>
+
+/**
+ * Copyright - See the COPYRIGHT that is included with this distribution.
+ * EPICS exampleCPP is distributed subject to a Software License Agreement found
+ * in file LICENSE that is included with this distribution.
+ */
+
+#include &lt;pv/pvData.h&gt;
+#include &lt;pv/standardField.h&gt;
+
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+
+using namespace epics::pvData;
+using namespace std;
+
+template&lt;typename PVS&gt;
+void setValue(const PVUnionPtr & unionField, typename PVS::value_type value)
+{
+    typename PVS::shared_pointer storedValue = unionField-&gt;get&lt;PVS&gt;();
+    if (storedValue.get() == NULL)
+        storedValue = getPVDataCreate()-&gt;createPVScalar&lt;PVS&gt;();
+    storedValue-&gt;put(value);
+    unionField-&gt;set(storedValue);
+}
+
+int main (int argc, char *argv[])
+{
+    FieldCreatePtr fieldCreate = getFieldCreate();
+    FieldBuilderPtr builder = fieldCreate-&gt;createFieldBuilder();
+    StandardFieldPtr standardField = getStandardField();
+
+    StructureConstPtr ntattributeStruc = builder-&gt;setId("NTUnion")
+                                  -&gt;add("value", fieldCreate-&gt;createVariantUnion())
+                                  -&gt;add("name", pvString)
+                                  -&gt;add("description", pvString)
+                                  -&gt;createStructure();
+
+    StructureConstPtr ntndarrayStruc = builder-&gt;setId("NTNDArray")
+                                  -&gt;addArray("attribute", ntattributeStruc)
+                                  -&gt;createStructure();
+
+    cout &lt;&lt; *ntndarrayStruc &lt;&lt; endl &lt;&lt; endl;
+    cout &lt;&lt; ntndarrayStruc-&gt;getField("attribute")-&gt;getType() &lt;&lt; endl;
+
+
+
+    PVStructurePtr ntndarray1 = getPVDataCreate()-&gt;createPVStructure(ntndarrayStruc);
+    cout &lt;&lt; *ntndarray1 &lt;&lt; endl &lt;&lt; endl;
+
+    PVStructureArrayPtr attributeField = ntndarray1-&gt;getSubField&lt;PVStructureArray&gt;("attribute");
+    PVStructureArray::svector attributes;
+
+    {
+        PVStructurePtr attributeElement = getPVDataCreate()-&gt;createPVStructure(ntattributeStruc);
+
+        setValue&lt;PVInt&gt;(attributeElement-&gt;getSubField&lt;PVUnion&gt;("value"), 0);
+        attributeElement-&gt;getSubField&lt;PVString&gt;("name")-&gt;put("ColorMode");
+        attributeElement-&gt;getSubField&lt;PVString&gt;("description")-&gt;put("Color Mode");
+        attributes.push_back(attributeElement);
+    }
+
+    {
+        PVStructurePtr attributeElement = getPVDataCreate()-&gt;createPVStructure(ntattributeStruc);
+
+        setValue&lt;PVInt&gt;(attributeElement-&gt;getSubField&lt;PVUnion&gt;("value"), 299.5);
+        attributeElement-&gt;getSubField&lt;PVString&gt;("name")-&gt;put("SR-DI-DCCT-01:SIGNAL");
+        attributeElement-&gt;getSubField&lt;PVString&gt;("description")-&gt;put("Beam current");
+        attributes.push_back(attributeElement);
+    }
+    attributeField-&gt;replace(freeze(attributes));
+    cout &lt;&lt; *ntndarray1 &lt;&lt; endl &lt;&lt; endl;
+
+    return 0;
+}
+</pre>
 <!--
 <ul>
 <li>Create structure with array fields (one of NTScalarArray/NTTable/NTMatrix)</li>
