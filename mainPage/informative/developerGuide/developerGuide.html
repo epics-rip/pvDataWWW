@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 14-May-2015</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 19-May-2015</h2>
 
   <dl>
     <dt>Latest version:</dt>
@@ -66,7 +66,7 @@ related set of products:<br />
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 14-May-2015 version of the Developer's Guide.
+<p>This is the 19-May-2015 version of the Developer's Guide.
 It is for EPICS V4 Release 4.4 but also includes components that are intentended for
 the next release of V4.
 This document is actively being  developed and is subject to being updated at any time.
@@ -86,10 +86,58 @@ It should be stable by the May EPICS meeting.
 <h2>Preface</h2>
 <p>
 This document briefly describes the 
-application programming interface (API) of the core components
+application programming interfaces (API) for the following components
 of EPICS V4.
-It is intended for EPICS V4 software developers: both Java and C++.
+<dl>
+   <dt>pvData</dt>
+      <dd>Description and implementation of structured data.</dd>
+   <dt>pvAccess</dt>
+      <dd>Description and implementation of
+          network support for pvData objects.</dd>
+   <dt>normativeTypes</dt>
+      <dd>Standard pvData structures.</dd>
+   <dt>easyPVA</dt>
+      <dd>pvAccess is a callback based API.
+        easyPVA is a synchronous interface for pvAccess and
+       also provides a number of convenience methods.
+      </dd>
+   <dt>pvDatabase</dt>
+      <dd>
+       A pvAccess server for accessing pvData.
+      </dd>
+   <dt>pvaSrv</dt>
+      <dd>A pvAccess server for EPICS  V3 DBRecords.</dd>
+   <dt>pvaPy</dt>
+      <dd>Python classes for pvData and pvAccess.</dd>
+</dl>
+These core APIs provide a toolkit for creating applications
+that access and/or provide sources of structured data.
+This document is is intended for EPICS V4 software developers
+who want to implement applications via core APIs.
 </p>
+<p>The following are some examples that use this toolkit:</p>
+<dl>
+   <dt>ONRL V4 DAQ Interface</dt>
+      <dd>nED is the SNS detector interface software. It provides a V4 server 
+          for structured neutron event data. An AreaDetector-based V4 client 
+          called ADnED generates histograms for online ("live") data views and
+          counting statistics. Python-based V4 clients are used for detector
+          calibration and for detector diagnostics.
+      </dd>
+   <dt>MASAR (Machine Snapshot, Archiving, and Retrieve)</dt>
+       <dd>This is a standalone V4 service, i. e. it is
+         not part of a V3 IOC.
+        The implementation is written in a combination of C++ and Python.
+       </dd>
+   <dt>areaDetector V4 plugin</dt>
+      <dd>This area detector plugin takes data from the NDArray
+        related an AD driver, converts it to an NTNDArray and transmits
+        it to a V4 monitor client.
+        Note that it allows image data to be handled as a single
+        NTNDArray rather than a set of V3 records.
+      </dd>
+</dl>
+
 
 <h2>Overview of V4</h2>
 <h3>V4 Modules</h3>
@@ -179,7 +227,7 @@ is composed of one of the following types:
         The field holds data that has a scalarType:
         <dl>
             <dt>boolean</dt>
-               <dd>Can be <b>true</b> of <b>false</b>.
+               <dd>Can be <b>true</b> or <b>false</b>.
                </dd>
             <dt>Signed Integer</dt>
                <dd>Integers of 8, 16, 32, and 64 bits are supported.</dd>
@@ -206,7 +254,7 @@ is composed of one of the following types:
    <dt>union</dt>
       <dd>
         A field that has a single sub field which can dynamically change type.
-      A variant union allows any valid type. A regular union allows for a set of valid types.
+      A variant union allows any valid type. A restricted union allows for a set of valid types.
       </dd>
    <dt>unionArray</dt>
       <dd>
@@ -291,12 +339,12 @@ Thus it is easier to use than pvAccess itself.
 <p>A framework for implementing a network accessible database of smart memory resident
 records. Network access is via pvAccess. The data in each record is a top level PVStructure as defined by
 pvData. The framework includes a complete implementation of ChannelProvider as defined by pvAccess.
-The framework can be extended in order to create record instances that implements services.
+The framework can be extended in order to create record instances that implement services.
 The minimum that an extension must provide is a top level PVStructure and a process method.
 </p>
 
 <h3>Overview: pvaSrv</h3>
-<p><b>pvaSrc</b> is a pvAccess server that runs in a EPICS V3 IOC.
+<p><b>pvaSrv</b> is a pvAccess server that runs in a EPICS V3 IOC.
 pvaSrv allows clients to get, put and monitor V3 PVs (fields of EPICS DB records) via pvAccess, translating
 the value and its meta data (graphics limits, alarm status, timestamp) to or from V4 Normative Type (NT)
 pvData structures (NTScalar, NTScalarArray).</p>
@@ -537,7 +585,7 @@ epics:nt/NTScalar:1.0
     alarm_t alarm INVALID RECORD UDF_ALARM
     time_t timeStamp &lt;undefined&gt; 0
 </pre>
-<p>pvget can also be used to monitor, i. e. it also has functionality similer to camonitor.</p>
+<p>pvget can also be used to monitor, i. e. it has functionality similer to camonitor.</p>
 <pre>
 mrk&gt; pvget -m -r "value,alarm,timeStamp" double02
 'double02
@@ -593,7 +641,7 @@ channels with one command.
 </p>
 <h3>eget</h3>
 <p>eget provides many of the same features but in addition supports
-channelRPC and understands some of the normativeb types.
+channelRPC and understands some of the normative types.
 </p>
 <p>The options are:</p>
 <pre>
@@ -679,7 +727,7 @@ mrk&gt; pwd
 mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
 <h3>source code</h3>
-The src directory has the following file:
+The src directory has the following files:
 <dl>
    <dt>exampleDatabaseMain.cpp</dt>
       <dd>code to run example as main program</dd>
@@ -773,9 +821,9 @@ It defines a factory methods for creating the example database.
 <p>
 <b>exampleDatabase.cpp</b> is not generic.
 It shows how to create records of various types.
-Most examples create records witn only the default process method.
+Most of the records have only the default process method.
 The default process does nothing except that if a timeStamp field is present
-it sets the time to the current time.
+the time is set to the current time.
 Look at the code to see examples of how to create records.
 </p>
 <h3>ioc</h3>
@@ -897,9 +945,9 @@ After it is started clients can access the V4 records and the V3 records via pva
    <dt>union</dt>
       <dd>
        The field has a single sub-field.
-       Two types of union are supported: a regular union and a variant
+       Two types of union are supported: a restricted union and a variant
        union. For a variant union the sub-field can be have any valid Type.
-      For a regular union the sub-field can have any of a specified
+      For a restricted union the sub-field can have any of a specified
       set of Types.
       </dd>
    <dt>unionArray</dt>
@@ -955,7 +1003,7 @@ structure
         int index 0
         string[] choices [true,false]
 </pre>
-<p>The following has two examples of a regular union.
+<p>The following has two examples of a restricted union.
 </p>
 <pre>
 structure
@@ -984,7 +1032,7 @@ structure
         double  100000
 </pre>
 <p>The first example is a union array where each element is variant union.
-The second is where each element is a regular union.
+The second is where each element is a restricted union.
 </p>
 <pre>
 structure
@@ -1140,9 +1188,9 @@ It has method:</p>
 <p>This is the API for type union.
 A union is a field that has a single subField.
 The subField has no name.
-A union can be either a variant union or a regular union.
+A union can be either a variant union or a restricted union.
 The subField for a variant union can have any supported type.
-A regular union has a Field array and a string array.
+A restricted union has a Field array and a string array.
 Each element of the string array is associated with the corresponding
 element of the field array.</p>
 <p>Union has the methods:</p>
@@ -1187,7 +1235,7 @@ element of the field array.</p>
      </dd>
    <dt>boolean isVariant()</dt>
      <dd>
-      returns (false,true) if (regular, variant) union.
+      returns (false,true) if (restricted, variant) union.
      </dd>
 </dl>
 <h4>Array</h4>
@@ -1383,7 +1431,7 @@ FieldBuilder
       </dd>
     <dt>Union createUnion(string[] fieldNames, Field[] fields)</dt>
       <dd>
-        Create an regular Union that can have a subField with an type specified by fields.
+        Create an restricted Union that can have a subField with an type specified by fields.
       </dd>
     <dt>Union createUnion(string id, string[] fieldNames, Field[] fields)</dt>
       <dd>
@@ -2215,7 +2263,7 @@ PVField
       </dd>
     <dt>PVField select(int index)</dt>
       <dd>
-       If the union is a regular union than select the
+       If the union is a restricted union than select the
         field specified by index. If the curent field has a
        different type than a new field is created.
       An exception is thrown if the index is out of range
@@ -2229,7 +2277,7 @@ PVField
       </dd>
     <dt>PVField select(string fieldName)</dt>
       <dd>
-       If the union is a regular union than select the
+       If the union is a restricted union than select the
         field specified by fieldName. If the curent field has a
        different type than a new field is created.
       An exception is thrown if the fieldName is not valid
@@ -2460,7 +2508,7 @@ where
       the specified introspection interface.
     </dd>
 </dl>
-<h4>Java Array API</h4>
+<h3>Java Array API</h3>
 <p>The following is for PVDoubleArray.
 There are similar definitions for each scalarType.</p>
 <pre>public class DoubleArrayData {
@@ -4367,7 +4415,7 @@ string[]
 <h3>Union</h3>
 <pre>
 any        // variant union
-union      // regular union
+union      // restricted union
 </pre>
 <h3>Union Array</h3>
 <pre>
