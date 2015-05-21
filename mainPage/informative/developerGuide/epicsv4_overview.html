@@ -1,0 +1,1149 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS Version 4 Overview MSU 2015</title>
+  <link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net//base.css" />
+  <link rel="stylesheet" type="text/css"   href="http://epics-pvdata.sourceforge.net//epicsv4.css" />
+
+  <!-- Styles comments:
+   opt - Markup for standard optional fields of Normative Types
+   nterm - Non-terminal symbol, in the grammar of Normative types
+   term - Terminal symbol in the grammar of Normative Types
+   user - A replacement string in the grammar of Normative Types,
+          i.e. user programmer supplies value.
+   ed   - Comments included by the editor of this document.
+  -->
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     caption { font-size:smaller; font-style:italic; caption-side:bottom }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.def { font-style:bold }
+     span.opt { color: grey }            
+     span.nterm { font-style:italic }    
+     span.term { font-family:courier }   
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     span.literal { font-family:courier }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+
+  <!-- Script that generates the Table of Contents -->
+   <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+
+
+</head>
+
+<body>
+
+  <div class="head">
+    <h1>EPICS Version 4 Overview MSU 2015</h1>
+  </div>
+
+<div id="toc" class="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+
+<div id="contents" class="contents">	  
+<hr />
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+
+<h2>Introduction</h2>
+
+<!--
+<ul>
+<li>Purpose of overview. Hands on. API-level. Example-driven.</li>
+<li>Where to go for more info.</li>
+</ul>
+-->
+
+<p>The aim of this talk is to provide a pratical, more detailed introduction to EPICS V4, enabling you to create your own V4 services and use V4 tools. It will cover</p>
+
+<ul>
+<!--<li>Key EPICS V4 concepts: pvData, pvAccess, Normative Types.</li> -->
+<li>Sources of information on EPICS V4: The V4 website and key documents.</li>
+<li>Building EPICS V4 and running examples.</li>
+<li>Using EPICS V4 tools: pvget, pvput, pvinfo, pvlist and eget.</li>
+<li>Creating and manipulating pvData objects.</li>
+<li>Creating pvDatabase and RPC service examples.</li>
+<!--<li>Creating a monitored client.</li> -->
+</ul>
+<p>The focus will be on the C++ implementation.<p><br>
+<p>A summary, in advance, of the talk is:</p>
+<ul>
+<li>It's easy to build and run EPICS V4.</li>
+<li>There are a lot of good examples and useful tools.</li>
+<li>There's plenty of helpful documentation.</li>
+<li>It's easy to write your own services by borrowing from examples. All you need to know is:
+  <ul>
+  <li>Which examples to borrow from and how to modify them.</li>
+  <li>How to manipulate pvData objects.</li>
+  <li>Where to get more information.</li>
+  </ul>
+</li>
+<li>So go and write a service.</li>
+</ul>
+
+
+
+<h2>EPICS Version 4 resources</h2>
+
+<!--
+<ul>
+<li>Website</li>
+<li>Getting started guide</li>
+<li>App dev guide</li>
+<li>Download</li>
+<li>Repos</li>
+<li>Hgweb</li>
+<li>Module docs. Javdoc and doxygen.</li>
+<li>pvAccess spec</li>
+<li>NT spec</li>
+<li>Working group</li>
+</ul>
+-->
+<p>There are a number of resources for EPICS V4:</p>
+
+<ul>
+<li>EPICS Version 4 website: <a href="http://epics-pvdata.sourceforge.net">http://epics-pvdata.sourceforge.net</a>
+  <ul>
+  <li>This is the most important resource. Most of the documents mentioned can be found there.</li>
+  </ul><br>
+</li>
+
+<li>Getting started guide: <a href=
+"http://epics-pvdata.sourceforge.net/gettingStarted.html">http://epics-pvdata.sourceforge.net/gettingStarted.html</a>
+  <ul>
+  <li>This is the first document you should look at. It tells you how to obtain EPICS V4 and build it and simple examples.</li>
+  </ul><br>
+</li>
+
+<li>Developer guide: <a href="http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html">http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html</a>
+  <ul>
+  <li>Currently being developed. More comprehensive API-level doc.</li>
+  </ul><br>
+</li>
+<li>Programmers reference documentation: <a href="http://epics-pvdata.sourceforge.net/literature.html">http://epics-pvdata.sourceforge.net/literature.html</a>
+  <ul>
+  <li>Includes Javadoc/Doxygen. "Documentation" link on EPICS V4 home page.</li>
+  </ul><br>
+</li>
+<li>pvAccess Specification: <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html</a>:
+  <ul>
+  <li>The most important standards doc in EPICS V4.</li>
+  </ul><br>
+</li>
+
+<li>Normative Types Specification: <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html</a>
+  <ul>
+  <li>Definitions of the Normative Types.</li>
+  </ul><br>
+</li>
+
+<li>Downloads page: <a href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.net/projects/epics-pvdata/files/</a>
+  <ul>
+  <li>All the released tars are here.</li>
+  </ul><br>
+</li>
+
+<li>SourceForge Mercurial repos:
+<ul>
+  <li>hg clone http://hg.code.sf.net/p/epics-pvdata/&lt;repo-name&gt;</li>
+  <li>hg clone ssh://&ltyour-sourceforge-userid&gt@hg.code.sf.net/p/epics-pvdata/&lt;repo-name&gt;</li>
+  </ul><br>
+</li>
+<li>Hgweb:<a href="http://epics-pvdata.sourceforge.net/hgweb">http://epics-pvdata.sourceforge.net/hgweb</a>
+<ul>
+  <li>Web access to source.</li>
+  </ul><br>
+</li>
+</ul>
+
+
+
+<h2>Building EPICS V4</h2>
+
+
+<h3>Building C++ from tar</h3>
+
+<!--
+<ul>
+<li>Brief instructions to build. "make configure. make"</li>
+<li>"make configure. make" on Linux</li>
+<li>Example RELEASE.local</li>
+<li>Point at getting started guide.</li>
+</ul>
+-->
+
+<p>The C++ tar can be downloaded from the EPICS V4 site. The latest version is 4.4.0.</p>
+
+<p>C++ uses the EPICS build facility (see <a href="http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide.pdf">EPICS V3 Application Developer Guide</a>, chapter 4)
+ and builds against EPICS base.</p>
+
+<p>Once you unzip the 4.4.0 tar, all you need do is set your CONFIG and RELEASE through CONFIG_SITE.local and RELEASE.local (or through the host and target specific CONFIG and RELEASE files) and type make. An example RELEASE.local is provided.</p>
+
+<p>A config script is provided so that, if you're on a Linux system and if you have the shell variable EPICS_BASE defined to your EPICS base installation (and exported), then likely all you need do is:</p>
+
+<pre>
+chmod +x configure.sh
+make configure
+make
+</pre>
+
+
+<p>See the <a href=
+"http://epics-pvdata.sourceforge.net/gettingStarted.html">getting started guide</a>, for details.</p>
+
+<h3>Building C++ from repos</h3>
+
+<!--
+<ul>
+<li>Brief instructions to get source</li>
+<li>Brief instructions to build</li>
+<li>Point at getting started guide.</li>
+</ul>
+-->
+<p>The latest can be obtained by cloning from the SourceForge Mercurial repos</p>
+
+<p>The modules all build using the EPICS build system and <code>make</code>. There's no top-level Makefile so you'll need to build each separately, create your own makefile or borrow the one from the release tar.</p>
+
+<p>See the <a href=
+"http://epics-pvdata.sourceforge.net/gettingStarted.html">getting started guide</a>, for details.</p>
+
+<!--
+<h3_>Using Java jar</h3_>
+
+<ul>
+<li>How to get started using released Java jar</li>
+<li>Point at getting started guide.</li>
+</ul>
+
+<h3_>Building Java from repos</h3_>
+
+<ul>
+<li>Brief instructions to get source</li>
+<li>Brief instructions to build</li>
+<li>Point at getting started guide.</li>
+</ul>
+-->
+
+<h2>Running examples and pvtools</h2>
+
+<h3>pvaSrv example</h3>
+
+<!--
+
+<ul>
+<li>Run testDBPv and show output</li>
+<li>very quick use of  pvtools, e.g. pvget a PV (pvtools in depth later)</li>
+</ul>
+-->
+
+<p>The pvaSrv module has a test example of an IOC running pvaSrv. To run this, having already built pvaSrv (and its dependencies, pvCommonCPP, pvDataCPP, pvAccessCPP), <code>cd</code> to your pvaSrv directory and then do the following:</p>
+<pre>
+[pc0046 pvaSrv]$ cd testTop/iocBoot/testDbPv
+[pc0046 testDbPv]$ ../../bin/$EPICS_HOST_ARCH/testDbPv st.cmd
+</pre>
+
+<p>You should see</p>
+<pre>
+&lt; envPaths
+epicsEnvSet("ARCH","linux-x86_64")
+epicsEnvSet("IOC","testDbPv")
+epicsEnvSet("TOP","/epicsv4/pvaSrv/testTop")
+epicsEnvSet("PVASRV","/epicsv4/pvaSrv/testTop/..")
+epicsEnvSet("EV4_BASE","/epicsv4")
+epicsEnvSet("PVACCESS","/epicsv4/pvAccessCPP")
+epicsEnvSet("PVDATA","/epicsv4/pvDataCPP")
+epicsEnvSet("PVCOMMON","/epicsv4/pvCommonCPP")
+epicsEnvSet("EPICS_BASE","/dls_sw/epics/R3.14.12.3/base")
+cd /epicsv4/pvaSrv/testTop
+## Register all support components
+dbLoadDatabase("dbd/testDbPv.dbd")
+testDbPv_registerRecordDeviceDriver(pdbbase)
+## Load record instances
+dbLoadRecords("db/dbInteger.db","name=byte01,type=byter")
+<!--
+dbLoadRecords("db/dbInteger.db","name=short01,type=shortr")
+dbLoadRecords("db/dbInteger.db","name=ubyte01,type=ubyte")
+dbLoadRecords("db/dbInteger.db","name=ushort01,type=ushort")
+dbLoadRecords("db/dbInteger.db","name=uint01,type=ulong")
+dbLoadRecords("db/dbInteger.db","name=int01,type=longout")
+dbLoadRecords("db/dbInteger.db","name=wait01,type=wait")
+dbLoadRecords("db/dbScalar.db","name=float01,type=floatr")
+dbLoadRecords("db/dbScalar.db","name=double01,type=ai")
+dbLoadRecords("db/dbArray.db","name=byteArray01,type=CHAR")
+dbLoadRecords("db/dbArray.db","name=shortArray01,type=SHORT")
+dbLoadRecords("db/dbArray.db","name=intArray01,type=LONG")
+dbLoadRecords("db/dbArray.db","name=ubyteArray01,type=UCHAR")
+dbLoadRecords("db/dbArray.db","name=ushortArray01,type=USHORT")
+dbLoadRecords("db/dbArray.db","name=uintArray01,type=ULONG")
+dbLoadRecords("db/dbArray.db","name=floatArray01,type=FLOAT")
+dbLoadRecords("db/dbArray.db","name=doubleArray01,type=DOUBLE")
+dbLoadRecords("db/dbString.db","name=string01")
+dbLoadRecords("db/dbBigstringin.db","name=bigstring01")
+dbLoadRecords("db/dbStringArray.db","name=stringArray01")
+dbLoadRecords("db/dbEnum.db","name=enum01")
+dbLoadRecords("db/dbCounter.db","name=counter01");
+dbLoadRecords("db/dbInteger.db","name=byte02,type=byter")
+dbLoadRecords("db/dbInteger.db","name=short02,type=shortr")
+dbLoadRecords("db/dbInteger.db","name=ubyte02,type=ubyte")
+dbLoadRecords("db/dbInteger.db","name=ushort02,type=ushort")
+dbLoadRecords("db/dbInteger.db","name=uint02,type=ulong")
+dbLoadRecords("db/dbInteger.db","name=int02,type=longout")
+dbLoadRecords("db/dbInteger.db","name=wait02,type=wait")
+dbLoadRecords("db/dbScalar.db","name=float02,type=floatr")
+dbLoadRecords("db/dbScalar.db","name=double02,type=ai")
+dbLoadRecords("db/dbArray.db","name=byteArray02,type=CHAR")
+dbLoadRecords("db/dbArray.db","name=shortArray02,type=SHORT")
+dbLoadRecords("db/dbArray.db","name=intArray02,type=LONG")
+dbLoadRecords("db/dbArray.db","name=floatArray02,type=FLOAT")
+dbLoadRecords("db/dbArray.db","name=doubleArray02,type=DOUBLE")
+dbLoadRecords("db/dbString.db","name=string02")
+dbLoadRecords("db/dbStringArray.db","name=stringArray02")
+dbLoadRecords("db/dbEnum.db","name=enum02")
+dbLoadRecords("db/dbCounter.db","name=counter02");
+dbLoadRecords("db/dbInteger.db","name=byte03,type=byter")
+dbLoadRecords("db/dbInteger.db","name=short03,type=shortr")
+dbLoadRecords("db/dbInteger.db","name=ubyte03,type=ubyte")
+dbLoadRecords("db/dbInteger.db","name=ushort03,type=ushort")
+dbLoadRecords("db/dbInteger.db","name=uint03,type=ulong")
+dbLoadRecords("db/dbInteger.db","name=int03,type=longout")
+dbLoadRecords("db/dbInteger.db","name=wait03,type=wait")
+dbLoadRecords("db/dbScalar.db","name=float03,type=floatr")
+dbLoadRecords("db/dbScalar.db","name=double03,type=ai")
+dbLoadRecords("db/dbArray.db","name=byteArray03,type=CHAR")
+dbLoadRecords("db/dbArray.db","name=shortArray03,type=SHORT")
+dbLoadRecords("db/dbArray.db","name=intArray03,type=LONG")
+dbLoadRecords("db/dbArray.db","name=floatArray03,type=FLOAT")
+dbLoadRecords("db/dbArray.db","name=doubleArray03,type=DOUBLE")
+dbLoadRecords("db/dbString.db","name=string03")
+dbLoadRecords("db/dbStringArray.db","name=stringArray03")
+dbLoadRecords("db/dbEnum.db","name=enum03")
+-->
+... (ommitting most of the dbLoadRecords commands)
+
+dbLoadRecords("db/dbCounter.db","name=counter03");
+
+cd /epicsv4/pvaSrv/testTop/iocBoot/testDbPv
+iocInit()
+Starting iocInit
+############################################################################
+## EPICS R3.14.12.3 $Date: Mon 2012-12-17 14:11:47 -0600$
+## EPICS Base built Mar 18 2015
+############################################################################
+iocRun: All initialization complete
+epicsThreadSleep(2.0)
+casr
+Channel Access Server V4.13
+No clients connected.
+startPVAServer
+VERSION : pvAccess Server v4.1.0-SNAPSHOT
+PROVIDER_NAMES : dbPv
+BEACON_ADDR_LIST : 
+AUTO_BEACON_ADDR_LIST : 1
+BEACON_PERIOD : 15
+BROADCAST_PORT : 5076
+SERVER_PORT : 5075
+RCV_BUFFER_SIZE : 16384
+IGNORE_ADDR_LIST: 
+STATE : INITIALIZED
+dbpf string01 10.1
+DBR_STRING:          "10.1"   
+dbpf wait01 1
+DBR_SHORT:          1         0x1                 
+dbpf wait02 2
+DBR_SHORT:          2         0x2                 
+dbpf wait03 3
+DBR_SHORT:          3         0x3
+</pre>
+
+<p>For each dbLoadRecords command, the IOC should have the corresponding records:</p>
+
+<pre>
+epics> dbl
+double01
+double02
+<!--
+double03
+counter01
+counter02
+counter03
+int01
+int02
+int03
+enum01
+enum02
+enum03
+string01
+string02
+string03
+byteArray01
+byteArray02
+byteArray03
+doubleArray01
+doubleArray02
+doubleArray03
+floatArray01
+floatArray02
+floatArray03
+intArray01
+intArray02
+intArray03
+shortArray01
+shortArray02
+shortArray03
+stringArray01
+stringArray02
+stringArray03
+ubyteArray01
+uintArray01
+ushortArray01
+byte01
+byte02
+byte03
+short01
+short02
+short03
+ubyte01
+ubyte02
+ubyte03
+ushort01
+ushort02
+ushort03
+uint01
+uint02
+uint03
+wait01
+wait02
+wait03
+float01
+float02
+float03
+-->
+... (omitting most of the records)
+
+bigstring01
+epics>
+</pre>
+
+<p>The IOC's records are published over channel access and we can, for example, use channel access tools in the usual way:</p>
+<pre>
+[pc0012 ~]$ caget double01
+double01                       0
+</pre>
+<p>The IOC's records are also published over pvAccess. The <code>startPVAServer</code> command starts the pvAccess server. The server is using the default pvAccess port which is 5075. pvaSrv's dbPv provider has been registered with pvAccess automatically.</p>
+
+<p>We can use Version 4 client tools to issue requests over pvAccess (more on this in the next section), for example we can use the Version 4 equivalent of caget:</p>
+<pre>
+[pc0012 ~]$ pvget double01
+double01                       0
+</pre>
+<p>Here pvget is creating a pvAccess channel and sending a Channel Get request over pvAccess. The channel is provided on the server side by the dbPv provider which accesses the V3 IOC database directly.</p>
+
+
+<h3>pvDatabase example</h3>
+
+<p>The pvDatabaseCPP module has a number of examples:</p>
+
+<h4>exampleServer</h4>
+
+<p>This example publishes a V4 PV using a pvDatabase record. This implements a simple HelloWorld service through puts and gets to subfields, rather than using the RPC operation.</p>
+
+<p>It can be run one of two ways. As a standard application or through the IOC shell.</p>
+
+<p>To run this without the IOC shell <code>cd</code> to pvDatabaseCPP/exampleServer and then do the following:</p>
+<pre>
+[pc0046 exampleServer]$ ./bin/$EPICS_HOST_ARCH/exampleServerMain
+</pre>
+
+<p>You should see something like:</p>
+<pre>
+[pc0046 exampleServer]$ ./bin/linux-x86_64/exampleServerMain 
+VERSION : pvAccess Server v4.1.0-SNAPSHOT
+PROVIDER_NAMES : local
+BEACON_ADDR_LIST : 
+AUTO_BEACON_ADDR_LIST : 1
+BEACON_PERIOD : 15
+BROADCAST_PORT : 5076
+SERVER_PORT : 5075
+RCV_BUFFER_SIZE : 16384
+IGNORE_ADDR_LIST: 
+STATE : INITIALIZED
+exampleServer
+laptoprecordListPGRPC
+traceRecordPGRPC
+Type 'exit' to stop: 
+</pre>
+<p>From another terminal, preferably remotely, you can use pvget to fetch the current value of  exampleServer:</p>
+<pre>
+[pc0012 ~]$ pvget exampleServer
+exampleServer
+structure 
+    structure argument
+        string value 
+    structure result
+        string value 
+        time_t timeStamp &lt;undefined&gt; 0
+</pre>
+
+<p>If you set the argument field using pvput:</p> 
+
+<pre>
+[pc0012 ~]$ pvput -r "argument"  exampleServer Dave
+Old : 
+structure 
+    structure argument
+        string value 
+
+New : 
+structure 
+    structure argument
+        string value Dave
+</pre>
+
+<p>then pvget returns:</p>
+
+<pre>
+[pc0012 ~]$ pvget exampleServer
+exampleServer
+structure 
+    structure argument
+        string value Dave
+    structure result
+        string value Hello Dave
+        time_t timeStamp 2015-05-21T09:15:47.559 0
+</pre>
+
+<p>There are two other PVs. laptoprecordListPGRPC is a RecordListRecord. It implements a put get service that queries the database and returns the records present (the regular expression option isn't implemented). An initial pvget gives:</p>
+<pre>
+[pc0012 ~]$ pvget laptoprecordListPGRPC
+laptoprecordListPGRPC
+structure 
+    structure argument
+        string database 
+        string regularExpression 
+    structure result
+        string status 
+        string[] names
+</pre>
+
+<p>The provider in pvDatabase has a database called "master". Putting the value master gives:</p>
+
+<pre>
+[pc0012 ~]$ pvput -r "argument"  laptoprecordListPGRPC master ""
+Old : 
+structure 
+    structure argument
+        string database 
+        string regularExpression 
+
+New : 
+structure 
+    structure argument
+        string database master
+        string regularExpression 
+
+[pc0012 ~]$ pvget laptoprecordListPGRPC
+laptoprecordListPGRPC
+structure 
+    structure argument
+        string database master
+        string regularExpression 
+    structure result
+        string status 
+        string[] names [exampleServer,laptoprecordListPGRPC,traceRecordPGRPC]
+</pre>
+<p>The other is a TraceRecord that set the trace-level of other records:</p>
+
+<pre>
+pc0012 ~]$ pvget traceRecordPGRPC 
+traceRecordPGRPC
+structure 
+    structure argument
+        string recordName 
+        int level 0
+    structure result
+        string status 
+
+
+[pc0012 ~]$ pvput -r "argument" traceRecordPGRPC  exampleServer 3
+Old : 
+structure 
+    structure argument
+        string recordName 
+        int level 0
+
+New : 
+structure 
+    structure argument
+        string recordName exampleServer
+        int level 3
+
+[pc0012 ~]$ pvget traceRecordPGRPC 
+traceRecordPGRPC
+structure 
+    structure argument
+        string recordName exampleServer
+        int level 3
+    structure result
+        string status success
+</pre>
+
+<p>Setting the trace to 1 causes trace to be outputting on Channel connection changes. 2 on connection changes for ChannelGet, ChannelPut, ChannelMonitor and so on. 3 is most verbose, printing locking and group put changes. E.g. for trace level 3 and a pvget the server prints</p>
+<pre>PVRecord::addPVRecordClient() exampleServer
+PVRecord::lock() exampleServer
+PVRecord::unlock() exampleServer
+ChannelGetLocal::create recordName exampleServer
+PVRecord::lock() exampleServer
+PVRecord::unlock() exampleServer
+ChannelGetLocal::get
+PVRecord::lock() exampleServer
+PVRecord::unlock() exampleServer
+ChannelGetLocal::destroy destroyed 0
+~ChannelGetLocal()
+ChannelLocal::destroy() beingDestroyed 0
+PVRecord::removePVRecordClient() exampleServer
+PVRecord::lock() exampleServer
+PVRecord::unlock() exampleServer
+~ChannelLocal()
+</pre>
+<p>This example can be run through the IOC shell. <code>cd</code> to pvDatabaseCPP/exampleServer/iocBoot/exampleServer and runs as follows:</p>
+<pre>../../bin/linux-x86_64/exampleServer st.cmd
+</pre>
+<p>exampleServer creates an IOC shell command <code>exampleServerCreateRecord</code>. The boot script uses this to create a PV called exampleServer as in the non-IOC shell version.</p>
+
+<h3>pvtools</h3>
+
+<!--
+<ul>
+<li>pvinfo,pvget,pvput,pvlist, eget</li>
+<li>Support for enums, alarms and timestamps</li>
+<li>provider options and URL syntax</li>
+<li>request syntax</li>
+</ul>
+-->
+
+<p>There are a number of pvAccess tools which currently reside in pvAccessCPP. The examples assume <code>pvAccess/bin/${EPICS_HOST_ARCH}</code> is in your path.</p>
+
+<h4>pvinfo</h4>
+
+<p>pvinfo is the Version 4 equivalent of cainfo. It gives information on the location, state and introspection data of a PV.</p>
+<p>For example if you're running the pvaSrv example above:</p>
+<pre>
+[pc0012 ~]$ pvinfo enum01
+CHANNEL  : enum01
+STATE    : CONNECTED
+ADDRESS  : 172.23.244.46:5075
+epics:nt/NTEnum:1.0
+    enum_t value
+        int index
+        string[] choices
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+
+<p>If you're using the 4.4 release code, pvinfo necessarily uses pvAccess on the wire.</p>
+
+<p>If you're running the latest code you can also use the channel access provider to get information on a PV using channel access on the wire. By default pvinfo will use pvAccess, but you can specify either channel access or pvAccess with the <code>-p</code> option supplying either <code>ca</code> or <code>pva</code>. For example,</p>
+<pre>
+pvinfo -p ca enum01
+CHANNEL  : enum01
+STATE    : CONNECTED
+ADDRESS  : 172.23.244.46:5064
+epics:nt/NTEnum:1.0
+    enum_t value
+        int index
+        string[] choices
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+<p>will use channel access on the wire, so it can be used with existing Version 3 PVs without modifying the IOC.</p>
+
+<p>In the latest code, pvinfo also understands a URI syntax, where the URI's scheme is either pva or ca. The following are equivalent and use pvAccess on the wire:</p>
+<pre>
+[pc0012 ~]$ pvinfo enum01
+[pc0012 ~]$ pvinfo -p pva enum01
+[pc0012 ~]$ pvinfo pva:///enum01
+</pre>
+and the following use channel access:
+<pre>
+[pc0012 ~]$ pvinfo -p ca enum01
+[pc0012 ~]$ pvinfo ca:///enum01
+</pre>
+
+
+<p><code>pvinfo -h</code> shows a full set of options.</p> 
+
+
+<h5>pvget</h5>
+
+<p>pvget is the Version 4 equivalent of caget. By default, if a PV has a <code>value</code> field, such as for a Version 3 IOC record accessed via pvaSrv or caProvider, pvget fetches its value.</p>
+<pre>
+[pc0012 ~]$ pvget double01
+double01                       0
+</pre>
+otherwise it gets the whole structure, for example
+<pre>
+[pc0012 point]$ pvinfo point01
+CHANNEL  : point01
+STATE    : CONNECTED
+ADDRESS  : 172.23.244.46:5075
+point
+    double x
+    double y
+
+[pc0012 ~]$ pvget point01
+point01
+point 
+    double x 1.2
+    double y 1.7
+</pre>
+
+<p>pvget has support for enumerated types, which are encoded as structures. By default pvget displays the string choice corresponding to the value of the index field. The <code>-n</code> option displays the index and the <code>-i</code> option turns off the support so expressing the result as a structure. </p>
+<pre>
+[pc0012 ~]$ pvget enumPV1
+enumPV1                        Off
+
+[pc0012 ~]$ pvget -n enumPV1
+enumPV1                        0
+
+[pc0012 ~]$ pvget -i enumPV1
+enumPV1
+structure 
+    enum_t value
+        int index 0
+        string[] choices [Off,On]
+</pre>
+
+<p>Like pvinfo, the 4.4 release version of pvget is pvAccess only, but the latest pvget has channel access support through caProvider and supports the <code>-p</code> option and URI syntax. So for pvAccess the following will work</p>
+<pre>
+pvget double01
+pvget -p pva double01
+pvget pva:///double01
+</pre>
+<p>and for channel access you can do:</p>
+<pre>
+pvget -p ca double01
+pvget ca:///double01
+</pre>
+
+<p>When creating the pvAccess Channel Get, a structure, pvRequest, is supplied. This specifies which fields should be retrieved and any options. It is possible to specify this using the <code>-r</code> option.</p>
+
+<p>The simplest type of request is a comma separated list of fields, for example:</p>
+
+<pre>
+[pc0012 ~]$ pvinfo enumPV1
+CHANNEL  : enumPV1
+STATE    : CONNECTED
+ADDRESS  : 172.23.244.46:5075
+epics:nt/NTEnum:1.0
+    enum_t value
+        int index
+        string[] choices
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+
+[pc0012 ~]$ pvget -r "value"  enumPV1
+enumPV1
+structure 
+    enum_t value Off
+
+[pc0012 ~]$ pvget -r "value,timeStamp"  enumPV1
+structure 
+    enum_t value Off
+    time_t timeStamp 2015-05-19T12:54:00.368 0
+
+[pc0012 ~]$ pvget -r "value,timeStamp,alarm"  enumPV1
+enumPV1
+structure 
+    enum_t value Off
+    time_t timeStamp 2015-05-19T12:54:00.368 0
+    alarm_t alarm NO_ALARM NO_STATUS &lt;no message&gt;
+</pre>
+
+
+<p>The request is of one of the following forms:</p>
+<ol>
+<li><em>field_1</em>[,<em>field_2</em>]...[,<em>field_n</em>]</li>
+<li>field(<em>field_def</em>)</li>
+<li>record[<em>option_1</em>=<em>value_1</em>[,<em>option_2</em>=<em>value_2</em>][,<em>option_n</em>=<em>value_n</em>]</li>
+<li>record[<em>option_1</em>=<em>value_1</em>[,<em>option_2</em>=<em>value_2</em>][,<em>option_n</em>=<em>value_n</em>]field(<em>field_def</em>)</li>
+</ol>
+<p>The "field" syntax allows you to get any substructure of the top-level structure. <em>field_def</em> is a list of 
+ fields, separated by commas. Periods are used to request subfields and curly braces for  requesting multiple subfields."field()" get all fields.</p>
+
+<h5>Examples</h5>
+
+<pre>
+pvget -r "field()" enumPV1
+epics:nt/NTEnum:1.0 
+    enum_t value Off
+    alarm_t alarm NO_ALARM NO_STATUS &lt;no message&gt;
+    time_t timeStamp 2015-05-19T12:54:00.368 0
+
+
+[pc0012 ~]$ pvget -r "field(value,alarm)" enumPV1
+structure 
+    enum_t value Off
+    alarm_t alarm NO_ALARM NO_STATUS &lt;no message&gt;
+
+
+[pc0012 ~]$ pvget -r "field(value.choices)" enumPV1
+enumPV1
+structure 
+    structure value
+        string[] choices [Off,On]
+
+
+[pc0012 ~]$ pvget -r "field(value,alarm.severity,timeStamp{secondsPastEpoch,nanoseconds})" enumPV1
+enumPV1
+structure 
+    enum_t value Off
+    structure alarm
+        int severity 0
+    structure timeStamp
+        long secondsPastEpoch 1432036440
+        int nanoseconds 368293834
+</pre>
+
+<p>The field options are currently fully supported by pvDatabase. pvaSrv supports lists of fields, but does not support the "." and "{}" syntax. The ca provider has only limited supported for the field syntax in request.</p>
+
+<p>The record options currently supported are "process" and "block". "process" indicated that the process variable should be processed before performing the get. "block" is only used for puts to do put with callback.</p>
+
+<p>
+The specification for pvRequest is still under development. The last draft is available at <a href="http://epics-pvdata.sourceforge.net/informative/pvRequest.html">http://epics-pvdata.sourceforge.net/informative/pvRequest.html</a>. See in particular the <a href="http://epics-pvdata.sourceforge.net/informative/pvRequest.html#syntax">Syntax</a> section.
+</p>
+
+<h5>pvget -m </h5>
+
+<p>pvget with the -m option is the Version 4 eqivalent of camonitor. It functions in a similar fashion to pvget without -m. In particular it supports the request, enum and provider options and the URI syntax. For example</p>
+
+<pre>
+[pc0012 ~]$ pvget -m ca:///SR-DI-DCCT-01:SIGNAL
+SR-DI-DCCT-01:SIGNAL           190.702
+SR-DI-DCCT-01:SIGNAL           190.694
+SR-DI-DCCT-01:SIGNAL           190.684
+SR-DI-DCCT-01:SIGNAL           190.675
+^C
+[pc0012 ~]$ pvget -m counter01
+counter01                      4
+counter01                      5
+counter01                      6
+counter01                      7
+</pre>
+
+<h4>pvput</h4>
+
+<p>pvput is the Version 4 equivalent of caput. By default, if a PV has a <code>value</code> field, such as for a Version 3 IOC record accessed via pvaSrv or caProvider, pvput puts to its value.</p>
+
+<pre>
+pc0012 ~]$ pvput double01 3.14
+Old : double01                       0
+New : double01                       3.14
+</pre>
+
+<p>As for pvget, pvput has good support for enums:</p>
+<pre>
+pvput enumPV1 On
+Old : enumPV1                        Off
+New : enumPV1                        On
+
+[pc0012 ~]$ pvput enumPV1 0
+Old : enumPV1                        On
+New : enumPV1                        Off
+
+[pc0012 ~]$ pvput -n  enumPV1 1
+Old : enumPV1                        0
+New : enumPV1                        1
+</pre>
+
+<p>For puts to arrays you supply the number of elements, followed by the element values themselves:</p>
+
+<pre>[pc0012 ~]$ pvput doubleArray01  2 3.14 2.718
+Old : doubleArray01 0
+New : doubleArray01 2 3.14 2.718
+</pre>
+
+<p>The request syntax also works for pvput:</p>
+<pre>
+pvput -r "field(value.choices)" enumPV1 2 Disabled Enabled  
+Old : 
+structure 
+    structure value
+        string[] choices [Off,On]
+
+New : 
+structure 
+    structure value
+        string[] choices [Disabled,Enabled]
+</pre>
+<p>Puts to multiple fields are possible:</p>
+<pre>
+[pc0012 ~]$ pvput -r "field(value{index,choices})" enumPV1 1 2 Stop Start 
+Old : 
+structure 
+    structure value
+        int index 0
+        string[] choices [Disabled,Enabled]
+
+New : 
+structure 
+    structure value
+        int index 1
+        string[] choices [Stop,Start]
+</pre>
+
+
+<h4>pvlist</h4>
+
+<p>pvlist prints the PVs for a given server address list/GUID:</p>
+<pre>
+pc0012 ~]$ pvlist  172.23.244.46:5075
+double01
+double02
+double03
+counter01
+counter02
+counter03
+int01
+...
+<!--int02
+int03
+enum01
+enum02
+enum03
+string01
+string02
+string03
+byteArray01
+byteArray02
+byteArray03
+doubleArray01
+doubleArray02
+doubleArray03
+floatArray01
+floatArray02
+floatArray03
+intArray01
+intArray02
+intArray03
+shortArray01
+shortArray02
+shortArray03
+stringArray01
+stringArray02
+stringArray03
+ubyteArray01
+uintArray01
+ushortArray01
+byte01
+byte02
+byte03
+short01
+short02
+short03
+ubyte01
+ubyte02
+ubyte03
+ushort01
+ushort02
+ushort03
+uint01
+uint02
+uint03
+wait01
+wait02
+wait03
+float01
+float02
+float03
+-->bigstring01
+</pre>
+<h5>eget</h5>
+
+<p>This is similar to pvget, but has more support for normative types. It can also be used to query services using the "-s" option. It supports the -p provider option and URI syntax in both 4.4.0 and the current code. See <code>eget -h</code> for more details.</p>
+
+<!--
+
+<h4_>Service example</h4_>
+
+<ul>
+<li>Run hello world service</li>
+<li>eget channel archiver service</li>
+</ul>
+-->
+
+<h2>APIs for pvData</h2>
+
+<h3>pvData</h3>
+
+<!--
+<h4_>Field and PVField</h4_>
+
+
+<ul>
+<li>Field and PVField class hierarchies</li>
+<li>Field - getID, getType</li>
+<li>PVField getName(),getField(), getParent()</li>
+<li>serialize/deserialize</li>
+<li>FieldCreate,DataCreate</li>
+<li>C++: shared_pointers and typedefs</li>
+</ul>
+-->
+<h4>Creating simple structures</h4>
+
+<!--
+
+<ul>
+<li>Simple example. Structure of scalar fields e.g. aggregate type structure (mean, standard deviation, unit, max, min, description</li>
+<li>Create structure using FieldBuilder. Print. Get typeID(). getType()</li>
+<li>Create PVStructure</li>
+<li>Get subfields. Set. Get. Print. Get.</li>
+<li>getField(), getStructure()</li>
+<li>getScalar(), getScalarType()</li>
+</ul>
+-->
+<pre>
+#include &lt;pv/pvData.h&gt;
+
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+
+using namespace epics::pvData;
+using namespace std;
+
+int main (int argc, char *argv[])
+{
+    FieldBuilderPtr builder = getFieldCreate()-&gt;createFieldBuilder();
+
+    StructureConstPtr aggregateStruc = builder-&gt;setId("NTAgregate")
+                                  -&gt;add("value", pvDouble)
+                                  -&gt;add("N", pvInt)
+                                  -&gt;add("dispersion", pvDouble)
+                                  -&gt;add("max", pvDouble)
+                                  -&gt;add("min", pvDouble)
+                                  -&gt;add("description", pvDouble)
+                                  -&gt;createStructure();
+    cout &lt;&lt; *aggregateStruc &lt;&lt; endl;
+
+    cout &lt;&lt; aggregateStruc-&gt;getType() &lt;&lt; endl;
+    cout &lt;&lt; aggregateStruc-&gt;getID() &lt;&lt; endl &lt;&lt; endl;
+
+    PVStructurePtr aggregate1 = getPVDataCreate()-&gt;createPVStructure(aggregateStruc);
+    cout &lt;&lt; *aggregate1 &lt;&lt; endl;
+
+    cout &lt;&lt; *aggregateStruc &lt;&lt; endl &lt;&lt; endl;
+
+    cout &lt;&lt; aggregateStruc-&gt;getType() &lt;&lt; endl;
+    cout &lt;&lt; aggregateStruc-&gt;getID() &lt;&lt; endl &lt;&lt; endl;
+
+    PVStructurePtr aggregate1 = getPVDataCreate()-&gt;createPVStructure(aggregateStruc);
+
+    PVDoublePtr valueField = aggregate1-&gt;getSubField&gtPVDouble&gt;("value");
+    valueField-&gt;put(3.14);
+
+    aggregate1-&gt;getSubField&lt;PVInt&gt;("N")-&gt;put(42);
+    aggregate1-&gt;getSubField&lt;PVDouble&gt;("dispersion")-&gt;put(0.05);
+    aggregate1-&gt;getSubField&lt;PVDouble&gt;("max")-&gt;put(300.5);
+    aggregate1-&gt;getSubField&lt;PVDouble&gt;("min")-&gt;put(299.3);
+    aggregate1-&gt;getSubField&lt;PVString&gt;("description")-&gt;put("Beam current statistics");
+
+    cout &lt;&lt; *aggregate1 &lt;&lt; endl;
+
+    return 0;
+}
+</pre>
+
+<!--
+
+<h4_>Structure subfield example</h4_>
+
+<ul>
+<li>NTEnum, enum value, alarm, timestamp</li>
+</ul>
+
+<h4_>Scalar arrays</h4_>
+
+<ul>
+<li>Create structure with array fields (one of NTScalarArray/NTTable/NTMatrix)</li>
+<li>Scalar</li>
+<li>C++ API. shared_vector.</li>
+</ul>
+
+
+
+<h4_>Unions</h4_>
+
+<ul>
+<li>Example with variant and regular union</li>
+</ul>
+
+<h4_>Structure and Union arrays</h4_>
+
+<ul>
+<li>Example with </li>
+</ul>
+
+<h4_>Nested Structures and Unions (optional -time depending)</h4_>
+
+
+<h3_>Normative types</h3_>
+
+<ul><li>Example of one type, e.g. NTScalar</li></ul>
+
+
+-->
+
+<!--
+
+<h2_>Servers and Clients</h2_>
+
+<h3_>Writing an RPC Service example</h3_>
+
+<ul><li>Go through HelloWorld example</li></ul>
+
+<h3_>Writing a pvDatabase example</h3_>
+
+<ul><li>Go through exampleServer</li></ul>
+
+
+<h3_>Writing a monitored client</h3_>
+
+<ul><li>Take example from pvDatabase.</li></ul>
+-->
+
+</div>
+</body>
+</html>
