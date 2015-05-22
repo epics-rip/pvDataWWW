@@ -29,6 +29,7 @@
 #       release lines, so modules could have been included twice.
 #       
 # ============================================================================
+set -e -x
 
 function usage { 
 echo "
@@ -37,20 +38,19 @@ echo "
 
    Usage:
 
-       makereleaseCPP.sh -n <releaseName> -u <SFusername> [-f ] [-V] 
+       makereleaseCPP.sh -n <releaseName> [-f ] [-V] 
 
        -n <releaseName>      The string identifying the release. This is the
                              key used to search RELEASE_VERSIONS to find the
                              modules in the release.
-
-       -u <SFusername>       The argument SFusername is the SourceForge
-                             username to be used cloning the repos.
 
        -V                    Uses the specified release versions file
                              RELEASE_VERSIONS in the pvDataWWW/scripts dir and
                              the README file in pvDataWWW/mainPage of the copy
                              of pvDataWWW which contains the version of this
                              script which has been run.
+
+       -o <outdir>           Output directory
 
        -f                    Removes any files left from running the script
                              previously.
@@ -77,11 +77,7 @@ echo "
 "
 }
 
-
-thisdir=${PWD}
-
 function Exit {
-    cd ${thisdir}
     exit $1
 }
 
@@ -91,7 +87,7 @@ declare -a modulesa
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release.
 RELEASE_VERSIONS_URL=\
-https://github.com/epics-base/pvDataWWW/tree/default/scripts/RELEASE_VERSIONS
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/RELEASE_VERSIONS
 
 # Remote location of the README file
 README_URL=\
@@ -99,25 +95,24 @@ https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/mainPage/README
 
 # Remote location of the Makefile
 MAKEFILE_URL=\
-https://github.com/epics-base/pvDataWWW/tree/default/scripts/Makefile
+https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/scripts/Makefile
 
 # Remote location of the configuration script
 CONFIG_SCRIPT_URL=\
-https://github.com/epics-base/pvDataWWW/tree/default/scripts/configure.sh
+https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/scripts/configure.sh
 
 # Remote location of the CONFIG(_SITE).local
 CONFIG_LOCAL_URL=\
-https://github.com/epics-base/pvDataWWW/tree/default/scripts/CONFIG_SITE.local
+https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/scripts/CONFIG_SITE.local
 
 # Remote location of the RELEASE.local file
 RELEASE_LOCAL_URL=\
-https://github.com/epics-base/pvDataWWW/tree/default/scripts/RELEASE.local
+https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/scripts/RELEASE.local
 
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
 
 
-SFusername=
 releaseName= 
 localreleaseinfo=0
 force=0
@@ -126,14 +121,15 @@ while getopts hfu:Vn: opt; do
    case "$opt" in
        h) usage; Exit 0 ;;
        f) force=1 ;;
-       u) SFusername=${OPTARG} ;;
        V) localreleaseinfo=1 ;;
        n) releaseName=${OPTARG} ;; 
+       o) outdir="${OPTARG}" ;;
        *) echo "Unknown Argument, see makereleaseCPP.sh -h"; Exit 1;;
    esac
 done
 shift $((OPTIND-1));
 
+[ "${outdir}" ] || outdir="${PWD}/${releaseName}"
 
 if [ -z ${releaseName} ]; then
     echo "The release name is a required argument, (specify with -n)"
@@ -141,15 +137,14 @@ if [ -z ${releaseName} ]; then
     Exit 2
 fi
 
+workdir=`mktemp -d`
 
-if [ -z ${SFusername} ]; then
-	echo "Username is a required argument (specify with -u)."
-    echo "See makereleaseCPP.sh -h"
-    Exit 3
-fi
+# automatic cleanup of temp working dir
+trap "rm -rf ${workdir};echo cleanup ${workdir}" INT QUIT TERM EXIT
 
+install -d "${workdir}/tar"
+install -d "${workdir}/download" && cd "${workdir}/download"
 
-outdir=${releaseName}
 tarfile="${releaseName}.tar.gz"
 
 
@@ -295,24 +290,19 @@ modulesa=(`awk -v relname=${releaseName} 'BEGIN {relname="^" relname "$"} $1 ~ r
 
 # Check we got at least 1 module.
 if [ ${#modulesa[@]} -lt 1 ]; then
+    echo "Release versions"
+    cat $release_versions_pathname
     echo "Failed to find modules for release ${releaseName}"
     Exit 7
 fi
 
 echo ${releaseName} is composed of ${modulesa[*]}
 
-
-# Create the directory source and populate it. 
-#
-mkdir -p ${outdir}
-cd ${outdir}
-
-
-tags_filename="RELEASE_IDS"
+tags_filename="${workdir}/tar/RELEASE_IDS"
 file=$tags_filename
 tags_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 echo "# Module IDs for release ${releaseName}"   > $tags_pathname
-echo "# module global_rev local_rev branch tag" >> $tags_pathname 
+echo "# module global_rev local_rev branch tag" >> $tags_pathname
 
 for modulei in ${modulesa[*]}
 do
@@ -324,56 +314,30 @@ do
 	    Exit 8
     fi
 
-    echo Adding ${modulei} ${tag} to ${releaseName} tar directory
+    echo "Adding ${modulei} ${tag} to ${releaseName} tar directory"
 
+    install -d "${workdir}/tar/${modulei}"
     # clone module from sourceforge
-    checkoutname=${modulei}
-    hg clone -u ${tag} ssh://${SFusername}@hg.code.sf.net/p/epics-pvdata/${modulei} ${checkoutname}
-    if [ $? -ne 0 ]; then
-	    echo "hg clone failed."
-        Exit 9            
-    fi
+    curl "https://codeload.github.com/epics-base/${modulei}/tar.gz/${tag}" \
+    | tar -C "${workdir}/tar/${modulei}" --strip-components=1 -xz
 
-    # update separately. "hg clone -u <tag>" does not return an error status
-    # for a non existent tag! 
-    cd ${checkoutname}
-    hg update -r ${tag}
-    if [ $? -ne 0 ]; then
-	    echo "hg update failed."
-	    Exit 10
-    fi
-
-    echo "ids & tags for ${modulei}:"
-    hg id -tnib
-    echo "${modulei} " `hg id -tnib` >> ${tags_pathname}
-
-
-    # Remove mercurial metadata
-    rm -rf .hg*
-
-    cd .. 
+    echo "${modulei} ${tag}" >> ${tags_pathname}
 
 done
 
 
 # Add RELEASE_VERSIONS, README, Makefile and configure.sh to the bundle
 echo Adding RELEASE_VERSIONS, README, Makefile and configure.sh
-cp $release_versions_pathname .
-cp $readme_pathname .
-cp $makefile_pathname .
-cp $config_script_pathname .
-cp $config_site_local_pathname .
-cp $release_local_pathname ExampleRelease.local
-chmod +x ${config_script_name}
-cd ..
+cp $release_versions_pathname "${workdir}/tar/"
+cp $readme_pathname "${workdir}/tar/"
+cp $makefile_pathname "${workdir}/tar/"
+cp $config_script_pathname "${workdir}/tar/"
+cp $config_site_local_pathname "${workdir}/tar/"
+cp $release_local_pathname "${workdir}/tar/ExampleRelease.local"
+chmod +x "${workdir}/tar/${config_script_name}"
 
 
 # Create tarball
-echo Tarring  $outdir to $tarfile
-tar czf $tarfile $outdir
-
-if [ $? -ne 0 ]; then
-    Exit 12
-fi
-
-Exit 0
+echo "Tarring  ${workdir}/tar to ${outdir}/${tarfile}"
+install -d "${outdir}"
+tar -C "${workdir}/tar" -czf "${outdir}/${tarfile}" '.'

@@ -98,7 +98,7 @@ declare -a modulesa
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release, and the README.
 RELEASE_VERSIONS_URL=\
-https://github.com/epics-base/pvDataWWW/tree/default/scripts/RELEASE_VERSIONS
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/RELEASE_VERSIONS
 README_URL=\
 https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/mainPage/README
 SF_URL=\

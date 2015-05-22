@@ -24,7 +24,7 @@
 #
 #       
 # ============================================================================
-thisscript=$( basename "$0" )
+set -e -x
 
 function usage { 
 echo "
@@ -38,10 +38,8 @@ echo "
 
        -n <releaseName>   The string identifying the release. This is the key used to
                           search RELEASE_VERSIONS to find the modules in the release
-
-       -r <SFusername>    Use remote files. The argument SFusername is the SourceForge
-                          username to be used for upload.
  
+       -o <outdir>           Output directory
 
        NOTE: The versions in RELEASE_VERSIONS, MUST not be SNAPSHOT versions. That is
        contrary to release policy, and the script won't work in the expected way anyway
@@ -58,21 +56,16 @@ declare -a modulesa
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release, and the README.
 RELEASE_VERSIONS_URL=\
-https://github.com/epics-base/pvDataWWW/tree/default/scripts/RELEASE_VERSIONS
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/RELEASE_VERSIONS
 
 SFusername=
 releaseName= 
 force=0
 
-if [ $# -lt 1 ]; then
-   echo "Not enough arguments, at least the -n releaseName must be given. " \
-        "See makereleaseJars.sh -h for help";
-   exit 1;
-fi
 while getopts hr:fn: opt; do
    case "$opt" in
        h) usage; exit 0 ;;
-       r) SFusername=${OPTARG} ;;
+       o) outdir="${OPTARG}" ;;
        f) force=1 ;;
        n) releaseName=${OPTARG} ;; 
        *) echo "Unknown Argument, see makereleaseJars.sh -h"; exit 1;;
@@ -85,7 +78,16 @@ if [ -z ${releaseName} ]; then
     exit 1
 fi
 
-outdir=${releaseName}
+[ "${outdir}" ] || outdir="${PWD}/${releaseName}"
+tarfile="${releaseName}.doc.tar.gz"
+
+workdir=`mktemp -d`
+
+# automatic cleanup of temp working dir
+trap "rm -rf ${workdir};echo cleanup ${workdir}" INT QUIT TERM EXIT
+
+install -d "${workdir}/tar"
+install -d "${workdir}/download" && cd "${workdir}/download"
 
 # Locate the RELEASE_VERSIONS file, to tell use which modules must be in the release
 # build, and from it find out which modules are in the release. Check we got at 
@@ -128,11 +130,6 @@ fi
 missing_html=
 missing_hgdoc=
 
-# Create the directory containing the sources. 
-#
-mkdir -p ${outdir}
-cd ${outdir}
-
 for modulei in ${modulesa[@]}
 do
     tag=`awk -v relname=${releaseName} -v modulename=${modulei} \
@@ -140,56 +137,28 @@ do
 
     if [ $? -eq 0 ]; then
         docjar=${modulei}-${tag}-javadoc.jar
-        srcjar=${modulei}-${tag}-sources.jar
+        #srcjar=${modulei}-${tag}-sources.jar
 
         echo Adding ${modulei} ${tag} to ${releaseName} tar directory 
-        set -x
-	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${docjar}
-        if [ $? -ne 0 ]; then
-	        echo "wget failed."
-        fi
-        
-        set +x
-        
-        sfv4=hg.code.sf.net/p/epics-pvdata
-        if [ -z ${SFusername} ]; then
-            urlbase=http://${sfv4}
-        else
-            urlbase=ssh://${SFusername}@${sfv4}           
-        fi
-        
-        checkoutname=${modulei}       
-        hg clone -u ${tag} ${urlbase}/${modulei} ${checkoutname}
-        
-        if [ $? -eq 0 ]; then
-            # update separately. "hg clone -u <tag>" does not return an error status
-            # for a non existent tag! 
-            cd ${checkoutname}
-            hg update -r ${tag}
-            if [ $? -ne 0 ]; then
-	            echo "hg update failed."
-	            exit 5
-            fi
-            cd ..     
-        fi
+	    wget http://epics.sourceforge.net/maven2/epics/${modulei}/${tag}/${docjar} || echo "wget failed."
 
-        if [ ! -d ${modulei}/documentation ]; then
+        install -d "${workdir}/tar/${modulei}"
+        curl "https://codeload.github.com/epics-base/${modulei}/tar.gz/${tag}" \
+        | tar -C "${workdir}/tar/${modulei}" --strip-components=1 -xz || echo "failed to fetch source"
+
+        if [ ! -d ${workdir}/tar/${modulei}/documentation ]; then
             echo "No documentation dir"
             missing_hgdoc=( ${missing_hgdoc} ${modulei} )
-            rm -rf ${checkoutname}                 
         fi
         
         if [ -e  ${docjar}  ]; then
-            htmldir=${modulei}/documentation/html
-            mkdir -p ${htmldir}
-            mv ${docjar} ${htmldir}
-            pushd ${htmldir}       
-            jar xf ${docjar}
-            popd
-            mv ${htmldir}/${docjar} .
+            htmldir=${workdir}/tar/${modulei}/documentation/html
+            install -d ${htmldir}
+            (cd "$htmldir" && jar xf "${workdir}/download/${docjar}")
         else
             missing_hgdoc=( ${missing_hgdoc} ${modulei} )
         fi 
+
     else
 	    echo "Could not get module version for ${modulei}, exiting"
 	    exit 3
@@ -197,9 +166,12 @@ do
     echo "${modulei} complete"
 done
 
-    echo "modules complete"
 
-cd ..
+echo "Tarring  ${workdir}/tar to ${outdir}/${tarfile}"
+install -d "${outdir}"
+tar -C "${workdir}/tar" -czf "${outdir}/${tarfile}" '.'
+
+echo "No documentation for modules: ${skipped[@]}"
 
 echo "Missing hg documentation: ${missing_hgdoc}"
 echo "Missing javadoc: ${missing_html}"
