@@ -33,7 +33,7 @@ set -e -x
 
 function usage { 
 echo "
-   docReleaseCPP.sh creates the tar file of the CPP modules, together with
+   docReleaseCPP.sh creates the tar file of the CPP module documentation, together with
    other relevant files, of an EPICS V4 release. 
 
    Usage:
@@ -56,27 +56,20 @@ echo "
 
    Examples:
 
-         $ docReleaseCPP.sh -l -n EPICS-CPP-4.3.0 -r dhickin
+         $ docReleaseCPP.sh -l -n EPICS-CPP-4.3.0
 
        In this example, docReleaseCPP.sh generates the documentation for
        version 4.3.0 as specified in the RELEASE_VERSIONS file in the 
        copy of pvDataWWW which contains the version of this script which has
        been executed.
-       It will first clone the files it finds in the mercurial repo, build them
-       and generate the doxygen.
+       It will first clone the GitHub repos of all modules, then generate the
+       documentation using doxygen.
 
-         $ docReleaseCPP.sh  -n EPICS-CPP-4.3.0 -r dhickin
+         $ docReleaseCPP.sh -n EPICS-CPP-4.3.0
 
        This time docReleaseCPP.sh does the same thing but using the the
        RELEASE_VERSIONS file it finds on the web (see URL in source of this
        script).
-
-         $ docReleaseCPP.sh  -n EPICS-CPP-4.3.0
-
-       Same but uses anonymous http access.
-
-       To build the script assumes that the modules are listed from least
-       derived to most derived in the RELEASE_VERSIONS file
 "
 }
 
@@ -121,7 +114,7 @@ done
 shift $((OPTIND-1));
 
 if [ -z ${releaseName} ]; then
-    echo "The release name is a required argument, see makereleaseJars.sh -h"
+    echo "The release name is a required argument, see docReleaseCPP.sh -h"
     exit 1
 fi
 
@@ -239,9 +232,10 @@ else
 fi
 done
 
-echo "Tarring  ${workdir}/tar to ${outdir}/${tarfile}"
+mv ${workdir}/tar ${workdir}/${releaseName}
+echo "Tarring ${workdir}/${releaseName} to ${outdir}/${tarfile}"
 install -d "${outdir}"
-tar -C "${workdir}/tar" -czf "${outdir}/${tarfile}" '.'
+tar -C "${workdir}" -czf "${outdir}/${tarfile}" "${releaseName}"
 
 
 echo "No documentation for modules: ${skipped[@]}"
