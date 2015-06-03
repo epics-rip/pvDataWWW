@@ -341,4 +341,4 @@ chmod +x "${workdir}/tar/${config_script_name}"
 mv ${workdir}/tar ${workdir}/${releaseName}
 echo "Tarring ${workdir}/${releaseName} to ${outdir}/${tarfile}"
 install -d "${outdir}"
-tar -C "${workdir}" -czf "${outdir}/${tarfile}" '${releaseName}'
+tar -C "${workdir}" -czf "${outdir}/${tarfile}" "${releaseName}"
