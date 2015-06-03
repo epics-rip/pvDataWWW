@@ -1,3 +1,0 @@
-syntax: glob
-*~
-mainPage/talks/\.DS_Store
