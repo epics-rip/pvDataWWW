@@ -6,7 +6,7 @@
 #      of EPICS v4. 
 #
 # Usage:     
-#      ./makereleaseCPP.sh -n <releaseName> [-f] [-V] -u <SFusername>  
+#      ./makereleaseCPP.sh -n <releaseName> [-f] [-V]
 # 
 #      Once all of the V4 core C++ modules have been tagged
 #      (pvDataCPP, pvAccessCPP etc), as described in release.html,
@@ -338,6 +338,7 @@ chmod +x "${workdir}/tar/${config_script_name}"
 
 
 # Create tarball
-echo "Tarring  ${workdir}/tar to ${outdir}/${tarfile}"
+mv ${workdir}/tar ${workdir}/${releaseName}
+echo "Tarring ${workdir}/${releaseName} to ${outdir}/${tarfile}"
 install -d "${outdir}"
-tar -C "${workdir}/tar" -czf "${outdir}/${tarfile}" '.'
+tar -C "${workdir}" -czf "${outdir}/${tarfile}" '${releaseName}'
