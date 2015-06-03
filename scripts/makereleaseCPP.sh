@@ -91,23 +91,23 @@ https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/RELEASE_V
 
 # Remote location of the README file
 README_URL=\
-https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/mainPage/README
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/mainPage/README
 
 # Remote location of the Makefile
 MAKEFILE_URL=\
-https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/scripts/Makefile
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/Makefile
 
 # Remote location of the configuration script
 CONFIG_SCRIPT_URL=\
-https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/scripts/configure.sh
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/configure.sh
 
 # Remote location of the CONFIG(_SITE).local
 CONFIG_LOCAL_URL=\
-https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/scripts/CONFIG_SITE.local
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/CONFIG_SITE.local
 
 # Remote location of the RELEASE.local file
 RELEASE_LOCAL_URL=\
-https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/scripts/RELEASE.local
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/RELEASE.local
 
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
