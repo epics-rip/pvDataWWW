@@ -211,7 +211,7 @@ Some design decisions are required:
 
 Use Python to talk to pvAccess PVs 
 -
-[pvaPy](https://sourceforge.net/p/epics-pvdata/pvaPy/ci/default/tree/) is a simple and elegant Python API for pvAccess.
+[pvaPy](https://github.com/epics-base/pvaPy) is a simple and elegant Python API for pvAccess.
 
 [Will Need a few words on how complete it is, and whether it incorporates CA access].
 

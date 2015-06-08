@@ -405,9 +405,9 @@ https://github.com/epics-base/exampleJava/tree/default/src
 [16] Getting Started with EPICS V4, http://epics-pvdata.sourceforge.net/gettingStarted.html
 [17] pvaSrv documentation, http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html
 [18] exampleCPP, examples of use of EPICS V4 C++ binding, https://github.com/epics-base/exampleCPP/
-[19] RELEASE_VERSIONS, http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS
+[19] RELEASE_VERSIONS, https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIONS
 [20] EPICS V4 directoryService, http://www.epics2013.org/dms/EPICS2013/presentations/wednesday/Session_3/V4_Lange_ChannelFinder.pdf
 [21] EPICS Channel Finder, http://channelfinder.sourceforge.net
-[22] Mercurial repos of EPICS V4, https://sourceforge.net/p/epics-pvdata/_list/hg
+[22] Mercurial repos of EPICS V4, https://github.com/epics-base/
 [23] pvAccess Configuration, http://epics-pvdata.sourceforge.net/pvAccessConfig.xlsx
 [24] EPICS V4 CPU architecture compatibility and test status, http://epics-pvdata.sourceforge.net/Ev4buildtracker.xls

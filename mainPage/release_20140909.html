@@ -533,10 +533,10 @@ hg push</pre>
 
 <p>Within the EPICS V4 sphere, there are two sets of version numbers; the version number of EPICS V4 as a whole, and the version number of the individual modules of which EPICS V4 is composed. A given versioned release of EPICS V4 (say 4.4.1), is composed of a number of modules, each that their own version number. </p>
 
-<p>The formal association of a EPICS V4 packaged distribution version number, to the versions of its composite modules, is defined in <a href="http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a>. Indeed, the packaging is driven by scripts which read that file to determine the package contents.</p>
+<p>The formal association of a EPICS V4 packaged distribution version number, to the versions of its composite modules, is defined in <a href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a>. Indeed, the packaging is driven by scripts which read that file to determine the package contents.</p>
 
 <p>The mercurial repositories of
-individual modules should all be tagged with their individua release identification, as it appears in  <a href="http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a>.
+individual modules should all be tagged with their individua release identification, as it appears in  <a href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a>.
 
 <h3>The EPICS V4 Release Distribution Version Identifier</h3>
 
@@ -577,7 +577,7 @@ release version numbers is confusing and MUST NOT be used in the future.</p>
 <p>Each module in EPICS V4 has its own, independently moving, version number. This version number appears in three places - all must agree:</p>
 <ol>
 <li>It must be used as the Mercurial tag for the source code of the release of the module</li>
-<li>It identifies the module version to be included in a release in <a href="http://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a></li>
+<li>It identifies the module version to be included in a release in <a href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a></li>
 <li>Additionally, for Java, it must appear in the &lt;version&gt; element of the pom.xml Maven file of the module.</li>
 </ol>
 
