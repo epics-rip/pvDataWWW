@@ -6,17 +6,17 @@
 #      EPICS v4. 
 #
 # Usage:     
-#      ./docReleaseCPP.sh -v <releaseNumber> [-f] [-s] -u <SFusername>  
+#      ./docReleaseCPP.sh -v <releaseNumber> [-f] [-s]
 # 
 #      Once all of the V4 core C++ modules have been tagged
 #      (pvDataCPP, pvAccessCPP etc), as described in release.html,
 #      hg checkout pvDataWWW. Edit pvDataWWW/configure/RELEASE_VERSIONS 
-#      to define the modules of the release and their Mercurial (hg) tags. 
+#      to define the modules of the release and their revision IDs.
 #
 #      For examples see Usage function below.
 #
 #      A user should unpack the resulting tar.gz with, for instance:
-#            tar zxvf EPICS-CPP-4.3.0.tar.gz
+#            tar zxvf EPICS-CPP-4.3.0.doc.tar.gz
 #
 # Ref: http://epics-pvdata.sourceforge.net/release.html
 #
@@ -29,71 +29,55 @@
 #       release lines, so modules could have been included twice.
 #       
 # ============================================================================
+set -e -x
 
 function usage { 
 echo "
-   docReleaseCPP.sh creates the tar file of the CPP modules, together with
+   docReleaseCPP.sh creates the tar file of the CPP module documentation, together with
    other relevant files, of an EPICS V4 release. 
 
    Usage:
 
-       docReleaseCPP.sh -n <releaseName> -u <SFusername> [-f ] [-l] 
+       docReleaseCPP.sh -n <releaseName> [-f ] [-l] 
 
        -n <releaseName>      The string identifying the release. This is the
                              key used to search RELEASE_VERSIONS to find the
                              modules in the release.
-
-       -u <SFusername>       The argument SFusername is the SourceForge
-                             username to be used cloning the repos via ssh.
-                             If not supplied use anonymous http.
 
        -l                    Uses the specified release versions file
                              RELEASE_VERSIONS in the pvDataWWW/scripts dir
                              of the copy of pvDataWWW  which contains the
                              version of this script which has been run.
 
+       -o <outdir>           Output directory
+
        -f                    Removes any files left from running the script
                              previously.
 
    Examples:
 
-         $ docReleaseCPP.sh -l -n EPICS-CPP-4.3.0 -r dhickin
+         $ docReleaseCPP.sh -l -n EPICS-CPP-4.3.0
 
        In this example, docReleaseCPP.sh generates the documentation for
        version 4.3.0 as specified in the RELEASE_VERSIONS file in the 
        copy of pvDataWWW which contains the version of this script which has
        been executed.
-       It will first clone the files it finds in the mercurial repo, build them
-       and generate the doxygen.
+       It will first clone the GitHub repos of all modules, then generate the
+       documentation using doxygen.
 
-         $ docReleaseCPP.sh  -n EPICS-CPP-4.3.0 -r dhickin
+         $ docReleaseCPP.sh -n EPICS-CPP-4.3.0
 
        This time docReleaseCPP.sh does the same thing but using the the
        RELEASE_VERSIONS file it finds on the web (see URL in source of this
        script).
-
-         $ docReleaseCPP.sh  -n EPICS-CPP-4.3.0
-
-       Same but uses anonymous http access.
-
-       To build the script assumes that the modules are listed from least
-       derived to most derived in the RELEASE_VERSIONS file
 "
 }
 
-
-thisdir=${PWD}
-
 function Exit {
-    cd ${thisdir}
     exit $1
 }
 
-thisscript=$0
-
-
 echo "EPICS_BASE is $EPICS_BASE"
-echo "EPICS_HOST_ARCH is $EPICS_HOST_ARCH"
 
 if [ -z ${EPICS_BASE} ]; then
     echo "EPICS_BASE is needed"
@@ -106,14 +90,13 @@ declare -a buildmodulesa
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release.
 RELEASE_VERSIONS_URL=\
-http://hg.code.sf.net/p/epics-pvdata/pvDataWWW/raw-file/tip/scripts/RELEASE_VERSIONS
+https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/RELEASE_VERSIONS
 
 
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
 
 
-SFusername=
 releaseName= 
 localreleaseinfo=0
 force=0
@@ -122,18 +105,21 @@ while getopts hfu:ln: opt; do
    case "$opt" in
        h) usage; Exit 0 ;;
        f) force=1 ;;
-       u) SFusername=${OPTARG} ;;
        l) localreleaseinfo=1 ;;
+       o) outdir="${OPTARG}" ;;
        n) releaseName=${OPTARG} ;; 
-       *) echo "Unknown Argument, see $thisscript -h"; Exit 1;;
+       *) echo "Unknown Argument, see $0 -h"; Exit 1;;
    esac
 done
 shift $((OPTIND-1));
 
+if [ -z ${releaseName} ]; then
+    echo "The release name is a required argument, see docReleaseCPP.sh -h"
+    exit 1
+fi
 
-
-outdir=${releaseName}
-
+[ "${outdir}" ] || outdir="${PWD}/${releaseName}"
+tarfile="${releaseName}.doc.tar.gz"
 
 # Check the directory whose contents we'll tar doesn't already exist
 if [ -e ${outdir} ]; then
@@ -147,6 +133,14 @@ the force option (-f)."
 fi
 
 
+workdir=`mktemp -d`
+
+# automatic cleanup of temp working dir
+trap "rm -rf ${workdir};echo cleanup ${workdir}" INT QUIT TERM EXIT
+
+install -d "${workdir}/tar"
+install -d "${workdir}/build"
+install -d "${workdir}/download" && cd "${workdir}/download"
 
 
 # Locate the RELEASE_VERSIONS file, to tell which modules are in the release
@@ -155,10 +149,6 @@ if [ ${localreleaseinfo} -eq 1 ]; then
     release_versions_pathname=${scriptdir}/RELEASE_VERSIONS
 else
     # Get the remote version file.
-    # Delete the existing file first if it's already there.
-    if [ -e RELEASE_VERSIONS ]; then
-        rm -rf RELEASE_VERSIONS
-    fi
     wget ${RELEASE_VERSIONS_URL}
     release_versions_pathname=${PWD}/RELEASE_VERSIONS
 fi
@@ -188,11 +178,6 @@ fi
 echo ${releaseName} is composed of ${modulesa[*]}
 
 
-# Create the directory source and populate it. 
-#
-mkdir -p ${outdir}
-cd ${outdir}
-
 for modulei in ${modulesa[@]}
 do
     tag=`awk -v relname=${releaseName} -v modulename=${modulei} \
@@ -203,40 +188,13 @@ do
 	    Exit 9
     fi
 
+    echo "Fetch ${modulei} ${tag}"
+
+    install -d "${workdir}/build/${modulei}"
     # clone module from sourceforge
-    checkoutname=${modulei}
-
-    sfv4=hg.code.sf.net/p/epics-pvdata
-    if [ -z ${SFusername} ]; then
-        urlbase=http://${sfv4}
-    else
-        urlbase=ssh://${SFusername}@${sfv4}           
-    fi
-        
-    checkoutname=${modulei}       
-    hg clone -u ${tag} ${urlbase}/${modulei} ${checkoutname}
-    if [ $? -ne 0 ]; then
-	    echo "hg clone failed."
-        Exit 10            
-    fi
-
-    # update separately. "hg clone -u <tag>" does not return an error status
-    # for a non existent tag! 
-    cd ${checkoutname}
-    hg update -r ${tag}
-    if [ $? -ne 0 ]; then
-	    echo "hg update failed."
-	    Exit 11
-    fi
-
-    echo "tags for ${modulei}:"
-    hg id -t
-
-    cd .. 
-
+    curl "https://codeload.github.com/epics-base/${modulei}/tar.gz/${tag}" \
+    | tar -C "${workdir}/build/${modulei}" --strip-components=1 -xz
 done
-
-
 
 reversed_modules=( )
 
@@ -247,33 +205,38 @@ done
 
 for modulei in ${reversed_modules[@]}
 do
-if [ -e ${modulei} ]; then
-    cd ${modulei}
-	top=${PWD}
-	echo "${modulei}=$top" > ../RELEASE.local
-	cd ..
-fi    
+    if [ -e ${modulei} ]; then
+        echo "${modulei}=${workdir}/build/${modulei}" >> "${workdir}/build/RELEASE.local"
+    fi    
 done
 
-echo "EPICS_BASE=$EPICS_BASE" > RELEASE.local
-echo "CROSS_COMPILER_TARGET_ARCHS=" > CONFIG.local
+echo "EPICS_BASE=$EPICS_BASE" >> "${workdir}/build/RELEASE.local"
+
+echo "CROSS_COMPILER_TARGET_ARCHS=" > "${workdir}/build/CONFIG.local"
 
 skipped=( )
 
 for modulei in ${modulesa[@]}
 do
-if [ -e ${modulei}/Makefile ]; then
-    cd ${modulei}
-    make clean uninstall
-	make
-	doxygen
-	cd ..
+if [ -e ${workdir}/build/${modulei}/Makefile -a -e ${workdir}/build/${modulei}/Doxyfile ]; then
+    ( cd ${workdir}/build/${modulei} && \
+	make inc && \
+	doxygen)
+	install -d "${workdir}/tar/${modulei}/documentation"
+	tar -C "${workdir}/build/${modulei}" --exclude='O.*' -c '.' \
+	| tar -C "${workdir}/tar/${modulei}" -x
 else
+    echo "=== Skip ${modulei}"
+    ls -1 "${workdir}/build/${modulei}"
     skipped=("${skipped[@]}" "${modulei}" )
 fi
 done
 
-cd ..
+mv ${workdir}/tar ${workdir}/${releaseName}
+echo "Tarring ${workdir}/${releaseName} to ${outdir}/${tarfile}"
+install -d "${outdir}"
+tar -C "${workdir}" -czf "${outdir}/${tarfile}" "${releaseName}"
+
 
 echo "No documentation for modules: ${skipped[@]}"
 

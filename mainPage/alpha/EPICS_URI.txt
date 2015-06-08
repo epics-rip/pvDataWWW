@@ -246,8 +246,7 @@ If we can fix these issues, or I see I was mistaken, I can integrate it in the U
 References
 ----------
 [1] http://www.ietf.org/rfc/rfc2396.txt
-[2] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#monitor_request_options
-
+[2] http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#monitor_request_options
 
 
 

@@ -114,7 +114,7 @@ them from the source, as described below. For java, you may alternatively just
 download the Jars. This document deals with acquiring and using these 3 core modules.
 However, there are many more pieces of software in the EPICS V4 "ecosphere", please
 see the homepage, and
-the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/">EPICS V4
+the <a href="https://github.com/epics-base/">EPICS V4
 Mercurial web site</a>.</p>
 
 <p> Also, the levels of maturity and completeness of the core modules, is different
@@ -127,11 +127,11 @@ go further than this Getting Started guide. </p>
   <th>Module</th><th>SourceForge Hg repo for Java</th><th>Java jar
   file</th><th>SourceForge Hg repo for C++</th>
   </tr>
-  <TR><TD>pvData</TD><TD><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/" >pvDataJava</a></TD><TD>pvData-2.1-SNAPSHOT.jar</TD><TD><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataCPP/" >pvDataCPP</a></TD>
+  <TR><TD>pvData</TD><TD><a href="https://github.com/epics-base/pvDataJava/" >pvDataJava</a></TD><TD>pvData-2.1-SNAPSHOT.jar</TD><TD><a href="https://github.com/epics-base/pvDataCPP/" >pvDataCPP</a></TD>
  </TR>
-   <TR><TD>pvAccess</TD><TD><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessJava/" >pvAccessJava</a></TD><TD>pvAccess-2.1-SNAPSHOT.jar</TD><TD><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvAccessCPP/" >pvAccessCPP</a></TD>
+   <TR><TD>pvAccess</TD><TD><a href="https://github.com/epics-base/pvAccessJava/" >pvAccessJava</a></TD><TD>pvAccess-2.1-SNAPSHOT.jar</TD><TD><a href="https://github.com/epics-base/pvAccessCPP/" >pvAccessCPP</a></TD>
  </TR>
-   <TR><TD>pvIOC</TD><TD><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCJava/" >pvIOCJava</a></TD><TD>pvIOC-2.1-SNAPSHOT.jar</TD><TD><a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvIOCCPP/" >pvIOCCPP</a></TD>
+   <TR><TD>pvIOC</TD><TD><a href="https://github.com/epics-base/pvIOCJava/" >pvIOCJava</a></TD><TD>pvIOC-2.1-SNAPSHOT.jar</TD><TD><a href="https://github.com/epics-base/pvIOCCPP/" >pvIOCCPP</a></TD>
  </TR>
 </table>
 
@@ -228,8 +228,8 @@ instructions.</p>
 <img src="image/sfdownloadfiles.png">
 
 <p>To get off the ground using java download, see the examples in the
-epics-pvdata <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/" >exampleJava Mercurial repo</a> [<a href="#ev4examples-java" ></a>ev4examples-java]. <em>The setup files of those examples
-(<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/helloWorld_setup.bash" >helloWorld_setup.bash</a> and <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService/rdb_setup.bash" >rdb_setup.bash</a>) are written assuming
+epics-pvdata <a href="https://github.com/epics-base/exampleJava/tree/default/src/" >exampleJava Mercurial repo</a> [<a href="#ev4examples-java" ></a>ev4examples-java]. <em>The setup files of those examples
+(<a href="https://github.com/epics-base/exampleJava/tree/default/src/helloWorld/helloWorld_setup.bash" >helloWorld_setup.bash</a> and <a href="https://github.com/epics-base/exampleJava/tree/default/src/rdbService/rdb_setup.bash" >rdb_setup.bash</a>) are written assuming
 local .class files, you'll have to convert them so the CLASSPATH points to the
 jar files instead - <a href="#step-by-step">as described below</a> ).</em> So far only 
 examples of the "ChannelRPC" functionality of EPICS V4 are 
@@ -564,18 +564,18 @@ server, get data back dependent on the arguments).</p>
 <dl>
   <dt>helloWorld</dt>
   <dd>In particular, you may like to start with the,  <a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/576e59c105e9/src/helloWorld">
+href="https://github.com/epics-base/exampleJava/tree/default/src/helloWorld">
 helloWorld example service</a>. HelloWorld is composed of a server and a client. The
   server is built on top of the RPCSever framework in pvAccessJava.
   The service returns a string which greets
   that person and the client prints the received greeting. Start with its <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/helloWorld/HELLOWORLD_README.txt"
+  href="https://github.com/epics-base/exampleJava/tree/default/src/helloWorld/HELLOWORLD_README.txt"
   >HELLOWORLD_README.txt</a>. This demonstrates an EPICS V4 record whose value is subject to
   a user argument.
 </dd>
 <dt>rdbService<dt>
   <dd>
-  The <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/e144f4b3b8ed/src/rdbService"
+  The <a href="https://github.com/epics-base/exampleJava/tree/default/src/rdbService"
 >rdbService</a> example is a complete functional server for accessing SQL databases
 such Oracle via an EPICS V4 server, and returning the resulting table ResultSet data
 back to an EPICS V4 client. rdbService illustrates:</P>
@@ -745,17 +745,17 @@ it contains 2 examples of RPC-style servers.</p>
 <dl>
   <dt>HelloWorld</dt>
   <dd>As with the Java examples, a good place to start is with the
-<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/tip/HelloWorld">
+<a href="https://github.com/epics-base/exampleCPP/tree/default/HelloWorld">
 HelloWorld example service</a>. The HelloWorld in exampleCPP is the C++ equivalent of the one in exampleJava,
 i.e. is composed of a server and a client. The client sends the server a name and prints the response from
 the server which is a greeting addressed to the supplied name. Start with its <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/file/tip/HelloWorld/HELLOWORLD_README.txt"
+  href="https://github.com/epics-base/exampleCPP/tree/default/HelloWorld/HELLOWORLD_README.txt"
   >HELLOWORLD_README.txt</a>.
 </dd>
 
 <dt>ChannelArchiverService<dt>
   <dd>
-  The <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/ChannelArchiverService"
+  The <a href="https://github.com/epics-base/exampleCPP/ChannelArchiverService"
 >ChannelArchiverService</a> example is a complete functional EPICS V4 server for accessing an EPICS Channel Archiver index file
 and returning the archive data back to an EPICS V4 client.
 It can be queried using the eget utility but also includes
@@ -1159,18 +1159,18 @@ epicsEnvSet("PVACCESS","$(TOP)/../pvAccessCPP")
 
 <dt id="ev4examples-java">[ev4examples-java]</dt>
   <dd>EPICS V4 Java Examples repository, <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/summary">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/summary</a>
+  href="https://github.com/epics-base/exampleJava/summary">https://github.com/epics-base/exampleJava/summary</a>
   </dd>
 
 <dt id="ev4examples-cpp">[ev4examples-cpp]</dt>
   <dd>EPICS V4 C++ Examples repository, <a
-  href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/summary">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleCPP/summary</a>
+  href="https://github.com/epics-base/exampleCPP/summary">https://github.com/epics-base/exampleCPP/summary</a>
   </dd>
 
 <dt id="EPICSV4repos">[EPICSV4repos]</dt>
   <dd>EPICS V4 Mercurial Repositories, <a
-    href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/" >
-    http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/</a>
+    href="https://github.com/epics-base/" >
+    https://github.com/epics-base/</a>
   </dd>
 
 <dt id="bib:jca">[jcaandcaj]</dt>

@@ -79,7 +79,7 @@ rsync -r -e ssh --delete mainPage/doc bnl-jenkins,epics-pvdata@web.sourceforge.n
  : GW: AI on JR: to create script for publication of documentation of tagged releases
 ************
  Greg White: http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/7743da6d45c1/documentation/pvDataJava.html
- Greg White: http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html
+ Greg White: http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html
  Greg White: http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html
  : GW: all normative doc should have header like pvAccess_Protocol_Specification.html
  : GW: including Abstract, and Status

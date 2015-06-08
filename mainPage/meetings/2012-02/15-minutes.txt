@@ -29,8 +29,8 @@ Agenda
 
 [1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
 [2] http://epicsv4.titanpad.com/2?
-[3] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/raw-file/tip/easyPVA/documentation/easyPVA.html
-[4] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/raw-file/tip/mainPage/alpha/EasierPVA.html
+[3] https://raw.githubusercontent.com/mdavidsaver/alphaCPP/default/easyPVA/documentation/easyPVA.html
+[4] https://raw.githubusercontent.com/mdavidsaver/pvDataWWW/default/mainPage/alpha/EasierPVA.html
 [5] Thread on unsigned, https://sourceforge.net/mailarchive/forum.php?thread_name=4F3A5143.8000308%40comcast.net&forum_name=epics-pvdata-devel
 
 ------------------------ Minutes ----------------------------

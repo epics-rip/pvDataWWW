@@ -215,7 +215,7 @@ elements being taken from the same numbered elements of each array.  </p>
 
 <p>All the EPICS V4 Normative Types are defined as particular structure instance
 definitions of a pvData <a
- href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#L184"
+ href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#L184"
  >structure</a>. This is true even of the Normative Types describing simple values
 like a single int, since all Normative Types optionally include descriptor, alarm and 
 timestamp. The fields of any given
@@ -240,7 +240,7 @@ href="#bib:pvdata">bib:pvdata</a>.</p>
   come first,
   the optional fields follow</li>
   <li>The order of fields matters. Although the Normative Types pvData binding allows
-  for access though an <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#introspection_interfaces">introspection API</a>, senders must encode the fields in the order
+  for access though an <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#introspection_interfaces">introspection API</a>, senders must encode the fields in the order
   described in this document</li>
 </ol>
 
@@ -785,9 +785,9 @@ each datum conforms.</p>
 
 <p>Recall that in the pvData system, data variables are constructed in two equally
   important parts; the
-  <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#introspection_interfaces">introspection
+  <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#introspection_interfaces">introspection
   interface</a>, in which data types are defined, and
-  the <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataJava/raw-file/tip/documentation/pvDataJava.html#data_interfaces">data
+  the <a href="http://epics-pvdata.sourceforge.net/docbuild/pvDataJava/tip/documentation/pvDataJava.html#data_interfaces">data
   interface</a>, in which instance data are created and populated. The introspection interface can
   be used to examine an instance, to see what fields it posses. Getting and
   setting values, is done through the data interface. As a programmer, you
@@ -1726,7 +1726,7 @@ Input / Output Controller (IOC) Application Developer's Guide</a> Marty Kraimer,
   </dd>
   <dt class="bib" id="bib:rdbservice">bib:rdbservice</dt>
   <dd>
-    rdbService, example EPICS V4 service, <a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService">http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/exampleJava/file/tip/src/rdbService</a>
+    rdbService, example EPICS V4 service, <a href="https://github.com/epics-base/exampleJava/tree/default/src/rdbService">https://github.com/epics-base/exampleJava/tree/default/src/rdbService</a>
   </dd>
 </dl>
 

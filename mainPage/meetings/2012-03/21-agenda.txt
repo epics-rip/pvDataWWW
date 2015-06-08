@@ -65,7 +65,7 @@ tinyURL: http://tinyurl.com/6mv99y4
 [1] http://epics-pvdata.sourceforge.net/home.html#usefulinfo
 [2] http://epicsv4.titanpad.com/
 [3] http://epics-pvdata.sourceforge.net/charter.html#deliverables
-[4] http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/alphaCPP/raw-file/tip/easyPVA/documentation/easyPVA.html
+[4] https://raw.githubusercontent.com/mdavidsaver/alphaCPP/default/easyPVA/documentation/easyPVA.html
 [5] http://epics-pvdata.sourceforge.net/alpha/unsigned.html
 
 On 20 Mar 2012, at 14:48, Dalesio, Leo wrote:

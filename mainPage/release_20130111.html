@@ -29,7 +29,7 @@
 </ol>
 
 Release scripts are in mercurial under <a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts">pvDataWWW/scripts</a>.
+href="https://github.com/epics-base/pvDataWWW/tree/default/scripts">pvDataWWW/scripts</a>.
 </p>
 
 <p>
@@ -40,16 +40,16 @@ During the release process documentation (both written and generated) is copied 
 <p><strong>Code:</strong></p>
 <p>
 <a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/tagtip.sh">tagtip.sh</a>
+href="https://github.com/epics-base/pvDataWWW/tree/default/scripts/tagtip.sh">tagtip.sh</a>
 tags the current head of the repositories.
 Edit the script to set the tag and the user name.
 </p>
 <p>
-<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/makerelease.sh">makerelease.sh</a> clones the tagged repositoties, generates the tar file, and synchronizes to the file area.
+<a href="https://github.com/epics-base/pvDataWWW/tree/default/scripts/makerelease.sh">makerelease.sh</a> clones the tagged repositoties, generates the tar file, and synchronizes to the file area.
 </p>
 <p><strong>Documentation:</strong></p>
 <p>
-<a href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncdoxygen.sh">syncdoxygen.sh</a> clones the tagged repositoties, generates the doxygen, and synchronizes to the web area.
+<a href="https://github.com/epics-base/pvDataWWW/tree/default/scripts/syncdoxygen.sh">syncdoxygen.sh</a> clones the tagged repositoties, generates the doxygen, and synchronizes to the web area.
 </p>
 
 <h2>Java</h2>
@@ -172,7 +172,7 @@ to build the tar, then run /makereleaseJars.sh from where you edited it:</p>
 <p><strong>Documentation:</strong></p>
 <p>
 <a
-href="http://epics-pvdata.hg.sourceforge.net/hgweb/epics-pvdata/pvDataWWW/file/tip/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
+href="https://github.com/epics-base/pvDataWWW/tree/default/scripts/syncjavadoc.sh">syncjavadoc.sh</a>
 clones the tagged repositoties, generates the JavaDoc, and synchronizes to the web
 area. Check it builds the set of modules you want and then execite it in a scratch
 area. You may want to comment out the rsync and do that by hand.</p>
