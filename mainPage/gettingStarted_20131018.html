@@ -378,14 +378,14 @@ done by many institutions for security reasons. Below is an example of how to ch
 out the pvDataJava Mercurial repository, using the hg unix command via anonymous
 access:</p>
 
-<pre>% hg clone http://hg.code.sf.net/p/epics-pvdata/pvDataJava
+<pre>% git clone https://github.com/epics-base/pvDataJava.git
 </pre>
 
 <p>Alternatively use the ssh URI below for "non-anonymous" access. Permissions are presently set such that
 only epics-pvdata members can check out or push commits, so contact any one of
 the <a href="http://epics-pvdata.sourceforge.net/home.html#membership" >participants</a> to get added first:</p>
 
-<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvDataJava</pre>
+<pre>% git clone https://github.com/epics-base/pvDataJava.git</pre>
 
 <p>See <a href="passwordlessAccessToSourceForge.html">the Cheatsheet for Passwordless
 SSH Access to SourceForge for EPICS V4 Development</a> if you'd like to set up your
@@ -422,10 +422,10 @@ you may also want to clone.</p>
 
 <pre>
 [from hg/ directory in this example, created above]
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvDataJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvAccessJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/exampleJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/easyPVAJava
+% git clone https://github.com/epics-base/pvDataJava.git
+% git clone https://github.com/epics-base/pvAccessJava.git
+% git clone https://github.com/epics-base/exampleJava.git
+% git clone https://github.com/epics-base/easyPVAJava.git
 </pre>
 
 <p>After each of these, you should see 9 or 10 lines, ending in a line like the
@@ -624,14 +624,14 @@ You're not required to put all the modules in the same directory, but it makes s
 The minimum you'll need is the modules pvCommonCPP, pvDataCPP and pvAccessCPP. So if you're using the SSH URI, clone as follows:
 
 <pre>[commands issued from the desired location for each repo]
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvCommonCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvDataCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvAccessCPP
+% git clone https://github.com/epics-base/pvCommonCPP.git
+% git clone https://github.com/epics-base/pvDataCPP.git
+% git clone https://github.com/epics-base/pvAccessCPP.git
 </pre>
 and if using HTTP:
-<pre>% hg clone http://hg.code.sf.net/p/epics-pvdata/pvCommonCPP
-% hg clone http://hg.code.sf.net/p/epics-pvdata/pvDataCPP
-% hg clone http://hg.code.sf.net/p/epics-pvdata/pvAccessCPP
+<pre>% git clone https://github.com/epics-base/pvCommonCPP.git
+% git clone https://github.com/epics-base/pvDataCPP.git
+% git clone https://github.com/epics-base/pvAccessCPP.git
 </pre>
 </p>
 
@@ -639,9 +639,9 @@ and if using HTTP:
 pvIOCCPP was a core module, but is no longer being developed. However pvaSrv still has a dependency on this.
 There are also two example V4 services in exampleCPP. These can be obtained in the same way. So for SSH access clone as follows:
 
-<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvIOCCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvaSrv	
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/exampleCPP
+<pre>% git clone https://github.com/epics-base/pvIOCCPP.git
+% git clone https://github.com/epics-base/pvaSrv.git	
+% git clone https://github.com/epics-base/exampleCPP.git
 </pre>
 </p>
 

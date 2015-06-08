@@ -98,14 +98,14 @@ as <a href="http://epics-pvdata.sourceforge.net/epicsv4process.html#normative" >
 documents</a> of the EPICS V4 working group, and available from the
 homepage <a href="http://epics-pvdata.sourceforge.net/index.html"> the EPICS V4
 homepage</a>. There are Java and C++ implementations of each of the core modules. The source
-code of each can be acquired from Mercurial. To use them, you can download and build
-them from the source, from Mercurial or from a release bundle tar file, as described below. For Java,
+code of each can be acquired from Git. To use them, you can download and build
+them from the source, from Git or from a release bundle tar file, as described below. For Java,
   the release bundle tar file includes prebuilt Jars. This document deals with acquiring, building, and first steps in using the core modules,
   plus pvaSrv to connect to EPICS Base IOCs.
 However, there are many more pieces of software in the EPICS V4 "ecosphere", please
 see the homepage, and
 the <a href="https://github.com/epics-base/">EPICS V4
-Mercurial web site</a>.</p>
+Git web site</a>.</p>
 
 <p>A table in the <a class="bib" href="#downloadsite">EPICS V4 download site</a> README details the modules of EPICS V4.4. Part of it is
   reproduced here:
@@ -202,13 +202,13 @@ EPICS V4. For C++ development, see below. </p>
 
 <p>The Java implementation of the core EPICS V4 pv* modules, is made available in two
 ways. Firstly, you can download EPICS V4 as a tarball of the jar files directly from
-the EPICS V4 SourceForge site. Alternatively, you can download the Java sources from their Mercurial repos and
+the EPICS V4 SourceForge site. Alternatively, you can download the Java sources from their Git repos and
 build it yourself.</p>
 
 <p>You would use the tar file mechanism of acquiring EPICS V4 if you only intend to
 use EPICS V4's Java implementation as a user. If you want to contribute to
 development at all, or to examine the source for other reasons, you probably want to
-acquire EPICS V4 by the method of downloading the Mercurial source, and building with
+acquire EPICS V4 by the method of downloading the Git source, and building with
 Maven.  Each of these will be described below.  </p>
 
 
@@ -240,7 +240,7 @@ what's in the tar.gz. </p>
 <!-- img src="image/sfdownloadfiles4_3.png" width="638" height="198" -->
 
 <p>To get off the ground using Java download, see the examples in the
-epics-pvdata <a href="https://github.com/epics-base/exampleJava/tree/default/src/" >exampleJava Mercurial repo</a> [<a href="#ev4examples-java" ></a>ev4examples-java]. <em>The setup files of those examples
+epics-pvdata <a href="https://github.com/epics-base/exampleJava/tree/default/src/" >exampleJava Git repo</a> [<a href="#ev4examples-java" ></a>ev4examples-java]. <em>The setup files of those examples
 (<a href="https://github.com/epics-base/exampleJava/tree/default/src/services/helloWorld/helloWorld_setup.bash" >helloWorld_setup.bash</a> and <a href="https://github.com/epics-base/exampleJava/tree/default/src/services/rdbService/rdb_setup.bash" >rdb_setup.bash</a>) are written assuming
 local .class files, you'll have to convert them so the CLASSPATH points to the
 jar files instead - <a href="#step-by-step">as described below</a> ).</em> So far only 
@@ -361,18 +361,18 @@ Hello Stefania
 </li>
 </ol>
 
-<h3 id="sourcedownload">Getting EPICS V4 Java Implementation Source and Build using Mercurial and Maven</h3>
+<h3 id="sourcedownload">Getting EPICS V4 Java Implementation Source and Build using Git and Maven</h3>
 
-<p>The use case of downloading the source using Mercurial (aka "hg"), and building
+<p>The use case of downloading the source using Git (aka "git"), and building
 with Maven, would be applicable if you are a Java developer and wish either to
 contribute to EPICS V4, or like to use a command line for your Java builds, or
 both. </p>
 
 <p>The EPICS V4 software components (pvData, pvAccess) are each in
-distinct mercurial repositories in the SourceForge project epics-pvdata. There are
-separate Mercurial repos for each of the C++ and Java implementations of each
+distinct Git repositories in the SourceForge project epics-pvdata. There are
+separate Git repos for each of the C++ and Java implementations of each
 component [<a href="#EPICSV4repos" >EPICSV4repos</a>]. They can all be
-checked out via the Mercurial unix shell command hg, or using a Mercurial GUI client
+checked out via the Git unix shell command git, or using a Git GUI client
 suitable for your platform.</p>
 
 <p>The procedure defined below will help you download the source for the pv core modules
@@ -382,47 +382,23 @@ above, plus the caj/jca jars, and build pv core jars.</p>
 
 <p>V4.4 Java requires Java 1.7</p>
 
-<p>You must have Maven and Mercurial clients installed. Mercurial, commonly "hg" on
+<p>You must have Maven and Git clients installed. Git, commonly "git" on
 the command line comes for free with Mac OS
 (or <a href="http://jasonfharris.com/machg/">MacHg for Mac OS X is a nice
-GUI</a>). Mercurial must be able to download from the "epics-pvdata" sourceForge
+GUI</a>). Git must be able to download from the "epics-pvdata" sourceForge
 project. That means you either are going to use the HTTP URI syntax or the SSH URI
-syntax, as understood by Mercurial. </p>
+syntax, as understood by Git. </p>
 
-<p>Download from the Mercurial repositories can be done anonymously (using the HTTP
-method), or using a sourceForge account (which uses the SSH method). <em>The HTTP
-method may not work from your institution (see below) and if you're going to use the
-SSH mechanism, you will have to register with sourceForge.</em></p>
-
-<p>Anonymous checkout (which uses the HTTP method - if it works for you) is via the
-URI below. Note that we have seen that some people get a "cannot connect" timeout
-using this method, while the identical command works for other people. It's probably
-related to the common practice of blocking port 8000 on the client side, which is
-done by many institutions for security reasons. Below is an example of how to check
-out the pvDataJava Mercurial repository, using the hg unix command via anonymous
+<p>Download from the Git repositories can be done anonymously. Below is an example of how to check
+out the pvDataJava Git repository, using the git unix command via anonymous
 access:</p>
 
-<pre>% hg clone http://hg.code.sf.net/p/epics-pvdata/pvDataJava
+<pre>% git clone https://github.com/epics-base/pvDataJava.git
 </pre>
 
-<p>Alternatively use the ssh URI below for "non-anonymous" access. Permissions are presently set such that
-only epics-pvdata members can check out or push commits, so contact any one of
-the <a href="http://epics-pvdata.sourceforge.net/home.html#membership" >participants</a> to get added first:</p>
+<h4 id="createlocalrepo">Create your local Git "repo" for your EPICS V4 work</h4>
 
-<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvDataJava</pre>
-
-<p>See <a href="passwordlessAccessToSourceForge.html">the Cheatsheet for Passwordless
-SSH Access to SourceForge for EPICS V4 Development</a> if you'd like to set up your
-SourceForge account so that SSH operations can proceed without a password. Of course,
-for command line development as is described here, passwordless ssh authentication to
-SourceForge Mercurial is not necessary, it's just nice. But for Eclipse development it
-is important because of problems in Eclipse's Mercurial tools when they come to
-needing a password from the user.</p>
-
-<h4 id="createlocalrepo">Create your local Mercurial "repo" for your EPICS V4 work</h4>
-
-<p>Having installed mercurial (hg command) and decided on the URI scheme you're going
-to use (HTTP or SSH), now download the source. You'll create a local Mercurial
+<p>Having installed Git, now download the source. You'll create a local Git
 "repository" <strong>for each</strong> EPICS V4 module you get.</p>
 
 <p>First, you may want to create a root directory in which to house your repo directories, e.g.:</p>
@@ -430,14 +406,14 @@ to use (HTTP or SSH), now download the source. You'll create a local Mercurial
 <pre>
 % pwd
 /Users/greg/Development/epicsV4/
-% mkdir hg
-% cd hg
+% mkdir git
+% cd git
 </pre>
 
 <h4 id="javadownload">Download minimum EPICSv4 Java implementation repos from epics-pvdata into local repos</h4>
 
-<p>To download the source using Mercurial, use an "hg clone" command, executed while in the
-directory you created, i.e. "hg/" in the
+<p>To download the source using Git, use an "git clone" command, executed while in the
+directory you created, i.e. "git/" in the
 example above. You will need at least the 2 core "normative" module Java
 implementations pvDataJava and pvAccessJava (the first 2 below). You may well also want
 exampleJava, which contains example servers and clients, and easyPVAJava, which
@@ -445,11 +421,11 @@ contains an beta level development of a simple client side API for pvAccess. See
 you may also want to clone.</p>
 
 <pre>
-[from hg/ directory in this example, created above]
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvDataJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvAccessJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/exampleJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/easyPVAJava
+[from git/ directory in this example, created above]
+% git clone https://github.com/epics-base/pvDataJava.git
+% git clone https://github.com/epics-base/pvAccessJava.git
+% git clone https://github.com/epics-base/exampleJava.git
+% git clone https://github.com/epics-base/easyPVAJava.git
 ...
 </pre>
 <p>See the complete list in the file which formally lists all of the components in each EPICS V4 release, <a href="https://sourceforge.net/p/epics-pvdata/pvDataWWW/ci/default/tree/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a></p>
@@ -485,7 +461,7 @@ see:</p>
 <p>The build itself is handled by Maven for Java builds. The actions for the build of
 each EPICS V4 module is handled by its own pom.xml file, there is no global one. So,
 the build process involves "cd" ing to the cloned repository (as they're called in
-mercurial speak) of each one of the core modules, and issuing "mvn compile install"
+Git speak) of each one of the core modules, and issuing "mvn compile install"
 in each one. Start with pvDataJava since it has no dependencies, then pvAccessJava,
 then the others.
 </p>
@@ -499,7 +475,7 @@ you probably knew that!
 
 <pre>
 % pwd
-/Users/greg/Development/epicsV4/hg             [in this example]
+/Users/greg/Development/epicsV4/git             [in this example]
 
 % cd pvDataJava/
 % mvn compile install
@@ -560,14 +536,14 @@ write code that compiles and executes against the jar files above.</p>
   <li>Either use a shell command, or MercurialEclipse, to acquire the pv modules
   from EPICS V4's SourceForge repository. Using the shell mechanism you might:
   <ul>
-    <li>Use a shell command to clone the mercurial repository as described
+    <li>Use a shell command to clone the Git repository as described
   above.</li>
-  <li>If you cloned the Java projects into directory hg/ change workspace to
-  hg/.</li>
-  <li>In eclipse import from local mercurial repository.</li>
+  <li>If you cloned the Java projects into directory git/ change workspace to
+  git/.</li>
+  <li>In eclipse import from local Git repository.</li>
   </ul>
   Alternatively see <a href="http://epics-pvdata.sourceforge.net/EclipseMercurialNote.pdf">
-  Mercurial in Eclipse cheatsheet for EPICS V4 (PDF)</a></li>
+  Git in Eclipse cheatsheet for EPICS V4 (PDF)</a></li>
   <li>Make pvAccessJava depend on pvDataJava, and adjust other dependencies for both of those.</li>
 </ul>
 
@@ -669,7 +645,7 @@ site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
 http://sourceforge.net/projects/epics-pvdata/files/</a>.
 This is a good option if you wish to deploy EPICS V4 services and clients and want a stable release. The tar consists of a number of EPICS V4 modules and is designed to be relatively easy to build. This is recommended for those new to EPICS V4.</p>
 
-<p>If you want the latest code or wish to contribute to development you will need to clone the SourceForge Mercurial repositories. In this case you can choose which modules you want.</p>
+<p>If you want the latest code or wish to contribute to development you will need to clone the SourceForge Git repositories. In this case you can choose which modules you want.</p>
 
 <p>The next two sections describe how to obtain the souce and build it via these two methods.</p>
 
@@ -826,7 +802,7 @@ or
 
 <h3>Building the EPICS V4.4.0 C++ Implementation from the Repositories</h3>
 
-<p>For the latest code or to contribute to development you will need to clone the SourceForge Mercurial repositories.
+<p>For the latest code or to contribute to development you will need to clone the SourceForge Git repositories.
 This will of course give you the full revision history of the modules including previous releases and all branches.
 </p>
 
@@ -834,33 +810,33 @@ This will of course give you the full revision history of the modules including 
 
 <h4>Getting the EPICS V4 C++ Implementation source</h4>
 
-<p>The modules can be obtained using the Mercurial clone command.</p>
+<p>The modules can be obtained using the Git clone command.</p>
 
 <p>
-For this you will <a href="#prerequisites">need the Mercurial client tools, as described above</a>.
-Choose the location for your EPICS V4 modules and obtain the required modules with a Mercurial clone using either the SSH or HTTP URI.
+For this you will <a href="#prerequisites">need the Git client tools, as described above</a>.
+Choose the location for your EPICS V4 modules and obtain the required modules with a Git clone using either the SSH or HTTP URI.
 You're not required to put all the modules in the same directory, but it makes sense and can simplify the build process.
 The minimum you'll need is the modules pvCommonCPP, pvDataCPP and pvAccessCPP. So if you're using the SSH URI, clone as follows:
 
 <pre>[commands issued from the desired location for each repo]
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvCommonCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvDataCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvAccessCPP
+% git clone https://github.com/epics-base/pvCommonCPP.git
+% git clone https://github.com/epics-base/pvDataCPP.git
+% git clone https://github.com/epics-base/pvAccessCPP.git
 </pre>
 and if using HTTP:
-<pre>% hg clone http://hg.code.sf.net/p/epics-pvdata/pvCommonCPP
-% hg clone http://hg.code.sf.net/p/epics-pvdata/pvDataCPP
-% hg clone http://hg.code.sf.net/p/epics-pvdata/pvAccessCPP
+<pre>% git clone https://github.com/epics-base/pvCommonCPP.git
+% git clone https://github.com/epics-base/pvDataCPP.git
+% git clone https://github.com/epics-base/pvAccessCPP.git
 </pre>
 </p>
 
 <p>Other modules can be obtained similarly, e.g. for SSH:
 
-<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/exampleCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvaSrv	
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvDatabaseCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/pvaPy
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@hg.code.sf.net/p/epics-pvdata/normativeTypeCPP
+<pre>% git clone https://github.com/epics-base/exampleCPP.git
+% git clone https://github.com/epics-base/pvaSrv.git	
+% git clone https://github.com/epics-base/pvDatabaseCPP.git
+% git clone https://github.com/epics-base/pvaPy.git
+% git clone https://github.com/epics-base/normativeTypeCPP.git
 </pre>
 </p>
 
@@ -1136,7 +1112,7 @@ These services can be used a model for starting to write your own services.
 <p>This section describes an example of the use of pvaSrv, the C++ implementation of EPICS
  V4 to access EPICS V3 PVs. That is, a version 3 IOC makes the values of its V3 channels
 available through pvAccess to EPICS V4 pvAccess clients.</p> 
-<p>You should already have built pvaSrv, either from the SourceForge tar or as a module cloned from the mercurial repository. The pvaSrv build (assuming it was successful) has created a ready-to-run example.
+<p>You should already have built pvaSrv, either from the SourceForge tar or as a module cloned from the Git repository. The pvaSrv build (assuming it was successful) has created a ready-to-run example.
   The source code for it is in the directory <code>pvaSrv/testApp/dbPv</code>. To run it do the following:
 
 <p>
@@ -1350,10 +1326,10 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
   data/files/</a>
   </dd>
 
-<dt id="hgrepoinit">[hg repo init]</dt>
-  <dd>Mercurial Tutorial - Initializing a Repository, 
+<dt id="hgrepoinit">[git repo init]</dt>
+  <dd>Git Tutorial - Initializing a Repository, 
   <a
-    href="http://mercurial.selenic.com/wiki/TutorialInit">http://mercurial.selenic.com/wiki/TutorialInit</a>
+    href="http://Git.selenic.com/wiki/TutorialInit">http://Git.selenic.com/wiki/TutorialInit</a>
   </dd>
 
 <dt id="ev4examples-java">[ev4examples-java]</dt>
@@ -1367,7 +1343,7 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
   </dd>
 
 <dt id="EPICSV4repos">[EPICSV4repos]</dt>
-  <dd>EPICS V4 Mercurial Repositories, <a
+  <dd>EPICS V4 Git Repositories, <a
     href="https://github.com/epics-base/" >
     https://github.com/epics-base/</a>
   </dd>

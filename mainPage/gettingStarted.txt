@@ -80,12 +80,12 @@ mkdir hg
 cd hg
 
 !! % hg init   <- this creates a .hg file in ev4hg don't need this
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvDataJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/pvAccessJava
+% git clone https://github.com/epics-base/pvDataJava.git
+% git clone https://github.com/epics-base/pvAccessJava.git
 
 ! easy interface and examples
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/easyPVAJava
-% hg clone ssh://your_sourceforge_userid@hg.code.sf.net/p/epics-pvdata/exampleJava
+% git clone https://github.com/epics-base/easyPVAJava.git
+% git clone https://github.com/epics-base/exampleJava.git
 
 mvn command line
 MAc's will need mvn.
