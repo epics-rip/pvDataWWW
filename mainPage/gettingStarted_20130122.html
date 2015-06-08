@@ -379,14 +379,14 @@ done by many institutions for security reasons. Below is an example of how to ch
 out the pvDataJava Mercurial repository, using the hg unix command via anonymous
 access:</p>
 
-<pre>% hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataJava
+<pre>% git clone https://github.com/epics-base/pvDataJava.git
 </pre>
 
 <p>Alternatively use the ssh URI below for "non-anonymous" access. Permissions are presently set such that
 only epics-pvdata members can check out or push commits, so contact any one of
 the <a href="http://epics-pvdata.sourceforge.net/home.html#membership" >participants</a> to get added first:</p>
 
-<pre>% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava</pre>
+<pre>% git clone https://github.com/epics-base/pvDataJava.git</pre>
 
 <p>See <a href="passwordlessAccessToSourceForge.html">the Cheatsheet for Passwordless
 SSH Access to SourceForge for EPICS V4 Development</a> if you'd like to set up your
@@ -422,10 +422,10 @@ implementations, as above. The "common" repo is useful too, for setup files etc:
 
 <pre>
 [from ev4hg/ directory in this example, created above]
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessJava
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCJava
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/common
+% git clone https://github.com/epics-base/pvDataJava.git
+% git clone https://github.com/epics-base/pvAccessJava.git
+% git clone https://github.com/epics-base/pvIOCJava.git
+% git clone https://github.com/epics-base/common.git
 </pre>
 
 <p>After each of these, you should see 9 or 10 lines, ending in a line like the
@@ -439,8 +439,8 @@ following:</p>
 software.</p>
 
 <pre>
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/exampleJava
-% hg clone ssh://your_sourceforge_userid@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/alpha
+% git clone https://github.com/epics-base/exampleJava.git
+% git clone https://github.com/epics-base/alpha.git
 </pre>
 
 
@@ -646,9 +646,9 @@ you may use an HTTP URL instead, see Java example above for more]: </p>
 
 <pre>
 [from ev4hg/ directory in this example, created above]
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessCPP
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCCPP
+% git clone https://github.com/epics-base/pvDataCPP.git
+% git clone https://github.com/epics-base/pvAccessCPP.git
+% git clone https://github.com/epics-base/pvIOCCPP.git
 </pre>
 
 <h4 id="cppbuild">EPICS V4 C++ Implementation Build</h4>
@@ -788,7 +788,7 @@ To deploy an IOC with pvAccess support:
   <li>
   Check out the pvaSrv module from its repository at SourceForge:
 <pre>
-% hg clone ssh://&lt;your-sourceforge-userid&gt;@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvaSrv
+% git clone https://github.com/epics-base/pvaSrv.git
 </pre>
   and build it, similar to the EPICS V4 C++ core modules.</li>
   <li>   

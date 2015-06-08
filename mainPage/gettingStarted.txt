@@ -53,11 +53,11 @@ Download from the Mercurial repositories can be done anonymously (HTTP), or usin
 
 The anonymous checkout is using the http URI below. Note that we have seen that some people get a "cannot connect" timeout using this method, while the identical command works for other people. It's probably related to the common practice of blocking port 8000 on the client side, which is done by many institutions for security reasons. Below is an example of how to check out the pvDataCPP Mercurial repository, using the hg unix command via anonymous access:
 
-> hg clone http://epics-pvdata.hg.sourceforge.net:8000/hgroot/epics-pvdata/pvDataCPP
+> git clone https://github.com/epics-base/pvDataCPP.git
 
 Alternatively use the ssh URI below. Permissions are presently set such that only epics-pvdata members can check out or push commits, so contact any one of the participants to get added first:
 
-> hg clone ssh://<your-sourceforge-userid>@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
+> git clone https://github.com/epics-base/pvDataCPP.git
 
 See Appendix A if you'd like to set up your sourceforge account so that SSH operations can proceed without a 
 password. Of course, for command line development as is described here, passwordless ssh authentication to 
@@ -99,10 +99,10 @@ Ref: http://mercurial.selenic.com/wiki/TutorialClone
 To download the source using Mercurial, use an "hg clone".
 
 Eg. Download the 4 core EPICS v4 modules' Java implementations:
-hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataJava
-hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessJava
-hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCJava
-hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/common
+git clone https://github.com/epics-base/pvDataJava.git
+git clone https://github.com/epics-base/pvAccessJava.git
+git clone https://github.com/epics-base/pvIOCJava.git
+git clone https://github.com/epics-base/common.git
 
 After each of these, you should see 9 or 10 lines, ending in a line like the following:
 "842 files updated, 0 files merged, 0 files removed, 0 files unresolved"
@@ -110,8 +110,8 @@ After each of these, you should see 9 or 10 lines, ending in a line like the fol
 In addition to the EPICS V4 core, you may want examples, or "alpha" level software.
 Eg, to download the web pages subtree (the directory system headed by pvDataWWW):
 
-hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/exampleJava
-hg clone ssh://greg@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/alpha
+git clone https://github.com/epics-base/exampleJava.git
+git clone https://github.com/epics-base/alpha.git
 
 BUILD
 ====
@@ -223,9 +223,9 @@ http://epics-pvdata.sourceforge.net/doc/pvIOCCPP.html
 Decide where you want to place your code. Go to that directory and check out the
 source code using the Mercurial tools:
 
-hg clone ssh://<your account>@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvDataCPP
-hg clone ssh://<your account>@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvAccessCPP
-hg clone ssh://<your account>@epics-pvdata.hg.sourceforge.net/hgroot/epics-pvdata/pvIOCCPP
+git clone https://github.com/epics-base/pvDataCPP.git
+git clone https://github.com/epics-base/pvAccessCPP.git
+git clone https://github.com/epics-base/pvIOCCPP.git
 
 Build in this order (pvDataCPP, pvAccessCPP, pvIOCCPP) because these components depend on each other.
 
