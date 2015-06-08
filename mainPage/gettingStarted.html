@@ -382,14 +382,7 @@ above, plus the caj/jca jars, and build pv core jars.</p>
 
 <p>V4.4 Java requires Java 1.7</p>
 
-<p>You must have Maven and Git clients installed. Git, commonly "git" on
-the command line comes for free with Mac OS
-(or <a href="http://jasonfharris.com/machg/">MacHg for Mac OS X is a nice
-GUI</a>). Git must be able to download from the "epics-pvdata" sourceForge
-project. That means you either are going to use the HTTP URI syntax or the SSH URI
-syntax, as understood by Git. </p>
-
-<p>Download from the Git repositories can be done anonymously. Below is an example of how to check
+<p>Clone from the Git repositories can be done anonymously. Below is an example of how to check
 out the pvDataJava Git repository, using the git unix command via anonymous
 access:</p>
 
@@ -429,13 +422,6 @@ you may also want to clone.</p>
 ...
 </pre>
 <p>See the complete list in the file which formally lists all of the components in each EPICS V4 release, <a href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIONS" >RELEASE_VERSIONS</a></p>
-<p>After each of these, you should see 9 or 10 lines, ending in a line like the
-following:</p>
-
-<pre>
-"842 files updated, 0 files merged, 0 files removed, 0 files unresolved"
-</pre>
-
 
 <h4 id="javabuild">EPICS V4 Java Implementation Build</h4>
 
@@ -533,8 +519,8 @@ write code that compiles and executes against the jar files above.</p>
 <p>To use or develop these, the steps might be: </p>
 <ul>
   <li>Install eclipse</li>
-  <li>Either use a shell command, or MercurialEclipse, to acquire the pv modules
-  from EPICS V4's SourceForge repository. Using the shell mechanism you might:
+  <li>Either use a shell command, or EGit, to acquire the pv modules
+  from a git repository. Using the shell mechanism you might:
   <ul>
     <li>Use a shell command to clone the Git repository as described
   above.</li>
@@ -542,8 +528,7 @@ write code that compiles and executes against the jar files above.</p>
   git/.</li>
   <li>In eclipse import from local Git repository.</li>
   </ul>
-  Alternatively see <a href="http://epics-pvdata.sourceforge.net/EclipseMercurialNote.pdf">
-  Git in Eclipse cheatsheet for EPICS V4 (PDF)</a></li>
+  </li>
   <li>Make pvAccessJava depend on pvDataJava, and adjust other dependencies for both of those.</li>
 </ul>
 
@@ -645,7 +630,7 @@ site <a href="http://sourceforge.net/projects/epics-pvdata/files/">
 http://sourceforge.net/projects/epics-pvdata/files/</a>.
 This is a good option if you wish to deploy EPICS V4 services and clients and want a stable release. The tar consists of a number of EPICS V4 modules and is designed to be relatively easy to build. This is recommended for those new to EPICS V4.</p>
 
-<p>If you want the latest code or wish to contribute to development you will need to clone the SourceForge Git repositories. In this case you can choose which modules you want.</p>
+<p>If you want the latest code or wish to contribute to development you will need to clone the Github repositories. In this case you can choose which modules you want.</p>
 
 <p>The next two sections describe how to obtain the souce and build it via these two methods.</p>
 
@@ -802,7 +787,7 @@ or
 
 <h3>Building the EPICS V4.4.0 C++ Implementation from the Repositories</h3>
 
-<p>For the latest code or to contribute to development you will need to clone the SourceForge Git repositories.
+<p>For the latest code or to contribute to development you will need to clone the Github repositories.
 This will of course give you the full revision history of the modules including previous releases and all branches.
 </p>
 
@@ -823,17 +808,12 @@ The minimum you'll need is the modules pvCommonCPP, pvDataCPP and pvAccessCPP. S
 % git clone https://github.com/epics-base/pvDataCPP.git
 % git clone https://github.com/epics-base/pvAccessCPP.git
 </pre>
-and if using HTTP:
-<pre>% git clone https://github.com/epics-base/pvCommonCPP.git
-% git clone https://github.com/epics-base/pvDataCPP.git
-% git clone https://github.com/epics-base/pvAccessCPP.git
-</pre>
 </p>
 
-<p>Other modules can be obtained similarly, e.g. for SSH:
+<p>Other modules can be obtained similarly:
 
 <pre>% git clone https://github.com/epics-base/exampleCPP.git
-% git clone https://github.com/epics-base/pvaSrv.git	
+% git clone https://github.com/epics-base/pvaSrv.git
 % git clone https://github.com/epics-base/pvDatabaseCPP.git
 % git clone https://github.com/epics-base/pvaPy.git
 % git clone https://github.com/epics-base/normativeTypeCPP.git
@@ -868,10 +848,10 @@ specifies that there are no cross compilation targets, i.e. the only target is t
 <p>You may which to create a top-level makefile to simplify your build process. You can get an example makefile and configuration script, as well as an example <code>RELEASE.local</code> and <code>CONFIG_SITE.local</code> from the source tar (see <a href="#tarbuild">Building the EPICS V4.4.0 C++ Implementation Tar</a>)
  or from the EPICS V4 website. For example on Linux using wget:
 <pre>
-% wget https://github.com/epics-base/pvDataWWW/tree/master/scripts/Makefile
-% wget https://github.com/epics-base/pvDataWWW/tree/master/scripts/configure.sh
-% wget https://github.com/epics-base/pvDataWWW/tree/master/scripts/CONFIG_SITE.local
-% wget https://github.com/epics-base/pvDataWWW/tree/master/scripts/RELEASE.local
+% wget https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/Makefile
+% wget https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/configure.sh
+% wget https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/CONFIG_SITE.local
+% wget https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/RELEASE.local
 </pre>
 </p>
 
@@ -992,7 +972,7 @@ More detailed instructions for building and running the services are in their re
 
 <h3>Running the C++ Examples</h3>
 
-<p>A number of examples of C++ EPICS V4 clients and servers are available, either included in the source tar or in EPICS V4 modules cloned from SourceForge.
+<p>A number of examples of C++ EPICS V4 clients and servers are available, either included in the source tar or in EPICS V4 modules cloned from Github.
 </p>
 
 <p>This section describes running a few of these. It assumes you have built the EPICS V4 core modules either from the tar or from clones of the repositories and have put <code>pvAccess/bin/$EPICS_HOST_ARCH</code> in your path, e.g.
@@ -1026,7 +1006,7 @@ the server which is a greeting addressed to the supplied name. See <a
 
 <dt>ChannelArchiverService<dt>
   <dd>
-  The <a href="https://github.com/epics-base/exampleCPP/ChannelArchiverService"
+  The <a href="https://github.com/epics-base/exampleCPP/tree/master/ChannelArchiverService"
 >ChannelArchiverService</a> example is a complete functional EPICS V4 server for accessing an EPICS Channel Archiver index file
 and returning the archive data back to an EPICS V4 client.
 It can be queried using the eget utility but also includes
@@ -1317,19 +1297,6 @@ epicsEnvSet("PVIOC","$(TOP)/../pvIOCCPP")
 <dt id="downloadsite">[EPICS V4 download site]</dt>
   <dd>EPICS V4 download site, <a
     href="http://sourceforge.net/projects/epics-pvdata/files/">http://sourceforge.net/projects/epics-pvdata/files/</a>
-  </dd>
-
-<dt id="sfssh">[sf ssh]</dt>
-  <dd>Passwordless
-  authentication setup at sourceforge, <a
-  href="https://sourceforge.net/apps/trac/sourceforge/wiki/SSH%20keys">http://sourceforge.net/projects/epics-pv
-  data/files/</a>
-  </dd>
-
-<dt id="hgrepoinit">[git repo init]</dt>
-  <dd>Git Tutorial - Initializing a Repository, 
-  <a
-    href="http://Git.selenic.com/wiki/TutorialInit">http://Git.selenic.com/wiki/TutorialInit</a>
   </dd>
 
 <dt id="ev4examples-java">[ev4examples-java]</dt>
