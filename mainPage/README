@@ -398,9 +398,9 @@ https://sourceforge.net/apps/trac/remotetea/wiki/WikiStart
 http://epics-pvdata.sourceforge.net/doc/pvIOCJava/swtshell.html
 [12] SWT: Standard Widget Toolkit, http://www.eclipse.org/swt/
 [13] helloWorld runtime setup script, 
-https://github.com/epics-base/pvDataWWW/tree/default/src/helloWorld/helloWorld_setup.bash
+https://github.com/epics-base/pvDataWWW/tree/master/src/helloWorld/helloWorld_setup.bash
 [14] exampleJava, examples of use of EPICS V4 Java binding, 
-https://github.com/epics-base/exampleJava/tree/default/src
+https://github.com/epics-base/exampleJava/tree/master/src
 [15] ChannelRPC facility javadoc in pvIOC, http://epics-pvdata.sourceforge.net/doc/pvIOCJava/rpcSupport.html
 [16] Getting Started with EPICS V4, http://epics-pvdata.sourceforge.net/gettingStarted.html
 [17] pvaSrv documentation, http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html

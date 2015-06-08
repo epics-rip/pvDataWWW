@@ -162,8 +162,8 @@ instructions.</p>
 <img src="image/sfdownloadfiles.png">
 
 <p>To get off the ground using java download, see the examples in the
-epics-pvdata <a href="https://github.com/epics-base/exampleJava/tree/default/src/" >exampleJava Mercurial repo</a> [<a href="#ev4examples" ></a>ev4examples]. <em>The setup files of those examples
-(<a href="https://github.com/epics-base/exampleJava/tree/default/src/helloWorld/helloWorld_setup.bash" >helloWorld_setup.bash</a> and <a href="https://github.com/epics-base/exampleJava/tree/default/src/rdbService/rdb_setup.bash" >rdb_setup.bash</a>) are written assuming
+epics-pvdata <a href="https://github.com/epics-base/exampleJava/tree/master/src/" >exampleJava Mercurial repo</a> [<a href="#ev4examples" ></a>ev4examples]. <em>The setup files of those examples
+(<a href="https://github.com/epics-base/exampleJava/tree/master/src/helloWorld/helloWorld_setup.bash" >helloWorld_setup.bash</a> and <a href="https://github.com/epics-base/exampleJava/tree/master/src/rdbService/rdb_setup.bash" >rdb_setup.bash</a>) are written assuming
 local .class files, you'll have to convert them so the CLASSPATH points to the
 jar files instead - <a href="#step-by-step">as described below</a> ).</em> So far only 
 examples of the "ChannelRPC" functionality of EPICS V4 are 
@@ -502,19 +502,19 @@ dependent on the arguments).</p>
 <dl>
   <dt>helloWorld</dt>
   <dd>In particular, you may like to start with the,  <a
-href="https://github.com/epics-base/exampleJava/tree/default/src/helloWorld">
+href="https://github.com/epics-base/exampleJava/tree/master/src/helloWorld">
 helloWorld example service</a>. HelloWorld is composed of a server and a client. The
   server is built on top of a EPICS V4 JavaIOC, which process a single EPICS V4
   record which shows how to define a record for taking a single argument (a persons
   name to whom to say hello). The service returns a string which greets
   that person. The client prints the received greeting. Start with its <a
-  href="https://github.com/epics-base/exampleJava/tree/default/src/helloWorld/HELLOWORLD_README.txt"
+  href="https://github.com/epics-base/exampleJava/tree/master/src/helloWorld/HELLOWORLD_README.txt"
   >HELLOWORLD_README.txt</a>. This demonstrates an EPICS V4 record whose value is subject to
   a user argument.
 </dd>
 <dt>rdbService<dt>
   <dd>
-  The <a href="https://github.com/epics-base/exampleJava/tree/default/src/rdbService"
+  The <a href="https://github.com/epics-base/exampleJava/tree/master/src/rdbService"
 >rdbService</a> example is a complete functional server for accessing SQL databases
 such Oracle via an EPICS V4 server, and returning the resulting table ResultSet data
 back to an EPICS V4 client. rdbService illustrates:</P>
