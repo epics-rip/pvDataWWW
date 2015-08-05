@@ -25,12 +25,12 @@ h2 { page-break-before : always; }
 <h1>GETTING STARTED WITH EPICS V4</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 <h2 class="nocount" >
-  Getting Started with EPICS V4, Editors Draft for UNRELEASED</h2>
+  Getting Started with EPICS V4, Editors draft</h2>
 <dl>
 <dt>This version:</dt>
 <dd><a href=
-"http://epics-pvdata.sourceforge.net/gettingStarted.html">
-gettingStarted.html</a></dd>
+"http://epics-pvdata.sourceforge.net/gettingStarted_20150805.html">
+gettingStarted_20150805.html</a></dd>
 <dt>Latest version:</dt>
 <dd><a href=
 "http://epics-pvdata.sourceforge.net/gettingStarted.html">gettingStarted.html</a></dd>
@@ -52,7 +52,7 @@ gettingStarted_20141208.html</a>
 <h2 class="nocount" id="abstract">Abstract</h2>
 
 <p>This document describes how to download and build the EPICS V4
-toolkit. It's a step by step guide to downloading the appropriate EPICS V4 products
+toolkit. It is a step by step guide to downloading the appropriate EPICS V4 products
 and associated software, and to using them to create the example programs. Presently, the
 document concentrates on interfacing to EPICS Base IOC control data, through the C++ bindings of new EPICS V4
 modules pvAccess and pvData, and on developing middleware EPICS data services using
@@ -61,8 +61,9 @@ the RPC capability of pvAccess in Java and C++.
 
 <h2 class="nocount" id="status">Status of this Document</h2>
 
-<p>This is the UNRELEASED version of the Getting Started with EPICS
-V4. This version is nominally intended to be up-to-date with respect to EPICS V4.4.  </p>
+<p>This is version 20150805 of the Getting Started document. This version is a minor delta to the first draft which was intended to be up-to-date with respect to EPICS V4.4  (<a href=
+  "http://epics-pvdata.sourceforge.net/gettingStarted_20141208.html">
+gettingStarted_20141208.html</a>). This edit just helps with required java version, wget/curl and other minor matters. </p>
 
 <p>A more complete <a href="informative/developerGuide/developerGuide.html" >developers guide is in preparation</a>.</p>
 
@@ -175,7 +176,7 @@ made in Base 3.15.1 include API changes which have not been implemented in
 pvaSrv yet. If you're not going to build the current version of pvaSrv
 though you can use Base 3.15.1. </p>
 
-<p><strong>pvAccessJava requires at least Java 1.7. </strong></p>
+<p><strong>As of EPICS V4.4.0, pvAccessJava requires at least Java 1.7. </strong></p>
 
 
 
@@ -846,7 +847,7 @@ specifies that there are no cross compilation targets, i.e. the only target is t
 </p>
 
 <p>You may which to create a top-level makefile to simplify your build process. You can get an example makefile and configuration script, as well as an example <code>RELEASE.local</code> and <code>CONFIG_SITE.local</code> from the source tar (see <a href="#tarbuild">Building the EPICS V4.4.0 C++ Implementation Tar</a>)
- or from the EPICS V4 website. For example on Linux using wget:
+ or from the EPICS V4 website. For example on Linux or Mac you might wget (<i>if you get Unsupported Scheme error, try curl -O &lt;url&gt; instead</i>):
 <pre>
 % wget https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/Makefile
 % wget https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/configure.sh
@@ -1331,7 +1332,7 @@ Input / Output Controller (IOC) Application Developer's Guide, Marty Kraimer, <a
 
 <hr />
 <address>Greg White, SLAC, PSI. Timo Korhonen, PSI. Dave Hickin, Diamond. Ralph Lange, HZB/BESSY II</address>
-<!-- hhmts start -->Last modified: Wed Jun 17 15:10:52 PDT 2015 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Wed Aug  5 12:06:55 PDT 2015 <!-- hhmts end -->
 
 </body>
 </html><pre>
