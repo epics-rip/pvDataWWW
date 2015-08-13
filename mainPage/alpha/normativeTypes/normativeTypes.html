@@ -3,7 +3,9 @@
       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
 Auth:  Greg White, SLAC, Nov-2011.
-Vers:  12-May-2015, Dave Hickin
+Vers:  12-Aug-2015, Greg White
+       Minor clarifications to aspects of NTTable
+       12-May-2015, Dave Hickin
        Reorder optional fields to be consistent with pvData and normativeTypesCPP.
        Added  NTScalarMultiChannel. Made doc more consistent. Minor corrections.
        16-Mar-2015, Dave Hickin
@@ -1537,16 +1539,17 @@ indexed element of the <span class="term">value</span> array. </p>
 
 <h3>NTTable</h3>
 
-<p>NTTable is the EPICS V4 Normative Type for "2-d" tabular datasets.</p>
+<p>NTTable is the EPICS V4 Normative Type suitable for column-oriented tabular datasets.</p>
 
-<p>An NTTable is made up of a number of arrays, each array being of a scalar
-type. Each array can be thought of as a column. Each <em>i</em>th array member makes
-up one row, or n-tuple.</p>
+<p>An NTTable is made up of a number of arrays. Each array can be thought of as a column.
+Each array MUST be of a scalar type. Each array may be of a different scalar type, though
+all the arrays MUST be of the same length. The set of the <em>i</em>th array members of
+all the columns makes up one row, or n-tuple. </p>
 
-<p>Use case examples: a table of Twiss parameters of all lattice elements in an
-accelerator section. Another example, where the columns might vary call-to-call would
+<p>Use case examples: a table of the Twiss parameters of all the lattice elements in an
+accelerator section. Another example, where the columns might vary call-to-call to an RPC setting, would
 be that of an EPICS V4 SQL database service. In that example one NTTable returned by
-the service would contain all the tabular results of a SQL SELECT, essentially a
+the service would contain the tabular results of a SQL SELECT, essentially a
 recoded JDBC or ODBC ResultSet - see the <a class="bib"
 href="#bib:rdbservice">rdbservice</a>.
 </p>
@@ -1566,33 +1569,30 @@ structure
 <p>where:</p>
 <dl>
   <dt>labels</dt>
-    <dd>The table column headings of each column, each heading given as one element
-      of the array of strings. The order of labels MUST match the intended order of the
-      <span class="nterm">scalar_t[]</span> data.
+  <dd>The table column headings are given by the <span class="term">labels</span> field.
+      Each column heading given as one element of the array of strings.
     </dd>
     <dt>value</dt>
-    <dd>The data of the table are encoded in a structure named "value" (that is,
-    the pvData binding, whose field name is "value"). We call the columnar data Field
-    "value" (rather than for instance "columndata") so that the primary field of the
+    <dd>The data of the table are encoded in a structure named <span class="term">value</span>. We call the columnar data field
+    "value" (rather than, for instance, "columndata") so that the primary field of the
       type is named the same for all Normative Types, and so to help general purpose clients
       identify the primary field.</dd>
 </dl>
 
 <h4>Interpretation</h4>
 
-<p>This represents a table. The number of "columns" is equal to the number of fields
-which follows field "labels." Each <span class="user">colname</span> scalar array
-field contains the data for the "column" corresponding to the same indexed element of
-the <span class="term">labels</span> field.  The value of each element of <span
-class="term">labels</span> SHOULD be used as a column heading for the corresponding
-<span class="user">colname</span> field.</p>
+<p>This represents a table of data. The column data is given in scalar arrays in the structure field <span class="term">value</span>, and the column headings are given in field <span class="term">labels</span>. The number of elements of <span class="term">labels</span> MUST be equal to the
+number of fields of <span class="term">value</span>. Each <span class="user">colname</span> scalar array
+field of <span class="term">value</span> contains the data for the column corresponding to the same indexed element of
+the <span class="term">labels</span> field.  Agents SHOULD use the elements of <span
+class="term">labels</span> as the column headings. <span class="nonnorm">There is no normative requirement that the
+field names of <span class="term">value</span> match the strings in <span class="term">labels</span>, though doing so is fine</span>. </p>
 
 <p>Note that the above description is given in terms of a table and its columns,
 but there is nothing specifically columnar about how this data may be rendered. A
-user may choose to print the fields row wise. For instance, if there are many fields,
-but each has only length 1 or 2. E.g., if you wanted to give all the scalar data related
-to one device, then you might use an NTTable rendered in such a way. Note that one column
-of a table would also be easily described by NTNameValue.
+user may choose to print the fields row wise. For instance, if there are many fields in <span class="term">value</span>,
+but each has only length 1 or 2. For instance, if you wanted to give all the scalar data related
+to one device, then you might use an NTTable rendered in such a way.
 </p>
 
 <h4>Validation</h4>
