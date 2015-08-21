@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 21-Aug-2015</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 19-May-2015</h2>
 
   <dl>
     <dt>Latest version:</dt>
@@ -45,14 +45,9 @@
       href="developerGuide.html">developerGuide.html</a>
     </dd>
     <dt>This version:</dt>
-    <dd><a
-      href="developerGuide_20150821.html">developerGuide_20150821.html</a>
-    </dd>
+    <dd>None</dd>
     <dt>Previous version:</dt>
-    <dd><a
-      href="developerGuide_20150519.html">developerGuide_20150519.html</a>
-    </dd>
-
+    <dd>None</dd>
     <dt>Editors:</dt>
    <dd> Marty Kraimer, BNL<br />
       David Hickin, Diamond Light Source<br />
@@ -71,8 +66,11 @@ related set of products:<br />
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 21-Aug-2015 version of the Developer's Guide.
-It is for EPICS V4 Release 4.5.
+<p>This is the 19-May-2015 version of the Developer's Guide.
+It is for EPICS V4 Release 4.4 but also includes components that are intentended for
+the next release of V4.
+This document is actively being  developed and is subject to being updated at any time.
+It should be stable by the May EPICS meeting.
 </p>
 
 
@@ -96,13 +94,13 @@ of EPICS V4.
    <dt>pvAccess</dt>
       <dd>Description and implementation of
           network support for pvData objects.</dd>
-   <dt>pvaClient</dt>
-      <dd>pvAccess is a callback based API.
-        pvaClient is a synchronous interface for pvAccess and
-       also provides a number of convenience methods.
-      </dd>
    <dt>normativeTypes</dt>
       <dd>Standard pvData structures.</dd>
+   <dt>easyPVA</dt>
+      <dd>pvAccess is a callback based API.
+        easyPVA is a synchronous interface for pvAccess and
+       also provides a number of convenience methods.
+      </dd>
    <dt>pvDatabase</dt>
       <dd>
        A pvAccess server for accessing pvData.
@@ -117,6 +115,29 @@ that access and/or provide sources of structured data.
 This document is is intended for EPICS V4 software developers
 who want to implement applications via core APIs.
 </p>
+<p>The following are some examples that use this toolkit:</p>
+<dl>
+   <dt>ORNL V4 DAQ Interface</dt>
+      <dd>nED is the SNS detector interface software. It provides a V4 server 
+          for structured neutron event data. An AreaDetector-based V4 client 
+          called ADnED generates histograms for online ("live") data views and
+          counting statistics. Python-based V4 clients are used for detector
+          calibration and for detector diagnostics.
+      </dd>
+   <dt>MASAR (Machine Snapshot, Archiving, and Retrieve)</dt>
+       <dd>This is a standalone V4 service, i. e. it is
+         not part of a V3 IOC.
+        The implementation is written in a combination of C++ and Python.
+       </dd>
+   <dt>areaDetector V4 plugin</dt>
+      <dd>This area detector plugin takes data from the NDArray
+        related an AD driver, converts it to an NTNDArray and transmits
+        it to a V4 monitor client.
+        Note that it allows image data to be handled as a single
+        NTNDArray rather than a set of V3 records.
+      </dd>
+</dl>
+
 <h2>Overview of V4</h2>
 <h3>V4 Modules</h3>
 V4 includes the following core components:
@@ -133,7 +154,7 @@ V4 includes the following core components:
       <dd>
        The V4 network support for transporting pvData between client and server.
       </dd>
-   <dt>pvaClient</dt>
+   <dt>easyPVA</dt>
       <dd>
        A synchronous wrapper for the pvAccess API.
       </dd>
@@ -150,17 +171,6 @@ V4 includes the following core components:
        Python wrapper for pvData and pvAccess.
        </dd>
 </dl>
-<p><b>pvaSrv</b> and <b>pvaPy</b> are implemented only in C++.
-Each has a single github repository, e. g.
-<a href="https://github.com/epics-base/pvaSrv">pvaSrv</a>
-
-The other components are implemented in both C++ and Java,
-with each language having it's own github repository.
-For example pvData has the repositories
-<a href="https://github.com/epics-base/pvDataJava">pvDataJava</a>
-and
-<a href="https://github.com/epics-base/pvDataCPP">pvDataCPP</a>
-</p>
 <h3>Terminology</h3>
 <dl>
    <dt>API - Application Programming Interface </dt>
@@ -218,9 +228,9 @@ is composed of one of the following types:
             <dt>boolean</dt>
                <dd>Can be <b>true</b> or <b>false</b>.
                </dd>
-            <dt>signed Integer</dt>
+            <dt>Signed Integer</dt>
                <dd>Integers of 8, 16, 32, and 64 bits are supported.</dd>
-            <dt>unsigned Integer</dt>
+            <dt>Unsigned Integer</dt>
                 <dd>Unsigned integers of 8, 16, 32, and 64 bits are supported.</dd>
             <dt>float</dt>
                 <dd>IEEE 32 bit floating point.</dd>
@@ -319,9 +329,9 @@ This pvData object is the argument for the RPC.
 The server uses this to decide what to do
 and sends a pvData object back to the client, which is the RPC result.
 </p>
-<h3>Overview: pvaClient</h3>
-<p>pvaClient is a synchronous wrapper for the pvAccess API, which is a callback based API.
-In addition pvaClient provides many convenience methods.
+<h3>Overview: easyPVA</h3>
+<p>easyPVA is a synchronous wrapper for the pvAccess API, which is a callback based API.
+In addition easyPVA provides many convenience methods.
 Thus it is easier to use than pvAccess itself.
 </p>
 <h3>Overview: pvDatabase</h3>
@@ -353,16 +363,6 @@ The following should be consulted for detailed documentation:</p>
     href="http://epics-pvdata.sourceforge.net/docbuild/pvDataCPP/tip/documentation/pvDataCPP.html">
     pvDataCPP</a>
     </li>
-    <li>
-    <a target="_top"
-    href="http://epics-pvdata.sourceforge.net/docbuild/normativeTypesCPP/tip/documentation/ntJava.html">
-    normativeTypesJava</a>
-    </li>
-    <li>
-    <a target="_top"
-    href="http://epics-pvdata.sourceforge.net/docbuild/normativeTypesCPP/tip/documentation/ntCPP.html">
-    normativeTypesCPP</a>
-    </li>
    <li>
     <a target="_top"
     href="http://epics-pvdata.sourceforge.net/docbuild/pvAccessJava/tip/documentation/pvAccessJava.html">
@@ -375,13 +375,13 @@ The following should be consulted for detailed documentation:</p>
     </li>
    <li>
     <a target="_top"
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvaClientJava/tip/documentation/pvaClient.html">
-    pvaClientJava</a>
+    href="http://epics-pvdata.sourceforge.net/docbuild/easyPVAJava/tip/documentation/easyPVA.html">
+    easyPVAJava</a>
     </li>
    <li>
     <a target="_top"
-    href="http://epics-pvdata.sourceforge.net/docbuild/pvaClientCPP/tip/documentation/pvaClientCPP.html">
-    pvaClientCPP</a>
+    href="http://epics-pvdata.sourceforge.net/docbuild/easyPVACPP/tip/documentation/easyPVACPP.html">
+    easyPVACPP</a>
     </li>
    <li>
     <a target="_top"
@@ -393,7 +393,11 @@ The following should be consulted for detailed documentation:</p>
     href="http://epics-pvdata.sourceforge.net/docbuild/pvDatabaseCPP/tip/documentation/pvDatabaseCPP.html">
     pvDatabaseCPP</a>
     </li>
-  
+   <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/normativeTypesCPP/tip/documentation/ntCPP.html">
+    normativeTypesCPP</a>
+    </li>
 </ul>
 <p>In addition a standard for normativeTypes exists:</p>
 <ul>
@@ -405,25 +409,26 @@ The following should be consulted for detailed documentation:</p>
 <dl>
    <dt>pvData</dt>
       <dd>
-       Release 4.5 has a complete implementation for both Java and C++.
+       Release 4.4 has a complete implementation for both Java and C++.
       </dd>
    <dt>normativeTypes</dt>
       <dd>
-       Release 4.5 has C++ and Java helper classes for many, but not all, of the normative types.
+       Release 4.4 has C++ helper classes  for some of the normative types.
+      There are no helper classes for Java.
       </dd>
    <dt>pvAccess</dt>
       <dd>
-       Release 4.5 has a complete implementation for both C++ and Java.
+       Release 4.4 has a complete implementation for both C++ and Java.
       </dd>
-   <dt>pvaClient</dt>
+   <dt>easyPVA</dt>
       <dd>
-       Release 4.5 has an implementation for both Java and CPP
-       However, getField and channelArray are not implemented.
+       Release 4.4 has an implementation for Java.
+       For C++ an implementation is now available.
       </dd>
    <dt>pvDatabase</dt>
       <dd>
-       Release 4.4 has an implementation for both C++ and Java.
-       For C++ the pvDatabase can run as part of a V3 IOC.
+       Release 4.4 has an implementation for C++.
+       For Java an implementation is is now available.
       </dd>
    <dt>pvaSrv</dt>
       <dd>
@@ -449,6 +454,35 @@ For example:</p>
 export PATH=$PATH:${EPICSV4}/pvAccessCPP/bin/${EPICS_HOST_ARCH}
 </pre>
 <h3>pvlist</h3>
+<p>Without any arguments this shows the location of all V4 servers it can locate.
+For example:</p>
+<pre>
+pvlist
+GUID 0x3989545500000000B14EFE12, version 1: tcp@[10.0.0.11:36448]
+</pre>
+<p>This only shows one line because only the exampleDatabase server is running.
+In an operational system the output could be quite extensive.</p>
+<p>
+Once the location of a server is known the list of channel names can be shown by asking for either
+the GUID or tcp address.
+This either:</p>
+<pre>
+pvlist 0x3989545500000000B14EFE12
+</pre>
+or
+<pre>
+pvlist 10.0.0.11:36448
+</pre>
+produces:
+<pre>
+ao01
+double00
+double01
+bo00
+bo01
+calc00
+...
+</pre>
 <p>The options are:</p>
 <pre>
 mrk&gt; pvlist -help
@@ -468,36 +502,7 @@ examples:
 	pvlist 10.5.1.205:10000
 	pvlist 0x83DE3C540000000000BF351F
 </pre>
-<p>Without any arguments this shows the location of all V4 servers it can locate.
-For example:</p>
-<pre>
-pvlist
-GUID 0x3989545500000000B14EFE12, version 1: tcp@[10.0.0.11:36448]
-</pre>
-<p>This only shows one line because only the exampleDatabase server is running.
-In an operational system the output could be quite extensive.</p>
-<p>
-Once the location of a server is known the list of channel names can be shown by asking for either
-the GUID or tcp address.
-Thus either:</p>
-<pre>
-pvlist 0x3989545500000000B14EFE12
-</pre>
-or
-<pre>
-pvlist 10.0.0.11:36448
-</pre>
-produces:
-<pre>
-ao01
-double00
-double01
-bo00
-bo01
-calc00
-...
-</pre>
-
+for details.
 <h3>pvget</h3>
 <p>pvget provides functionality similar to caget.
 For example:</p>
@@ -682,136 +687,184 @@ examples:
 &gt; eget -s names -a pattern=QUAD:LTU1:8%:POLYCOEF | eget -f -
 </pre>
 
-<h2>example code</h2>
-
-<p>All of the following have examples that can be used while learning what is described in this document.</p>
+<h2>exampleDatabase</h2>
+<p>pvDatabaseCPP has an exampleDatabase.
+This section explains what is in it.
+</p>
+<p>
+easyPVACPP has a file <b>exampleDatabaseEasyPVA.zip</b>.
+It is like exampleDatabase but creates a few extra records.
+It also has two extra example servers:</p>
 <dl>
-   <dt>pvaClientJava</dt>
-      <dd>Example client code using the API for pvaClient</dd>
-   <dt>pvaClientCPP</dt>
-      <dd>Example client code using the API for pvaClient</dd>
-   <dt>pvDatabaseJava</dt>
-      <dd>Example server code implemented via PVRecords.</dd>
-   <dt>pvDatabaseCPP</dt>
-      <dd>Example server code implemented via PVRecords.
-       In addition it shows how to have PVRecords and V3 Records both running as part
-       of a V3 IOC.
-       It also shows how to start pvaSrv so that both <b>ca</b> and <pva</b> can be used
-       to access the V3 records.
-      </dd>
-   <dt>pvaPy</dt>
-      <dd>Example python code</dd>
+   <dt>exampleHello</dt>
+     <dd>A hello world example that is accessed via a channelPutGet.
+     It can also be accessed via a pvput followed by a pvget.
+     </dd>
+   <dt>exampleHelloRPC</dt>
+     <dd>This is a  hello world example that is accessed via a channelRPC request.</dd>
 </dl>
-<p>Examples for <b>pvaClientJava</b>, <b>pvaClientCPP</b>, and <b>pvaPy</b> require that the database in <b>pvaClientTestCPP</b>
-is started.
-In linux it can be started as follows:</p>
+<p>I suggest looking at <b>exampleDatabaseEasyPVA.zip</b>
+Most of this section describes both.
+</p>
+<p>The example can be run either as a standalone main program
+or as part of a V3 IOC (Input Output Controller).
+If as part of a V3 IOC the IOC has both V3 and V4 records.
+It also starts pvaSrv so that the V3 records can be accessed via either
+ca or pva.
+</p>
+<h3>Starting the example</h3>
+<p>To run the example as a main program:</p>
 <pre>
 mrk&gt; pwd
-/home/epicsv4/pvaClientTestCPP/database/iocBoot/exampleDatabase
+/home/mrk/pvcpp/exampleDatabaseEasyPVA
+mrk&gt; bin/linux-x86_64/exampleDatabaseMain 
+</pre>
+<p>To start the example as part of a V3 IOC:</p>
+<pre>
+mrk&gt; pwd
+/home/mrk/pvcpp/exampleDatabaseEasyPVA/iocBoot/exampleDatabase
 mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
-<p>The example database has both V3 IOC records and V4 PVRecords.
-In addition <b>pvaSrv</b> is running. Thus all V3 records are available via either <b>ca</b> or <pva</b>.
-The PVRecords are only available via <b>pva</b>.
-Examples of using ca and pva command line tools are:</p>
+<h3>source code</h3>
+The src directory has the following files:
+<dl>
+   <dt>exampleDatabaseMain.cpp</dt>
+      <dd>code to run example as main program</dd>
+   <dt>exampleDatabaseInclude.dbd<br />
+       exampleDatabaseRegister.cpp</dt>
+      <dd>code to run example as part of V3 IOC</dd>
+   <dt>exampleDatabase - both .h and .cpp</dt>
+      <dd>example records</dd>
+</dl>
+<b>exampleDatabaseEasyPVA.zip</b> has the additional files:
+<dl>
+   <dt>exampleHello - both .h and .cpp</dt>
+     <dd>example for channelPutGet</dd>
+   <dt>exampleHelloRPC - both .h and .cpp</dt>
+      <dd>example for channelRPC</dd>
+</dl>
+<h4>exampleDatabaseMain.cpp</h4>
+<p>This is the file that runs the example as a main program.
+The main program is:</p>
 <pre>
-mrk&gt; pvlist 0x2298D455000000001236320D
-ao01
-double00
-.... many more records
-mrk&gt; pvget long01
-long01                         0
-mrk&gt; caget long01
-Channel connect timed out: 'long01' not found.
-mrk&gt; caget double01
-double01                       0
-mrk&gt; pvget double01
-double01                       0
-mrk&gt; caget ushort01
-Channel connect timed out: 'ushort01' not found.
-mrk&gt; pvget ushort01
-ushort01                       0
-mrk&gt; 
-</pre>
-<p>The examples in <b>pvaClientCPP</b> and <b>pvaClientJava</b> can now be run.
-For example:</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/pvaClientCPP/example
-mrk&gt; ls bin/linux-x86_64/
-examplePvaClientGet          examplePvaClientNTMulti  helloWorldPutGet
-examplePvaClientMonitor      examplePvaClientProcess  helloWorldRPC
-examplePvaClientMultiDouble  examplePvaClientPut
-mrk&gt; bin/linux-x86_64/examplePvaClientGet
-example double scalar
-short way
-as double 0
-long way
-as double 0
-example double array
-short way
-as doubleArray {0}[]
-long way
-as doubleArray {0}[]
-example powerSupply
-short way
-structure 
-    alarm_t alarm
-        int severity 0
-        int status 0
-        string message 
-    time_t timeStamp
-        long secondsPastEpoch 0
-        int nanoseconds 0
-        int userTag 0
-    structure power
-        double value 0
-        alarm_t alarm
-            int severity 0
-            int status 0
-            string message 
-    structure voltage
-        double value 0
-        alarm_t alarm
-            int severity 0
-            int status 0
-            string message 
-    structure current
-        double value 0
-        alarm_t alarm
-            int severity 0
-            int status 0
-            string message 
+int main(int argc,char *argv[])
+{
+    ExampleDatabase::create();
 
-example double scalar
-short way
-as double 0
-long way
-as double 0
-example double array
-short way
-as doubleArray {0}[]
-long way
-as doubleArray {0}[]
-done
-mrk&gt; 
-</pre>
-<p>An example of running the examples in pvaPy is:</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/pvaPy/examples
-mrk&gt; python testPut.py
-****************************
-Testing string
-Got old value:  
-Putting value:  ; a
-Got new value:  ; a
-Putting value:  ; b
-Got new value:  ; b
+    ContextLocal::shared_pointer contextLocal = ContextLocal::create();
+    contextLocal-&gt;start();
 
-...... lots more output
-mrk&gt;
+    cout &lt;&lt; "pvAccess server exampleDatabase running..." &lt;&lt; endl;
+    epics::pvData::PVStringArrayPtr pvNames =
+        PVDatabase::getMaster()-&gt;getRecordNames();
+    cout &lt;&lt; "Hosted records: " &lt;&lt; endl &lt;&lt; *pvNames &lt;&lt; endl;
+
+    contextLocal-&gt;waitForExit();
+
+    return 0;
+}
 </pre>
+The only code that is not generic is:
+<pre>
+    ExampleDatabase::create();
+</pre>
+<h3>exampleDatabaseRegister.cpp</h3>
+This is used to create an iocshell command to start the example database as part
+of a V3 IOC.
+It is almost generic.
+The guts of the code is:
+<pre>
+static const iocshArg testArg0 = { "prefix", iocshArgString };
+static const iocshArg *testArgs[] = {
+    &amp;testArg0};
+
+static const iocshFuncDef exampleDatabaseFuncDef = {
+    "exampleDatabase", 1, testArgs};
+static void exampleDatabaseCallFunc(const iocshArgBuf *args)
+{
+    ExampleDatabase::create();
+}
+
+static void exampleDatabaseRegister(void)
+{
+    static int firstTime = 1;
+    if (firstTime) {
+        firstTime = 0;
+        iocshRegister(&amp;exampleDatabaseFuncDef, exampleDatabaseCallFunc);
+    }
+}
+
+extern "C" {
+    epicsExportRegistrar(exampleDatabaseRegister);
+}
+</pre>
+Other than <b>exampleDatabase</b> as part of the names it is boiler plate code.
+<h3>exampleDatabaseInclude.dbd</h3>
+This is just:
+<pre>
+registrar("exampleDatabaseRegister")
+</pre>
+It again is generic except for <b>exampleDatabase</b> as part of the name.
+<h3>Makefile</h3>
+Look at the Make file to see how each other file is used.
+<h3>exampleDatabase</h3>
+<b>exampleDatabase.h</b> is almost completely generic.
+It has the code:
+<pre>
+class epicsShareClass  ExampleDatabase{
+public:
+    static void create();
+};
+</pre>
+It defines a factory methods for creating the example database.
+<p>
+<b>exampleDatabase.cpp</b> is not generic.
+It shows how to create records of various types.
+Most of the records have only the default process method.
+The default process does nothing except that if a timeStamp field is present
+the time is set to the current time.
+Look at the code to see examples of how to create records.
+</p>
+<h3>ioc</h3>
+This directory has two subdirectories:
+<dl>
+  <dt>Db</dt>
+    <dd>This creates some V3 records.</dd>
+  <dt>src</dt>
+    <dd>This has to files to load the V3 and V4 support for a V3 IOC.</dd>
+</dl>
+<h4>ioc/src</h4>
+<p>exampleDatabaseMain.cpp is standard code to start a V3 IOC</p>
+<p>exampleDatabaseInclude.dbd contains:</p>
+<pre>
+include "base.dbd"
+include "PVAServerRegister.dbd"
+include "registerChannelProviderLocal.dbd"
+include "dbPv.dbd"
+registrar("exampleDatabaseRegister")
+</pre>
+<p><b>base.dbd</b> is standard way to include the base V3 code.
+<b>PVAServerRegister.dbd</b> is how the pvAccess Server code is included.
+<b>registerChannelProviderLocal.dbd</b> is how the local pva server is started.
+The local server is implemented by pvDatabaseCPP.
+<b>dbPv.dbd</b> is how pvaSrv, the pva server that accesses V3 revords, is started.
+</p>
+<p><b>registrar("exampleDatabaseRegister")</b> is the only example specific statement.
+It is used to start the example database.</p>
+<h3>iocBoot/exampleDatabase</h3>
+<p>This is where the V3 IOC is started.
+The <b>st.cmd</b> starts with normal way to start a V3 IOC.
+What is different is the statements after iocInit:</p>
+<pre>
+exampleDatabase
+startPVAServer
+</pre>
+<p>The first statement creates the example database.
+The second statement starts the pva server.
+After it is started clients can access the V4 records and the V3 records via pva.
+</p>
+
+
 
 
 <h2>API: pvData</h2>
@@ -2996,9 +3049,6 @@ must be replaced with a new value.
 the same rules apply to it.</p>
 
 <h2>API: normativeType</h2>
-
-<p><b>Dave Hickin</b> please update this section</p>
-
 <p><b>normativeTypes</b> defines a set of standard structures.
 Each normative type consists of a set of mandatory fields, a set of optional fields,
 and any arbitrary number of extra fields.
@@ -3006,7 +3056,6 @@ The mandatory and optional fields are meant for use by standard tools such
 as Display Managers and Alarm Handlers.
 The extra fields are for specialized tools.
 </p>
-
 <p>normativeTypesCPP provides a set of helper classes for implementing
 and using normative types.
 At present it has support for the following:</p>
@@ -3103,7 +3152,7 @@ ChannelFind
       which uses the Channel Access network protocol.
      </dd>
   <dt>createProvider</dt>
-    <dd>This registers a ChannelProvider. User code does not call this,
+    <dd>This registers a ChannelProvider. Usually user code does not call this,
       e.g. it is called via code that implements the ChannelProvider interface.
     </dd>
   <dt>getProviderNames</dt>
@@ -3780,14 +3829,14 @@ ChannelRPC extends ChannelRequest
       calling destroy after the request is complete.</dd>
 </dl>
 
-<h2>API: pvaClient</h2>
-<p>PvaClient is a synchronous API for accessing PVData via PVAccess.
+<h2>API: easyPVA</h2>
+<p>EasyPVA is a synchronous API for accessing PVData via PVAccess.
 It also provides a number of convenience methods.
 It allows the client to request access without checking for failure,
 but throws an exception when a reuest fails.
 A client can also check for failues and thus prevent failures.</p>
 
-<p>The PvaClient API has the following features:</p>
+<p>The EasyPVA API has the following features:</p>
 <ol>
   <li>Provides a synchronous API rather than the callback API provided by pvAccess.</li>
   <li>Makes common requests easy.</li>
@@ -3796,21 +3845,21 @@ A client can also check for failues and thus prevent failures.</p>
   <li>Allows efficient client side programs.</li>
   <li>Takes care of most object resource management problems.</li>
 </ol>
-<p>Simple examples of using pvaClient:</p>
+<p>Simple examples of using easyPVA:</p>
 <pre>
 // easyGet
-PvaClientPtr pvaClient = PvaClient::create();
-double value = pvaClient-&gt;channel("exampleDouble")-&gt;get()-&gt;getData()-&gt;getDouble();
+EasyPVAPtr easyPVA = EasyPVA::create();
+double value = easyPVA-&gt;channel("exampleDouble")-&gt;get()-&gt;getData()-&gt;getDouble();
 
 // easyPut
-PvaClientChannelPtr channel = pvaClient-&gt;channel("exampleDouble");
-PvaClientPutPtr put = channel-&gt;put();
-PvaClientPutDataPtr putData = put-&gt;getData();
+EasyChannelPtr channel = easyPVA-&gt;channel("exampleDouble");
+EasyPutPtr put = channel-&gt;put();
+EasyPutDataPtr putData = put-&gt;getData();
 putData-&gt;putDouble(3.0); put-&gt;put();
 
 // easyMonitor
-PvaClientMonitorPtr monitor = pvaClient-&gt;channel("examplePowerSupply")-&gt;monitor("");
-PvaClientMonitorDataPtr easyData = monitor-&gt;getData();
+EasyMonitorPtr monitor = easyPVA-&gt;channel("examplePowerSupply")-&gt;monitor("");
+EasyMonitorDataPtr easyData = monitor-&gt;getData();
 while(true) {
     monitor-&gt;waitEvent();
     cout &lt;&lt; "changed\n";
@@ -3820,8 +3869,8 @@ while(true) {
     monitor-&gt;releaseEvent();
 }
 // easyProcess
-PvaClientChannelPtr channel = pvaClient-&gt;channel("exampleDouble");
-PvaClientProcessPtr process = channel-&gt;createProcess();
+EasyChannelPtr channel = easyPVA-&gt;channel("exampleDouble");
+EasyProcessPtr process = channel-&gt;createProcess();
 process-&gt;process();
 </pre>
 
@@ -3830,64 +3879,12 @@ process-&gt;process();
 <p>A brief description of a pvDatabase is that it is a set of network accessible, smart, memory resident records. Each record has data composed of a top level PVStructure. Each record has a name which is the channelName for pvAccess. A local Channel Provider implements the complete ChannelProvider and Channel interfaces as defined by pvAccess. The local provider provides access to the records in the pvDatabase. This local provider is accessed by the remote pvAccess server. A record is smart because code can be attached to a record, which is accessed via a method named process.</p>
 <p>Implementations for both Java and C++ are available.
 With the C++ implementation (pvDatabaseCPP) the pvDatabase
-can be provided via a Main program or can be part of a V3IOC. In the later case the IOC has both a database of V3 Records and a PVRecords.
+can be provided via a Main program or can be part of a V3IOC. In the later case the IOC has both a database of V3 Records and a pvDatabase.
 This version allows the development of V4 services for V3IOCs.
 </p>
-<p>pvDatabaseJava and pvDatabaseCPP both have example databases.
-Project pvaClientTestCPP has a database that is similar to pvDatabaseJava/exampleDatabase
-but also adds exampleHello, exampleHelloRPC, and powerSupply.
-This section will mainly describe the pvaClientTestCPP database, which also
-describes pvDatabaseJava/exampleDatabase.
-It shows how create a V3 IOC that has both V3 Records, PVRecords, and pvaSrv.
-After reading this section the examples in pvaDatabaseJava and pvDatabaseCPP should
-be easy to understand.
-</p>
-<h3>Starting the example</h3>
-<p>The example database can be run either as a standalone main program
-or as part of a V3 IOC (Input Output Controller).
-If as part of a V3 IOC the IOC has both V3 and V4 records.
-It also starts pvaSrv so that the V3 records can be accessed via either
-ca or pva.
-</p>
-<p>To run the example as a main program:</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/pvaClientTestCPP/database
-mrk&gt; bin/linux-x86_64/exampleDatabaseMain 
-</pre>
-<p>To start the example as part of a V3 IOC:</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/pvaClientTestCPP/database/iocBoot/exampleDatabase
-mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
-</pre>
-<p>Once the database is running then the following can access exampleHello:</p>
-<pre>
-pvput -r "argument" exampleHello World
-pvget -r "result.value" exampleHello
-exampleHello
-structure 
-    structure result
-        string value Hello World
-</pre>
-<p>The following also works:</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/pvaClientCPP/example
-mrk&gt; bin/linux-x86_64/helloWorldPutGet
-helloWorldPutGet
-structure 
-    structure result
-        string value Hello World
-        time_t timeStamp
-            long secondsPastEpoch 1440095693
-            int nanoseconds 281748793
-            int userTag 0
-
-mrk&gt;
-</pre>
-<h3>source code</h3>
-<p> <b>pvaClientTestCPP/database/src</b> has the following examples:</p>
+<p><b>exampleDatabaseEasyPVA.zip</b> provides a good example of
+creating C++ PVRecords that are part of a V3IOC or run as a Main program.
+It has the following examples:</p>
 <dl>
    <dt>exampleHello</dt>
       <dd>This is an hello world example that is meant to be accesed via
@@ -3903,147 +3900,16 @@ mrk&gt;
        have only the default process semantics, which only sets the timeStamp when
        the record is processed.
       </dd>
-   <dt>powerSupply</dt>
-      <dd>This has a example record that models a power supply.
-         Given a value for desired voltage and power, it computes the current.
-      </dd>
 </dl>
-
-The src directory also has the following files:
-<dl>
-   <dt>exampleDatabaseMain.cpp</dt>
-      <dd>code to run example as main program</dd>
-   <dt>exampleDatabaseInclude.dbd<br />
-       exampleDatabaseRegister.cpp</dt>
-      <dd>code to run example as part of V3 IOC</dd>
-</dl>
-<h4>exampleDatabaseMain.cpp</h4>
-<p>This is the file that runs the example as a main program.
-The main program is:</p>
+<p>If the database is running then the following can access exampleHello:</p>
 <pre>
-int main(int argc,char *argv[])
-{
-    PVDatabasePtr master = PVDatabase::getMaster();
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-    ExampleDatabase::create();
-    ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    cout &lt;&lt; "exampleDatabase\n";
-    PVStringArrayPtr pvNames = master->getRecordNames();
-    cout &lt;&lt; "recordNames" &lt;&lt; endl &lt;&lt; *pvNames &lt;&lt; endl;
-    string str;
-    while(true) {
-        cout &lt;&lt; "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
-    }
-    ctx->destroy();
-    epicsThreadSleep(1.0);
-    channelProvider->destroy();
-    return 0; 
-}
+pvput -r "argument" exampleHello World
+pvget -r "result.value" exampleHello
+exampleHello
+structure 
+    structure result
+        string value Hello World
 </pre>
-The only code that is not generic is:
-<pre>
-    ExampleDatabase::create();
-</pre>
-<h3>exampleDatabaseRegister.cpp</h3>
-This is used to create an iocshell command to start the example database as part
-of a V3 IOC.
-It is almost generic.
-The guts of the code is:
-<pre>
-static const iocshArg testArg0 = { "prefix", iocshArgString };
-static const iocshArg *testArgs[] = {
-    &amp;testArg0};
-
-static const iocshFuncDef exampleDatabaseFuncDef = {
-    "exampleDatabase", 1, testArgs};
-static void exampleDatabaseCallFunc(const iocshArgBuf *args)
-{
-    ExampleDatabase::create();
-}
-
-static void exampleDatabaseRegister(void)
-{
-    static int firstTime = 1;
-    if (firstTime) {
-        firstTime = 0;
-        iocshRegister(&amp;exampleDatabaseFuncDef, exampleDatabaseCallFunc);
-    }
-}
-
-extern "C" {
-    epicsExportRegistrar(exampleDatabaseRegister);
-}
-</pre>
-Other than <b>exampleDatabase</b> as part of the names it is boiler plate code.
-<h3>exampleDatabaseInclude.dbd</h3>
-This is just:
-<pre>
-registrar("exampleDatabaseRegister")
-</pre>
-It again is generic except for <b>exampleDatabase</b> as part of the name.
-<h3>Makefile</h3>
-Look at the Make file to see how each other file is used.
-<h3>exampleDatabase</h3>
-<b>exampleDatabase.h</b> is almost completely generic.
-It has the code:
-<pre>
-class epicsShareClass  ExampleDatabase{
-public:
-    static void create();
-};
-</pre>
-It defines a factory methods for creating the example database.
-<p>
-<b>exampleDatabase.cpp</b> is not generic.
-It shows how to create records of various types.
-Most of the records have only the default process method.
-The default process does nothing except that if a timeStamp field is present
-the time is set to the current time.
-Look at the code to see examples of how to create records.
-</p>
-<h3>pvaClientTestCPP/database/ioc</h3>
-This directory has two subdirectories:
-<dl>
-  <dt>Db</dt>
-    <dd>This creates some V3 records.</dd>
-  <dt>src</dt>
-    <dd>This has to files to load the V3 and V4 support for a V3 IOC.</dd>
-</dl>
-<h4>src</h4>
-<p>exampleDatabaseMain.cpp is standard code to start a V3 IOC</p>
-<p>exampleDatabaseInclude.dbd contains:</p>
-<pre>
-include "base.dbd"
-include "PVAServerRegister.dbd"
-include "registerChannelProviderLocal.dbd"
-include "dbPv.dbd"
-registrar("exampleDatabaseRegister")
-</pre>
-<p><b>base.dbd</b> is standard way to include the base V3 code.
-<b>PVAServerRegister.dbd</b> is how the pvAccess Server code is included.
-<b>registerChannelProviderLocal.dbd</b> is how the local pva server is started.
-The local server is implemented by pvDatabaseCPP.
-<b>dbPv.dbd</b> is how pvaSrv, the pva server that accesses V3 revords, is started.
-</p>
-<p><b>registrar("exampleDatabaseRegister")</b> is the only example specific statement.
-It is used to start the example database.</p>
-<h3>pvaClientTestCPP/database/iocBoot/exampleDatabase</h3>
-<p>This is where the V3 IOC is started.
-The <b>st.cmd</b> starts with normal way to start a V3 IOC.
-What is different is the statements after iocInit:</p>
-<pre>
-exampleDatabase
-startPVAServer
-</pre>
-<p>The first statement creates the example database.
-The second statement starts the pva server.
-After it is started clients can access the V4 records and the V3 records via pva.
-</p>
-
 
 <h2>API: pvaSrv</h2>
 <p>pvaSrv is a pvAccess server that runs in the EPICS V3 IOC</p>
@@ -4104,19 +3970,11 @@ At present C++ provides two server side providers:
    <dt>local</dt>
       <dd>This is implemented by pvDatabaseCPP</dd>
 </dl>
-<p>
-At present Java provides one server side provider:
-</p>
-<dl>
-   <dt>local</dt>
-      <dd>This is implemented by pvDatabaseJava</dd>
-</dl>
+
 <h2>Convert Facility</h2>
 <p>Both pvDataJava and pvDataCPP have a Convert Facility.
 Although they have some common features they are different enough that they
 will be discussed separately.
-</p>
-<p>
 They main difference is support for scalar arrays.
 </p>
 <p>
@@ -4266,12 +4124,48 @@ pvData project overview. Note that the toString methods of PVField are
 implemented by calling these convert methods.</p>
 
 <h3>C++</h3>
-<p>Many of the Java convert methods have been moved to <b>class PVField</b> and it's extensions.
-This include all the comparison methods and also conversion between numeric types.
-</p>
 <h4>convert.h</h4>
-
+<p>This section describes the supported conversions between data types.</p>
+<ul>
+  <li>All supported types can be converted to a string. If you ask for a 100
+    megabyte array to be converted to a string expect a lot of output.</li>
+  <li>Conversion from a string to a scalar type.</li> 
+  <li>Conversion from an array of strings to an array of scalar types.</li>
+  <li>Copy between the following types of scalar PVs
+    <ul>
+      <li>Numeric type to another numeric type</li>
+      <li>Both have the same type.</li>
+      <li>Either is a string</li>
+    </ul>
+  </li>
+  <li>Conversions between numeric scalar types.</li>
+  <li>Conversion between compatible structures.</li>
+  <li>Conversion between compatible unions.</li>
+  <li>Conversion between compatible union arrays.</li>
+  <li>Conversion between compatible structure arrays.</li>
+  <li>A utility method the returns the full field name of a field</li>
+</ul>
 <pre>
+bool operator==(PVField&amp;, PVField&amp;);
+
+static bool operator!=(PVField&amp; a, PVField&amp; b);
+
+bool operator==(const Field&amp;, const Field&amp;);
+bool operator==(const Scalar&amp;, const Scalar&amp;);
+bool operator==(const ScalarArray&amp;, const ScalarArray&amp;);
+bool operator==(const Structure&amp;, const Structure&amp;);
+bool operator==(const StructureArray&amp;, const StructureArray&amp;);
+bool operator==(const Union&amp;, const Union&amp;);
+bool operator==(const UnionArray&amp;, const UnionArray&amp;);
+
+static inline bool operator!=(const Field&amp; a, const Field&amp; b);
+static inline bool operator!=(const Scalar&amp; a, const Scalar&amp; b);
+static inline bool operator!=(const ScalarArray&amp; a, const ScalarArray&amp; b);
+static inline bool operator!=(const Structure&amp; a, const Structure&amp; b);
+static inline bool operator!=(const StructureArray&amp; a, const StructureArray&amp; b);
+static inline bool operator!=(const Union&amp; a, const Union&amp; b);
+static inline bool operator!=(const UnionArray&amp; a, const UnionArray&amp; b);
+
 class Convert;
 typedef std::tr1::shared_ptr&lt;Convert&gt; ConvertPtr;
 
@@ -4279,6 +4173,9 @@ class Convert {
 public:
     static ConvertPtr getConvert();
     ~Convert();
+    void getFullName(std::string * buf,PVFieldPtr const &amp; pvField);
+    bool equals(PVFieldPtr const &amp;a,PVFieldPtr const &amp;b);
+    bool equals(PVField &amp;a,PVField &amp;b);
     void getString(std::string * buf,PVFieldPtr const &amp; pvField,int indentLevel);
     void getString(std::string * buf,PVFieldPtr const &amp; pvField);
     void getString(std::string * buf,PVField const * pvField,int indentLevel);
@@ -4299,6 +4196,30 @@ public:
         std::size_t length,
         StringArray &amp; to,
         std::size_t toOffset);
+    bool isCopyCompatible(FieldConstPtr const &amp; from, FieldConstPtr const &amp; to);
+    void copy(PVFieldPtr const &amp; from, PVFieldPtr const &amp; to);
+    bool isCopyScalarCompatible(
+        ScalarConstPtr const &amp; from,
+        ScalarConstPtr const &amp; to);
+    void copyScalar(PVScalarPtr const &amp; from, PVScalarPtr const &amp; to);
+    bool isCopyScalarArrayCompatible(
+        ScalarArrayConstPtr const &amp; from,
+        ScalarArrayConstPtr const &amp; to);
+    bool isCopyStructureCompatible(
+        StructureConstPtr const &amp; from, StructureConstPtr const &amp; to);
+    void copyStructure(PVStructurePtr const &amp; from, PVStructurePtr const &amp; to);
+    bool isCopyStructureArrayCompatible(
+        StructureArrayConstPtr const &amp; from, StructureArrayConstPtr const &amp; to);
+    void copyStructureArray(
+        PVStructureArrayPtr const &amp; from, PVStructureArrayPtr const &amp; to);
+    bool isCopyUnionCompatible(
+        UnionConstPtr const &amp; from, UnionConstPtr const &amp; to);
+    void copyUnion(
+        PVUnionPtr const &amp; from, PVUnionPtr const &amp; to);
+    bool isCopyUnionArrayCompatible(
+        UnionArrayConstPtr const &amp; from, UnionArrayConstPtr const &amp; to);
+    void copyUnionArray(
+        PVUnionArrayPtr const &amp; from, PVUnionArrayPtr const &amp; to);
     int8 toByte(PVScalarPtr const &amp; pv);
     int16 toShort(PVScalarPtr const &amp; pv);
     int32 toInt(PVScalarPtr const &amp; pv);
@@ -4320,10 +4241,14 @@ public:
     void fromULong(PVScalarPtr const &amp; pv, uint64 from);
     void fromFloat(PVScalarPtr const &amp; pv, float from);
     void fromDouble(PVScalarPtr const &amp; pv, double from);
+    void newLine(std::string * buf, int indentLevel);
+ ...
 }
 
 extern ConvertPtr getConvert();
 </pre>
+<p>newLine is a convenience method for code that implements toString It
+generates a newline and inserts blanks at the beginning of the newline.</p>
 
 <h4>pvSubArrayCopy.h</h4>
 <p>This supports sub-array copying between arrays that have the same type.</p>
