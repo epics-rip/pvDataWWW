@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 21-Aug-2015</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 25-Aug-2015</h2>
 
   <dl>
     <dt>Latest version:</dt>
@@ -46,7 +46,7 @@
     </dd>
     <dt>This version:</dt>
     <dd><a
-      href="developerGuide_20150821.html">developerGuide_20150821.html</a>
+      href="developerGuide_20150825.html">developerGuide_20150825.html</a>
     </dd>
     <dt>Previous version:</dt>
     <dd><a
@@ -71,7 +71,7 @@ related set of products:<br />
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 21-Aug-2015 version of the Developer's Guide.
+<p>This is the 25-Aug-2015 version of the Developer's Guide.
 It is for EPICS V4 Release 4.5.
 </p>
 
@@ -85,57 +85,31 @@ It is for EPICS V4 Release 4.5.
 </div>
 <div id="contents" class="contents">
 
-<h2>Preface</h2>
-<p>
-This document briefly describes the 
-application programming interfaces (API) for the following components
-of EPICS V4.
-<dl>
-   <dt>pvData</dt>
-      <dd>Description and implementation of structured data.</dd>
-   <dt>pvAccess</dt>
-      <dd>Description and implementation of
-          network support for pvData objects.</dd>
-   <dt>pvaClient</dt>
-      <dd>pvAccess is a callback based API.
-        pvaClient is a synchronous interface for pvAccess and
-       also provides a number of convenience methods.
-      </dd>
-   <dt>normativeTypes</dt>
-      <dd>Standard pvData structures.</dd>
-   <dt>pvDatabase</dt>
-      <dd>
-       A pvAccess server for accessing pvData.
-      </dd>
-   <dt>pvaSrv</dt>
-      <dd>A pvAccess server for EPICS  V3 DBRecords.</dd>
-   <dt>pvaPy</dt>
-      <dd>Python classes for pvData and pvAccess.</dd>
-</dl>
-These core APIs provide a toolkit for creating applications
-that access and/or provide sources of structured data.
-This document is is intended for EPICS V4 software developers
-who want to implement applications via core APIs.
-</p>
 <h2>Overview of V4</h2>
+<p>
+This document briefly describes a set of application programming interfaces (API)
+for EPICS V4.</p>
+<p>
+These core APIs provide a toolkit for creating applications that access and/or provide sources of structured data. This document is intended for EPICS V4 software developers who want to implement applications via the core APIs.
+</p>
 <h3>V4 Modules</h3>
 V4 includes the following core components:
 <dl>
    <dt>pvData</dt>
       <dd>
-       The EPICS V4 type system.
+       The EPICS V4 type system, which describes and implements structured data.
       </dd>
    <dt>normativeTypes</dt>
       <dd>
-        A set of standard V4 structures.
+        A set of standard pvData structures.
       </dd>
    <dt>pvAccess</dt>
       <dd>
-       The V4 network support for transporting pvData between client and server.
+       Support for connecting a client and server and for transporting pvData between client and server.
       </dd>
    <dt>pvaClient</dt>
       <dd>
-       A synchronous wrapper for the pvAccess API.
+       pvAccess is a callback based API. pvaClient is a synchronous interface for pvAccess and also provides a number of convenience methods.
       </dd>
    <dt>pvDatabase</dt>
       <dd>
@@ -143,17 +117,20 @@ V4 includes the following core components:
       </dd>
    <dt>pvaSrv</dt>
       <dd>
-       A pvAccess server for iocCore DBRecords.
+       A pvAccess server for EPICS V3 DBRecords.
       </dd>
     <dt>pvaPy</dt>
        <dd>
        Python wrapper for pvData and pvAccess.
        </dd>
 </dl>
+
+
 <p><b>pvaSrv</b> and <b>pvaPy</b> are implemented only in C++.
 Each has a single github repository, e. g.
 <a href="https://github.com/epics-base/pvaSrv">pvaSrv</a>
-
+</p>
+<p>
 The other components are implemented in both C++ and Java,
 with each language having it's own github repository.
 For example pvData has the repositories
@@ -199,8 +176,6 @@ and
         </dd>
      <dt>PVType</dt>
        <dd>Generic name for any valid Data API type.
-        Thus any of PVScalarType, PVScalarArrayType, PVUnion, PVStructureArray,
-        or PVUnionArray.
         </dd>
      <dt>Special Field</dt>
         <dd>These are a set of widely used structure definitions:
@@ -281,18 +256,19 @@ epics:nt/NTScalar:1.0
 <h3>Overview: pvAccess</h3>
 <p>
 A client written in either Java or C++ can communicate with a server written in either Java or C++.
-All communication between client and server is done via the methods provided by pvAccess and by pvData
-objects.
+All communication between client and server is done via the methods provided by pvAccess and by pvData objects.
 </p>
 <p>
 pvAccess provides:</p>
 <dl>
+   <dt>channelProviderRegistry</dt>
+     <dd>An arbitrary number of channelProviders can be created</dd>
    <dt>channelProvider</dt>
      <dd>Code that provides access to a pvData data source.
       It creates channels where a channel provides access to pvData structure that has an associated channelName.
      </dd>
    <dt>channel</dt>
-      <dd>A way to create each of the following:
+      <dd>Methods for each of the following:
         <dl>
            <dt>getField</dt>
               <dd>Get the pvData introspection information.</dd>
@@ -339,6 +315,54 @@ the value and its meta data (graphics limits, alarm status, timestamp) to or fro
 pvData structures (NTScalar, NTScalarArray).</p>
 <h3>Overview: pvaPy</h3>
 <p>A Python wrapper for pvData and pvAccess.</p>
+<h3>Overview: channelProvider implementations</h3>
+<p>The basic requirements for  channel provider are:</p>
+<ol>
+   <li>Given a channel name find and connect to the data source</li>
+   <li>Implement one or more of the channel methods: getField, createChannelGet, etc.</li>
+   <li>get/put all data as pvData.</li>
+   <li>Prefer normative types instead of raw pvData</li>
+</ol>
+<p><b>pvAccess</b> implements <b>channelProviderRegistry</b>, which
+allows an arbitrary number of providers for a client.
+</p>
+<p>
+In addition pvAccess implements two providers:</p>
+<dl>
+   <dt>pva</dt>
+      <dd>This is a connection between a client and a server that uses the pva network
+      protocal as defined in:
+         <a
+          href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">
+          pvAccess_Protocol_Specification.html</a>
+       </dd>
+   <dt>ca</dt>
+     <dd>This is a connection that uses channel access to access an epics V3 Database.</dd>
+</dl>
+<p>Provider <b>pva</b> has two components, client and remote, which is what the client uses.
+Network communcation is used between client and server.
+Remote <b>pva</b> transfers data between the network and channel providers that
+have registered at the remote node.</p>
+<p>At present two providers are available for the remote side of <b>pva</b></p>
+<dl>
+   <dt>local</dt>
+      <dd>This is implemented by pvDatabase</dd>
+   <dt>pvSrv</dt>
+      <dd>This is a provider that directly accesses V3 DBRecord.</dd>
+</dl>
+<p>Thus at present a client that is not running as part of a V3 IOC or a pvDatabase
+has two choices for channelProvider: <b>pva</b> and <b>ca</b>.
+A client running as part of a V3 IOC or pvDatabase has all of the following choices:
+<b>pva</b>, <b>ca</b>, <b>local</b>, and <b>pvSrv</b>.
+Note that if a client directly connects to either <b>local</b> or <b>pvSrv</b>
+no network communication is involved.
+</p>
+<p>
+And since <b>channelProviderRegistry</b> allows any arbitrary number of providers
+additional providers can be developed for either the client or remote side of <b>pva</b>.
+</p>
+
+
 <h3>EPICS V4 resources and website</h3>
 <p>This document is a tutorial rather then a detailed reference manual.
 The following should be consulted for detailed documentation:</p>
@@ -696,7 +720,7 @@ examples:
       <dd>Example server code implemented via PVRecords.
        In addition it shows how to have PVRecords and V3 Records both running as part
        of a V3 IOC.
-       It also shows how to start pvaSrv so that both <b>ca</b> and <pva</b> can be used
+       It also shows how to start pvaSrv so that both <b>ca</b> and <b>pva</b> can be used
        to access the V3 records.
       </dd>
    <dt>pvaPy</dt>
@@ -704,6 +728,8 @@ examples:
 </dl>
 <p>Examples for <b>pvaClientJava</b>, <b>pvaClientCPP</b>, and <b>pvaPy</b> require that the database in <b>pvaClientTestCPP</b>
 is started.
+</p>
+<p>
 In linux it can be started as follows:</p>
 <pre>
 mrk&gt; pwd
@@ -711,7 +737,7 @@ mrk&gt; pwd
 mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
 <p>The example database has both V3 IOC records and V4 PVRecords.
-In addition <b>pvaSrv</b> is running. Thus all V3 records are available via either <b>ca</b> or <pva</b>.
+In addition <b>pvaSrv</b> is running. Thus all V3 records are available via either <b>ca</b> or <b>pva</b>.
 The PVRecords are only available via <b>pva</b>.
 Examples of using ca and pva command line tools are:</p>
 <pre>
