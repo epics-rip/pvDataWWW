@@ -87,27 +87,27 @@ declare -a modulesa
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release.
 RELEASE_VERSIONS_URL=\
-https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/RELEASE_VERSIONS
+https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/RELEASE_VERSIONS
 
 # Remote location of the README file
 README_URL=\
-https://raw.githubusercontent.com/epics-base/pvDataWWW/default/mainPage/README
+https://raw.githubusercontent.com/epics-base/pvDataWWW/master/mainPage/README
 
 # Remote location of the Makefile
 MAKEFILE_URL=\
-https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/Makefile
+https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/Makefile
 
 # Remote location of the configuration script
 CONFIG_SCRIPT_URL=\
-https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/configure.sh
+https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/configure.sh
 
 # Remote location of the CONFIG(_SITE).local
 CONFIG_LOCAL_URL=\
-https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/CONFIG_SITE.local
+https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/CONFIG_SITE.local
 
 # Remote location of the RELEASE.local file
 RELEASE_LOCAL_URL=\
-https://raw.githubusercontent.com/epics-base/pvDataWWW/default/scripts/RELEASE.local
+https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/RELEASE.local
 
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
