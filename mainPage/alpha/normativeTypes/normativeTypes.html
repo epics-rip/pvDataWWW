@@ -140,8 +140,9 @@ here, named "NTTable", defines a structure for expressing (in <a
       <h2 class="nocount">Status of this Document</h2>
       <!-- Statement about why this version exists -->
       
-      <p>This is the 16 Mar 2015 version of the Normative Types document.
-       This version updates the definitions of time_t, control_t, display_t,
+      <p>This is the 16 Mar 2015 version of the Normative Types document, with the addition
+       of minor clarifications to the dscription of NTTable. The 16 Mar 2015 version
+       updates the definitions of time_t, control_t, display_t,
        and alarmLimit_t and changes the order of optional fields in a
        number of Normative Types.</p>
        
@@ -1541,18 +1542,19 @@ indexed element of the <span class="term">value</span> array. </p>
 
 <p>NTTable is the EPICS V4 Normative Type suitable for column-oriented tabular datasets.</p>
 
-<p>An NTTable is made up of a number of arrays. Each array can be thought of as a column.
-Each array MUST be of a scalar type. Each array may be of a different scalar type, though
-all the arrays MUST be of the same length. The set of the <em>i</em>th array members of
-all the columns makes up one row, or n-tuple. </p>
+<p>An NTTable is made up of a number of arrays. Each array can be thought of as a
+column. Each array MUST be of a scalar type and all the arrays MUST be of the same
+length. Each array may be of a different scalar type. The set of the <em>i</em>th array
+members of all the columns make up one row, or n-tuple. The number of elements of <span
+class="term">labels</span> MUST be equal to the number of fields of <span
+class="term">value</span>.</p>
 
 <p>Use case examples: a table of the Twiss parameters of all the lattice elements in an
-accelerator section. Another example, where the columns might vary call-to-call to an RPC setting, would
-be that of an EPICS V4 SQL database service. In that example one NTTable returned by
-the service would contain the tabular results of a SQL SELECT, essentially a
-recoded JDBC or ODBC ResultSet - see the <a class="bib"
-href="#bib:rdbservice">rdbservice</a>.
-</p>
+accelerator section. Another example, where the columns might vary call-to-call to an
+RPC setting, would be that of an EPICS V4 SQL database service. In that example one
+NTTable returned by the service would contain the tabular results of a SQL SELECT,
+essentially a recoded JDBC or ODBC ResultSet - see the <a class="bib"
+href="#bib:rdbservice">rdbservice</a>. </p>
 
 <pre><span class="nterm">NTTable</span> := 
 
@@ -1581,18 +1583,17 @@ structure
 
 <h4>Interpretation</h4>
 
-<p>This represents a table of data. The column data is given in scalar arrays in the structure field <span class="term">value</span>, and the column headings are given in field <span class="term">labels</span>. The number of elements of <span class="term">labels</span> MUST be equal to the
-number of fields of <span class="term">value</span>. Each <span class="user">colname</span> scalar array
+<p>An NTTable instance represents a table of data. The column data is given in scalar arrays in the structure field <span class="term">value</span>, and the column headings are given in field <span class="term">labels</span>. Each <span class="user">colname</span> scalar array
 field of <span class="term">value</span> contains the data for the column corresponding to the same indexed element of
 the <span class="term">labels</span> field.  Agents SHOULD use the elements of <span
 class="term">labels</span> as the column headings. <span class="nonnorm">There is no normative requirement that the
-field names of <span class="term">value</span> match the strings in <span class="term">labels</span>, though doing so is fine</span>. </p>
+field names of <span class="term">value</span> match the strings in <span class="term">labels</span></span>. </p>
 
 <p>Note that the above description is given in terms of a table and its columns,
 but there is nothing specifically columnar about how this data may be rendered. A
-user may choose to print the fields row wise. For instance, if there are many fields in <span class="term">value</span>,
-but each has only length 1 or 2. For instance, if you wanted to give all the scalar data related
-to one device, then you might use an NTTable rendered in such a way.
+user may choose to print the fields row wise if, for instance, if there are many fields in <span class="term">value</span>,
+but each has only length 1 or 2. For example, if one wanted to give all the scalar data related
+to one device, then one might use an NTTable rendered in such a way.
 </p>
 
 <h4>Validation</h4>
