@@ -1408,7 +1408,7 @@ structure
     string path     
     structure query    : opt  
         {string &#124; double &#124; int &lt;field-name&gt;}0+ 
-        {&lt;field-type&gt; &lt;field-name&gt;}0+
+    {&lt;field-type&gt; &lt;field-name&gt;}0+
 </pre>
 
 <h4>Interpretation of NTURI under the "pva" scheme</h4>
@@ -1975,7 +1975,7 @@ field:</p>
 structure
     string    name              
     any       value             <span class="opt">
-    string[]  tags             </span> 
+    string[]  tags          : opt            </span> 
     string    descriptor    <span class="opt">
     <span class="nterm">alarm_t</span>   alarm         : opt
     <span class="nterm">time_t</span>    timeStamp     : opt</span>
