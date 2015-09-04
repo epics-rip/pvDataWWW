@@ -29,7 +29,7 @@
 #       release lines, so modules could have been included twice.
 #       
 # ============================================================================
-set -e -x
+
 
 function usage { 
 echo "
@@ -57,7 +57,7 @@ echo "
 
    Examples:
 
-         $ makereleaseCPP.sh -V -n EPICS-CPP-4.3.0-pre1 -u dhickin
+         $ makereleaseCPP.sh -V -n EPICS-CPP-4.3.0-pre1
 
        In this example, makereleaseCPP.sh packages a tar for a release named
        EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file in the 
@@ -67,7 +67,7 @@ echo "
        package them into a tar file along with the copy of README found in the
        copy of pvDataWWW
 
-         $ makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre1 -u dhickin
+         $ makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre1
 
        This time makereleaseCPP.sh packages a tar for the release
        EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file it 
@@ -81,6 +81,23 @@ function Exit {
     exit $1
 }
 
+releaseName= 
+localreleaseinfo=0
+force=0
+
+while getopts hfu:Vn: opt; do
+   case "$opt" in
+       h) usage; Exit 0 ;;
+       f) force=1 ;;
+       V) localreleaseinfo=1 ;;
+       n) releaseName=${OPTARG} ;; 
+       o) outdir="${OPTARG}" ;;
+       *) echo "Unknown Argument, see makereleaseCPP.sh -h"; Exit 1;;
+   esac
+done
+shift $((OPTIND-1));
+
+set -e -x
 
 declare -a modulesa
 
@@ -113,21 +130,6 @@ file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
 
 
-releaseName= 
-localreleaseinfo=0
-force=0
-
-while getopts hfu:Vn: opt; do
-   case "$opt" in
-       h) usage; Exit 0 ;;
-       f) force=1 ;;
-       V) localreleaseinfo=1 ;;
-       n) releaseName=${OPTARG} ;; 
-       o) outdir="${OPTARG}" ;;
-       *) echo "Unknown Argument, see makereleaseCPP.sh -h"; Exit 1;;
-   esac
-done
-shift $((OPTIND-1));
 
 [ "${outdir}" ] || outdir="${PWD}/${releaseName}"
 
