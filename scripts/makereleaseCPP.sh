@@ -304,7 +304,7 @@ tags_filename="${workdir}/tar/RELEASE_IDS"
 file=$tags_filename
 tags_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 echo "# Module IDs for release ${releaseName}"   > $tags_pathname
-echo "# module global_rev local_rev branch tag" >> $tags_pathname
+echo "# module tag commit_id reference" >> $tags_pathname
 
 for modulei in ${modulesa[*]}
 do
@@ -323,7 +323,8 @@ do
     curl "https://codeload.github.com/epics-base/${modulei}/tar.gz/${tag}" \
     | tar -C "${workdir}/tar/${modulei}" --strip-components=1 -xz
 
-    echo "${modulei} ${tag}" >> ${tags_pathname}
+    tag_id=`git ls-remote https://github.com/epics-base/${modulei}.git ${tag}`
+    echo "${modulei} ${tag} ${tag_id}" >> ${tags_pathname}
 
 done
 
