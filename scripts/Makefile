@@ -1,6 +1,6 @@
 default: base helloWorld
 
-base : pvCommon pvData pvAccess pvaSrv pvDatabase nt
+base : pvCommon pvData nt pvAccess pvaSrv pvDatabase pvaClient
 
 all : default archSrv pyaPy
 
@@ -9,6 +9,9 @@ pvCommon : FORCE
 
 pvData : FORCE
 	make -C pvDataCPP 
+
+nt : FORCE
+	make -C normativeTypesCPP
 
 pvAccess : FORCE
 	make -C pvAccessCPP
@@ -19,8 +22,8 @@ pvaSrv : FORCE
 pvDatabase : FORCE
 	make -C pvDatabaseCPP
 
-nt : FORCE
-	make -C normativeTypesCPP
+pvaClient : FORCE
+	make -C pvaClientCPP
 
 helloWorld : FORCE
 	make -C exampleCPP/HelloWorld

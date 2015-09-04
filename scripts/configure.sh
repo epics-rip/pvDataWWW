@@ -65,6 +65,7 @@ start_common()
 top_level()
 {
     echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
+    echo "PVACLIENT=\$(EV4_BASE)/pvaClientCPP" >> RELEASE.local
     echo "PVDATABASE=\$(EV4_BASE)/pvDatabaseCPP" >> RELEASE.local
     echo "PVASRV=\$(EV4_BASE)/pvaSrv" >> RELEASE.local
     echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
@@ -163,6 +164,23 @@ nt()
         cd ../..
     else
         echo "Skipping normativeTypesCPP: configure - doesn't exist" 
+    fi
+}
+
+pvaClient()
+{
+    if [ -e pvDatabaseCPP/configure ]; then
+        echo "Making config files for pvDatabaseCPP" 
+        cd pvDatabaseCPP/configure
+        echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
+        echo "NORMATIVETYPES=\$(EV4_BASE)/normativeTypesCPP" >> RELEASE.local
+        echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
+        echo "PVDATA=\$(EV4_BASE)/pvDataCPP" >> RELEASE.local
+        echo "PVCOMMON=\$(EV4_BASE)/pvCommonCPP" >> RELEASE.local
+        echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
+        cd ../..
+    else
+        echo "Skipping pvDatabaseCPP: configure doesn't exist" 
     fi
 }
 
