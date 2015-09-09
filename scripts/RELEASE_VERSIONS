@@ -7,7 +7,9 @@
 #
 # -----------------------------------------------------------------
 # Auth: Greg White, 15-Aug-2013
-# Mod: 
+# Mod:
+#      Greg White, 08-Sep-2015.
+#      Add block for 4.5-pre1 Java. D. Hickin also added 4.5-pre1 C++ block. 
 #      Greg White, 09-Dec-2014
 #      Add v4.4.0 java actual release block. No changes from rc1. 
 #      Greg White, 26-Nov-2014
@@ -31,6 +33,18 @@
 #
 # Ev4 Release name           Repo name        Tag/version
 # ------------------         ------------     --------------------
+
+# 4.5 Java
+EPICS-Java-4.5.0-pre1       pvDataJava         5.0.0
+EPICS-Java-4.5.0-pre1       normativeTypesJava 0.1.0
+EPICS-Java-4.5.0-pre1       pvAccessJava       4.1.0
+EPICS-Java-4.5.0-pre1       pvDatabaseJava     4.1.0
+EPICS-Java-4.5.0-pre1       caj                1.1.15
+EPICS-Java-4.5.0-pre1       jca                2.3.6
+EPICS-Java-4.5.0-pre1       pvaClientJava      4.1.1
+EPICS-Java-4.5.0-pre1       easyPVAJava        4.1.0
+EPICS-Java-4.5.0-pre1       directoryService   0.4.0
+EPICS-Java-4.5.0-pre1       exampleJava        4.0.4
 
 # 4.4 Java
 EPICS-Java-4.4.0            pvDataJava        4.0.2
