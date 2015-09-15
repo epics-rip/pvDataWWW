@@ -169,9 +169,9 @@ nt()
 
 pvaClient()
 {
-    if [ -e pvDatabaseCPP/configure ]; then
-        echo "Making config files for pvDatabaseCPP" 
-        cd pvDatabaseCPP/configure
+    if [ -e pvaClientCPP/configure ]; then
+        echo "Making config files for pvaClientCPP" 
+        cd pvaClientCPP/configure
         echo "EV4_BASE=${EV4_BASE}" > RELEASE.local
         echo "NORMATIVETYPES=\$(EV4_BASE)/normativeTypesCPP" >> RELEASE.local
         echo "PVACCESS=\$(EV4_BASE)/pvAccessCPP" >> RELEASE.local
@@ -180,7 +180,7 @@ pvaClient()
         echo "EPICS_BASE=${EPICS_BASE}" >> RELEASE.local
         cd ../..
     else
-        echo "Skipping pvDatabaseCPP: configure doesn't exist" 
+        echo "Skipping pvaClientCPP: configure doesn't exist" 
     fi
 }
 
@@ -238,6 +238,7 @@ elif [ "$1" = "all" ]; then
     pvaccess
     pvasrv
     pvDatabase
+    pvaClient
     nt
     helloWorld
     archiverService
