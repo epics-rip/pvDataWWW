@@ -45,6 +45,16 @@ clean :
 	make -C exampleCPP/ChannelArchiverService clean
 	make -C pvaPy clean
 
+uninstall : 
+	make -C pvCommonCPP uninstall
+	make -C pvDataCPP uninstall
+	make -C pvAccessCPP uninstall
+	make -C pvaSrv uninstall
+	make -C pvDatabaseCPP uninstall
+	make -C normativeTypesCPP uninstall
+	make -C exampleCPP/HelloWorld uninstall
+	make -C exampleCPP/ChannelArchiverService uninstall
+
 distclean : clean config_clean 
 
 configure: FORCE
