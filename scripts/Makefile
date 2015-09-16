@@ -43,7 +43,7 @@ clean :
 	make -C normativeTypesCPP clean
 	make -C exampleCPP/HelloWorld clean
 	make -C exampleCPP/ChannelArchiverService clean
-	make -C pvaPy clean
+	if [ -e "pvaPy/configure/RELEASE.local" ]; then make -C pvaPy clean; fi
 
 uninstall : 
 	make -C pvCommonCPP uninstall
@@ -54,6 +54,7 @@ uninstall :
 	make -C normativeTypesCPP uninstall
 	make -C exampleCPP/HelloWorld uninstall
 	make -C exampleCPP/ChannelArchiverService uninstall
+	if [ -e "pvaPy/configure/RELEASE.local" ]; then make -C pvaPy uninstall; fi
 
 distclean : clean config_clean 
 
