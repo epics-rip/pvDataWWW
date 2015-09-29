@@ -211,3 +211,13 @@ EPICS-CPP-4.5.0-pre1        pvDatabaseCPP     4.1.0
 EPICS-CPP-4.5.0-pre1        pvaPy             0.5.0
 EPICS-CPP-4.5.0-pre1        exampleCPP        4.1.0
 
+EPICS-CPP-4.5.0-rc1         pvCommonCPP       4.1.0
+EPICS-CPP-4.5.0-rc1         pvDataCPP         5.0.1
+EPICS-CPP-4.5.0-rc1         normativeTypesCPP 5.0.1
+EPICS-CPP-4.5.0-rc1         pvAccessCPP       4.1.1
+EPICS-CPP-4.5.0-rc1         pvaClientCPP      4.1.0
+EPICS-CPP-4.5.0-rc1         pvaSrv            0.11.1
+EPICS-CPP-4.5.0-rc1         pvDatabaseCPP     4.1.0
+EPICS-CPP-4.5.0-rc1         pvaPy             0.5.1
+EPICS-CPP-4.5.0-rc1         exampleCPP        4.1.0
+
