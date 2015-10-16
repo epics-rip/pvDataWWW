@@ -8,6 +8,8 @@
 # -----------------------------------------------------------------
 # Auth: Greg White, 15-Aug-2013
 # Mod:
+#      Greg White, 16-Oct-2015
+#      Added block for 4.5.0 Java. 
 #      Greg White, 29-Sep-2015
 #      Add block for 4.5-rc1 Java. D. Hickin also added 4.5-rc1 C++ block. 
 #      Greg White, 08-Sep-2015.
@@ -37,6 +39,17 @@
 # ------------------         ------------     --------------------
 
 # 4.5 Java
+EPICS-Java-4.5.0           pvDataJava         5.0.2
+EPICS-Java-4.5.0           normativeTypesJava 0.1.2
+EPICS-Java-4.5.0           pvAccessJava       4.1.2
+EPICS-Java-4.5.0           pvDatabaseJava     4.1.2
+EPICS-Java-4.5.0           caj                1.1.15
+EPICS-Java-4.5.0           jca                2.3.6
+EPICS-Java-4.5.0           pvaClientJava      4.1.3
+EPICS-Java-4.5.0           easyPVAJava        4.1.2
+EPICS-Java-4.5.0           directoryService   0.4.2
+EPICS-Java-4.5.0           exampleJava        4.0.5
+
 EPICS-Java-4.5.0-rc1       pvDataJava         5.0.1
 EPICS-Java-4.5.0-rc1       normativeTypesJava 0.1.1
 EPICS-Java-4.5.0-rc1       pvAccessJava       4.1.1
