@@ -31,19 +31,19 @@ span.ed.priv { display: none }
 <!-- When making a dated version, change 1. The h2 title. 2. the This Version a tag -->
 <!-- text, 3. the This Verison a tag's href URL, 4. The Status of this document -->
   
-<h2 class="nocount" id="L50">EPICS v4 Working Group, Third (in progress) Public Working
-Draft, 7-April-2014</h2>
+<h2 class="nocount" id="L50">EPICS v4 Working Group, Fourth (in progress) Public Working
+Draft, 16-October-2015</h2>
 <dl>
   <dt>This version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20140407.html">pvAccess_Protocol_Specification_20140407.html</a></dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20151016.html">pvAccess_Protocol_Specification_20151016.html</a></dd>
   <dt>Latest version:</dt>
     <dd><a
       href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess_Protocol_Specification.html</a></dd>
   <dt>Previous version:</dt>
     <dd><a
-      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20120905.html">pvAccess_Protocol_Specification_20120905.html</a>
-    (2<sup>nd</sup> Public Working Draft)</dd>
+      href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification_20140407.html">pvAccess_Protocol_Specification_20140407.html</a>
+    (3<sup>rd</sup> Public Working Draft)</dd>
   <dt>Editors:</dt>
     <dd>Matej Sekoranja, Cosylab</dd>
     <dd>Marty Kraimer, BNL</dd>
@@ -79,7 +79,7 @@ Control System. </a></p>
 <h2 class="nocount" id="status">Status of this Document</h2>
 <!-- Statement about why this version exists -->
 
-<p>This is the 7 April 2014 version of the pvAccess Protocol Specification. This
+<p>This is the 16 October 2015 version of the pvAccess Protocol Specification. This
 version constitutes the first publication of the Third Public Working Draft.
 The Third Public Working Draft includes in particular support for unsigned integer, unions, and
 material and revisions from the Invited Experts above. The
@@ -129,10 +129,11 @@ important. Such non-normative text is in <i>italics</i>.</p>
           <li><a href="#dataEncoding:basicTypes">Basic Types</a></li>
           <li><a href="#dataEncoding:arrays">Arrays</a></li>
           <li><a href="#dataEncoding:strings">Strings</a></li>
+          <li><a href="#dataEncoding:boundedStrings">Bounded Strings</a></li>
           <li><a href="#dataEncoding:structures">Structures</a></li>
           <li><a href="#dataEncoding:unions">Unions</a></li>
           <li><a href="#dataEncoding:variantUnions">Variant Unions</a></li>
-          <li><a href="#dataEncoding:example">Encoding example</a></li>
+          <li><a href="#dataEncoding:example">Encoding Example</a></li>
         </ul>
       </li>
       <li><a href="#dataEncoding:metaData">Meta Data</a>
@@ -245,10 +246,8 @@ a service oriented architecture. </p>
 Channel Access <a class="bib" href="#bib:caref">bib:caref</a>. It is the standard
 protocol of <a href="http://epics-pvdata.sourceforge.net/">EPICS Version 4</a> (V4) when
 both endpoints of a channel are EPICS V4 agents. pvAccess can also connect EPICS V3
-IOC Channel Access data to EPICS V4 user agents, using the EPICS V4 pvIOC module
-called <a
- href="ttps://irmis-dev.bnl.gov/jenkins/view/Epics%204/job/pvIOCJava%20-%20Build/javadoc/"
- >CAV3</a>.  </p>
+IOC Channel Access data to EPICS V4 user agents, using the EPICS V4 <a 
+href="https://github.com/epics-base/pvaSrv">pvaSrv</a> module.  </p>
 
 <p>TCP/IP is used for data transmission. UDP/IP is normally used for discovery,
 although discovery over TCP/IP is also allowed. The discovery mechanism allows
@@ -260,6 +259,11 @@ default. These default connection ports SHOULD be used if
 free, otherwise a dynamically allocated port SHOULD be used as a fallback.  pvAccess
 implementations SHOULD allow alternative default connection
 ports to be configured.</p>
+
+<p>To support multiple local sockets at port 5076 to able all to receive unicast messages over the UDP
+a multicast group on local network interface at address 224.0.0.128, port 5076, is used. 
+Any UDP message flagged as unicast received at port 5076 MUST be forwarded to the multicast group with
+unicast flag cleared.</p>
 
 <p>pvAccess was designed to support pvData <a class="bib"
 href="#bib:pvdatarefcpp">bib:pvdatarefcpp</a>,  <a class="bib"
@@ -295,19 +299,6 @@ therefore eliminates the wasted space and additional complexity that alignment
 requires. pvAccess data encoding simply produces a stream of contiguous bytes; in
 general message data does not contain padding bytes and an implementation MUST NOT
 try to align data on word boundaries.</p>
-
-<p>
-However, arrays with an element type that is a number (including signed and unsigned
-integer types, and floating point types) are an exception.
-Such arrays MUST be aligned relative to the start of the message, so that the
-first element of the array (and thus all elements) have a byte offset
-(relative to the start of the message) that is divisible by the size (in
-bytes) of an element of the array. This MUST be done by inserting just enough
-bytes before the first element of the array.
-For instance, an array of float must be 4 byte aligned, which MUST be ensured
-by inserting up to three bytes before the array.
-Inserted (padding) bytes value SHOULD be 0x00. 
-</p>
 
 <p>For connection-oriented communication (TCP/IP), the server MUST notify the
 client what byte order to use. Each message contains an endianness flag in order
@@ -418,9 +409,22 @@ same number.
 
 <h4 id="dataEncoding:arrays">Arrays</h4>
 
-<p>Arrays MUST be encoded as a size representing the number of elements in the
+<h5 id="dataEncoding:variable_size_arrays">Variable-size Arrays</h5>
+
+<p>Variable-size arrays MUST be encoded as a size representing the number of elements in the
 array, followed by the elements encoded as specified for their type (as
 specified in these sections). </p>
+
+<h5 id="dataEncoding:bounded_size_arrays">Bounded-size Arrays</h5>
+
+<p>Bounded-size arrays MUST be encoded as a size representing the number of elements in the
+array, followed by the elements encoded as specified for their type (as
+specified in these sections). The size MUST be less then or equal to the array's declared bound. </p>
+
+<h5 id="dataEncoding:fixed_size_arrays">Fixed-size Arrays</h5>
+
+<p>Fixed-size arrays MUST be encoded as elements encoded as specified for their type (as
+specified in these sections). The number of elements encoded MUST equal to the array's fixed size. </p>
 
 <h4 id="dataEncoding:strings">Strings</h4>
 
@@ -447,6 +451,10 @@ non-English alphabets. However, for C++, how strings are represented inside a pr
 depends on the platform as well as the mapping that is chosen for a particular
 string. The default mapping to use is std::string. </p>
 
+<h4 id="dataEncoding:boundedStrings">Bounded Strings</h4>
+
+Same as strings, just that size MUST be less than or equal to the string's bound.
+
 <h4 id="dataEncoding:structures">Structures</h4>
 
 <p>Structures MUST be encoded by appending the data of all comprising fields in the
@@ -466,7 +474,7 @@ A union can contain a structure and a union for its field.</p>
 Variant Unions MUST be encoded as a introspection data (<i>Field</i>) description of the encoded value, followed
 by the encoded value itself.</p>
 
-<h4 id="dataEncoding:example">Encoding example</h4>
+<h4 id="dataEncoding:example">Encoding Example</h4>
 <p>Given the following structure:</p>
 <pre>structure 
     byte[] value [1,2,3]
@@ -698,8 +706,8 @@ when each connection is established. </p>
       <td>Serialization contains an ID (that can be used later, if cached), tag (of integer type) and
         full interface description. Any existing definition with the same ID is overriden.
         A tag must guarantee that the same (ID, FieldDesc) pair has the same tag and any previous definition
-        with the same ID and different FieldDesc has a different tag. In non-reliable transport systems this
-        identifies whether the definition with given ID overrides already existing one and allow receivers to skip deserialization of FieldDesc, if tags match.<br/>
+        with the same ID and different FieldDesc has a different tag. This
+        identifies whether the definition with given ID overrides already existing one and allow receivers to skip deserialization of FieldDesc, if tags match. SHOULD be used in non-reliable transport systems only.<br/>
       </td>
     </tr>
     <tr>
@@ -762,16 +770,24 @@ dependent and used for size encoding. </p>
       <td style="font-weight:bold">boolean</td>
     </tr>
     <tr>
-      <td rowspan="2" style="text-align:right;font-family:monospace">4</td>
-      <td style="text-align:right;font-family:monospace">1</td>
-      <td>array flag</td>
+      <td rowspan="4" style="text-align:right;font-family:monospace">3-4</td>
+      <td style="text-align:right;font-family:monospace">11</td>
+      <td>fixed-size array flag</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">0</td>
+      <td style="text-align:right;font-family:monospace">10</td>
+      <td>bounded-size array flag</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">01</td>
+      <td>variable-size array flag</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">00</td>
       <td>scalar flag</td>
     </tr>
     <tr>
-      <td rowspan="1" style="text-align:right;font-family:monospace">3-0</td>
+      <td rowspan="1" style="text-align:right;font-family:monospace">2-0</td>
       <td style="text-align:right;font-family:monospace"></td>
       <td>type (bits 7-5) depended</td>
     </tr>
@@ -788,7 +804,7 @@ dependent and used for size encoding. </p>
       <th>Type Name</th>
     </tr>
     <tr>
-      <td rowspan="2" style="text-align:right;font-family:monospace">3</td>
+      <td rowspan="2" style="text-align:right;font-family:monospace">2</td>
       <td style="text-align:right;font-family:monospace">1</td>
       <td>unsigned flag</td>
     </tr>
@@ -797,33 +813,20 @@ dependent and used for size encoding. </p>
       <td>signed flag</td>
     </tr>
     <tr>
-      <td rowspan="8" style="text-align:right;font-family:monospace">2-0</td>
-      <td style="text-align:right;font-family:monospace">111</td>
-      <td rowspan="4">reserved</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">110</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">101</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">100</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">011</td>
+      <td rowspan="4" style="text-align:right;font-family:monospace">1-0</td>
+      <td style="text-align:right;font-family:monospace">11</td>
       <td style="font-weight:bold">long</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">010</td>
+      <td style="text-align:right;font-family:monospace">10</td>
       <td style="font-weight:bold">int</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">001</td>
+      <td style="text-align:right;font-family:monospace">01</td>
       <td style="font-weight:bold">short</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">000</td>
+      <td style="text-align:right;font-family:monospace">00</td>
       <td style="font-weight:bold">byte</td>
     </tr>
   </tbody>
@@ -838,11 +841,6 @@ dependent and used for size encoding. </p>
       <th>Value</th>
       <th>Type Name</th>
       <th>IEEE 754-2008 Name</th>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">3</td>
-      <td style="text-align:right;font-family:monospace"></td>
-      <td colspan="2">reserved</td>
     </tr>
     <tr>
       <td rowspan="8" style="text-align:right;font-family:monospace">2-0</td>
@@ -892,64 +890,41 @@ dependent and used for size encoding. </p>
       <th>Type Name</th>
     </tr>
     <tr>
-      <td rowspan="16" style="text-align:right;font-family:monospace">3-0</td>
-      <td style="text-align:right;font-family:monospace">1111</td>
-      <td rowspan="13">reserved</td>
+      <td rowspan="16" style="text-align:right;font-family:monospace">2-0</td>
+      <td style="text-align:right;font-family:monospace">111</td>
+      <td rowspan="4">reserved</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">1110</td>
+      <td style="text-align:right;font-family:monospace">110</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">1101</td>
+      <td style="text-align:right;font-family:monospace">101</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">1100</td>
+      <td style="text-align:right;font-family:monospace">100</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">1011</td>
+      <td style="text-align:right;font-family:monospace">011</td>
+      <td style="font-weight:bold">bounded string</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">1010</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">1001</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">1000</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">0111</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">0110</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">0101</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">0100</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">0011</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">0010</td>
+      <td style="text-align:right;font-family:monospace">010</td>
       <td style="font-weight:bold">variant union</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">0001</td>
+      <td style="text-align:right;font-family:monospace">001</td>
       <td style="font-weight:bold">union</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">0000</td>
+      <td style="text-align:right;font-family:monospace">000</td>
       <td style="font-weight:bold">structure</td>
     </tr>
   </tbody>
 </table>
 
-<p>For all other types, bits 3-0 MUST be '0b0000'. </p>
+<p>For all other types, bits 2-0 MUST be '0b0000'. </p>
 
-<p>Structure and union (and their arrays) REQUIRE more description. A
+<p>Structure, union, and bounded string (and all their arrays) REQUIRE more description. A
 structure REQUIRES its identification string and a named array of Fields - size followed by one or more (field name, FieldDesc) pairs.
 Arrays of structures/unions REQUIRE an introspection data of a
 structure/union defining an array element type.</p>
@@ -963,14 +938,24 @@ structure/union defining an array element type.</p>
       <th>Description</th>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0bxxx0xxxx</a></td>
+      <td><a style="font-family:monospace">0bxxx00xxx</a></td>
       <!--td style="font-weight:bold">scalar</td-->
       <td>Scalar.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0bxxx1xxxx</a></td>
+      <td><a style="font-family:monospace">0bxxx01xxx</a></td>
       <!--td style="font-weight:bold">scalarArray</td-->
-      <td>Array of scalars.</td>
+      <td>Variable-size array of scalars.</td>
+    </tr>
+    <tr>
+      <td><a style="font-family:monospace">0bxxx10xxx</a> + bound (encoded as size)</td>
+      <!--td style="font-weight:bold">scalarArray</td-->
+      <td>Bounded-size array of scalars.</td>
+    </tr>
+    <tr>
+      <td><a style="font-family:monospace">0bxxx11xxx</a> + fixed size (encoded as size)</td>
+      <!--td style="font-weight:bold">scalarArray</td-->
+      <td>Fixed-size array of scalars.</td>
     </tr>
     <tr>
       <td><a style="font-family:monospace">0b10000000</a> + identification string + (field name, FieldDesc)[]</td>
@@ -978,7 +963,7 @@ structure/union defining an array element type.</p>
       <td>Structure.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b10010000</a> + structure FieldDesc</td>
+      <td><a style="font-family:monospace">0b10001000</a> + structure FieldDesc</td>
       <!--td style="font-weight:bold">structureArray</td-->
       <td>Array of structures.</td>
     </tr>
@@ -988,7 +973,7 @@ structure/union defining an array element type.</p>
       <td>Union.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b10010001</a> + union FieldDesc</td>
+      <td><a style="font-family:monospace">0b10001001</a> + union FieldDesc</td>
       <!--td style="font-weight:bold">unionArray</td-->
       <td>Array of unions.</td>
     </tr>
@@ -998,9 +983,14 @@ structure/union defining an array element type.</p>
       <td>Variant union.</td>
     </tr>
     <tr>
-      <td><a style="font-family:monospace">0b10010010</a></td>
+      <td><a style="font-family:monospace">0b10001010</a></td>
       <!--td style="font-weight:bold">unionArray</td-->
       <td>Array of variant unions.</td>
+    </tr>
+    <tr>
+      <td><a style="font-family:monospace">0b10000110</a> + bound (encoded as size)</td>
+      <!--td style="font-weight:bold">boundedString</td-->
+      <td>Bounded string.</td>
     </tr>
   </tbody>
 </table>
