@@ -478,6 +478,8 @@ by the encoded value itself.</p>
 <p>Given the following structure:</p>
 <pre>structure 
     byte[] value [1,2,3]
+    byte<16> boundedSizeArray [4,5,6,7,8]
+    byte[4] fixedSizeArray [9,10,11,12]
     structure timeStamp
         long secondsPastEpoch 0x1122334455667788
         int nanoSeconds 0xAABBCCDD
@@ -492,12 +494,13 @@ by the encoded value itself.</p>
         string  String inside variant union.</pre>
         
 <p>The above would be serialized as illustrated below (when using big-endian byte order, <i>valueUnion</i> selector with value 1 is selected): </p>
-<pre>Hexdump [Serialized structure] size = 75
-03 01 02 03  11 22 33 44  55 66 77 88  AA BB CC DD  .... ."3D Ufw. .... 
-EE EE EE EE  11 11 11 11  22 22 22 22  0B 41 6C 6C  .... .... """" .All 
-6F 2C 20 41  6C 6C 6F 21  01 33 33 33  33 60 1C 53  o, A llo! .333 3`.S 
-74 72 69 6E  67 20 69 6E  73 69 64 65  20 76 61 72  trin g in side  var 
-69 61 6E 74  20 75 6E 69  6F 6E 2E                  iant  uni on.</pre>
+<pre>Hexdump [Serialized structure] size = 85
+03 01 02 03  05 04 05 06  07 08 09 0A  0B 0C 11 22  .... .... .... ..." 
+33 44 55 66  77 88 AA BB  CC DD EE EE  EE EE 11 11  3DUf w... .... .... 
+11 11 22 22  22 22 0B 41  6C 6C 6F 2C  20 41 6C 6C  .."" "".A llo,  All 
+6F 21 01 33  33 33 33 60  1C 53 74 72  69 6E 67 20  o!.3 333` .Str ing  
+69 6E 73 69  64 65 20 76  61 72 69 61  6E 74 20 75  insi de v aria nt u 
+6E 69 6F 6E  2E                                     nion .</pre>
 
 <h3 id="dataEncoding:metaData">Meta Data</h3>
 
@@ -1020,9 +1023,11 @@ FD 00 01 80  0B 74 69 6D  65 53 74 61  6D 70 5F 74  .... .tim eSta mp_t
 <pre>
 exampleStructure
     byte[] value
+    byte<16> boundedSizeArray
+    byte[4] fixedSizeArray
     time_t timeStamp
         long secondsPastEpoch
-        int nanoSeconds
+        int nanoseconds
         int userTag
     alarm_t alarm
         int severity
@@ -1036,20 +1041,23 @@ exampleStructure
 
 <p>The introspection description of the above structure would be encoded by
 pvAccess as the following: </p>
-<pre>Hexdump [Serialized structure IF] size = 201
+<pre>Hexdump [Serialized structure IF] size = 243
 FD 00 01 80  10 65 78 61  6D 70 6C 65  53 74 72 75  .... .exa mple Stru 
-63 74 75 72  65 05 05 76  61 6C 75 65  30 09 74 69  ctur e..v alue 0.ti 
-6D 65 53 74  61 6D 70 FD  00 01 80 06  74 69 6D 65  meSt amp. .... time 
-5F 74 03 10  73 65 63 6F  6E 64 73 50  61 73 74 45  _t.. seco ndsP astE 
-70 6F 63 68  23 0B 6E 61  6E 6F 53 65  63 6F 6E 64  poch #.na noSe cond 
-73 22 07 75  73 65 72 54  61 67 22 05  61 6C 61 72  s".u serT ag". alar 
-6D FD 00 02  80 07 61 6C  61 72 6D 5F  74 03 08 73  m... ..al arm_ t..s 
-65 76 65 72  69 74 79 22  06 73 74 61  74 75 73 22  ever ity" .sta tus" 
-07 6D 65 73  73 61 67 65  60 0A 76 61  6C 75 65 55  .mes sage `.va lueU 
-6E 69 6F 6E  81 00 03 0B  73 74 72 69  6E 67 56 61  nion .... stri ngVa 
-6C 75 65 60  08 69 6E 74  56 61 6C 75  65 22 0B 64  lue` .int Valu e".d 
-6F 75 62 6C  65 56 61 6C  75 65 43 0C  76 61 72 69  oubl eVal ueC. vari 
-61 6E 74 55  6E 69 6F 6E  82                        antU nion .</pre>
+63 74 75 72  65 07 05 76  61 6C 75 65  28 10 62 6F  ctur e..v alue (.bo 
+75 6E 64 65  64 53 69 7A  65 41 72 72  61 79 30 10  unde dSiz eArr ay0. 
+0E 66 69 78  65 64 53 69  7A 65 41 72  72 61 79 38  .fix edSi zeAr ray8 
+04 09 74 69  6D 65 53 74  61 6D 70 FD  00 02 80 06  ..ti meSt amp. .... 
+74 69 6D 65  5F 74 03 10  73 65 63 6F  6E 64 73 50  time _t.. seco ndsP 
+61 73 74 45  70 6F 63 68  23 0B 6E 61  6E 6F 73 65  astE poch #.na nose 
+63 6F 6E 64  73 22 07 75  73 65 72 54  61 67 22 05  cond s".u serT ag". 
+61 6C 61 72  6D FD 00 03  80 07 61 6C  61 72 6D 5F  alar m... ..al arm_ 
+74 03 08 73  65 76 65 72  69 74 79 22  06 73 74 61  t..s ever ity" .sta 
+74 75 73 22  07 6D 65 73  73 61 67 65  60 0A 76 61  tus" .mes sage `.va 
+6C 75 65 55  6E 69 6F 6E  FD 00 04 81  00 03 0B 73  lueU nion .... ...s 
+74 72 69 6E  67 56 61 6C  75 65 60 08  69 6E 74 56  trin gVal ue`. intV 
+61 6C 75 65  22 0B 64 6F  75 62 6C 65  56 61 6C 75  alue ".do uble Valu 
+65 43 0C 76  61 72 69 61  6E 74 55 6E  69 6F 6E FD  eC.v aria ntUn ion. 
+00 05 82                                            ...</pre>
 
 <h2 id="connectionManagement">Connection Management</h2>
 
@@ -1538,10 +1546,11 @@ be sent over the same transport as that on which the request was received.</p>
 <p>Servers MUST broadcast or multicast beacons over UDP. Beacons are be used to
 announce new servers and server restarts. </p>
 <pre>struct beaconMessage {
-    short beaconSequenceId;
-    long startupTimeSeconds;
-    int startupTimeNanos;
-    byte[16] serverAddressIPv6;
+    byte[12] guid;
+    byte flags;
+    byte beaconSequenceId;
+    short changeCount;
+    byte[16] serverAddress;
     short serverPort;
     string protocol;
     FieldDesc serverStatusIF;
@@ -1556,29 +1565,33 @@ announce new servers and server restarts. </p>
       <th>Description</th>
     </tr>
     <tr>
+      <td style="text-align:right;font-family:monospace">guid</td>
+      <td>Server GUID (Globally Unique Identifier). MUST change every restart.</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;font-family:monospace">flags</td>
+      <td>reserved</td>
+    </tr>
+    <tr>
       <td style="text-align:right;font-family:monospace">beaconSequenceId</td>
       <td>Beacon sequence ID (counter w/ rollover). Can be used to detect UDP
         routing problems.</td>
     </tr>
     <tr>
-      <td style="text-align:right;font-family:monospace">startupTimeSeconds</td>
-      <td>Server startup time (POSIX time).</td>
-    </tr>
-    <tr>
-      <td style="text-align:right;font-family:monospace">startupTimeNanos</td>
-      <td>Server startup time (nanoseconds part).</td>
+      <td style="text-align:right;font-family:monospace">changeCount</td>
+      <td>Count (w/ rollover) that changes every time server's list of channels changes.</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">serverAddressIPv6</td>
-      <td>Server IPv6 address (or IPv6 encoded IPv4 address).</td>
+      <td>Server address (e.g. for IP transports IPv6 or IPv6 encoded IPv4 address).</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">serverPort</td>
-      <td>Server port (where server is listening).</td>
+      <td>Server port (e.g. for IP transport socket port where server is listening).</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">protocol</td>
-      <td>Protocol name, "tcp" for standard pvAccess TCP/IP communication.</td>
+      <td>Protocol/transport name (e.g. "tcp" for standard pvAccess TCP/IP communication).</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">serverStatusIF</td>
@@ -1593,24 +1606,23 @@ announce new servers and server restarts. </p>
 </table>
 
 <p>When a pvAccess server is started it MUST start emitting beacons. Clients MUST monitor
-all beacons. A beacon received from an as yet unknown serverAddressIPv6 serverPort
+all beacons. A beacon received from an as yet unknown serverAddress:serverPort
 MUST be interpreted as indicating that
 a new server has come online. A beacon with the same
-serverAdddressIPv6:serverPort address as one already received but has different
-startupTime{Seconds,Nanos}, MUST be interpreted as indicating that the server was
+serverAdddress:serverPort address as one already received but has different
+globally unique ID (guid), MUST be interpreted as indicating that the server was
 restarted. In both cases a
-client SHOULD boost searching of not yet found channels. A client MAY disconnect
-old connections or wait until connection loss is detected (on failed Echo
-message send). </p>
+client SHOULD boost searching of not yet found channels.
+A client SHOUD also boost searching of not yet found channels when changeCount changes
+(this indicates that the server might host new channels). A client MAY disconnect
+ old connections or wait until connection loss is detected (on failed Echo
+ message send). </p>
 
 <p>Each server transport instance SHOULD emit its own beacons. For example, if a server
 supports data transmission over TCP/IP and UDP/IP then these SHOULD both emit
 beacons. If the instances are tightly coupled, i.e. they have the same
 lifecycle and share the same channels, then only one server MAY emit beacons.
 </p>
-
-<p>Servers SHOULD synchronize their internal clocks using NTP or some
-other suitable time source before sending their first beacon.</p>
 
 <p>Due to the fact that UDP does not guarantee delivery, a server MUST send
 several beacons to notify that it is alive (e.g. 15 beacons with 1Hz period). After a
@@ -1650,15 +1662,42 @@ defined as follows:</p>
 
 <pre>struct connectionValidationRequest {
     int serverReceiveBufferSize;
-    int serverReceiveSocketBufferSize;
     short serverIntrospectionRegistryMaxSize;
+    string[] authNZ;                        // list of supported authNZ;
 };
+
+// TODO new message code (from server) 0x09
+struct connectionValidated {
+    Status status;
+};
+
+
+// TODO new message code 0x05
+struct authNZRequest {
+    FieldDesc dataIF;
+    [if dataIF != NULL_TYPE_CODE] PVField data;
+};
+
+struct authNZResponse {
+    FieldDesc dataIF;
+    [if dataIF != NULL_TYPE_CODE] PVField data;
+};
+
+// TODO new message code (from server) 0x06
+struct aclChange {
+    int clientChannelID;
+    struct {
+        int requestID;  // invalid ID is 0 (means for channel)
+        BitSet[] rights;   // get has only one bit-set (readRights), put-get has 2 (read and write), channel has one (allowed/dissallowed request)
+    } changes[];
+};
+
 
 struct connectionValidationResponse {
     int clientReceiveBufferSize;
-    int clientReceiveSocketBufferSize;
     short clientIntrospectionRegistryMaxSize;
     short connectionQos;
+    string authNZ;                          // selected authNZ plugin;
 };</pre>
 
 <table style="caption-side:bottom">
@@ -1767,8 +1806,7 @@ be whether a streaming mode algorithm should be specified. </p>
 <h3 id="protocolMessages:applicationMessages:echo">Echo (0x02)</h3>
 
 <p>An Echo diagnostic message is usually sent to check if TCP/IP connection is
-still valid. It can also be broadcast over UDP/IP to get a list of all servers
-in the subnet (note that UDP does not guarantee delivery). </p>
+still valid. </p>
 <pre>struct echoRequest {
     byte[] somePayload;
 };
@@ -1815,7 +1853,17 @@ message also over TCP/IP. </p>
 <pre>        
 struct searchRequest {
     int searchSequenceID;
-    byte replyRequired;
+    byte flags; // 0-bit for replyRequired, 7-th bit for "sent as unicast" (1)/"sent as broadcast/multicast" (0)
+
+    byte[3] reserved;
+    
+    // if not provided (or zero), the same transport is used for responses
+    // needs to be set when local broadcast (multicast on loop interface) is done
+    byte[16] responseAddress; // e.g. IPv6 address in case of IP based transport, UDP
+    short responsePort;       // e.g. socket port in case of IP based transport
+    
+    string[] protocols;
+    
     struct {
         int searchInstanceID;
         string channelName;
@@ -1840,6 +1888,10 @@ struct searchRequest {
         0x00 otherwise.</td>
     </tr>
     <tr>
+      <td style="text-align:right;font-family:monospace">protocol</td>
+      <td>A set of allowed protocols to respond. Unrestricted if array is empty.</td>
+    </tr>
+    <tr>
       <td style="text-align:right;font-family:monospace">searchInstanceID</td>
       <td>ID to be used to associate response with the following channel
       name.</td>
@@ -1860,11 +1912,12 @@ below. </p>
 <p>A "search response" message MUST be sent as the response to a search request
 (0x03) message. </p>
 <pre>struct searchResponse {
+    byte[12] guid;          
     int searchSequenceID;
-    boolean found;
-    byte[16] serverAddressIPv6;
-    short serverPort;
+    byte[16] serverAddress; // e.g. IPv6 address in case of IP based transport 
+    short serverPort;       // e.g. socket port in case of IP based transport
     string protocol;
+    boolean found;
     int[] searchInstanceIDs;
 };</pre>
 
@@ -1886,11 +1939,11 @@ below. </p>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">serverAddressIPv6</td>
-      <td>Server IPv6 address (or IPv6 encoded IPv4 address).</td>
+      <td>Server address (e.g. in case of IP transport IP or IPv6 encoded IPv4 address).</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">serverPort</td>
-      <td>Server port (where server is listening).</td>
+      <td>Server port (e.g. in case of IP trasnport socket port where server is listening).</td>
     </tr>
     <tr>
       <td style="text-align:right;font-family:monospace">protocol</td>
@@ -2701,9 +2754,10 @@ channel. The subscribe mechanism is employed. </p>
 <pre>struct channelMonitorRequestInit {
     int serverChannelID;
     int requestID;
-    byte subcommand = 0x08;
+    byte subcommand = 0x08;     // | 0x80 pipeline support  // TODO
     FieldDesc pvRequestIF;
     PVField pvRequest;
+    if [subcommand & 0x80 == 0x80] int queueSize;
 };
 
 struct channelMonitorResponseInit {
@@ -2823,6 +2877,14 @@ monitoring and to destroy monitor requests (subscription): </p>
     BitSet changedBitSet;
     PVField pvStructureData;
     BitSet overrunBitSet;
+};</pre>
+
+// TODO
+<pre>struct channelMonitorReportQueueSize {
+    int serverChannelID;
+    int requestID;
+    byte subcommand = 0x80;
+    int nfree;
 };</pre>
 
 <table style="caption-side:bottom">
@@ -3666,7 +3728,6 @@ the request message. </p>
   <li>structure/content of pvRequestIF/pvRequest fields</li>
   <li>offset and count fields of channelArray request should be of type 'size', however 'size' cannot be negative</li>
   <li>update Communication Example section to show messages</li>
-  <li>show example of array serialization that needs padding</li>
 </ul>
 
 <h2>Bibliography</h2>
