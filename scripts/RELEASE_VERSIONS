@@ -249,10 +249,10 @@ EPICS-CPP-4.5.0-rc1         exampleCPP        4.1.0
 
 EPICS-CPP-4.5.0-test_only         pvCommonCPP       4.1.1
 EPICS-CPP-4.5.0-test_only         pvDataCPP         5.0.2
-EPICS-CPP-4.5.0-test_only         normativeTypesCPP 5.0.1
+EPICS-CPP-4.5.0-test_only         normativeTypesCPP 5.0.2
 EPICS-CPP-4.5.0-test_only         pvAccessCPP       4.1.2
 EPICS-CPP-4.5.0-test_only         pvaClientCPP      4.1.1
 EPICS-CPP-4.5.0-test_only         pvaSrv            0.11.2
 EPICS-CPP-4.5.0-test_only         pvDatabaseCPP     4.1.1
 EPICS-CPP-4.5.0-test_only         pvaPy             0.5.2
-EPICS-CPP-4.5.0-test_only         exampleCPP        4.1.0
+EPICS-CPP-4.5.0-test_only         exampleCPP        4.1.1
