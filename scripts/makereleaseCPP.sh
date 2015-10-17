@@ -101,6 +101,9 @@ set -e -x
 
 declare -a modulesa
 
+readme_name=README_CPP.md
+release_notes_name=RELEASE_NOTES_CPP.md
+
 # Remote location of the file which defines the versions of each package going into
 # tar file for the given release.
 RELEASE_VERSIONS_URL=\
@@ -108,7 +111,11 @@ https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/RELEASE_VE
 
 # Remote location of the README file
 README_URL=\
-https://raw.githubusercontent.com/epics-base/pvDataWWW/master/mainPage/README
+https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/${readme_name}
+
+# Remote location of the release notes
+RELEASE_NOTES_URL=\
+https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/${release_notes_name}
 
 # Remote location of the Makefile
 MAKEFILE_URL=\
@@ -179,7 +186,8 @@ fi
 config_script_name=configure.sh
 if [ ${localreleaseinfo} -eq 1 ]; then
     release_versions_pathname=${scriptdir}/RELEASE_VERSIONS
-    readme_pathname=${scriptdir}/../mainPage/README
+    release_notes_pathname=${scriptdir}/${release_notes_name}
+    readme_pathname=${scriptdir}/${readme_name}
     makefile_pathname=${scriptdir}/Makefile
     config_script_pathname=${scriptdir}/${config_script_name}
     config_site_local_pathname=${scriptdir}/CONFIG_SITE.local
@@ -195,13 +203,39 @@ else
 
     # Get the remote readme file.
     # Delete the existing file first if it's already there.
-    if [ -e README ]; then
-        rm -rf README
+    if [ -e ${readme_name} ]; then
+        rm -rf ${readme_name}
     fi
+
     wget ${README_URL}
-    readme_pathname=${PWD}/README
+    readme_pathname=${PWD}/${readme_name}
 
     # Get the remote version file.
+    # Delete the existing file first if it's already there.
+    if [ -e RELEASE_VERSIONS ]; then
+        rm -rf RELEASE_VERSIONS
+    fi
+    wget ${RELEASE_VERSIONS_URL}
+    release_versions_pathname=${PWD}/RELEASE_VERSIONS
+
+    # Get the remote release notes file.
+    # Delete the existing file first if it's already there.
+    if [ -e ${release_notes_name} ]; then
+        rm -rf ${release_notes_name}
+    fi
+    wget ${RELEASE_NOTES_URL}
+    release_notes_pathname=${PWD}/${release_notes_name}
+
+    # Get the remote readme file.
+    # Delete the existing file first if it's already there.
+    readme_name=README_CPP.md
+    if [ -e ${readme_name} ]; then
+        rm -rf ${readme_name}
+    fi
+    wget ${README_URL}
+    config_script_pathname=${PWD}/${readme_name}
+
+    # Get the remote Makefile.
     # Delete the existing file first if it's already there.
     if [ -e Makefile ]; then
         rm -rf Makefile
@@ -209,7 +243,7 @@ else
     wget ${MAKEFILE_URL}
     makefile_pathname=${PWD}/Makefile
 
-    # Get the remote readme file.
+    # Get the remote config script file.
     # Delete the existing file first if it's already there.
     if [ -e configure.sh ]; then
         rm -rf configure.sh
@@ -223,6 +257,8 @@ else
     wget ${CONFIG_LOCAL_URL}
     config_site_local_pathname=${PWD}/CONFIG_SITE.local
 
+    # Get the RELEASE.local.
+    # Delete the existing file first if it's already there.
     if [ -e RELEASE.local ]; then
         rm -rf RELEASE.local
     fi
@@ -236,7 +272,12 @@ if [ ! -f ${release_versions_pathname} ]; then
 fi
 
 if [ ! -f ${readme_pathname} ]; then
-    echo "Failed to locate the README file ${readme_versions_pathname}"
+    echo "Failed to locate the README file ${readme_pathname}"
+    Exit 6
+fi
+
+if [ ! -f ${release_notes_pathname} ]; then
+    echo "Failed to locate the release versions file${release_notes_pathname}"
     Exit 6
 fi
 
@@ -263,6 +304,10 @@ fi
 # Construct fully qualified pathname of RELEASE_VERSIONS file
 file=$release_versions_pathname
 release_versions_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
+
+# Construct fully qualified pathname of RELEASE_NOTES file
+file=$release_notes_pathname
+release_notes_pathname=$( readlink -f "$( dirname "$file" )" )/$( basename "$file" )
 
 # Construct fully qualified pathname of REAMDE file
 file=$readme_pathname
@@ -329,10 +374,10 @@ do
 done
 
 
-# Add RELEASE_VERSIONS, README, Makefile and configure.sh to the bundle
+# Add RELEASE_NOTES, README, Makefile and configure.sh to the bundle
 echo Adding RELEASE_VERSIONS, README, Makefile and configure.sh
-cp $release_versions_pathname "${workdir}/tar/"
-cp $readme_pathname "${workdir}/tar/"
+cp $release_notes_pathname "${workdir}/tar/RELEASE_NOTES.md"
+cp $readme_pathname "${workdir}/tar/README.md"
 cp $makefile_pathname "${workdir}/tar/"
 cp $config_script_pathname "${workdir}/tar/"
 cp $config_site_local_pathname "${workdir}/tar/"
