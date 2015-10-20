@@ -137,7 +137,7 @@ caj                 An all Java implementation of the Channel Access protocol.
 jca                 A Java API and wrapper interface to the C++ implementation of
                     the Channel Access protocol.
 </pre>
-The versions of each module are formally listed in
+<p>The versions of each module are formally listed in
 <a href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIONS">RELEASE_VERSIONS</a>.</p>  
 
 <p>The dependency hierarchy between the above is the following:
@@ -167,13 +167,8 @@ This is provided by <a
 >pvaSrv</a> and implemented in C++.</p>
 <p>Alternatively EPICS V4 can link to the Base IOC records using Channel Access. Starting with the past release 
  V4.3, this may be done in both Java and C++ implementations of pvAccess, though
-for Java, jca*.jar and caj*.jar, are prerequisites. There are a number 
-of modes of such interoperation. Firstly, an embedded Channel Access client inside the
-pvAccess server allows a pvIOC to communicate with an EPICS Base IOC, i.e. a
-pvIOC database can access records in a Base IOC database. Secondly, the pvAccess
-client can be configured to use the Channel Access protocol of Base (3.14) when
-accessing Base IOC
-channels. Thirdly, the pvAccess server (part of pvAccess above) allows an existing
+for Java, jca*.jar and caj*.jar, are prerequisites. There are two modes of such interoperation. Firstly, an embedded Channel Access client inside a 
+pvAccess server allows it to communicate with an EPICS Base IOC. Secondly, the pvAccess server (part of pvAccess above) allows an existing
 EPICS Base Channel Access client to access a pvIOC database. These interoperability
 functions require JCA and CAJ <a class="bib" href="#bib:jca">jcaandcaj</a>. These are
 available from the EPICS V4 download
@@ -439,12 +434,22 @@ access:</p>
 <h4 id="javadownload">Download minimum EPICSv4 Java implementation repos from epics-pvdata into local repos</h4>
 
 <p>To download the source using Git, use an "git clone" command, executed while in the
-directory you created, i.e. "git/" in the
-example above. You will need at least the 2 core "normative" module Java
-implementations pvDataJava and pvAccessJava (the first 2 below). You may well also want
-exampleJava, which contains example servers and clients, and easyPVAJava, which
-contains an beta level development of a simple client side API for pvAccess. See RELEASE_VERSIONS <a class="bib" href="#bib:relver">relver</a> for the other modules bundled with the release, that
-you may also want to clone.</p>
+directory you created, i.e. "git/" in the example above.
+
+You will need at least the 2 core "normative" module Java
+implementations pvDataJava and pvAccessJava (the first 2 below).
+
+You may well also want:
+<ul>
+<li>exampleJava: example servers and clients</li>
+<li>normativeTypesJava: support for EPICS V4 Normative Types</li>
+<li>pvaClientJava: beta-level development of a simple client side API for pvAccess</li>
+<li>pvDatabaseJava: EPICS V4 record/database framework for providing services over pvAccess.
+</li>
+</ul>
+
+See RELEASE_VERSIONS <a class="bib" href="#bib:relver">relver</a> for the other 
+modules bundled with the release, that you may also want to clone.</p>
 
 <pre>
 [from git/ directory in this example, created above]
@@ -591,7 +596,7 @@ helloWorld example service</a>. HelloWorld is composed of a server and a client.
   The <a href="https://github.com/epics-base/exampleJava/tree/master/src/services/rdbService"
 >rdbService</a> example is a complete functional server for accessing SQL databases
 such Oracle via an EPICS V4 server, and returning the resulting table ResultSet data
-back to an EPICS V4 client. rdbService illustrates:</P>
+back to an EPICS V4 client. rdbService illustrates:
 <ol>
   <li><code>channelRPC</code> functionality of EPICS V4</li>
   <li>use of JDBC for accessing Oracle to execute a SQL query within a pattern that
@@ -670,13 +675,13 @@ This is a good option if you wish to deploy EPICS V4 services and clients and wa
 
 <h3 id="tarbuild">Building the EPICS V4.5.0 C++ Implementation Tar</h3>
 
-<h4 id="quick start">Quick start instructions</h4>
+<h4 id="quick_start">Quick start instructions</h4>
 
 <p> For those familiar with EPICS V3 and with a V3 base installation and the appropriate toolchain already in place, doing the following should build the source (at least on Linux hosts).</p>
 
 <p>You'll need <code>EPICS_BASE</code> set to point to your V3 base installation and <code>EPICS_HOST_ARCH</code> appropriately set. Download the V4.4.0 C++ tar from the SourceForge site
 <a href="http://sourceforge.net/projects/epics-pvdata/files/4.5.0/">
-http://sourceforge.net/projects/epics-pvdata/files/4.5.0/</a>, untar, configure and build:
+http://sourceforge.net/projects/epics-pvdata/files/4.5.0/</a>, untar, configure and build:</p>
 <pre>
 % tar xzf EPICS-CPP-4.5.0.tar.gz
 % cd EPICS-CPP-4.5.0
@@ -684,7 +689,7 @@ http://sourceforge.net/projects/epics-pvdata/files/4.5.0/</a>, untar, configure 
 % make configure
 % make
 </pre>
-</p>
+<p>
 [The command <code>make configure</code> sets your build dependencies. You can alternatively do this by creating and completing a top-level <code>RELEASE.local</code> based on <code>ExampleRelease.local</code>, which will work for other host architectures. ]<p>
 <p>Then do the following to build pvaPy:
 <pre>
