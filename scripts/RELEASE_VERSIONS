@@ -7,7 +7,9 @@
 #
 # -----------------------------------------------------------------
 # Auth: Greg White, 15-Aug-2013
-# Mod:
+# Mod:      
+#      Dave Hickin, 17-Oct-2015
+#      Added block for 4.5.0 C++. 
 #      Greg White, 16-Oct-2015
 #      Added block for 4.5.0 Java. 
 #      Greg White, 29-Sep-2015
