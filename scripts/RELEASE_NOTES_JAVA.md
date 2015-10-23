@@ -1,27 +1,28 @@
 4.5.0 (2015/10/16)
 ==================
 
-The main changes since release 4.4.0 are:
+The following are the MAIN changes to the EPICS v4 software suite, since release 4.4.0. See individual RELEASE_NOTES.md in each module for more.
 
-
-pvDataCPP (5.0.2)
------------------
-
+pvDataJava (5.0.2)
+------------------
 * New template versions of Structure::getField
 * Printing of structure and union arrays modified
 * minStep field added to Control
 * Changes to access specifiers in Display and PVDisplay
 
 
-pvAccessCPP (4.1.2)
--------------------
-
+pvAccessJava (4.1.2)
+--------------------
 * Async RPC service.
 
 
-normativeTypesCPP (0.1.2)
--------------------------
+pvDatabaseJava (4.1.2)
+---------------------
+This is the first release of pvDatabaseJava, an EPICS V4 record/database framework for providing services over pvAccess.
 
+
+normativeTypesJava (0.1.2)
+--------------------------
 This is the first release of normativeTypesJava.
 
 * This release provides support through wrapper classes and builders for the
@@ -55,25 +56,18 @@ following Normative Types:
 
 pvaClientJava (4.1.3)
 --------------------
-
 pvaClientJava is the successor to easyPVAJava, a synchronous API for pvAccess.
 
 * pvaClient uses exceptions to report most problem instead
   of requiring the client to call status methods.
 
 
-easyPVAJava (4.1.3)
+easyPVAJava (4.1.2)
 --------------------
 
 * EasyPVA automatically starts ChannelProvider for both Channel Access and pvAccess.
 * EasyMultiChannel is now implemented
 * Support for monitors is now available both for EasyChannel and EasyMultiChannel.
-
-
-pvDatabaseJava (4.1.2)
----------------------
-
-This is the first release of pvDatabaseJava, an EPICS V4 record/database framework for providing services over pvAccess.
 
 
 directoryService (0.4.2)
