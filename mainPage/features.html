@@ -28,7 +28,7 @@
 <body>
 <!-- Very top date banner -->
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Mon Oct 26 11:32:18 PDT 2015 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Oct 26 13:01:50 PDT 2015 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>      
@@ -78,19 +78,19 @@ EPICS V4 may be used to solve various architectural problems of modern control s
 
 <h2 id="features">What EPICS V4 adds to EPICS Base</h2>
 
-<p>This section lists some of the features of EPICS V4, which make it suitable as 
-a platform for a unified controls and services environment for large experimental facilities:</p> 
+<p>This section lists some of the features of EPICS Version 4, which make it suitable as 
+a platform for a unified controls and services environment for large experimental facilities.</p> 
 
 <p>
-EPICS version 4 is a set of software modules that add to the base of the EPICS toolkit for advanced control systems. Version 4 adds the possibility of process variable values of structured data, an introspection interface for dynamic typing plus some standard types, high-performance streaming, and a new front-end processing database for managing complex data I/O. A synchronous RPC-style facility has also been added so that the EPICS environment supports service-oriented architecture.
+EPICS Version 4 is a set of software modules that add to the base of the EPICS toolkit for advanced control systems. Version 4 adds the possibility of process variable (PV) values of structured data, an introspection interface for dynamic typing plus some standard types, high-performance streaming, and a new front-end processing database for managing complex data I/O. A synchronous RPC-style facility has also been added so that the EPICS environment supports service-oriented architecture.
 </p>
-<p>The new "pvDatabase" module of EPICS v4 implements a framework for a memory resident database of records defined in terms of pvData structures. Like the IOC database of classic EPICS, the records of pvDatabase can process on I/O events; unlike the IOC the records may be of any structure the engineer wishes, and may pull in data from any pvAccess-ible data source, plus Channel Access. pvDatabase images may be standalone, or hosted within an IOC, where they might interface directly to base records, asynchronous device driver support (asynDriver), or detector control (areaDetector). pvDatabase is then useful for complex optimal control tasks, data assembly, and preprocessing. Combined with pvAccess streaming, it can be used as the basis of a data processing pipeline.  </p>
+<p>The new "pvDatabase" module of EPICS Version 4 implements a framework for a memory resident database of records defined in terms of pvData structures. Like the IOC database of classic EPICS, the records of pvDatabase can process on I/O events; unlike the IOC the records may be of any structure the engineer wishes, and may pull in data from any pvAccess-ible data source, plus Channel Access. pvDatabase images may be standalone, or hosted within an IOC, where they might interface directly to base records, asynchronous device driver support (asynDriver), or detector control (areaDetector). pvDatabase is then useful for complex optimal control tasks, data assembly, and preprocessing. Combined with pvAccess streaming, it can be used as the basis of a data processing pipeline.  </p>
 
        <p>
        In an EPICS installation it is expected that control and module support would
        be done with EPICS Base IOCs, possibly including the new version 4 modules for accessing the base IOC database (pvaSrv), and for processing complex data (pvDatabase). Middle layer and SOA operations would be done with standalone pvDatabase instances at host level, and with the RPC facility. Version includes support for protocol interoperability with Base IOCs. </p>
 
-       <p> EPICS V4 is composed of a number of core standards and APIs, reference
+       <p> EPICS Version 4 is composed of a number of core standards and APIs, reference
 implementations of those standards in C++ and Java, plus associated other components
 and tools. The intention is for the standards and APIs to go through a public review
 process, leading to published protocols and APIs that may be independently
