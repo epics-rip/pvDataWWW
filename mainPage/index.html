@@ -38,7 +38,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Fri Oct 23 14:08:07 PDT 2015 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Oct 26 12:00:48 PDT 2015 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -85,18 +85,19 @@
    </tbody>
 </table>
 
-<!-- Remove until 4.5
-<h2 id="whatdoesitbring" style="margin-bottom:10px">New Release EPICS Version 4.4</h2>
+
+<h2 id="whatdoesitbring" style="margin-bottom:10px">New Release EPICS Version 4.5</h2>
 <div style="width=100%; padding-top:10px; padding-bottom:10px"> 
 <div class="newrel">
-    <p>EPICS version 4.4 is the fastest and most versatile EPICS yet. The familiar EPICS you use every day extended with complex data structures, optimized data transfer, high level data and image processing and even Service Oriented Architecture (SOA). 
+    <p>EPICS version 4 is the most powerful and versatile EPICS yet. The familiar EPICS you use every day extended with complex data structures, a new processing database to complement the IOC database, and Service Oriented Architecture (SOA). 
     </p>
-    <p>The latest release, 4.4, adds  a new smart database and processing pipeline, dynamic data typing and unions, codec based transport, cool new command-line tools like ask an IOC what PVs it has, an intrinsic data type for detectors and cameras for use with areaDetector, and Windows support. All this plus performance improvements throughout the system. </p>
-       <p>For more of the features of EPICS V4.4, see the <a href="features.html#newin4-4">Features</a> page.</p>
+    <p>The latest release, v4.5, builds on the enormous performance upgrades of v4.4, with further performance improvements, usability improvements, and bug fixes throughout the system. The new database system, pvDatabase, is now available in both C++ and Java, and the C++ implementation has been extended with simplified monitoring. v4.5 makes it easier than ever to use the Normative Types - the v4 standard types for scientific data. Python support has been extended, and all the command line tools; pvget, pvput, eget and pvinfo now support Channel Access as well as the new protocol of EPICS Version 4, pvAccess. </p>
+  
+       <p>EPICS v4.5 supports all Base releases since late 3.14.12, specifically including all 3.15 releases. For more of the features of EPICS V4.5, see the <a href="features.html#newin4-4">Features</a> page.</p>
     <p>Supporting the next generation of scientific control systems.</p>
   </div>
 </div>
--->
+
 
 <!-- This hr style could be used as a seperator
 style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ -->
@@ -251,20 +252,8 @@ href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIO
 This is the homepage of EPICS Version 4, a software toolkit for writing the control
 system and online scientific services of large experimental facilities.</p>
 
-<!--
-<h2 id="whatdoesitbring">What's new in EPICS V4.4</h2>
-
-       <p> EPICS 4.4 adds a new data processing engine to EPICS, the pvDatabase. Used alone, or in conjunction with a classic IOC, a pvDatabase facilitates high performance data flow processing at a higher level than the IOC, and has already found use for stringing areaDetector plugins together for fast image detector pre-processing and distribution. V4.3 greatly simplifies the relationship of the classic EPICS version 3
-and version 4. Now, EPICS version 3 base is simply that component of version 4 that
-implements the IOC, together with its control database and communications over
-channel access. The support for high performance data services has also been greatly
-simplified - there is no longer a need to run any form of IOC nor SoftIOC - just tell a
-pvServer what PVs it should respond to, and go.  </p>
--->
-    
-
        
-<p>To get started, see the <a href="https://sourceforge.net/projects/epics-pvdata/files/4.4.0/" >V4.4 Downloads</a> and the <a href="http://epics-pvdata.sourceforge.net/gettingStarted.html" > Getting Started with EPICS V4</a> guide.</p>
+<p>To get started, see the <a href="https://sourceforge.net/projects/epics-pvdata/files/4.5.0/" >v4.5 Downloads</a> and the <a href="http://epics-pvdata.sourceforge.net/gettingStarted.html" > Getting Started with EPICS V4</a> guide.</p>
   <p>The <a href="http://epics-pvdata.sourceforge.net/literature.html#swdoc" >programmers reference documentation</a> for each software component of EPICS V4 is listed in the <a href="http://epics-pvdata.sourceforge.net/literature.html" >Literature</a> page. A fledgling <a href="informative/developerGuide/developerGuide.html" >EPICS V4 Developer's Guide</a> is being written, but is useful now. </p>
 <p>The pvAccess protocol is described in its <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html" >specification</a>. Environment settings, such as <kbd>EPICS_PVA_ADDR_LIST</kbd> etc, are described in the <a href="http://epics-pvdata.sourceforge.net/pvAccessConfig.xlsx" >pvAccess Configuration spreadsheet (Excel)</a>. Check the present status of V4's CPU architecture compatibility in the <a href="http://epics-pvdata.sourceforge.net/Ev4buildtracker.xls" >Compatibility Tracker (Excel)</a>.</p>
   <p>If you get into trouble, you might first check the <a href="troubleshooting.html">Troubleshooting EPICS V4</a>
@@ -285,10 +274,10 @@ Flow</a> pattern. The records may contain "device support" code, to interface th
 <p><a href="literature.html#pvDatabaseCPP" >pvDatabase</a> is a high performance data processing pipeline engine, one might use it for image processing pvData through a sequence of areaDetector plugins, or online accelerator simulation.</p>
 <p><q>So now one can create services on the network that do more than Channel Access,</q> Kay Kasemir. <q>Creativity can only be anarchic, capitalist, Darwinian, based on version 4.4,</q> Umberto Eco. <q>Wow. Fantastic. Let's Go!</q> Tom Cruise. </p>
 
-<h2 id="interop">Version 4 / Base 3.14 Interoperation</h2>
+<h2 id="interop">Version 4 / EPICS Base Interoperation</h2>
 EPICS V4 documentation
 
-<p>EPICS Base 3.14 includes a communications protocol named "Channel Access". Version
+<p>EPICS Base (v3.14, v3.15 and others in use) includes a communications protocol named "Channel Access". Version
 4 adds a new protocol called "pvAccess". Interoperability between the two protocols,
 their APIs, and record processing, is provided in EPICS Version 4, in 2 ways:</p>
 <ul>
@@ -301,11 +290,11 @@ their APIs, and record processing, is provided in EPICS Version 4, in 2 ways:</p
 
 <table id="interopdiag"  width="100%" style="border-width:0px">
   <caption style="text-align:center;font-size:70%;font-style:italic"
-  align="bottom">Interoperation of classic EPICS and V4 endpoints, is provided by the
-  pvaSrv IOC module, and that pvAccess clients can optionally communicate using Channel Access.
+  align="bottom">Interoperation of classic EPICS Base (green) and EPICS Version 4 endpoints (blue), is provided by the
+  pvaSrv IOC module, and that pvAccess clients can optionally communicate using Channel Access. pvaSrv gives access to the base IOC database. The diagram also shows pvDatabase, the complex processing and data assembly support of EPICS Version 4. Finally, EPICS Version 4 can also interface to enterprise data sources.
   </caption>
   <tr>
-    <td align="center"><img src="http://epics-pvdata.sourceforge.net/image/Interop-9a50pc.png" alt="EPICS V3/V4 interoperation diagram"/>
+    <td align="center"><img src="image/basicInteropDiagram/Slide4.jpg" alt="EPICS V3/V4 interoperation diagram"/>
     </td>
   </tr>
 </table>
