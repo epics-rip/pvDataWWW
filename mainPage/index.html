@@ -38,7 +38,7 @@
 
 <body>
 <div width="100%" style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Mon Oct 26 13:04:34 PDT 2015 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Tue Oct 27 15:13:31 PDT 2015 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -89,9 +89,9 @@
 <h2 id="whatdoesitbring" style="margin-bottom:10px">New Release EPICS Version 4.5</h2>
 <div style="width=100%; padding-top:10px; padding-bottom:10px"> 
 <div class="newrel">
-    <p>EPICS Version 4 is the most powerful and versatile EPICS yet. The familiar EPICS you use every day extended with complex data structures, a new processing database to complement the IOC database, and Service Oriented Architecture (SOA). 
+    <p>EPICS Version 4 is the most powerful and versatile EPICS yet. The familiar EPICS you use every day extended with complex data structures, a new network-accessible application framework, and Service Oriented Architecture (SOA). 
     </p>
-    <p>The latest release, v4.5, builds on the enormous performance upgrades of v4.4, with further performance improvements, usability improvements, and bug fixes throughout the system. The new database system, pvDatabase, is now available in both C++ and Java, and the C++ implementation has been extended with simplified monitoring. v4.5 makes it easier than ever to use the Normative Types - the Version 4 standard types for scientific data. Python support has been extended, and all the command line tools; pvget, pvput, eget and pvinfo now support Channel Access as well as the new protocol of EPICS Version 4, pvAccess. </p>
+    <p>The latest release, v4.5, builds on the enormous performance upgrades of v4.4, with further performance improvements, usability improvements, and bug fixes throughout the system. The new application framework, pvDatabase, is now available in both C++ and Java, and the C++ implementation has been extended with simplified monitoring. v4.5 makes it easier than ever to use the Normative Types - the Version 4 standard types for scientific data. Python support has been extended, and all the command line tools; pvget, pvput, eget and pvinfo now support Channel Access as well as the new protocol of EPICS Version 4, pvAccess. </p>
   
        <p>EPICS v4.5 supports all Base releases since late 3.14.12, specifically including all 3.15 releases. For more of the features of EPICS v4.5, see the <a href="features.html#newin4-5">Features</a> page.</p>
     <p>Supporting the next generation of scientific control systems.</p>
@@ -267,11 +267,11 @@ V4 connections. After that, email <a href="http://www.aps.anl.gov/epics/tech-tal
 control and/or monitor a collection of devices such as actuators and measurement diagnostics. Each IOC node contains a memory resident real time database. The real time database has a set of "smart" records,
 which are interconnected in a <a href="http://en.wikipedia.org/wiki/Dataflow" > Data
 Flow</a> pattern. The records may contain "device support" code, to interface the processing model to physical devices through device drivers. Much more information can be found on the EPICS base at <a href="http://www.aps.anl.gov/epics/base/index.php" >http://www.aps.anl.gov/epics/base/index.php</a>.</p>
-    <p><a href="literature.html#pvDataJava" >pvData</a> is a library for creating, inspecting and decoding structured data beyond the dbr_* structures.</p>
-    <p><a href="literature.html#pvAccessJava" >pvAccess</a> is a wire protocol added to EPICS in V4, and so is a bit like the "Channel Access", but for pvData. In addition to get/put/monitor it supports put-with-get, an RCP-type callback, through which one can implement high performance data services. Additionally, 
- the client can ask for just a subset of the pvData structure on the server.</p>
+    <p><a href="literature.html#pvDataJava" >pvData</a> is a library for creating, inspecting and decoding memory-resident structured data beyond the dbr_* structures.</p>
+    <p><a href="literature.html#pvAccessJava" >pvAccess</a> is a wire protocol, and so is a bit like the "Channel Access", but for pvData. In addition to get/put/monitor it supports put-with-get, an RCP-type callback, through which one can implement high performance data services. Additionally, 
+ the client can ask for, or monitor, just a subset of a pvData structure on the server.</p>
 <p> <a href="literature.html#pvaSrv" >pvaSrv</a>: there are 2 ways one can use the pvAccess software API to talk to an IOC; one can use Channel Access on wire, just through the pvAccess API, or one can use pvaSrv, a module which intermediates pvAccess to the record processing on an IOC. </p>
-<p><a href="literature.html#pvDatabaseCPP" >pvDatabase</a> is a high performance data processing pipeline engine, one might use it for image processing pvData through a sequence of areaDetector plugins, or online accelerator simulation.</p>
+<p><a href="literature.html#pvDatabaseCPP" >pvDatabase</a> is a server-side software framework for writing high-performance network-accessible applications. It implements a memory-resident database of records defined in terms of pvData structures. Like the IOC database of classic EPICS, the records of pvDatabase can process on I/O events; unlike the IOC the records may be of any structure the engineer wishes, and may pull in data from any pvAccess-ible data source, plus Channel Access. pvDatabase images may be standalone, or hosted within an IOC, where they might interface directly to base records, asynchronous device driver support (asynDriver), or detector control (areaDetector). pvDatabase is then useful for complex optimal control tasks, data assembly, and preprocessing. Combined with pvAccess streaming, it can be used as the basis of a data processing pipeline.</p>
 <p><q>So now one can create services on the network that do more than Channel Access,</q> Kay Kasemir. <q>Creativity can only be anarchic, capitalist, Darwinian, based on version 4.4,</q> Umberto Eco. <q>Wow. Fantastic. Let's Go!</q> Tom Cruise. </p>
 
 <h2 id="interop">Version 4 / EPICS Base Interoperation</h2>
@@ -289,9 +289,9 @@ their APIs, and record processing, is provided in EPICS Version 4, in 2 ways:</p
 </ul>
 
 <table id="interopdiag"  width="100%" style="border-width:0px">
-  <caption style="text-align:center;font-size:70%;font-style:italic"
+  <caption style="text-align:center;font-size:70%;font-style:italic;line-height:90%"
   align="bottom">Interoperation of classic EPICS Base (green) and EPICS Version 4 endpoints (blue), is provided by the
-  pvaSrv IOC module, and that pvAccess clients can optionally communicate using Channel Access. pvaSrv gives access to the base IOC database. The diagram also shows pvDatabase, the complex processing and data assembly support of EPICS Version 4. Finally, EPICS Version 4 can also interface to enterprise data sources.
+  pvaSrv IOC module, and that pvAccess clients can optionally communicate using Channel Access. pvaSrv gives access to the base IOC database. The diagram also shows pvDatabase, the complex processing and data assembly support of EPICS Version 4. pvDatabases can be deployed inside or outside an IOC. When inside they might interface directly to base records, asynchronous device driver support (asynDriver), or detector control (areaDetector). pvDatabase is then useful for complex optimal control tasks, data assembly, and preprocessing. Finally, EPICS Version 4 can also interface to enterprise data sources.
   </caption>
   <tr>
     <td align="center"><img src="image/basicInteropDiagram/Slide4.jpg" alt="EPICS V3/V4 interoperation diagram"/>
@@ -354,7 +354,7 @@ additionally has the capability to transfer only actually changed structure fiel
 </tr>
 </table>
 <hr>
-<address>Greg White, SLAC/PSI greg at slac.stanford.edu, for EPICS V4 Working Group</address>
+<address>Greg White, SLAC, greg at slac.stanford.edu, for EPICS V4 Working Group</address>
 
 </body>
 </html>
