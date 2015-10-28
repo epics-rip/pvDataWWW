@@ -1,5 +1,14 @@
-EPICS V4 C++
-============
+
+EPICS VERSION 4 README
+======================
+
+Status: This README is up-to-date with respect to release v4.5.0. of EPICS Version 4.
+Auth:   Dave Hickin, DLS, and Greg White, SLAC.
+
+C++
+===
+
+This section is a guide to the build of the C++ implementation of EPICS v4.5.0. See below for Java.
 
 Prerequisites
 -------------
@@ -28,12 +37,12 @@ Build
 More detailed build instructions can be found in the
 [Getting started guide](http://epics-pvdata.sourceforge.net/gettingStarted.html).
 
-Building uses the make utility and the EPICS base build system.
+Building uses the "make" utility and the EPICS base build system.
 For more information on the EPICS build system consult the
 [Application Development guide](http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide.pdf).
 
 The build system needs the location of the prerequisites for each module.
-The easiest way to do this is to add lines of the form
+The easiest way to do this is to add lines of the form:
 
     EV4_BASE=/path/to/epics4
     PVDATABASE=$(EV4_BASE)/pvDatabaseCPP
@@ -45,7 +54,7 @@ The easiest way to do this is to add lines of the form
     EPICS_BASE=/path/to/epics/base
 
 pointing to the locations in a file called RELEASE.local in the top-level
-directory. (Add your paths to the EPICS base and the location of the bundle).
+directory. Add your paths to the EPICS base (EPICS\_BASE) and the location of the bundle (EV4\_BASE).
 An example (ExampleRelease.local) is included in the bundle.
 
 With this in place, to build type
@@ -77,11 +86,38 @@ in RELEASE.local. Then
     make 
 
 
-Further information
--------------------
+Java
+====
 
-For  the individuals modules, consult the documentation in each one. In 
-particular
+This section is a guide to the build of the Java implementation of EPICS v4.5.0. See above for C++.
+
+Prerequisites
+-------------
+
+The EPICS V4 Java bundle requires recent versions of the following software:
+
+1. Java SDK v1.7 (Java 7)
+
+Note that support for Channel Access operations through the pvAccess API
+"Channel Provider" interface, is provided by CAJ and JCA, which are bundled
+in the EPICS-Java tar. 
+
+Build
+-----
+
+The tar file distribution of the Java implementation of EPICS v4.5.0, contains the jar files
+of Java executable, sources and documentation, for all the software modules of the EPICS v4.
+Therefore, simply untar the distribution tar file.
+
+tar xvfz EPICS-Java-4.5.0.tar.gz  [if you got it compressed]
+tar xvf EPICS-Java-4.5.0.tar      [if you got it uncompressed]
+
+
+Further information
+===================
+
+For the individual modules, consult the documentation in each one. In 
+particular:
 
 * README.md
 * RELEASE_VERSIONS.md
@@ -90,7 +126,7 @@ particular
 For more information visit the
 [EPICS V4 website](http://epics-pvdata.sourceforge.net).
 
-In particular
+In particular:
 
 * [Getting started guide](http://epics-pvdata.sourceforge.net/gettingStarted.html) - 
   for detailed build instructions and where to go next.
