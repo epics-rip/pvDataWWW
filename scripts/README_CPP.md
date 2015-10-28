@@ -1,14 +1,14 @@
 
-EPICS VERSION 4 README
-======================
+EPICS VERSION 4 C++ IMPLEMENTATION README
+=========================================
+
+This README is a guide to the build of the C++ implementation of EPICS Version 4. 
 
 Status: This README is up-to-date with respect to release v4.5.0. of EPICS Version 4.
-Auth:   Dave Hickin, DLS, and Greg White, SLAC.
 
-C++
-===
+Auth:   Dave Hickin, DLS
 
-This section is a guide to the build of the C++ implementation of EPICS v4.5.0. See below for Java.
+
 
 Prerequisites
 -------------
@@ -18,18 +18,18 @@ software:
 
 1. EPICS Base (v3.14.12 or 3.15)
 2. Standard development tools (gcc, make, etc.)
-
-The pvAccess for Python package, pvaPy, requires
+ 
+The pvAccess for Python package, pvaPy, requires:
 
 1. Python development header files/libraries (v2.6.6) 
 2. Boost (v1.41.0); must have the boost_python library built.
 3. autoconf
 4. Sphinx (optional, for generating documentation)
-
-The Channel Archiver Service requires
+ 
+The Channel Archiver Service requires:
 
 1. the EPICS Channel Archiver.
-
+ 
 
 Build
 -----
@@ -42,7 +42,8 @@ For more information on the EPICS build system consult the
 [Application Development guide](http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide.pdf).
 
 The build system needs the location of the prerequisites for each module.
-The easiest way to do this is to add lines of the form:
+The easiest way to do this is to create a file called RELEASE.local in the top-level
+directory, and to it add lines of the form:
 
     EV4_BASE=/path/to/epics4
     PVDATABASE=$(EV4_BASE)/pvDatabaseCPP
@@ -53,16 +54,16 @@ The easiest way to do this is to add lines of the form:
     PVCOMMON=$(EV4_BASE)/pvCommonCPP
     EPICS_BASE=/path/to/epics/base
 
-pointing to the locations in a file called RELEASE.local in the top-level
-directory. Add your paths to the EPICS base (EPICS\_BASE) and the location of the bundle (EV4\_BASE).
+where each line points to the location of the respective EPICS Version 4 module.
+Add your paths to the EPICS base (EPICS\_BASE) and the location of the bundle (EV4\_BASE).
 An example (ExampleRelease.local) is included in the bundle.
 
-With this in place, to build type
+With this in place, to build type:
 
     make
 
 A bash configration script is provided for building on Linux. In which case
-the following will work.
+the following will work:
 
     make EPICS_BASE=/path/to/epics/base make configure
     make
@@ -76,41 +77,14 @@ directory cd into the pvaPy directory, configure and build:
     EPICS_BASE=/path/to/epics/base EPICS4_dir=/path/to/epics4 make configure
     make
 
-To build the Channel Archiver Service, place the line
+To build the Channel Archiver Service, place the line:
 
     ARCHIVER=/path/to/channel_archiver
 
-in RELEASE.local. Then
+in RELEASE.local. Then:
 
     cd exampleCPP/ChannelArchiverService
     make 
-
-
-Java
-====
-
-This section is a guide to the build of the Java implementation of EPICS v4.5.0. See above for C++.
-
-Prerequisites
--------------
-
-The EPICS V4 Java bundle requires recent versions of the following software:
-
-1. Java SDK v1.7 (Java 7)
-
-Note that support for Channel Access operations through the pvAccess API
-"Channel Provider" interface, is provided by CAJ and JCA, which are bundled
-in the EPICS-Java tar. 
-
-Build
------
-
-The tar file distribution of the Java implementation of EPICS v4.5.0, contains the jar files
-of Java executable, sources and documentation, for all the software modules of the EPICS v4.
-Therefore, simply untar the distribution tar file.
-
-tar xvfz EPICS-Java-4.5.0.tar.gz  [if you got it compressed]
-tar xvf EPICS-Java-4.5.0.tar      [if you got it uncompressed]
 
 
 Further information
