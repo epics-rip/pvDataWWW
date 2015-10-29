@@ -13,19 +13,41 @@ EPICS version 4.
 -----------------------------------------------------------------------------
 
 Status: This is the 28-Oct-2015 version of the README.
------------------------------------------------------------------------------
-Author: 28-Nov-2011 Greg White (GREG@SLAC.STANFORD.EDU) for EPICS V4 team [1]
-Mod: 28-Oct-2015, Greg White, Edited 4.5.0
-     09-Dec-2014, Greg White, Added system requirements section.
-     16-Oct-2014, Dave Hickin, Added 4.4.0.
-     22-Aug-2013, Greg White, Added 4.3.0.
+Mod: 28-Oct-2015, Greg White, Edited for 4.5.0
 -----------------------------------------------------------------------------
 
 VERSION 4.5.0
 =============
-  
-EXECUTIVE SUMMARY
------------------
+
+DISTRIBUTION FILES FOR THIS VERSION 
+-----------------------------------
+
+The file EPICS-CPP-4.5.0.tar.gz [possibly suffixed -pre or rc] includes all
+(and only) the C++ implementation of EPICS V4.5.0. On Unix systems, the tar
+file might be unpacked with the command:
+
+  % tar xvfz EPICS-CPP-4.5.0.tar.gz
+
+  Having unpacked, please see the following files at the top level directory:
+  RELEASE_NOTES_CPP.md  - Summary of new features and updated in all modules
+  README_CPP.md         - Building CPP of EPICS 4.5.0
+
+The file EPICS-Java-4.5.0.tar.gz [possibly suffixed -pre or rc] includes all
+(and only) the Java implementation of EPICS V4.5.0. On Unix systems, the tar
+file might be unpacked with the command:
+
+  % tar xvfz EPICS-Java-4.5.0.tar.gz
+
+  Having unpacked, please see the following files at [25]:
+  RELEASE_NOTES_JAVA.md  - Summary of new features and updated in all modules
+  README_JAVA.md         - Jar file extraction instructions.
+
+
+You may also clone the Mercurial repos directly [22], using the tags for
+4.5.0 as specified in RELEASE_VERSIONS [19].
+
+FEATURE SUMMARY
+---------------
 
 Please see RELEASE_NOTES_CPP.md and RELEASE_NOTES_JAVA.md [25] for summaries of
 new features for each language.
@@ -64,32 +86,6 @@ methods for get and set operations.
 See the document "Getting Started with EPICS V4,
 http://epics-pvdata.sourceforge.net/gettingStarted.html
 
-DISTRIBUTION FILES FOR THIS VERSION 
------------------------------------
-
-The file EPICS-CPP-4.5.0.tar.gz [possibly suffixed -pre or rc] includes all
-(and only) the C++ implementation of EPICS V4.5.0. On Unix systems, the tar
-file might be unpacked with the command:
-
-  % tar xvfz EPICS-CPP-4.5.0.tar.gz
-
-  Having unpacked, please see the following files at the top level directory:
-  RELEASE_NOTES_CPP.md  - Summary of new features and updated in all modules
-  README_CPP.md         - Building CPP of EPICS 4.5.0
-
-The file EPICS-Java-4.5.0.tar.gz [possibly suffixed -pre or rc] includes all
-(and only) the Java implementation of EPICS V4.5.0. On Unix systems, the tar
-file might be unpacked with the command:
-
-  % tar xvfz EPICS-Java-4.5.0.tar.gz
-
-  Having unpacked, please see the following files at [25]:
-  RELEASE_NOTES_JAVA.md  - Summary of new features and updated in all modules
-  README_JAVA.md         - Jar file extraction instructions.
-
-
-You may also clone the Mercurial repos directly [22], using the tags for
-4.5.0 as specified in RELEASE_VERSIONS [19].
 
 MODULES COMPRISING VERSION 4.5.0
 --------------------------------
@@ -131,6 +127,7 @@ directoryService   EPICS V4 interface to classic EPICS Channel Finder [20].
 caj                An all Java implementation of the Channel Access protocol [3].
 jca                A Java API and wrapper interface to the C++ implementation
                    of the Channel Access protocol [4].
+
 
 SYSTEM REQUIREMENTS AND CONFIGURATION
 -------------------------------------
