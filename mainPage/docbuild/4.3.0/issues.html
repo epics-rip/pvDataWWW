@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<htm lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Release 4.3.0 Known Issues</title>
+  <link rel="stylesheet" type="text/css" href="../../base.css" />
+  <link rel="stylesheet" type="text/css" href="../../epicsv4.css" />
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="../../script/tocgen.js"></script>
+</head>
+
+<body>
+<div class="head">
+  <h1>EPICS V4 Release 4.3.0</h1>
+
+  <h2 class="nocount">Known Issues in EPICS V4 Release 4.3.0</h2>
+
+  <dl>
+    <dt>Editors:</dt>
+      <dd>Andrew Johnson, Argonne</dd>
+  </dl>
+
+  <h2 class="nocount">Abstract</h2>
+
+  <p>This document describes known issues ralating to version 4.3.0 of the EPICS
+    V4 packages, both Java and C++ implementations.</p>
+
+  <!-- Boilerplate references -->
+  <p>
+    For documentation and downloads of this version of the software, see the
+    <a href="index.html">Package Index page</a>.<br />
+    For information about EPICS, please refer to the main
+    <a href="http://www.aps.anl.gov/epics/">EPICS website</a>.<br />
+    For more information about EPICS V4, please refer to the
+    <a href="../../index.html">EPICS V4 website</a>.</p>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Items for the Table of Contents go inside this contents div -->
+<div id="contents" class="contents">
+<hr />
+
+<h2>C++ Module Issues</h2>
+
+<ul>
+
+  <!-- Format for entries. The date is when the entry was added.
+  <li><b>yyyy-mm-dd: moduleCPP</b><br />
+    Issue description, with optional
+    <a href="moduleCPP-n.patch">patch file</a>.</li>
+  -->
+
+  <li><!-- Remove this list item when adding the first issue. -->
+    No issues published yet.</li>
+
+</ul>
+
+
+<h2>Java Module Issues</h2>
+
+<ul>
+
+  <!-- Format for entries. The date is when each entry was added.
+  <li><b>yyyy-mm-dd: moduleJava</b><br />
+    Issue description, with optional
+    <a href="moduleJava-n.patch">patch file</a>.</li>
+  -->
+
+  <li><!-- Remove this list item when adding the first issue. -->
+    No issues published yet.</li>
+
+</ul>
+
+
+<h2>Applying patches</h2>
+
+<p>Any patch files linked from above should be downloaded and applied to the
+  specific module for which they were created, using the GNU Patch program like
+  this:</p>
+
+<pre>
+$ cd /path/to/module
+$ patch -p1 &lt; /path/to/file.patch
+</pre>
+
+<p>The <code>-p1</code> option is required since the <code>git diff</code>
+  program that we use generates patches with one leading directory in the file
+  path-names that must be discarded by patch.</p>
+
+</div> <!-- contents -->
+
+<hr />
+<address>Contact author: Andrew Johnson, Argonne</address>
+</body>
+</html>
