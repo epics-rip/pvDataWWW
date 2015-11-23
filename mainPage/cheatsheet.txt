@@ -1,0 +1,537 @@
+
+	    EPICS VERSION 4 DEVELOPMENT CHEATSHEET
+
+            Greg White, SLAC, Original Version 20-Nov-2015
+	    
+
+GIT
+===
+Get a repo from epics-base at github
+
+   cd /Users/greg/Development/epics/git
+   git clone https://github.com/epics-base/pvDataJava.git
+   cd pvDataJava
+   
+Make sure I'm on the branch I think I'm on.
+
+   git branch                       Should say eg "* master" - * indicating I'm on the master branch
+
+Check what branches exist for this repository. The -a option lists ALL branches, BOTH locally
+pulled/checkedout and those only on the remote repo (shown in red) [NOTE: I have seen a exception to
+this, in easyPVAJAva -a does not list all the remotes that -r does!!]
+
+   git branch -a
+   
+If necessary, set the branch you want to work on (this also works to bring in remote branches)
+
+   git checkout release/4.0         (Pay attention to the advice "git checkout" will give you
+                                     about the status of your checkout, and issue the "git pull" if necessary)
+
+(make your edits)
+[MISSING: how to add a branch. Ralph does it through gitHub, but there is probably a direct way]
+
+Has anyone changed the remote master repo requiring you to pull?
+
+   git fetch origin; git log HEAD..origin/master
+
+   If other people have changed the remote repo, then (since you just did a git fetch) you can merge in
+   their changes with:
+
+      git merge     [you may be asked to make a comment - vi exit is ESC wq remember]
+      
+   (not sure how this below is different - it seems to actually fetch and update local repo)
+   git checkout master
+   git remote -v update
+
+Pull in changes other people made (to the remote version of, by default, your currently set branch)
+
+   git pull [--rebase]              Add --rebase if you want their commit history included in your history
+                                    A git pull == git fetch ; git merge
+   git pull [--rebase] origin master   (if pulling changes from origin master into say nttableclarifylabels)
+
+See a summary of the changes I've made (on the presently set branch):
+
+   git status                       What files have you changed since your last commit, or commits waiting for push
+                                    Also shows whether the remote repo has been added to since your last push
+   git log                          What anyone has committed ever
+
+Diff of files I changed and so is waiting to be added and committed
+
+   git diff 
+
+What would be pushed were I to do the git push:
+
+   git log origin/master..master          What commits have I made (on master) since I last pushed w.r.t. o/m
+   git log origin/master..nttableclarifylabels     (what commits have I made on nttableclarifylabels w.r.t. o/m)
+
+   git diff --stat --cached origin/master          (the files to be pushed to origin/master)
+   git diff  origin/master                         (the code differences)
+   git diff --stat --cached nttableclarifylabels   (the files to be pushed to nttableclarifylabels)
+   git diff  nttableclarifylabels                  (the code differences)
+   
+Which local branch contains a given commit:
+   git branch --contains 2d6a0f6                   Uses trick of giving only first 7 chars of commit-id.
+   
+Which *remote* branches contain given commit (by hashtag) - use to verify whether a commit has been pushed.
+   git branch -r --contains cbd06e2325d4bd37950ace4f796e724ba7fe63cc
+
+
+Move files to new directory. Moving can be done 2 ways:
+
+   Using git mv:
+   
+     mkdir documentation
+     git mv RELEASE_NOTES.md documentation      [note I didn't have to git add the directory first]
+   
+   Using simply unix mv, git add, git rm:
+   
+     mkdir documentation
+     mv RELEASE_NOTES.md documentation
+     git add documentation/RELEASE_NOTES.md     Could also have simply "git add documentation" since its recursive.
+     git rm RELEASE_NOTES.md
+   
+Stage. Add changes you've made to the staging area. Note git 'add' command is not at all equivalent to cvs add,
+       because you have to git add it *each* time you change a file, not just when you add it to the repo the
+       first time. You're adding it to the list of files in the stage "area", which will then be committed
+       as one commit.
+
+   git add <file1> [<file2>] ...
+   git add .                        Add all files from root of project
+   git add <directoryname>          Add all files in directory. No "/" in dirname. 
+                                    Can be a pathname. Can be a new directory.
+   
+   [Can also be done with SmartGit "Stage" button]
+
+   
+Commit your staged changes (see git add above) to your *local* branch:
+
+   git commit -m "comment" 
+
+    Note: 'git add' and 'git commit' can be done in one command with 'git commit -am "comment"'
+    Also Emacs Tools->Version Control->Check In/Out does git commit -a
+
+Release your changes to epics-base in gitHub
+
+   git push origin  (push to same branch as you checked out)
+
+   git push origin my-new-feature-branch     ( push to my-new-feature-branch)
+   eg
+   git push origin nttableclarifylabels
+
+   [See also SmartGit "Push" button]
+   
+Pull request
+
+   check status, and if fine, push to remote branch at origin (epics-base)
+   git fetch origin
+   git log HEAD..origin/master
+   git push origin nttableclarifylabels
+
+   Having pushed to nttableclarifylabels, can then make pull prequest on git-hub.
+
+   NOTE: There is no specific need to make your own fork in order to create a pull request.
+   One can do just fine using a branch from within epics-base/<repo>. But it seems the v4
+   guys want contributions to be sourced from personal (forked) repos - esp Ralph. So, if
+   you do that, instructions at [11].
+   
+
+Undoing work
+
+   You edited a file, but want to undo. You have not yet done git add:
+
+      git checkout <filename>
+
+   You edited a file and did the git add, but you want to revert
+
+      git reset   ( see in particular example at [4])
+
+   You edited, git added, and committed, but you want to revert
+
+      got revert ...
+      
+   Fully clean a working copy clone directory
+
+      git reset --hard; git clean -f -d; 
+
+      then bring it up to date with git pull.
+      
+Recover an old revision of a file:
+
+    First, git log, to find the commit id (SHA1) of the file - the long hex code. Then do git show and redirect
+
+      git log
+      git show 60f1ae1:mainPage/index.html > t.tmp
+
+Remove a file from git's tracking (eg .DS_store files)
+
+      git rm --cached <filename>
+   eg git rm --cached mainPage/talks/.DS_Store
+
+
+DOING AN VERSION RELEASE OF AN EPICS VERISON 4 JAVA MODULE
+==========================================================
+The following checks out all the prerequisite modules of the module to be number released, compiles
+them, and then compiles the module to be number released.
+
+Following the APS f-2-f meeting [10] the basic procedure of the working group for creating the pre1
+package at least, is to have 2 deadline dates, so that low level modules are built and prepared for
+release prior to higher level modules and examples.
+    Phase 1: Java and CPP for pvCommon, Data, Access, NormativeTypes.
+    Phase 2: Others
+
+Summary procedure for preparing a module release to go into a version 4 package:
+1. Git clone all the prerequisites and check them, w.ref.t. the module tracker
+2. Prepare your module for release w.r.t. those prerequisiet modules
+3. Tag your module changes, and push them.
+4. Update the module tracker and tell dependent module developers you've finished
+5. At some point, typically after the full release, do follow-ups:
+   Merge down changes in the release branch you want also in master
+   For java, set pom SNAPSHOTS
+
+For each prerequisite module:
+
+  Clone prerequisites at module top, eg
+
+    cd .../epics/git
+    git clone https://github.com/epics-base/pvDataJava.git
+
+  or if already cloned, pull changes on the branch of the release of the prerequisite, eg
+
+    cd .../epics/git/pvDataJava
+    git checkout release/5.0      [ branch as on release tracker ]
+    git pull --rebase 
+
+    Verify that the git pull --rebase got the tag identified in the release tracker. If not, the tracker
+    doesn't match the real tags in git - contact the module owner.
+    
+  Compile prerequisites
+
+     [ Verify that your compiler version JAVA_HOME is to the same as that required in the pom.xml
+     of the module you're compiling. See pom.xml element <artifactId>maven-compiler-plugin, <configuration>.
+     Eg, if 1.7, then set Java compiler to 1.7. On Mac OS 10.10 this is by:
+  
+       /usr/libexec/java_home -v 1.7
+       export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+  
+     then...
+       mvn compile install
+       mvn compile install -Dmaven.test.skip=true
+
+Now do the module you want to release...
+
+   cd .../<your module>
+
+[Assuming the branch for release has been created already, say on github] move to the release branch
+
+   git checkout release/4.0     
+
+Make sure no-one has released to your module - on the release branch (it's possible, it's a collabortation after all)
+
+   git status
+   [ git pull --rebase if necessary ]
+    
+Edit pom.xml to reflect correct versions of software that your module should be using.
+
+   emacs pom.xml
+
+Compile and test to see if pre-requiste module changes impacted your module. As with pre-requisites, verify the java compile version and JAVA_HOME are set correctly before compile:
+
+   mvn compile 
+   
+Edit files to be changed.
+
+   emacs stuff and mvn compiles 
+   
+Do git adds and git commits as appropriate to prepare the release.
+
+   For Java you'll probably to do this even if you didn't change any source of course, since you probably
+   changed the pom.xml to reflect changes in the tags of the prerequiste modules. 
+
+      git status                     to list files to potentially add to branch
+      git add (.|<filename>)         adds the given files to the "staging area 
+      git commit -m "cdasdfasd"      puts the files added to the "staging area" onto the HEAD of the branch you're on
+
+When finished preparing the module for release, tag the commit you want to comprise the release. 
+
+   Pick a tag value for your new tag. The existing tags can be listed with:
+
+      git tag -l
+
+   Again make sure no-one has made a change to the remote branch you want to tag for release
+
+      git status                 It should say only you are ahead of origin/release/X.Y by some commits
+       
+   Find the commit id of the commit you want to tag (unless you're sure it's the tip):
+
+      git log                    [ latest commit will be at the top ]
+      git log --graph --oneline --decorate --all    [ nice graphical tree ]
+
+   Having identified the commit id, use it in a git tag command to tag. For java the tag id
+   ( eg 4.0.4 ) must be the same as the id in the <version> element of the pom.xml file.
+   We use simple tags, not annotated tags.
+   
+      git tag 4.0.4 ad8c3c9       [ you need the 1st 7 characters of the commit id you want to tag ]
+
+Push the tagged commit onto the branch readied for release [and that you had done git checkout to above]
+
+   git push origin release/4.0 --tags
+
+
+Set pom version to SNAPSHOT in the release branch (see "BASIC RELEASE NUMBERING" below)
+
+Merge-down to master
+
+  At some point, you'll also have to merge any changes you made on the release branch, eg "release/4.1" into
+  the files on the master branch. We don't have an explicit policy for when that is done (eg after each tagged
+  release on a branch, or only after final package EPICS v4 package release etc). I choose to do it after
+  the final release.
+
+  All git actions act on the current branch, and you tell it which branch to merge from. Therefore: 
+
+  git checkout master
+  git merge release/4.1
+  [ if there are conflicts, then edit them, git add files changed]
+  git commit -m "sdasd"
+  git push
+
+Set pom version to SNAPSHOT in the master branch (see "BASIC RELEASE NUMBERING" below)
+
+
+PACKAGING AN EPICS VERSION 4 RELEASE
+====================================
+
+Update the RELEASE_VERSIONS file to add the specifcation of which modules and their
+tag versios go into the EPICS V4 release package. RELEASE_VERSIONS is in pvDataWWW repo,
+in scripts/ subdir:
+
+   git clone https://github.com/epics-base/pvDataWWW.git
+   or cd to existing clone and "git pull". There are no branches or tags in pvDataWWW.
+   
+   cd pvDataWWW/scripts
+
+   edit RELEASE_VERSIONS
+
+   git commit -am "Add EPICS-Java-4.5.0-pre1"
+
+   git push origin master
+
+Use the cloudbees bundling job to execute the packaging.
+
+   Using web browser:  Log onto openepics cloudbees with your cloudbees username
+
+        https://openepics.ci.cloudbees.com
+  
+   Select "EPICS V4 Java" group at the top of the screen
+   
+   Select "Bundle Distribution (Java)" 
+
+   Select "Build with Parameters" from left side bar. [ Will only be offered if you have logged in and have privs ]
+
+   Set the EPICS V4 release id (eg 4.5.0) and the suffix if any (eg "-pre1")
+
+   Select checkbox as to whether to upload to SourceForge
+
+   Hit "Build" button. 
+   
+Packaging checklist
+===================
+Draft release announcement - send to team
+Edit README_CPP.md and RELEASE_NOTES_CPP.md
+Edit README_JAVA.md and RELEASE_NOTES_JAVA.md
+Draft change to index.html with top banner - executive summary
+Draft changes to features.html with new features summary
+Draft changes to literature.html with links to new documentation
+
+
+MAINTENANCE
+-----------
+To look at or compile a particular release (ie a particular tag) of a module:
+
+  * Find the tag you're loking for from RELEASE_VERSIONS [9]
+  * git checkout the tag you want:
+    git checkout tags/0.4.3
+  * retain any changes made, move them to a new branch:
+    git checkout -b 0.4.3-forjava6
+    
+
+TROUBLESOME CIRCUMSTANCES
+-------------------------
+* A push of branch was out of sync with the remote. To fix just pull the latest changes (and see above):
+
+   git pull --rebase origin master
+
+* Decided after making commits to master, that changes should really be part of a pull request. 
+To fix, make branch (for pull request) and put work previously committed on origin/master onto it.
+
+    git checkout master
+    git log origin/master..master
+	        (write down commitnums to be moved)
+    git branch newbranch
+    git checkout newbranch	    
+    git cherry-pick <commitnum>   (commitnum from git log origin/master..master above)   
+    git branch --contains 2d6a0f6 (verify the branch the commitnum is now in)
+
+* Accidentally git added a file, and want to undo it. Not yet done a commit
+
+    git reset HEAD <filename>
+    
+    The filename is as output from git status. Eg
+
+       $ git status
+         On branch release/4.0
+         Changes to be committed:
+            (use "git reset HEAD <file>..." to unstage)
+ 
+            modified:   pom.xml
+            modified:   ....
+            new file:   src/services/rdbService/plantoconvert.txt    <===
+
+       $ git reset HEAD src/services/rdbService/plantoconvert.txt
+
+* Java EPICS v4 package build failed because version specified in RELEASE_VERSIONS was not found in maven.
+  Cause probably that the <version> tag of a module's pom.xml was not updated, so was out of sync with RELEASE_VERSIONS (or RELEASE_VERSIONS entry is wrong).
+
+  If so, fix is just to correct the pom. For that, we will edit the pom and "move the tag". 
+
+    1. Edit the pom.xml to correctly update the <versions> identifier
+    2. git add the corrected pom.xml
+          git add pom.xml
+    3. git commit -m "Correct the version in pom for release"
+    4. Delete the local tag, that is presently identifying the commit id of the incorrect pom.xml revision
+          git tag -d 4.0.5   (you can list all tags with git tag -l) 
+    5. Delete the remote tag also, otherwise the git push --tags will fail, since it will find that
+       the tag you will make in the next command, already exists remotely).
+       The following is an example of deleting a remote tag:
+          git push origin :refs/tags/4.0.5       [https://nathanhoad.net/how-to-delete-a-remote-git-tag]
+    6. Retag [optionally using the specific commit id you got in step 3, as in this example)
+          git tag 4.0.5 841a65c
+    7. Push the commit plus the tag just made
+          git push origin release/4.0 --tags
+    8. Verify that a correct version appears in Jenkins
+       of the module [http://epics.sourceforge.net/maven2/org/epics/]
+       If not, pursue through CB [https://openepics.ci.cloudbees.com/view/EPICS%20V4%20Java/]
+    9. Rebuild the Java package - see PACKAGING SUPPORT above.
+
+
+NOTES
+-----
+git pull == git fetch + git merge
+git pull --rebase == git fetch + git rebase
+The second re-writes your history, making it look as if you had committed on top of origin's new branch.
+
+
+DOWNLOAD AND BUILD
+==================
+Mac laptop
+  Java:
+    I put epics base and v4 on my laptop in /usr/local/epics/base/
+    Download (to ~/Downloads) and untar.
+    su -
+    [admin password]
+    cd /usr/local/epics/base
+    mv /Users/greg/Downloads/EPICS-Java-4.5.0 .
+    make symlinks, eg ln -s caj-1.1.15.jar caj.jar
+
+  C++:
+    I put epics base and v4 on my laptop in /usr/local/epics/base/
+    Download (to ~/Downloads) and untar.
+    su -
+    [admin password]
+    cd /usr/local/epics/base
+    mv /Users/greg/Downloads/EPICS-Java-4.5.0 .
+    cd /EPICS-Java-4.5.0
+    cp ExampleRelease.local RELEASE.local
+    emacs RELEASE.local  - to change pointers to directories. Leave ARCHIVER= blank
+    make
+    exit - to exit superuser mode
+    
+JAVA
+====
+* Switch Java version for compilation on Mac:
+  /usr/libexec/java_home -v 1.6
+
+  export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
+  cd pvDataJava
+  git branch release/4.0  [make branch release/4.0]
+  set <configuration> elem of pom.xml
+      <source>1.6</source>
+     <target>1.6</target>
+  mvn compile install -Dmaven.test.skip=true
+
+
+BASIC RELEASE NUMBERING
+=======================
+Our Java release numbering (based on email from Ralph, 27-Oct-2015)
+
+Maven sorts any snapshot version a.b.c-SNAPSHOT *before* the matching final version a.b.c.
+As a result, snapshot versions must always bear the number of the *next* version plus "-SNAPSHOT" to be properly sorted.
+(And consequentially, using the "b" position to indicate API compatibility - at least for Java/Maven - doesn't work, since Maven must be told BEFORE the existence of the next release, what its release id is to be, and since we don't know in advance whether an API change will be in the next release, we can't base the id on that. 
+
+Multi-branch environments add a layer of complexity, as the snapshot versions of different branches must be properly numbered to avoid versions being taken from the wrong branch. (Remember that all versions of all branches are kept in a single repository, so there are multiple -SNAPSHOT versions at the same place.)
+To work properly, the tip of each branch must have the number of the next expected future version on that branch, plus "-SNAPSHOT". (As it is the version you are preparing for on this branch.)
+The trunk must have the number of the first version of the next expected future release branch that will be branched off, plus "-SNAPSHOT". (This is the version you are preparing for on trunk.)
+
+So, in our development workflow using our naming/tagging conventions, for a project with existing release branches release/6.7 and release/6.8 and the last official releases 6.7.4 and 6.8.2, the snapshot on the release/6.7 branch must be called 6.7.5-SNAPSHOT, the snapshot on the release/6.8 branch must be called 6.8.3-SNAPSHOT, and the trunk snapshot must be called 6.9.0-SNAPSHOT.
+
+This will always ensure builds are being done using the intended version, with no surprises.
+
+So, after "release":
+
+   # Set the pom of the release branch to put updates on a snapshot of that branch.
+   get checkout release/4.0
+   edit pom.xml   - to set version, from a.b.c (a.b = 4.0 in case of release/4.0),
+                                    to   a.b.c+1"-SNAPSHOT" (eg if 4.0.5, then 4.0.6-SNAPSHOT)
+   mvn compile install         - to test. Check ~/.m2/repository/org/epics/<modulename>/
+   git commit -am "set snapshot for dev on release branch" 
+   git push
+
+   # Merge any commits made on the release branch that you want also in master.
+   # [ You can also do this by cherry-pick as above]
+   git checkout master
+   git log origin/master..release/4.0
+   git merge release/4.0
+
+   # Set the pom of the master branch to put updates in a snapshot of the master branch.
+   get checkout master
+   edit pom.xml to set version, from a.b.c (a.b = 4.0 in case of release/4.0),
+                                to a.b+1.0"-SNAPSHOT" (hence eg 4.1.0-SNAPSHOT)
+   git commit -am "set snapshot for dev on master branch" pom.xml
+   git push
+   
+ 
+
+REFERENCES
+==========
+
+Good summary of git workflow and tagging. Best short description found to date 8-sep-15.
+[1] http://rogerdudler.github.io/git-guide/
+
+How we do actual releases - based on the Git Workflow:
+[2] https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
+
+Overall reference on triangular workflow
+[3] https://github.com/blog/2042-git-2-5-including-multiple-worktrees-and-triangular-workflows
+
+Good short example of git pull / git pull --rebase / git merge / git rebase: 
+[4] http://stackoverflow.com/questions/3357122/git-pull-vs-git-fetch-git-rebase
+
+Good graphical descriptions of rebasing (merging branches)
+[5] https://git-scm.com/book/en/v2/Git-Branching-Rebasing
+
+Moving commits between branches (on which recipe for moving change from master to branch for pull-request is based)
+[6] http://stackoverflow.com/questions/1628563/move-the-most-recent-commits-to-a-new-branch-with-git
+
+[7]Good guild to pull-request
+http://yangsu.github.io/pull-request-tutorial/
+
+[8] Good cheatsheet
+https://gist.github.com/hofmannsven/6814451
+
+[9] RELEASE_VERSIONS, https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIONS
+    
+[10] APS f-2-f meeting https://docs.google.com/document/d/1fF6G1dPW7nx5KqgvMnoAR0S9tm-jwjFJcGZ6Zoj6-rE/pub
+
+[11] Forking a repository (in preparation for changing someone elses repo and making a "pull request")
+https://help.github.com/articles/fork-a-repo/
+
+[12] Release Tracker, https://docs.google.com/spreadsheets/d/16vIVdopCigfDA7VfepEg4aaKGPqp0n8uIydGIRJpbpg/edit#gid=0
