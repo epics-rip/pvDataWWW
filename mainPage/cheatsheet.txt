@@ -2,10 +2,25 @@
 	    EPICS VERSION 4 DEVELOPMENT CHEATSHEET
 
             Greg White, SLAC, Original Version 20-Nov-2015
-	    
+            Last revision Nov 24 2015. Ongoing Draft status. In particular lacks C++ specifics.
 
-GIT
-===
+CONTENTS
+========
+
+1.   GIT
+1.1. Troublesome Circumstances
+2.   DOING A VERSION RELEASE OF AN EPICS VERISON 4 JAVA MODULE
+2.1  Package maintenance
+3.   PACKAGING AN EPICS VERSION 4 RELEASE
+3.1  Packaging checklist
+4.   DOWNLOAD AND BUILD
+5.   JAVA NOTES
+6.   BASIC RELEASE NUMBERING
+7.   REFERENCES
+
+
+1. GIT
+======
 Get a repo from epics-base at github
 
    cd /Users/greg/Development/epics/git
@@ -30,15 +45,27 @@ If necessary, set the branch you want to work on (this also works to bring in re
 (make your edits)
 [MISSING: how to add a branch. Ralph does it through gitHub, but there is probably a direct way]
 
-Has anyone changed the remote master repo requiring you to pull?
+Has anyone changed the remote master repo requiring you to pull or merge?
 
    git fetch origin; git log HEAD..origin/master
 
    If other people have changed the remote repo, then (since you just did a git fetch) you can merge in
    their changes with:
 
-      git merge     [you may be asked to make a comment - vi exit is ESC wq remember]
-      
+      git merge     If you had changed your local repo, and there had been remote changes, git will
+                    have to do a "real" merge - as opposed to simply applying the remote changes to your
+		    local checkout. In that case you will be asked to make a comment - vi exit is ESC wq remember.
+		    If you have NOT chaged your local repo, and there had been remote changes, git will
+		    instead do a "fast-forward" quasi-merge - just applying the remote changes on top of
+		    your outdated checkout.
+
+      git merge --ff-only
+
+                    Ask git to check whether your repo has in fact been changed, and if not simply bring
+		    in remote changes. If your local repo has been changed, this command will have no
+		    effect and instead you'll have to do the real merge above. So this is a kind of "safe
+		    merge for the common case".
+                    
    (not sure how this below is different - it seems to actually fetch and update local repo)
    git checkout master
    git remote -v update
@@ -168,8 +195,75 @@ Remove a file from git's tracking (eg .DS_store files)
    eg git rm --cached mainPage/talks/.DS_Store
 
 
-DOING AN VERSION RELEASE OF AN EPICS VERISON 4 JAVA MODULE
-==========================================================
+1.1. Troublesome Circumstances
+==============================
+* A push of branch was out of sync with the remote. To fix just pull the latest changes (and see above):
+
+   git pull --rebase origin master
+
+* Decided after making commits to master, that changes should really be part of a pull request. 
+To fix, make branch (for pull request) and put work previously committed on origin/master onto it.
+
+    git checkout master
+    git log origin/master..master
+	        (write down commitnums to be moved)
+    git branch newbranch
+    git checkout newbranch	    
+    git cherry-pick <commitnum>   (commitnum from git log origin/master..master above)   
+    git branch --contains 2d6a0f6 (verify the branch the commitnum is now in)
+
+* Accidentally git added a file, and want to undo it. Not yet done a commit
+
+    git reset HEAD <filename>
+    
+    The filename is as output from git status. Eg
+
+       $ git status
+         On branch release/4.0
+         Changes to be committed:
+            (use "git reset HEAD <file>..." to unstage)
+ 
+            modified:   pom.xml
+            modified:   ....
+            new file:   src/services/rdbService/plantoconvert.txt    <===
+
+       $ git reset HEAD src/services/rdbService/plantoconvert.txt
+
+* Java EPICS v4 package build failed because version specified in RELEASE_VERSIONS was not found in maven.
+  Cause probably that the <version> tag of a module's pom.xml was not updated, so was out of sync with RELEASE_VERSIONS (or RELEASE_VERSIONS entry is wrong).
+
+  If so, fix is just to correct the pom. For that, we will edit the pom and "move the tag". 
+
+    1. Edit the pom.xml to correctly update the <versions> identifier
+    2. git add the corrected pom.xml
+          git add pom.xml
+    3. git commit -m "Correct the version in pom for release"
+    4. Delete the local tag, that is presently identifying the commit id of the incorrect pom.xml revision
+          git tag -d 4.0.5   (you can list all tags with git tag -l) 
+    5. Delete the remote tag also, otherwise the git push --tags will fail, since it will find that
+       the tag you will make in the next command, already exists remotely).
+       The following is an example of deleting a remote tag:
+          git push origin :refs/tags/4.0.5       [https://nathanhoad.net/how-to-delete-a-remote-git-tag]
+    6. Retag [optionally using the specific commit id you got in step 3, as in this example)
+          git tag 4.0.5 841a65c
+    7. Push the commit plus the tag just made
+          git push origin release/4.0 --tags
+    8. Verify that a correct version appears in Jenkins
+       of the module [http://epics.sourceforge.net/maven2/org/epics/]
+       If not, pursue through CB [https://openepics.ci.cloudbees.com/view/EPICS%20V4%20Java/]
+    9. Rebuild the Java package - see PACKAGING SUPPORT above.
+
+
+NOTES
+-----
+git pull == git fetch + git merge
+git pull --rebase == git fetch + git rebase
+The second re-writes your history, making it look as if you had committed on top of origin's new branch.
+
+
+
+2. DOING A VERSION RELEASE OF AN EPICS VERISON 4 JAVA MODULE
+=============================================================
 The following checks out all the prerequisite modules of the module to be number released, compiles
 them, and then compiles the module to be number released.
 
@@ -296,9 +390,19 @@ Merge-down to master
 
 Set pom version to SNAPSHOT in the master branch (see "BASIC RELEASE NUMBERING" below)
 
+2.1 Package Maintenance
+-----------------------
+To look at or compile a particular release (ie a particular tag) of a module:
 
-PACKAGING AN EPICS VERSION 4 RELEASE
-====================================
+  * Find the tag you're loking for from RELEASE_VERSIONS [9]
+  * git checkout the tag you want:
+    git checkout tags/0.4.3
+  * retain any changes made, move them to a new branch:
+    git checkout -b 0.4.3-forjava6
+
+
+3. PACKAGING AN EPICS VERSION 4 RELEASE
+=======================================
 
 Update the RELEASE_VERSIONS file to add the specifcation of which modules and their
 tag versios go into the EPICS V4 release package. RELEASE_VERSIONS is in pvDataWWW repo,
@@ -333,8 +437,8 @@ Use the cloudbees bundling job to execute the packaging.
 
    Hit "Build" button. 
    
-Packaging checklist
-===================
+3.1 Packaging checklist
+=======================
 Draft release announcement - send to team
 Edit README_CPP.md and RELEASE_NOTES_CPP.md
 Edit README_JAVA.md and RELEASE_NOTES_JAVA.md
@@ -342,86 +446,9 @@ Draft change to index.html with top banner - executive summary
 Draft changes to features.html with new features summary
 Draft changes to literature.html with links to new documentation
 
-
-MAINTENANCE
------------
-To look at or compile a particular release (ie a particular tag) of a module:
-
-  * Find the tag you're loking for from RELEASE_VERSIONS [9]
-  * git checkout the tag you want:
-    git checkout tags/0.4.3
-  * retain any changes made, move them to a new branch:
-    git checkout -b 0.4.3-forjava6
     
-
-TROUBLESOME CIRCUMSTANCES
--------------------------
-* A push of branch was out of sync with the remote. To fix just pull the latest changes (and see above):
-
-   git pull --rebase origin master
-
-* Decided after making commits to master, that changes should really be part of a pull request. 
-To fix, make branch (for pull request) and put work previously committed on origin/master onto it.
-
-    git checkout master
-    git log origin/master..master
-	        (write down commitnums to be moved)
-    git branch newbranch
-    git checkout newbranch	    
-    git cherry-pick <commitnum>   (commitnum from git log origin/master..master above)   
-    git branch --contains 2d6a0f6 (verify the branch the commitnum is now in)
-
-* Accidentally git added a file, and want to undo it. Not yet done a commit
-
-    git reset HEAD <filename>
-    
-    The filename is as output from git status. Eg
-
-       $ git status
-         On branch release/4.0
-         Changes to be committed:
-            (use "git reset HEAD <file>..." to unstage)
- 
-            modified:   pom.xml
-            modified:   ....
-            new file:   src/services/rdbService/plantoconvert.txt    <===
-
-       $ git reset HEAD src/services/rdbService/plantoconvert.txt
-
-* Java EPICS v4 package build failed because version specified in RELEASE_VERSIONS was not found in maven.
-  Cause probably that the <version> tag of a module's pom.xml was not updated, so was out of sync with RELEASE_VERSIONS (or RELEASE_VERSIONS entry is wrong).
-
-  If so, fix is just to correct the pom. For that, we will edit the pom and "move the tag". 
-
-    1. Edit the pom.xml to correctly update the <versions> identifier
-    2. git add the corrected pom.xml
-          git add pom.xml
-    3. git commit -m "Correct the version in pom for release"
-    4. Delete the local tag, that is presently identifying the commit id of the incorrect pom.xml revision
-          git tag -d 4.0.5   (you can list all tags with git tag -l) 
-    5. Delete the remote tag also, otherwise the git push --tags will fail, since it will find that
-       the tag you will make in the next command, already exists remotely).
-       The following is an example of deleting a remote tag:
-          git push origin :refs/tags/4.0.5       [https://nathanhoad.net/how-to-delete-a-remote-git-tag]
-    6. Retag [optionally using the specific commit id you got in step 3, as in this example)
-          git tag 4.0.5 841a65c
-    7. Push the commit plus the tag just made
-          git push origin release/4.0 --tags
-    8. Verify that a correct version appears in Jenkins
-       of the module [http://epics.sourceforge.net/maven2/org/epics/]
-       If not, pursue through CB [https://openepics.ci.cloudbees.com/view/EPICS%20V4%20Java/]
-    9. Rebuild the Java package - see PACKAGING SUPPORT above.
-
-
-NOTES
------
-git pull == git fetch + git merge
-git pull --rebase == git fetch + git rebase
-The second re-writes your history, making it look as if you had committed on top of origin's new branch.
-
-
-DOWNLOAD AND BUILD
-==================
+4. DOWNLOAD AND BUILD
+=====================
 Mac laptop
   Java:
     I put epics base and v4 on my laptop in /usr/local/epics/base/
@@ -445,8 +472,8 @@ Mac laptop
     make
     exit - to exit superuser mode
     
-JAVA
-====
+5. JAVA NOTES
+=============
 * Switch Java version for compilation on Mac:
   /usr/libexec/java_home -v 1.6
 
@@ -459,9 +486,11 @@ JAVA
   mvn compile install -Dmaven.test.skip=true
 
 
-BASIC RELEASE NUMBERING
-=======================
-Our Java release numbering (based on email from Ralph, 27-Oct-2015)
+6. BASIC RELEASE NUMBERING
+==========================
+Our Java release numbering (based on email from Ralph, 27-Oct-2015).
+[No notes yet on C++ numbering - maybe that can be revisited to include indication of
+API/ABI compatibility in between C++ modules]
 
 Maven sorts any snapshot version a.b.c-SNAPSHOT *before* the matching final version a.b.c.
 As a result, snapshot versions must always bear the number of the *next* version plus "-SNAPSHOT" to be properly sorted.
@@ -500,8 +529,8 @@ So, after "release":
    
  
 
-REFERENCES
-==========
+7. REFERENCES
+=============
 
 Good summary of git workflow and tagging. Best short description found to date 8-sep-15.
 [1] http://rogerdudler.github.io/git-guide/
