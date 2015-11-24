@@ -477,6 +477,9 @@ Mac laptop
 * Switch Java version for compilation on Mac:
   /usr/libexec/java_home -v 1.6
 
+* So, to build for instance pvDataJava specifically against Java 6 (as necessary for SLAC's
+  Matlab which still at 2012a):
+
   export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
   cd pvDataJava
   git branch release/4.0  [make branch release/4.0]
