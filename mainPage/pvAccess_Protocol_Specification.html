@@ -2044,18 +2044,13 @@ channel is disconnected.</p>
 <p>A "destroy channel" message is sent to a server to destroy a channel that
 was previously created (with a create channel message). </p>
 <pre>struct destroyChannelRequest {
-    struct {
-        int clientChannelID;
-        int serverChannelID;
-    } channels[];
+    int clientChannelID;
+    int serverChannelID;
 };
 
 struct destroyChannelResponse {
-    struct {
-        int clientChannelID;
-        int serverChannelID;
-        Status status;
-    } channels[];
+    int clientChannelID;
+    int serverChannelID;
 };</pre>
 
 <table style="caption-side:bottom">
