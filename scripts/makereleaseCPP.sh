@@ -152,6 +152,7 @@ workdir=`mktemp -d`
 trap "rm -rf ${workdir};echo cleanup ${workdir}" INT QUIT TERM EXIT
 
 install -d "${workdir}/tar"
+install -d "${workdir}/links"
 install -d "${workdir}/download" && cd "${workdir}/download"
 
 tarfile="${releaseName}.tar.gz"
@@ -371,6 +372,7 @@ do
     tag_id=`git ls-remote https://github.com/epics-base/${modulei}.git ${tag}`
     echo "${modulei} ${tag} ${tag_id}" >> ${tags_pathname}
 
+    ln -s ../${modulei}/${tag} ${workdir}/links/${modulei}
 done
 
 
@@ -385,8 +387,10 @@ cp $release_local_pathname "${workdir}/tar/ExampleRelease.local"
 chmod +x "${workdir}/tar/${config_script_name}"
 
 
-# Create tarball
+# Create tarball and documentation links
 mv ${workdir}/tar ${workdir}/${releaseName}
 echo "Tarring ${workdir}/${releaseName} to ${outdir}/${tarfile}"
 install -d "${outdir}"
 tar -C "${workdir}" -czf "${outdir}/${tarfile}" "${releaseName}"
+echo "Copying documentation links to ${outdir}/links"
+cp -a "${workdir}/links" "${outdir}"
