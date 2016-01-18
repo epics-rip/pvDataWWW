@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS Version 4 Training Agenda</title>
+  <link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net//base.css" />
+  <link rel="stylesheet" type="text/css"   href="http://epics-pvdata.sourceforge.net//epicsv4.css" />
+
+  <!-- Styles comments:
+   opt - Markup for standard optional fields of Normative Types
+   nterm - Non-terminal symbol, in the grammar of Normative types
+   term - Terminal symbol in the grammar of Normative Types
+   user - A replacement string in the grammar of Normative Types,
+          i.e. user programmer supplies value.
+   ed   - Comments included by the editor of this document.
+  -->
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     caption { font-size:smaller; font-style:italic; caption-side:bottom }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.def { font-style:bold }
+     span.opt { color: grey }            
+     span.nterm { font-style:italic }    
+     span.term { font-family:courier }   
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     span.literal { font-family:courier }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+
+  <!-- Script that generates the Table of Contents -->
+   <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+
+
+</head>
+
+<body>
+
+  <div class="head">
+    <h1>EPICS Version 4 Training Agenda</h1>
+  </div>
+
+<div id="toc" class="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+
+<div id="contents" class="contents">	  
+<hr />
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+
+<h2>Introduction</h2>
+
+
+<ul>
+<li>Purpose of overview.
+<ul>
+<li>Hands on</li>
+<li>API-level</li>
+<li>Example-driven</li>
+<li>Where to go for more info</li>
+</ul>
+</li>
+</ul>
+
+
+<ul>
+<li>Topics to cover
+<ul>
+<li>Key EPICS V4 concepts: pvData, pvAccess, Normative Types.</li>
+<li>Sources of information on EPICS V4: The V4 website and key documents.</li>
+<li>Building EPICS V4 and running examples.</li>
+<li>Using EPICS V4 tools: pvget, pvput, pvinfo, pvlist and eget.</li>
+<li>Creating and manipulating pvData objects.</li>
+<li>Creating pvDatabase, pvaClient and RPC service examples.</li>
+<li>pvAccess API. Creating a monitored pvAccess client.</li> 
+</ul>
+</li>
+</ul>
+
+
+<h2>Overview of EPICS Version 4</h2>
+
+<h3>What is EPICS Version 4?</h3>
+
+<ul>
+<li>Add structured data to EPICS</li>
+<li>New API and network protocol to transport data</li>
+<li>PVs now structures. Get, put monitor etc. individual fields</li>
+<li>Atomic operations</li>
+<li>Channel RPC</li>
+<li>Normative Types</li>
+<li>RPC services</li>
+<li>Applications:
+  <ul>
+  <li>RPC services</li>
+  <li>V4 for data acquisition: areaDetector, Neutron Server</li>
+  <li>V4 for complex control</li>
+  </ul>
+</li>
+</ul>
+
+<h3>pvData</h3>
+
+<ul>
+<li>Description of pvData in general (not at level of bindings, so no API at this point)</li>
+<li>Structured data</li>
+<li>Fields. Data types. Type ID.</li>
+<li>Meta language. Examples</li>
+</ul>
+
+<h3>pvAccess</h3>
+
+<ul>
+<li>Description of pvAccess in general (not at level of bindings, so no API at this point)</li>
+<li>Key Concepts: Channel and Channel Provider</li>
+<li>Channel Services
+<ul>
+<li>Create/Destroy</li>
+<li>GetField</li>
+<li>Get, Put, Monitor, PutGet</li>
+<li>RPC</li>
+<li>Channel Array</li>
+</ul>
+</li>
+<li>Providers</li>
+<li>pvAccess network protocol</li>
+</ul>
+
+<h3>Normative Types</h3>
+
+<ul>
+<li>What?</li>
+<li>Why?</li>
+<li>Example(s). NTScalar, NTTable</li>
+<li>Point to spec</li>
+</ul>
+
+<h3>V3/V4 interoperability</h3>
+
+<ul>
+<li>Discussion of interoperability: ca or pva on wire</li>
+</ul>
+
+<h2>EPICS Version 4 resources</h2>
+
+
+<ul>
+<li>Website</li>
+<li>Getting started guide</li>
+<li>App dev guide</li>
+<li>Download</li>
+<li>GitHub</li>
+<li>Module docs. Javdoc and doxygen.</li>
+<li>pvAccess spec</li>
+<li>NT spec</li>
+<li>Working group</li>
+</ul>
+
+
+
+<h2>Building EPICS V4</h2>
+
+
+<h3>Building C++ from tar</h3>
+
+<ul>
+<li>Brief instructions to build. "make configure. make"</li>
+<li>"make configure. make" on Linux</li>
+<li>Example RELEASE.local</li>
+<li>Point at getting started guide.</li>
+</ul>
+
+<h3>Building C++ from repos</h3>
+
+<ul>
+<li>Brief instructions to get source</li>
+<li>Brief instructions to build</li>
+<li>Point at getting started guide.</li>
+</ul>
+
+<h3>Using Java jar</h3>
+
+<ul>
+<li>How to get started using released Java jar</li>
+<li>Point at getting started guide.</li>
+</ul>
+
+<h3>Building Java from repos</h3>
+
+<ul>
+<li>Brief instructions to get source</li>
+<li>Brief instructions to build</li>
+<li>Point at getting started guide.</li>
+</ul>
+
+
+<h2>Running examples and pvtools</h2>
+
+<h3>pvaSrv example</h3>
+
+
+<ul>
+<li>Run testDBPv and show output</li>
+<li>very quick use of  pvtools, e.g. pvget a PV (pvtools in depth later)</li>
+</ul>
+
+<h3>pvDatabase example</h3>
+
+
+<h3>pvtools</h3>
+
+
+<ul>
+<li>pvinfo, pvget, pvget -m, pvput, pvlist, eget</li>
+<li>Support for enums, alarms and timestamps</li>
+<li>provider options and URL syntax</li>
+<li>request syntax</li>
+</ul>
+
+<!--
+<h4>pvinfo</h4>
+
+<h4>pvget</h4>
+
+
+<h4>pvget -m </h4>
+
+
+<h4>pvput</h4>
+
+
+
+<h4>pvlist</h4>
+
+
+<h4>eget</h4>
+-->
+
+<h3>Service example</h3>
+
+<ul>
+<li>Hello World example</li>
+</ul>
+
+<h2>First example: Hello World</h2>
+
+<ul>
+<li>Examine code of Hello World example</li>
+</ul>
+
+
+
+
+
+<h2>APIs for pvData</h2>
+
+<h3>pvData API</h3>
+
+<h4>Field and PVField</h4>
+
+<ul>
+<li>C++: shared_pointers and typedefs</li>
+<li>Field and PVField class hierarchies</li>
+<li>Field - getID, getType</li>
+<li>PVField getName(), getField(), getParent()</li>
+<li>serialize/deserialize</li>
+<li>FieldCreate, FieldBuilder, DataCreate</li>
+</ul>
+
+<h4>Creating simple structures</h4>
+
+<ul>
+<li>Simple example of structure with scalar fields.
+Structure of scalar fields e.g. aggregate type structure (mean, standard deviation, unit, max, min, description</li>
+<li>Create structure using FieldBuilder. Print. Get typeID(). getType()</li>
+<li>Create PVStructure</li>
+<li>Get subfields (getSubField). Set. Get. Print.</li>
+<li>getField(), getStructure()</li>
+<li>getScalar(), getScalarType()</li>
+</ul>
+
+<h4>Structure subfield examples</h4>
+
+<ul>
+<li>Example of structure with structure subfields with scalar fields,
+e.g. timestamps.</li>
+</ul>
+
+
+<h4>Scalar arrays</h4>
+
+<ul>
+<li>Create structure with array fields (one of NTScalarArray/NTTable/NTMatrix)</li>
+<li>ScalarArray, PVScalarArray</li>
+<li>C++ API. shared_vector.</li>
+</ul>
+
+<h4>Regular Unions</h4>
+
+<h4>Variant Unions</h4>
+
+
+<h4>Structure arrays</h4>
+
+
+
+<h4>Union arrays</h4>
+
+<h4>Field Builder with Nested Structures and Unions</h4>
+
+<h3>Standard Field</h3>
+
+<h3>Normative types</h3>
+
+<ul><li>Example of one type, e.g. NTScalar</li></ul>
+
+
+
+<h2>Services and Clients</h2>
+
+<h3>RPC Service example</h3>
+
+<h3>Writing a pvDatabase example</h3>
+
+<ul><li>Go through exampleServer</li></ul>
+
+<h3>Writing a pvaClient example</h3>
+
+
+
+
+<h2>[Brief into to] pvAccess API</h2>
+
+<h3>pvAccess API</h3>
+<ul>
+<li>Channel, ChannelRequester</li>
+<li>ChannelGet, ChannelGetRequester</li>
+<li>ChannelMonitor, ChannelMonitorRequester</li>
+<li>ChannelPut, ChannelPutRequester</li>
+<li>ChannelRPC, ChannelRPCRequester</li>
+</ul>
+
+
+<h3>Example: Writing a monitored client</h3>
+<ul><li>E.g. Take example from pvDatabase, pvTools
+or data acquisition.</li></ul>
+</div>
+</body>
+</html>
