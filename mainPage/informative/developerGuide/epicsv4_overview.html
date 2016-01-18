@@ -70,7 +70,7 @@
 </ul>
 -->
 
-<p>The aim of this talk is to provide a pratical, more detailed introduction to EPICS V4, enabling you to create your own V4 services and use V4 tools. It will cover</p>
+<p>The aim of this talk is to provide a practical, more detailed introduction to EPICS V4, enabling you to create your own V4 services and use V4 tools. It will cover</p>
 
 <ul>
 <!--<li>Key EPICS V4 concepts: pvData, pvAccess, Normative Types.</li> -->
@@ -94,7 +94,6 @@
   <li>Where to get more information.</li>
   </ul>
 </li>
-<li>So go and write a service.</li>
 </ul>
 
 
@@ -215,7 +214,7 @@ make
 <li>Point at getting started guide.</li>
 </ul>
 -->
-<p>The latest can be obtained by cloning from the Github Git repos</p>
+<p>The latest can be obtained by cloning from the GitHub repos</p>
 
 <p>The modules all build using the EPICS build system and <code>make</code>. There's no top-level Makefile so you'll need to build each separately, create your own makefile or borrow the one from the release tar.</p>
 
@@ -700,7 +699,7 @@ and the following use channel access:
 <p><code>pvinfo -h</code> shows a full set of options.</p> 
 
 
-<h5>pvget</h5>
+<h4>pvget</h4>
 
 <p>pvget is the Version 4 equivalent of caget. By default, if a PV has a <code>value</code> field, such as for a Version 3 IOC record accessed via pvaSrv or caProvider, pvget fetches its value.</p>
 <pre>
@@ -845,7 +844,7 @@ structure
 The specification for pvRequest is still under development. The last draft is available at <a href="http://epics-pvdata.sourceforge.net/informative/pvRequest.html">http://epics-pvdata.sourceforge.net/informative/pvRequest.html</a>. See in particular the <a href="http://epics-pvdata.sourceforge.net/informative/pvRequest.html#syntax">Syntax</a> section.
 </p>
 
-<h5>pvget -m </h5>
+<h4>pvget -m</h4>
 
 <p>pvget with the -m option is the Version 4 eqivalent of camonitor. It functions in a similar fashion to pvget without -m. In particular it supports the request, enum and provider options and the URI syntax. For example</p>
 
@@ -990,7 +989,8 @@ float02
 float03
 -->bigstring01
 </pre>
-<h5>eget</h5>
+
+<h4>eget</h4>
 
 <p>This is similar to pvget, but has more support for normative types. It can also be used to query services using the "-s" option. It supports the -p provider option and URI syntax in both 4.4.0 and the current code. See <code>eget -h</code> for more details.</p>
 
@@ -1394,7 +1394,7 @@ int main (int argc, char *argv[])
 }
 </pre>
 
-<h4>Varaint Unions</h4>
+<h4>Variant Unions</h4>
 
 <pre>
 /**
@@ -1412,7 +1412,7 @@ int main (int argc, char *argv[])
 using namespace epics::pvData;
 using namespace std;
 
-void setValueDouble_ref(const PVUnionPtr & unionField, double value)
+void setValueDouble_ref(const PVUnionPtr &amp; unionField, double value)
 {
     PVDoublePtr storedValue = getPVDataCreate()-&gt;createPVScalar&lt;PVDouble&gt;();
     storedValue-&gt;put(value);
@@ -1420,14 +1420,14 @@ void setValueDouble_ref(const PVUnionPtr & unionField, double value)
 }
 
 template&lt;typename PVS&gt;
-void setValue_ref(const PVUnionPtr & unionField, typename PVS::value_type value)
+void setValue_ref(const PVUnionPtr &amp; unionField, typename PVS::value_type value)
 {
     typename PVS::shared_pointer storedValue = getPVDataCreate()-&gt;createPVScalar&lt;PVS&gt;();
     storedValue-&gt;put(value);
     unionField-&gt;set(storedValue);
 }
 
-void setValueDouble_val(const PVUnionPtr & unionField, double value)
+void setValueDouble_val(const PVUnionPtr &amp; unionField, double value)
 {
     PVDoublePtr storedValue = unionField-&gt;get&lt;PVDouble&gt;();
     if (storedValue.get() == NULL)
@@ -1437,7 +1437,7 @@ void setValueDouble_val(const PVUnionPtr & unionField, double value)
 }
 
 template&lt;typename PVS&gt;
-void setValue_val(const PVUnionPtr & unionField, typename PVS::value_type value)
+void setValue_val(const PVUnionPtr &amp; unionField, typename PVS::value_type value)
 {
     typename PVS::shared_pointer storedValue = unionField-&gt;get&lt;PVS&gt;();
     if (storedValue.get() == NULL)
@@ -1515,7 +1515,7 @@ using namespace epics::pvData;
 using namespace std;
 
 template&lt;typename PVS&gt;
-void setValue(const PVUnionPtr & unionField, typename PVS::value_type value)
+void setValue(const PVUnionPtr &amp; unionField, typename PVS::value_type value)
 {
     typename PVS::shared_pointer storedValue = unionField-&gt;get&lt;PVS&gt;();
     if (storedValue.get() == NULL)
@@ -1607,13 +1607,13 @@ int main (int argc, char *argv[])
 
 
 
-<h2>Servers and Clients</h2>
+<h2>Services and Clients</h2>
 
 <h3>RPC Service example</h3>
 
-<p>To implement an RPC service all you need to do is inherit from epics::pvAccess::RPCService, implementing its request() member function.<p>
+<p>To implement an RPC service all you need to do is inherit from epics::pvAccess::RPCService, implementing its request() member function.</p>
 
-<p>So in the HelloWorld example 
+<p>So in the HelloWorld example</p>
 <pre>
 /**
  * Copyright - See the COPYRIGHT that is included with this distribution.
@@ -1638,7 +1638,7 @@ public:
     POINTER_DEFINITIONS(HelloService);
 
     epics::pvData::PVStructurePtr request(
-        epics::pvData::PVStructurePtr const & args
+        epics::pvData::PVStructurePtr const &amp; args
             ) throw (epics::pvAccess::RPCRequestException);
 };
 }
@@ -1647,7 +1647,7 @@ public:
 #endif
 </pre>
 
-The implementation of request receives a structure containing the RPC arguments, checks it is of the right form and constructs a response structure:</p>
+<p>The implementation of request receives a structure containing the RPC arguments, checks it is of the right form and constructs a response structure:</p>
 
 <pre>
 /**
@@ -1677,7 +1677,7 @@ StructureConstPtr makeResponseStructure()
 
 // Definition of the Hello World RPC service.
 epics::pvData::PVStructurePtr HelloService::request(
-    epics::pvData::PVStructurePtr const & pvArgument
+    epics::pvData::PVStructurePtr const &amp; pvArgument
     ) throw (pvAccess::RPCRequestException)
 {   
     epics::pvData::PVStringPtr nameField = pvArgument-&gt;getStringField("personsname");
