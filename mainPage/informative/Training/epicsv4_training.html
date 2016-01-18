@@ -265,12 +265,12 @@ It will cover</p>
 </ul>
 -->
 
-<p>The C++ tar can be downloaded from the EPICS V4 site. The latest version is 4.4.0.</p>
+<p>The C++ tar can be downloaded from the EPICS V4 site. The latest version is 4.5.0.</p>
 
 <p>C++ uses the EPICS build facility (see <a href="http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide.pdf">EPICS V3 Application Developer Guide</a>, chapter 4)
  and builds against EPICS base.</p>
 
-<p>Once you unzip the 4.4.0 tar, all you need do is set your CONFIG and RELEASE through CONFIG_SITE.local and RELEASE.local (or through the host and target specific CONFIG and RELEASE files) and type make. An example RELEASE.local is provided.</p>
+<p>Once you unzip the 4.5.0 tar, all you need do is set your CONFIG and RELEASE through CONFIG_SITE.local and RELEASE.local (or through the host and target specific CONFIG and RELEASE files) and type make. An example RELEASE.local is provided.</p>
 
 <p>A config script is provided so that, if you're on a Linux system and if you have the shell variable EPICS_BASE defined to your EPICS base installation (and exported), then likely all you need do is:</p>
 
@@ -741,7 +741,7 @@ epics:nt/NTEnum:1.0
 
 <p>If you're using the 4.4 release code, pvinfo necessarily uses pvAccess on the wire.</p>
 
-<p>If you're running the latest code you can also use the channel access provider to get information on a PV using channel access on the wire. By default pvinfo will use pvAccess, but you can specify either channel access or pvAccess with the <code>-p</code> option supplying either <code>ca</code> or <code>pva</code>. For example,</p>
+<p>From 4.5.0 onwards you can also use the channel access provider to get information on a PV using channel access on the wire. By default pvinfo will use pvAccess, but you can specify either channel access or pvAccess with the <code>-p</code> option supplying either <code>ca</code> or <code>pva</code>. For example,</p>
 <pre>
 pvinfo -p ca enum01
 CHANNEL  : enum01
@@ -762,7 +762,7 @@ epics:nt/NTEnum:1.0
 </pre>
 <p>will use channel access on the wire, so it can be used with existing Version 3 PVs without modifying the IOC.</p>
 
-<p>In the latest code, pvinfo also understands a URI syntax, where the URI's scheme is either pva or ca. The following are equivalent and use pvAccess on the wire:</p>
+<p>From 4.5.0 onwards pvinfo also understands a URI syntax, where the URI's scheme is either pva or ca. The following are equivalent and use pvAccess on the wire:</p>
 <pre>
 [pc0012 ~]$ pvinfo enum01
 [pc0012 ~]$ pvinfo -p pva enum01
@@ -818,7 +818,7 @@ structure
         string[] choices [Off,On]
 </pre>
 
-<p>Like pvinfo, the 4.4 release version of pvget is pvAccess only, but the latest pvget has channel access support through caProvider and supports the <code>-p</code> option and URI syntax. So for pvAccess the following will work</p>
+<p>Like pvinfo, the 4.4 release version of pvget is pvAccess only, but from 4.5.0 onwards pvget has channel access support through caProvider and supports the <code>-p</code> option and URI syntax. So for pvAccess the following will work</p>
 <pre>
 pvget double01
 pvget -p pva double01
@@ -1071,7 +1071,7 @@ float03
 
 <h4>eget</h4>
 
-<p>This is similar to pvget, but has more support for normative types. It can also be used to query services using the "-s" option. It supports the -p provider option and URI syntax in both 4.4.0 and the current code. See <code>eget -h</code> for more details.</p>
+<p>This is similar to pvget, but has more support for normative types. It can also be used to query services using the "-s" option. It supports the -p provider option and URI syntax from version 4.4.0. See <code>eget -h</code> for more details.</p>
 
 
 
