@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+Auth:  14-Jul-2015, Dave Hickin, Diamond
+Vers:  14-Jul-2015, Dave Hickin, Diamond
+Todo:
+
+=============================================================
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>dbGroup Structures</title>
+  <link rel="stylesheet" type="text/css"
+       href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css" 
+        href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+
+  <link rel="stylesheet" type="text/css" href="base.css" />
+  <link rel="stylesheet" type="text/css"   href="epicsv4.css" />
+
+
+  <!-- Styles comments:
+   opt - Markup for standard optional fields of Normative Types
+   nterm - Non-terminal symbol, in the grammar of Normative types
+   term - Terminal symbol in the grammar of Normative Types
+   user - A replacement string in the grammar of Normative Types,
+          i.e. user programmer supplies value.
+   ed   - Comments included by the editor of this document.
+  -->
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     caption { font-size:smaller; font-style:italic; caption-side:bottom }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.def { font-style:bold }
+     span.opt { color: grey }            
+     span.nterm { font-style:italic }    
+     span.term { font-family:courier }   
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     span.literal { font-family:courier }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+
+  <!-- Script that generates the Table of Contents -->
+ <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/../script/tocgen.js"></script>
+  <script type="text/javascript" src="tocgen.js"></script>
+</head>
+		
+<body>
+
+  <div class="head">
+    <h1>dbGroup Structures</h1>
+
+
+</div> <!-- head -->
+
+<div id="toc" class="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<div id="contents" class="contents">	  
+<hr />
+<h2 id="introduction">Introduction</h2>
+
+<p>Given a set of PVs there are a number of ways of packaging their values for group operations. Basic choices are between</p>
+<ol>
+<li>Packaging PVs using structures of named fields or using arrays</li>
+<li>Encoding just the value field or other fields such as timestamps or alarms</li>
+<li>Grouping values with values and timestamps with timestamps and so on or keeping each value with its timestamp</li>
+<li>Providing additional timestamps alarms etc. for the group</li>
+<li>Heterogeneous arrays (via unions) versus homogeneous arrays</li>
+</ol>
+
+<p>This document lists the various options, providing a name for each, and discusses the use cases and pros and cons of each structure.</p>
+
+<h2>Possible Structures</h2>
+
+<p>Lets assume we have PVs D, {D<sub>i</sub>} with double values and E, {E<sub>i</sub>} with enum_t values, all with timestamps and alarms, whose structures are respectively</p>
+<pre>
+structure
+    double value
+    alarm_t alarm 
+    time_t timeStamp
+</pre> 
+<p>and</p>
+<pre>
+structure
+    enum_t value
+    alarm_t alarm 
+    time_t timeStamp
+</pre>
+
+<p>(In what follows the extension to more than two PVs, to other scalars and to PVs with additional fields, such as control limits, should be obvious.)</p>
+
+<p>The following structures are possible:</p>
+
+<h3>Composite (values only)</h3>
+
+<p>The first possibility is to encode the value fields of the PVs only in a structure the names of whose fields are the names of the PVs.</p>
+
+<p>E.g. for a double PV D and an enum PV E the structure would be:</p>
+
+<pre>
+structure
+    double D
+    enum_t E
+</pre>
+
+<p>I've called storing PV values in a structure in this way in general, whether it encodes just the value fields or not, "<span class="nterm">composite</span>", and in this case I refer to it as "<span class="nterm">composite (values only)</span>".</p>
+
+<p>Advantages:</p>
+<ol>
+<li>Small, simple structure</li>
+<li>Easy to get any value by name</li>
+<li>Good if collection of PVs will not change</li>
+<li>Supports efficient monitoring</li>
+<li>Good for (complex) control and status, providing additional fields not needed</li>
+</ol>
+
+<p>Disadvantages:</p>
+<ol>
+<li>Doesn't encode other fields from the PVs in the group (timeStamp, alarm etc.)</li>
+<li>For an arbitrary set of PVs, it is difficult to add additional fields, like an overall alarm or timeStamp or a user extension, without confusion.</li>
+<li>Not so useful if you want your values in array (e.g. piping into other application)</li>
+<li>Unsuitable if collection of PVs will change</li>
+</ol>
+
+<h3>Composite (full structure)</h3>
+
+
+<p>Another possibility is to encode the all the fields of the PVs in a structure the names of whose fields are the names of the PVs. E.g. for such a <span class="nterm">composite</span> of a double PV D and an enum PV E the structure would be:</p>
+
+<pre>
+structure
+    structure D
+        double value
+        alarm_t alarm 
+        time_t timeStamp
+    structure E
+        enum_t value
+        alarm_t alarm 
+        time_t timeStamp
+</pre>
+
+<p>I've called such a structure  "<span class="nterm">composite (full structure)</span>".</p>
+
+<p>Advantages:</p>
+<ol>
+<li>Can get any field of any PV in group</li>
+<li>Easy to get value of any field of any PV by name</li>
+<li>Good if collection of PVs will not change</li>
+<li>Supports efficient monitoring</li>
+<li>Good for full (complex) control and status</li>
+</ol>
+
+<p>Disadvantages:</p>
+<ol>
+<li>More complicated structure (but can get subset of it using pvRequest)</li>
+<li>Difficult to add additional fields without confusion (like an overall alarm or timeStamp or a user extension)</li>
+<li>Not so useful if you want your values in array (e.g. piping values into other application)</li>
+<li>Unsuitable if collection of PVs will change</li>
+</ol>
+
+<h3>Group (values only)</h3>
+
+<p>The PVs can be encoded one level down in a structure subfield (value), allowing the collection of PVs to have their own timestamp, alarm, description etc. without confusion. I've called this arrangement "<span class="nterm">group</span>". So to collect the values of D and E together in a <span class="nterm">group</span> the structure would be:</p>
+
+<pre>
+structure
+    structure value
+        double D
+        enum_t E
+    alarm_t alarm      :opt
+    time_t timeStamp   :opt
+</pre>
+
+<p>Advantages:</p>
+<ol>
+<li>Relatively small, simple structure</li>
+<li>Easy to get any value by name</li>
+<li>Supports additional fields without confusion (like an overall alarm or timeStamp or a user extension)</li>
+<li>Good if collection of PVs will not change</li>
+<li>Supports efficient monitoring</li>
+<li>Good for (complex) control and status, providing additional fields not needed</li>
+</ol>
+
+<p>Disadvantages:</p>
+<ol>
+<li>Slightly more complex than <span class="nterm">composite</span></li>
+<li>Doesn't encode other fields from the PVs in the group (timeStamp, alarm etc.)</li>
+<li>Not so useful if you want your values in array (e.g. piping into other application)</li>
+<li>Unsuitable if collection of PVs will change</li>
+</ol>
+
+
+<h3>Group (full structure)</h3>
+
+<p>The <span class="nterm">group</span> arrangement could also be used with the full structure, as per <span class="nterm">composite</span></p>
+
+<pre>
+structure
+    structure value
+        structure D
+            double value
+            alarm_t alarm 
+            time_t timeStamp
+        structure E
+            enum_t value
+            alarm_t alarm 
+            time_t timeStamp
+    string descriptor  :opt
+    alarm_t alarm      :opt
+    time_t timeStamp   :opt
+</pre>
+
+<p>Advantages:</p>
+<ol>
+<li>Can get any field of any PV in group by name</li>
+<li>Easy to get value of any field of any PV</li>
+<li>Supports additional fields without confusion (like an overall alarm or timeStamp or a user extension)</li>
+<li>Good if collection of PVs will not change</li>
+<li>Supports efficient monitoring</li>
+<li>Good for full control and status</li>
+</ol>
+
+<p>Disadvantages:</p>
+<ol>
+<li>More complicated structure than both <span class="nterm">composite (full structure)</span> and <span class="nterm">group (values only)</span> (but can get subset of it using pvRequest)</li>
+<li>Not so useful if you want your values in array (e.g. piping values into other application)</li>
+<li>Unsuitable if collection of PVs will change</li>
+</ol>
+
+<h3>Composite or Group within Union</h3>
+
+<p>The above 4 structures can be place inside a union, e.g. if the group of PVs is likely to change.</p>
+
+<h3>Multichannel</h3>
+
+<p>An alternative to arranging things as structures is to use arrays. For example we can use NTMultiChannel</p>
+
+<pre>
+structure
+    anyunion_t[]  value             
+    string[]      channelName        
+    string        descriptor         :opt
+    alarm_t       alarm              :opt
+    time_t        timeStamp          :opt
+    int[]         severity           :opt
+    int[]         status             :opt
+    string[]      message            :opt
+    long[]        secondsPastEpoch   :opt
+    int[]         nanoseconds        :opt
+    int[]         userTag            :opt
+</pre>
+
+<p>Here anyunion_t[] can be a regular union array union[] for some appropriate choice of regular union or a variant union array("any[]").</p>
+
+<p>The simplest case would be just to store the values, along with the channel names. So for D and E encoded together in a typical value, assuming using a variant union, might look like this</p>
+
+<pre>
+epics:nt/NTMultiChannel:1.0 
+    any[] value
+        any 
+            double  2.71
+        any 
+            enum_t 
+                int index 0
+                string[] choices [Off,On]
+    string[] channelName [D,E]
+</pre>
+
+<p>The type can also encode time stamps, alarms for the group as well as for the individual PVs:</p>
+
+<pre>
+epics:nt/NTMultiChannel:1.0 
+    any[] value
+        any 
+            double  2.71
+        any 
+            enum_t 
+                int index 0
+                string[] choices [Off,On]
+    string[] channelName [D,E]
+    string descriptor 
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 1437393283
+        int nanoseconds 60995462
+        int userTag 0
+    int[] severity [1,2]
+    int[] status [3,3]
+    string[] message [HIGH_ALARM,STATE_ALARM]
+    long[] secondsPastEpoch [1437393283,1437393283]
+    int[] nanoseconds [60766804,60768106]
+    int[] userTag [0,0]
+</pre>
+
+<p>Advantages:</p>
+<ol>
+<li>Easy to get an array of values, although heterogeneous, (e.g. for piping into service)</li>
+<li>Supports additional fields without confusion (like an overall alarm or timeStamp or a user extension)</li>
+<li>Can encode timestamps, alarms of each PV</li>
+<li>Suitable if collection of PVs will change</li>
+<li>May be a good choice for returning from a service</li>
+</ol>
+
+<p>Disadvantages:</p>
+<ol>
+<li>Harder to get (fields of) individual PVs by name</li>
+<li>Harder to match values, time stamps or alarms associated with an individual PV</li>
+<li>Less useful if PVs have different fields (e.g. some have alarms and some don't)</li>
+<li>Does not support efficient monitoring</li>
+<li>Less useful for full (complex) control and status</li>
+</ol>
+
+<h3>Multichannel (full structure in value field)</h3>
+
+<p>It would also be possible to store the structures in NTMultiChannel. (It's not how the type was intended to be used, but for completeness ...). The structure would be</p>
+<pre>
+structure
+    anyunion_t[]  value              
+    string[]      channelName        
+    string        descriptor         :opt
+    alarm_t       alarm              :opt
+    time_t        timeStamp          :opt
+</pre>
+
+and a typical value might be
+
+<pre>
+epics:nt/NTMultiChannel:1.0 
+    any[] value
+        any 
+            epics:nt/NTScalar:1.0 
+                double value 2.71
+                alarm_t alarm
+                    int severity 1
+                    int status 3
+                    string message HIGH_ALARM
+                time_t timeStamp
+                    long secondsPastEpoch 1437393283
+                    int nanoseconds 60766804
+                    int userTag 0
+        any 
+            epics:nt/NTEnum:1.0 
+                enum_t value
+                    int index 0
+                    string[] choices [Off,On]
+                alarm_t alarm
+                    int severity 2
+                    int status 3
+                    string message STATE_ALARM
+                time_t timeStamp
+                    long secondsPastEpoch 1437393283
+                    int nanoseconds 60768106
+                    int userTag 0
+    string[] channelName [D,E]
+    string descriptor 
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 1437393283
+        int nanoseconds 61030887
+        int userTag 0
+</pre>
+
+<p>Advantages:</p>
+<ol>
+
+<li>Supports additional fields without confusion (like an overall alarm or timeStamp or a user extension)</li>
+<li>Can encode timestamps, alarms of each PV</li>
+<li>Suitable if collection of PVs will change</li>
+<li>Suitable if if PVs have different fields (e.g. some have alarms and some don't)</li>
+<li>Easier to match values, time stamps or alarms associated with an individual PV than the normal use of multichannel </li>
+</ol>
+
+<p>Disadvantages:</p>
+<ol>
+<li>Less suitable for getting array of values e.g. piping into service</li>
+<li>Harder to get (fields of) individual PVs by name</li>
+<li>Does not support efficient monitoring</li>
+<li>Less useful for full (complex) control and status</li>
+</ol>
+
+<h3>ScalarMultichannel</h3>
+
+<p>To package together multiple scalar values we could use an NTScalarMultiChannel:</p>
+
+<pre>
+structure
+    anyunion_t[]  value             
+    string[]      channelName        
+    string        descriptor         :opt
+    alarm_t       alarm              :opt
+    time_t        timeStamp          :opt
+    int[]         severity           :opt
+    int[]         status             :opt
+    string[]      message            :opt
+    long[]        secondsPastEpoch   :opt
+    int[]         nanoseconds        :opt
+    int[]         userTag            :opt
+</pre>
+
+<p>The simplest case would be just to store the values, along with the channel names. For double PVs D1 and for D2 a typical value might be</p>
+
+<pre>
+epics:nt/NTScalarMultiChannel:1.0 
+    double[] value [2.71,3.14]
+    string[] channelName [D1,D2]
+</pre>
+
+<p>The type can also encode time stamps, alarms for the group as well as for the individual PVs:</p>
+
+<pre>
+epics:nt/NTScalarMultiChannel:1.0 
+    double[] value [2.71,3.14]
+    string[] channelName [D1,D2]
+    string descriptor 
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 1437393283
+        int nanoseconds 61103269
+        int userTag 0
+    int[] severity [1,2]
+    int[] status [3,3]
+    string[] message [HIGH_ALARM,HIHI_ALARM]
+    long[] secondsPastEpoch [1437393283,1437393283]
+    int[] nanoseconds [60766804,60754272]
+    int[] userTag [0,0]
+</pre>
+
+<p>Advantages:</p>
+<ol>
+<li>Easy to get an array of values (e.g. for piping into service)</li>
+<li>Array is homogeneous </li>
+<li>Supports additional fields without confusion (like an overall alarm or timeStamp or a user extension)</li>
+<li>Can encode timestamps, alarms of each PV</li>
+<li>Suitable if collection of PVs will change</li>
+<li>May be a good choice for returning from a service</li>
+</ol>
+
+<p>Disadvantages:</p>
+<ol>
+<li>Not suitable for PVs of different types or non scalars</li>
+<li>Harder to get (fields of) individual PVs by name</li>
+<li>Harder to match values, time stamps or alarms associated with an individual PV</li>
+<li>Less useful if PVs have different fields (e.g. some have alarms and some don't)</li>
+<li>Does not support efficient monitoring</li>
+<li>Less useful for full (complex) control and status</li>
+</ol>
+
+<h3>Custom structure</h3>
+
+<p>A final possibility is that fields of a collection of PVs can be grouped into an arbitrary structure.</p>
+
+<p>Examples might include motor records or similar complex control PVs or hierarchical structures of PVs. (I understand some people like the idea of building a hierarchical structure server-side and others will hate the suggestion. This list is intended to be comprehensive.)</p>
+
+<h2>Conclusion</h2>
+
+<p>There are number of ways of packaging multiple PVs into a single structure. We wouldn't necessarily want to support all of these but there may be value in supporting more than one, such as a scalar array for getting a collection of PV values or a group or composite for complex control or efficient monitoring.</p>
+
+<p>This suggests careful separation of the presentation of a collection of a group of PVs in a structure from the management of that group of PVs.</p>
+
+<h2>Appendix: Example</h2>
+
+<p>Here is the output from getting examples of PVs employing the above structures:</p>
+
+<pre>
+[~]$ pvget -r "field()" D E CompositeValue CompositeStructure GroupValue GroupFull
+MultiValue MultiAll MultiStruct ScalarMultiValue ScalarMultiAll 
+
+D
+epics:nt/NTScalar:1.0 
+    double value 2.71
+    alarm_t alarm MINOR RECORD HIGH_ALARM
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+
+
+E
+epics:nt/NTEnum:1.0 
+    enum_t value Off
+    alarm_t alarm MAJOR RECORD STATE_ALARM
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+
+
+CompositeValue
+Composite_ValueStructure 
+    double D 2.71
+    enum_t E Off
+
+
+CompositeStructure
+Composite_FullStructure 
+    epics:nt/NTScalar:1.0 D
+        double value 2.71
+        alarm_t alarm MINOR RECORD HIGH_ALARM
+        time_t timeStamp 2015-07-20T13:00:23.124 0
+    epics:nt/NTEnum:1.0 E
+        enum_t value Off
+        alarm_t alarm MAJOR RECORD STATE_ALARM
+        time_t timeStamp 2015-07-20T13:00:23.124 0
+
+
+GroupValue
+Group_ValueStructure 
+    structure value
+        double D 2.71
+        enum_t E Off
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+
+
+GroupFull
+Group_ValueStructure 
+    Group_FullStructure value
+        epics:nt/NTScalar:1.0 D
+            double value 2.71
+            alarm_t alarm MINOR RECORD HIGH_ALARM
+            time_t timeStamp 2015-07-20T13:00:23.124 0
+        epics:nt/NTEnum:1.0 E
+            enum_t value Off
+            alarm_t alarm MAJOR RECORD STATE_ALARM
+            time_t timeStamp 2015-07-20T13:00:23.124 0
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+
+
+MultiValue
+epics:nt/NTMultiChannel:1.0 
+    any[] value
+        any 
+            double  2.71
+        any 
+            enum_t  Off
+    string[] channelName [D,E]
+    string descriptor 
+    alarm_t alarm NO_ALARM NO_STATUS &lt;no message&gt;
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+
+
+MultiAll
+epics:nt/NTMultiChannel:1.0 
+    any[] value
+        any 
+            double  2.71
+        any 
+            enum_t  Off
+    string[] channelName [D,E]
+    string descriptor 
+    alarm_t alarm NO_ALARM NO_STATUS &lt;no message&gt;
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+    int[] severity [1,2]
+    int[] status [3,3]
+    string[] message [HIGH_ALARM,STATE_ALARM]
+    long[] secondsPastEpoch [1437393623,1437393623]
+    int[] nanoseconds [123912002,123913343]
+    int[] userTag [0,0]
+
+
+MultiStruct
+epics:nt/NTMultiChannel:1.0 
+    any[] value
+        any 
+            epics:nt/NTScalar:1.0 
+                double value 2.71
+                alarm_t alarm MINOR RECORD HIGH_ALARM
+                time_t timeStamp 2015-07-20T13:00:23.124 0
+        any 
+            epics:nt/NTEnum:1.0 
+                enum_t value Off
+                alarm_t alarm MAJOR RECORD STATE_ALARM
+                time_t timeStamp 2015-07-20T13:00:23.124 0
+    string[] channelName [D,E]
+    string descriptor 
+    alarm_t alarm NO_ALARM NO_STATUS &lt;no message&gt;
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+
+
+ScalarMultiValue
+epics:nt/NTScalarMultiChannel:1.0 
+    double[] value [2.71,3.14]
+    string[] channelName [D1,D2]
+    string descriptor 
+    alarm_t alarm NO_ALARM NO_STATUS &lt;no message&gt;
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+
+
+ScalarMultiAll
+epics:nt/NTScalarMultiChannel:1.0 
+    double[] value [2.71,3.14]
+    string[] channelName [D1,D2]
+    string descriptor 
+    alarm_t alarm NO_ALARM NO_STATUS &lt;no message&gt;
+    time_t timeStamp 2015-07-20T13:00:23.124 0
+    int[] severity [1,2]
+    int[] status [3,3]
+    string[] message [HIGH_ALARM,HIHI_ALARM]
+    long[] secondsPastEpoch [1437393623,1437393623]
+    int[] nanoseconds [123912002,123895073]
+    int[] userTag [0,0]
+</pre>
+
+
+</div>
+
+</body>
+</html>
