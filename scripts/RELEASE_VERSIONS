@@ -7,7 +7,9 @@
 #
 # -----------------------------------------------------------------
 # Auth: Greg White, 15-Aug-2013
-# Mod:      
+# Mod:
+#      Dave Hickin, 28-Jan-2016
+#      Added block for 4.5.0.1-pre1 (C++ and Java).       
 #      Dave Hickin, 17-Oct-2015
 #      Added block for 4.5.0 C++. 
 #      Greg White, 16-Oct-2015
@@ -40,7 +42,19 @@
 # Ev4 Release name           Repo name        Tag/version
 # ------------------         ------------     --------------------
 
-# 4.5 Java
+# 4.5.0.1 Java
+EPICS-Java-4.5.0.1-pre1    pvDataJava         5.0.3
+EPICS-Java-4.5.0.1-pre1    normativeTypesJava 0.1.3
+EPICS-Java-4.5.0.1-pre1    pvAccessJava       4.1.3
+EPICS-Java-4.5.0.1-pre1    pvDatabaseJava     4.1.3
+EPICS-Java-4.5.0.1-pre1    caj                1.1.15
+EPICS-Java-4.5.0.1-pre1    jca                2.3.6
+EPICS-Java-4.5.0.1-pre1    pvaClientJava      4.1.4
+EPICS-Java-4.5.0.1-pre1    easyPVAJava        4.1.3
+EPICS-Java-4.5.0.1-pre1    directoryService   0.4.3
+EPICS-Java-4.5.0.1-pre1    exampleJava        4.0.6
+
+# 4.5.0 Java
 EPICS-Java-4.5.0           pvDataJava         5.0.2
 EPICS-Java-4.5.0           normativeTypesJava 0.1.2
 EPICS-Java-4.5.0           pvAccessJava       4.1.2
@@ -228,7 +242,7 @@ EPICS-CPP-4.4.0            pvaSrv            0.10.5
 EPICS-CPP-4.4.0            pvaPy             0.4.6
 EPICS-CPP-4.4.0            normativeTypesCPP 4.0.2
 
-# 4.5 CPP
+# 4.5.0 CPP
 EPICS-CPP-4.5.0-pre1        pvCommonCPP       4.1.0
 EPICS-CPP-4.5.0-pre1        pvDataCPP         5.0.0
 EPICS-CPP-4.5.0-pre1        normativeTypesCPP 5.0.0
@@ -258,3 +272,14 @@ EPICS-CPP-4.5.0             pvaSrv            0.11.2
 EPICS-CPP-4.5.0             pvDatabaseCPP     4.1.1
 EPICS-CPP-4.5.0             pvaPy             0.5.2
 EPICS-CPP-4.5.0             exampleCPP        4.1.1
+
+# 4.5.0.1 CPP
+EPICS-CPP-4.5.0.1-pre1      pvCommonCPP       4.1.1
+EPICS-CPP-4.5.0.1-pre1      pvDataCPP         5.0.3
+EPICS-CPP-4.5.0.1-pre1      normativeTypesCPP 5.0.2
+EPICS-CPP-4.5.0.1-pre1      pvAccessCPP       4.1.2
+EPICS-CPP-4.5.0.1-pre1      pvaClientCPP      4.1.2
+EPICS-CPP-4.5.0.1-pre1      pvaSrv            0.11.2
+EPICS-CPP-4.5.0.1-pre1      pvDatabaseCPP     4.1.1
+EPICS-CPP-4.5.0.1-pre1      pvaPy             0.5.2
+EPICS-CPP-4.5.0.1-pre1      exampleCPP        4.1.1
