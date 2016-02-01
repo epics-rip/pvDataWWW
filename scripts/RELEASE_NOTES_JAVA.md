@@ -1,3 +1,19 @@
+4.5.0.1 (2015/01/31)
+====================
+
+The main change since release 4.5.0 is:
+
+pvDataJava (5.0.3)
+------------------
+
+* Fixed buffer overflow in PVUnion.serialize() (issue #5)
+
+The versions of the other modules and their dependencies have been updated,
+but are otherwise unchanged.
+
+See individual RELEASE_NOTES.md in each module for more.
+
+
 4.5.0 (2015/10/16)
 ==================
 
