@@ -6,8 +6,12 @@ This README is a guide to the build of the C++ implementation of EPICS Version 4
 
 Status: This README is up-to-date with respect to release v4.5.0.1 of EPICS Version 4.
 
-Auth:   Dave Hickin, DLS
+Auth:  
+Dave Hickin, Diamond, 28-Oct-2015  
 
+Mod:  
+Dave Hickin, Diamond, 28-Jan-2016  
+Update for 4.5.0.1.  
 
 
 Prerequisites
