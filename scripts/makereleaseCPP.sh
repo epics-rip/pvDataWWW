@@ -33,13 +33,12 @@
 
 function usage { 
 echo "
-   makereleaseCPP.sh creates the tar file of the CPP modules of an EPICS V4
-   release, together with other relevant files.
-   Optionally, EPICS Base can be added.
+   makereleaseCPP.sh creates the tar file of the CPP modules, together with
+   other relevant files, of an EPICS V4 release. 
 
    Usage:
 
-       makereleaseCPP.sh -n <releaseName> [-f ] [-V] [-b <base-release>]
+       makereleaseCPP.sh -n <releaseName> [-f ] [-V] 
 
        -n <releaseName>      The string identifying the release. This is the
                              key used to search RELEASE_VERSIONS to find the
@@ -56,25 +55,24 @@ echo "
        -f                    Removes any files left from running the script
                              previously.
 
-       -b <base-release>     Add the specified release of EPICS Base
-
    Examples:
 
          $ makereleaseCPP.sh -V -n EPICS-CPP-4.3.0-pre1
 
        In this example, makereleaseCPP.sh packages a tar for a release named
        EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file in the 
-       copy of pvDataWWW that conains the script which is executed.
-       It will export the files from their GitHub repositories and add them to
-       a tar file along with the copy of README found in the pvDataWWW module.
+       copy of pvDataWWW which contains the version of this script which has
+       been executed.
+       It will first clone the files it finds in the mercurial repo and
+       package them into a tar file along with the copy of README found in the
+       copy of pvDataWWW
 
-         $ makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre1 -b 3.15.2
+         $ makereleaseCPP.sh -n EPICS-CPP-4.3.0-pre1
 
        This time makereleaseCPP.sh packages a tar for the release
        EPICS-CPP-4.3.0-pre1, as specified in the RELEASE_VERSIONS file it 
-       finds on the web (URL in source of this script).
-       Again it exports the modules and adds the README from pvDataWWW, adding
-       EPICS Base 3.15.2 (taken from its download page) to the bundle.
+       finds on the web (see URL in source of this script).
+       Again it clones the files and adds the README from the web.
 
 "
 }
@@ -87,14 +85,13 @@ releaseName=
 localreleaseinfo=0
 force=0
 
-while getopts hfu:Vn:b: opt; do
+while getopts hfu:Vn: opt; do
    case "$opt" in
        h) usage; Exit 0 ;;
        f) force=1 ;;
        V) localreleaseinfo=1 ;;
        n) releaseName=${OPTARG} ;; 
        o) outdir="${OPTARG}" ;;
-       b) base=${OPTARG} ;;
        *) echo "Unknown Argument, see makereleaseCPP.sh -h"; Exit 1;;
    esac
 done
@@ -136,14 +133,6 @@ https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/CONFIG_SIT
 RELEASE_LOCAL_URL=\
 https://raw.githubusercontent.com/epics-base/pvDataWWW/master/scripts/RELEASE.local
 
-# EPICS Base download
-case "${base}" in
-   3.14*) sep="R" ;;
-   *) sep="-" ;;
-esac
-BASE_URL=\
-http://www.aps.anl.gov/epics/download/base/base${sep}${base}.tar.gz
-
 file=$0
 scriptdir=$( readlink -f "$( dirname "${file}" )" )
 
@@ -166,7 +155,7 @@ install -d "${workdir}/tar"
 install -d "${workdir}/links"
 install -d "${workdir}/download" && cd "${workdir}/download"
 
-tarfile="${releaseName}${base:++b${base}}.tar.gz"
+tarfile="${releaseName}.tar.gz"
 
 
 # Check the directory whose contents we'll tar doesn't already exist
@@ -386,10 +375,6 @@ do
     ln -s ../${modulei}/${tag} ${workdir}/links/${modulei}
 done
 
-# Add EPICS Base if requested
-if [ -n "${base}" ]; then
-    curl $BASE_URL | tar -C "${workdir}/tar" -xz
-fi
 
 # Add RELEASE_NOTES, README, Makefile and configure.sh to the bundle
 echo Adding RELEASE_VERSIONS, README, Makefile and configure.sh
