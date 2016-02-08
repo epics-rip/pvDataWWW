@@ -1,6 +1,6 @@
 default: base helloWorld
 
-base : pvCommon pvData nt pvAccess pvaSrv pvDatabase pvaClient
+base : $(firstword $(wildcard base*)) pvCommon pvData nt pvAccess pvaSrv pvDatabase pvaClient
 
 all : default archSrv pvaPy
 
@@ -33,6 +33,9 @@ archSrv : FORCE
 
 pvaPy : FORCE
 	make -C pvaPy
+
+base%: FORCE
+	make -C $@
 
 clean : 
 	make -C pvCommonCPP clean
