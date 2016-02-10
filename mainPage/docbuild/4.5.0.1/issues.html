@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;" />
   <meta name="keywords" content="EPICS, EPICSv4" />
-  <title>EPICS V4 Release 4.4.0 Known Issues</title>
+  <title>EPICS V4 Release 4.5.0.1 Known Issues</title>
   <link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css" href="../../epicsv4.css" />
 
@@ -14,18 +14,19 @@
 
 <body>
 <div class="head">
-  <h1>EPICS V4 Release 4.4.0</h1>
+  <h1>EPICS V4 Release 4.5.0.1</h1>
 
-  <h2 class="nocount">Known Issues in EPICS V4 Release 4.4.0</h2>
+  <h2 class="nocount">Known Issues in EPICS V4 Release 4.5.0.1</h2>
 
   <dl>
     <dt>Editors:</dt>
       <dd>Andrew Johnson, Argonne</dd>
+      <dd>Dave Hickin, Diamond</dd>
   </dl>
 
   <h2 class="nocount">Abstract</h2>
 
-  <p>This document describes known issues relating to version 4.4.0 of the EPICS
+  <p>This document describes known issues relating to version 4.5.0.1 of the EPICS
     V4 packages, both Java and C++ implementations.</p>
 
   <!-- Boilerplate references -->
@@ -57,7 +58,7 @@
     <a href="moduleCPP-n.patch">patch file</a>.</li>
   -->
 
-  <li><!-- Remove this list item when adding the first issue. -->
+  <li><!-- Remove this when adding the first issue. -->
     No issues published yet.</li>
 
 </ul>
@@ -73,13 +74,14 @@
     <a href="moduleJava-n.patch">patch file</a>.</li>
   -->
 
-  <li><!-- Remove this list item when adding the first issue. -->
+  <li><!-- Remove this when adding the first issue. -->
     No issues published yet.</li>
 
 </ul>
 
+<!-- Uncomment this and change _h2 to h2 when adding the first patch.
 
-<h2>Applying patches</h2>
+<_h2>Applying patches</_h2>
 
 <p>Any patch files linked from above should be downloaded and applied to the
   specific module for which they were created, using the GNU Patch program like
@@ -94,9 +96,11 @@ $ patch -p1 &lt; /path/to/file.patch
   program that we use generates patches with one leading directory in the file
   path-names that must be discarded by patch.</p>
 
+-->
+
 </div> <!-- contents -->
 
 <hr />
-<address>Contact author: Andrew Johnson, Argonne</address>
+<address>Contact authors: Andrew Johnson, Argonne; Dave Hickin, Diamond.</address>
 </body>
 </html>

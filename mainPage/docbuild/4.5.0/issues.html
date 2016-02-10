@@ -25,7 +25,7 @@
 
   <h2 class="nocount">Abstract</h2>
 
-  <p>This document describes known issues ralating to version 4.5.0 of the EPICS
+  <p>This document describes known issues relating to version 4.5.0 of the EPICS
     V4 packages, both Java and C++ implementations.</p>
 
   <!-- Boilerplate references -->
@@ -59,8 +59,12 @@
 
   <li><b>2015-10-29: pvaClientCPP</b><br />
     Static builds of this module will fail to link unless
-    <a href="pvaClientCPP-1.patch">this patch</a> is applied.</li>
+    <a href="pvaClientCPP-1.patch">this patch</a> is applied.
+    Fixed in <a href="../4.5.0.1/index.html">version 4.5.0.1.</a></li>
 
+  <li><b>2016-02-08: pvDataCPP</b><br />
+    Buffer overflow serializing null variant union (<a href="https://github.com/epics-base/pvDataCPP/issues/20">Issue #20</a>).
+    Fixed in <a href="../4.5.0.1/index.html">version 4.5.0.1.</a></li>
 </ul>
 
 
@@ -74,8 +78,10 @@
     <a href="moduleJava-n.patch">patch file</a>.</li>
   -->
 
-  <li><!-- Remove this when adding the first issue. -->
-    No issues published yet.</li>
+  <li><b>2016-02-08: pvDataJava</b><br />
+    Buffer overflow serializing null variant union (<a href="https://github.com/epics-base/pvDataJava/issues/5">Issue #5</a>).
+    Fixed in <a href="../4.5.0.1/index.html">version 4.5.0.1</a>.</li>
+</ul>
 
 </ul>
 
