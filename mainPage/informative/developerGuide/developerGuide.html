@@ -37,20 +37,26 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 25-Aug-2015</h2>
-
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 10-Feb-2016</h2>
+<p>
+<b>NOTE: If you are using EPICS V4 Release 4.5 then look at the previous version.</b>
+</p>
+<p>
+This version will be for EPICS V4 Release 4.6.
+It is currently under development.
+</p>
   <dl>
     <dt>Latest version:</dt>
-    <dd><a
-      href="developerGuide.html">developerGuide.html</a>
+    <dd>
+      <a href="developerGuide.html">developerGuide.html</a>
     </dd>
     <dt>This version:</dt>
-    <dd><a
-      href="developerGuide_20150825.html">developerGuide_20150825.html</a>
+    <dd>
+       Under Development.
     </dd>
     <dt>Previous version:</dt>
-    <dd><a
-      href="developerGuide_20150519.html">developerGuide_20150519.html</a>
+    <dd>
+       <a href="developerGuide_20150825.html">developerGuide_V4Release4_5.html</a>
     </dd>
 
     <dt>Editors:</dt>
@@ -71,8 +77,8 @@ related set of products:<br />
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 25-Aug-2015 version of the Developer's Guide.
-It is for EPICS V4 Release 4.5.
+<p>This is the 10-Feb-2016 version of the Developer's Guide.
+It is for EPICS V4 Release 4.6.
 </p>
 
 
@@ -119,6 +125,10 @@ V4 includes the following core components:
       <dd>
        A pvAccess server for EPICS V3 DBRecords.
       </dd>
+   <dt>example</dt>
+       <dd>
+       A set of examples that use all of the above components.
+       </dd>
     <dt>pvaPy</dt>
        <dd>
        Python wrapper for pvData and pvAccess.
@@ -417,6 +427,26 @@ The following should be consulted for detailed documentation:</p>
     href="http://epics-pvdata.sourceforge.net/docbuild/pvDatabaseCPP/tip/documentation/pvDatabaseCPP.html">
     pvDatabaseCPP</a>
     </li>
+    <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/exampleJava/tip/documentation/exampleJava.html">
+    exampleJava</a>
+    </li>
+   <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/exampleCPP/tip/documentation/exampleCPP.html">
+    exampleCPP</a>
+    </li>
+    <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvaSrv/tip/documentation/pvaSrv.html">
+    pvaSrv</a>
+    </li>
+    <li>
+    <a target="_top"
+    href="http://epics-pvdata.sourceforge.net/docbuild/pvaPy/tip/documentation/pvaPy.html">
+    pvaPy</a>
+    </li>
   
 </ul>
 <p>In addition a standard for normativeTypes exists:</p>
@@ -429,34 +459,38 @@ The following should be consulted for detailed documentation:</p>
 <dl>
    <dt>pvData</dt>
       <dd>
-       Release 4.5 has a complete implementation for both Java and C++.
+       EPICS V4 Release 4.6 has a complete implementation for both Java and C++.
       </dd>
    <dt>normativeTypes</dt>
       <dd>
-       Release 4.5 has C++ and Java helper classes for many, but not all, of the normative types.
+       EPICS V4 Release 4.6 has C++ and Java helper classes for many, but not all, of the normative types.
       </dd>
    <dt>pvAccess</dt>
       <dd>
-       Release 4.5 has a complete implementation for both C++ and Java.
+       EPICS V4 Release 4.6 has a complete implementation for both C++ and Java.
       </dd>
    <dt>pvaClient</dt>
       <dd>
-       Release 4.5 has an implementation for both Java and CPP
+       EPICS V4 Release 4.6 has an implementation for both Java and CPP
        However, getField and channelArray are not implemented.
       </dd>
    <dt>pvDatabase</dt>
       <dd>
-       Release 4.4 has an implementation for both C++ and Java.
+       EPICS V4 Release 4.6  has an implementation for both C++ and Java.
        For C++ the pvDatabase can run as part of a V3 IOC.
+      </dd>
+   <dt>example</dt>
+      <dd>
+      EPICS V4 Release 4.6 has an implementation for both C++ and Java.
       </dd>
    <dt>pvaSrv</dt>
       <dd>
-       Release 4.4 has an implementation for C++.
+       EPICS V4 Release 4.6  has an implementation for C++.
        Since this is for iocCore a Java implementation is not necessary.
       </dd>
     <dt>pvaPy</dt>
        <dd>
-       Release 4.4 has an implementation for C++.
+       EPICS V4 Release 4.6  has an implementation for C++.
        Since this is for Python a Java implementation is not necessary.
        </dd>
 </dl>
@@ -496,7 +530,7 @@ examples:
 For example:</p>
 <pre>
 pvlist
-GUID 0x3989545500000000B14EFE12, version 1: tcp@[10.0.0.11:36448]
+GUID 0x7F06B2560000000047B97D25, version 1: tcp@[192.168.124.1:45345, 10.0.0.37:45345]
 </pre>
 <p>This only shows one line because only the exampleDatabase server is running.
 In an operational system the output could be quite extensive.</p>
@@ -505,20 +539,16 @@ Once the location of a server is known the list of channel names can be shown by
 the GUID or tcp address.
 Thus either:</p>
 <pre>
-pvlist 0x3989545500000000B14EFE12
+pvlist 0x7F06B2560000000047B97D25
 </pre>
 or
 <pre>
-pvlist 10.0.0.11:36448
+pvlist 10.0.0.37:45345
 </pre>
 produces:
 <pre>
-ao01
-double00
-double01
-bo00
-bo01
-calc00
+DBRao01
+DBRdouble00
 ...
 </pre>
 
@@ -526,9 +556,9 @@ calc00
 <p>pvget provides functionality similar to caget.
 For example:</p>
 <pre>
-mrk&gt; caget double01
+mrk&gt; caget DBRdouble01
 double01                       0
-mrk&gt; pvget double01
+mrk&gt; pvget DBRdouble01
 double01                       0
 </pre>
 <p>The options are:</p>
@@ -557,9 +587,9 @@ example: pvget double01
 </pre>
 <p>Some examples are:</p>
 <pre>
-mrk&gt; pvget enum01
-enum01                         zero
-mrk&gt; pvget -i enum01
+mrk&gt; pvget PVRenum01
+PVRenum01                         zero
+mrk&gt; pvget -i PVRenum01
 enum01
 epics:nt/NTEnum:1.0 
     enum_t value
@@ -568,7 +598,7 @@ epics:nt/NTEnum:1.0
 
 
 mrk&gt; pvget -i -r "value,alarm,timeStamp" enum01
-enum01
+PVRenum01
 epics:nt/NTEnum:1.0 
     enum_t value
         int index 0
@@ -584,9 +614,9 @@ epics:nt/NTEnum:1.0
 </pre>
 <p>Multiple channels can be accessed witn a single command. For example:</p>
 <pre>
-mrk&gt; pvget double01 double02
-double01                       0
-double02                       0
+mrk&gt; pvget PVRdouble01 PVRdouble02
+PVRdouble01                       0
+PVRdouble02                       0
 </pre>
 <p>The above examples all used the pva server, i. e. the pvAccess server for network
 communication.
@@ -594,10 +624,10 @@ It is also possible to use ca, i. e. the channel access server that comes with i
 Thus it can access a V3 IOC even if the IOC has no V4 support.
 </p>
 <pre>
-mrk&gt; pvget -p ca double01
-double01                       0
-mrk&gt; pvget -p ca -r "value,alarm,timeStamp" double01
-double01
+mrk&gt; pvget -p ca DBRdouble01
+DBRdouble01                       0
+mrk&gt; pvget -p ca -r "value,alarm,timeStamp" DBRdouble01
+DBRdouble01
 epics:nt/NTScalar:1.0 
     double value 0
     alarm_t alarm INVALID RECORD UDF_ALARM
@@ -605,15 +635,15 @@ epics:nt/NTScalar:1.0
 </pre>
 <p>pvget can also be used to monitor, i. e. it has functionality similer to camonitor.</p>
 <pre>
-mrk&gt; pvget -m -r "value,alarm,timeStamp" double02
-'double02
+mrk&gt; pvget -m -r "value,alarm,timeStamp" PVRdouble02
+PVRdouble02
 epics:nt/NTScalar:1.0 
     double value 0
     alarm_t alarm INVALID NO_STATUS UDF
     time_t timeStamp &lt;undefine&gt;> 0
 
 
-double02
+PVRdouble02
 epics:nt/NTScalar:1.0 
     double value 1
     alarm_t alarm NO_ALARM NO_STATUS NO_ALARM
@@ -624,12 +654,12 @@ epics:nt/NTScalar:1.0
 <p>pvput provides functionality similar to caput.
 For example:</p>
 <pre>
-mrk&gt; caput double01 1.0
-Old : double01                       1
-New : double01                       1
-mrk&gt; pvput double01 1.0
-Old : double01                       1
-New : double01                       1
+mrk&gt; caput DBRdouble01 1.0
+Old : DBRdouble01                       1
+New : DBRdouble01                       1
+mrk&gt; pvput DBRdouble01 1.0
+Old : DBRdouble01                       1
+New : DBRdouble01                       1
 </pre>
 <p>The options are:</p>
 <pre>
@@ -708,32 +738,38 @@ examples:
 
 <h2>example code</h2>
 
-<p>All of the following have examples that can be used while learning what is described in this document.</p>
-<dl>
-   <dt>pvaClientJava</dt>
-      <dd>Example client code using the API for pvaClient</dd>
-   <dt>pvaClientCPP</dt>
-      <dd>Example client code using the API for pvaClient</dd>
-   <dt>pvDatabaseJava</dt>
-      <dd>Example server code implemented via PVRecords.</dd>
-   <dt>pvDatabaseCPP</dt>
-      <dd>Example server code implemented via PVRecords.
-       In addition it shows how to have PVRecords and V3 Records both running as part
-       of a V3 IOC.
-       It also shows how to start pvaSrv so that both <b>ca</b> and <b>pva</b> can be used
-       to access the V3 records.
-      </dd>
-   <dt>pvaPy</dt>
-      <dd>Example python code</dd>
-</dl>
-<p>Examples for <b>pvaClientJava</b>, <b>pvaClientCPP</b>, and <b>pvaPy</b> require that the database in <b>pvaClientTestCPP</b>
-is started.
+<p><b>exampleCPP</b> and <b>exampleJava</b> both have examples that use code from all modules
+described in this document except for <b>pvaPv</b>.
+In particuar they both have examples <b>database</b> and <b>exampleClient</b>.
+These examples that can be used while learning what is described in this document.
+</p>
+<p><b>database</b> provides example server code implemented via PVRecords.
 </p>
 <p>
-In linux it can be started as follows:</p>
+In addition <b>exampleCPP/database</b>
+shows how to have PVRecords and V3 Records both running as part of a V3 IOC.
+It also shows how to start pvaSrv so that both <b>ca</b> and <b>pva</b> can be used
+to access the V3 records.
+</p>
+<p><b>exampleClient</b> has example client code using the API for pvaClient.
+</p>
+
+
+<p>Examples for <b>exampleJava/exampleClient</b>, <b>exampleCPP/exampleClient</b>, and <b>pvaPy</b> require that the database in <b>exampleCPP/exampleClient</b> 
+or <b>exampleJava/exampleClient</b> 
+is started.
+If exampleCPP is used the exampleDatabase can be started either as a main
+program or as part of a V3 IOC.
+If started as part of a V3 IOC, it also has V3 records and starts <b>pvaSrv</b>.
+If started as a main program the result is the same as starting <b>exampleJava/database</b>
+All the V4 PVRecords have the prefix <b>PVR</b> and all the V3 DBRecords have the prefix
+<b>DBR</b>.
+</p>
+<p>
+In linux <b>exampleCPP/database</b> can be started as follows:</p>
 <pre>
 mrk&gt; pwd
-/home/epicsv4/pvaClientTestCPP/database/iocBoot/exampleDatabase
+/home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
 mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
 <p>The example database has both V3 IOC records and V4 PVRecords.
@@ -741,86 +777,45 @@ In addition <b>pvaSrv</b> is running. Thus all V3 records are available via eith
 The PVRecords are only available via <b>pva</b>.
 Examples of using ca and pva command line tools are:</p>
 <pre>
-mrk&gt; pvlist 0x2298D455000000001236320D
-ao01
-double00
+mrk&gt; pvlist 
+GUID 0x7F06B2560000000047B97D25, version 1: tcp@[10.0.0.37:45345, 192.168.124.1:45345]
+mrk&gt; pvlist 0x7F06B2560000000047B97D25
+DBRao01
+DBRdouble00
 .... many more records
-mrk&gt; pvget long01
-long01                         0
-mrk&gt; caget long01
-Channel connect timed out: 'long01' not found.
-mrk&gt; caget double01
-double01                       0
-mrk&gt; pvget double01
-double01                       0
-mrk&gt; caget ushort01
-Channel connect timed out: 'ushort01' not found.
-mrk&gt; pvget ushort01
-ushort01                       0
+mrk&gt; pvget PVRlong
+Channel connect timed out: 'PVRlong' not found.
+PVRlong                        0
+mrk&gt; caget PVRlong
+mrk&gt; caget DBRdouble01
+DBRdouble01                       0
+mrk&gt; pvget DBRdouble01
+DBRdouble01                       0
+mrk&gt; caget PVRushort01
+Channel connect timed out: 'PVRushort01' not found.
+mrk&gt; pvget PVRushort01
+PVRushort01                       0
 mrk&gt; 
 </pre>
-<p>The examples in <b>pvaClientCPP</b> and <b>pvaClientJava</b> can now be run.
+<p>The examples in <b>exampleCPP/exampleClient</b> and <b>exampleJava/exampleClient</b> can now be run.
 For example:</p>
 <pre>
 mrk&gt; pwd
-/home/epicsv4/pvaClientCPP/example
+/home/epicsv4/master/exampleCPP/exampleClient
 mrk&gt; ls bin/linux-x86_64/
 examplePvaClientGet          examplePvaClientNTMulti  helloWorldPutGet
 examplePvaClientMonitor      examplePvaClientProcess  helloWorldRPC
 examplePvaClientMultiDouble  examplePvaClientPut
-mrk&gt; bin/linux-x86_64/examplePvaClientGet
-example double scalar
-short way
-as double 0
-long way
-as double 0
-example double array
-short way
-as doubleArray {0}[]
-long way
-as doubleArray {0}[]
-example powerSupply
-short way
-structure 
-    alarm_t alarm
-        int severity 0
-        int status 0
-        string message 
-    time_t timeStamp
-        long secondsPastEpoch 0
-        int nanoseconds 0
-        int userTag 0
-    structure power
-        double value 0
-        alarm_t alarm
-            int severity 0
-            int status 0
-            string message 
-    structure voltage
-        double value 0
-        alarm_t alarm
-            int severity 0
-            int status 0
-            string message 
-    structure current
-        double value 0
-        alarm_t alarm
-            int severity 0
-            int status 0
-            string message 
 
-example double scalar
+mrk&gt; bin/linux-x86_64/examplePvaClientGet
+_____examplePvaClientGet starting_______
+__exampleDouble__
 short way
 as double 0
 long way
 as double 0
-example double array
-short way
-as doubleArray {0}[]
-long way
-as doubleArray {0}[]
-done
-mrk&gt; 
+... LOTS MORE OUTPUT
+
 </pre>
 <p>An example of running the examples in pvaPy is:</p>
 <pre>
@@ -934,9 +929,6 @@ In the examples <b>alarm_t</b>, <b>time_t</b>, and <b>enum_t</b>
 are used as type names.
 All have type <b>structure</b>.
 They are examples of special fields described later.
-The core part of pvData and pvAccess,
-which are discussed before section <b>interlude</b>
-treat them as type <b>structure</b>.
 </p>
 <p>The following is a top level structure that has three sub-fields:</p>
 <dl>
@@ -1103,10 +1095,11 @@ Field
             Union getUnion()
 
      Structure
+         size_t getNumberFields()
          Field getField(string fieldName)
+         Field getField(size_t fieldIndex)
          size_t getFieldIndex(string fieldName)
          Field[] getFields()
-         Field getField(size_t fieldIndex)
          string[] getFieldNames()
          string getFieldName(size_t fieldIndex)
 </pre>
@@ -1260,6 +1253,10 @@ element of the field array.</p>
 <h4>Structure</h4>
 <p>This is the API for type structure. It has the methods:</p>
 <dl>
+   <dt>getNumberFields</dt>
+     <dd>Get the number of immediate sub-field in the structure.
+     -1 is returned if the structure does not have any fields.
+     </dd>
    <dt>Field getField(string fieldName)</dt>
      <dd>
      Get the subField with the specified name.
@@ -1291,28 +1288,13 @@ element of the field array.</p>
 </dl>
 
 <h3>Introspection Factory</h3>
-<p>FieldCreate is a factory for creating introspection objects.</p>
-<pre>
-FieldCreate
-    FieldBuilder createFieldBuilder()
-    Scalar createScalar(ScalarType scalarType)
-    BoundedString createBoundedString(size_t maxLength)
-    ScalarArray createScalarArray(ScalarType elementType)
-    ScalarArray createFixedScalarArray(ScalarType elementType, size_t size)
-    ScalarArray createBoundedScalarArray(ScalarType elementType, size_t bound)
-    StructureArray createStructureArray(Structure elementStructure)
-    UnionArray createUnionArray(Union elementUnion)
-    UnionArray createVariantUnionArray()
-    Structure createStructure() //Java does not implement
-    Structure createStructure(string[] fieldNames, Field[] fields)
-    Structure createStructure(string id, string[] fieldNames, Field[] fields)
-    Structure appendField(Structure structure,string fieldName, Field field)
-    Structure appendFields(Structure structure,string[] fieldNames, Field[] fields)
-    Structure createStructure(Structure structToClone) // CPP does not implement
-    Union createVariantUnion()
-    Union createUnion(string[] fieldNames, Field[] fields)
-    Union createUnion(string id, string[] fieldNames, Field[] fields)
-</pre>
+<p>FieldBuilder is the easiest way to create introspection objects.
+It calls methods in <b>FieldCreate</b>.
+</p>
+<p>
+<b>NOTE:</b> Unless there is a compelling need then You should always use FieldBuilder
+rather then calling methods in FieldCreate.
+</p>
 <pre>
 FieldBuilder
     FieldBuilder setId(string id)
@@ -1331,85 +1313,30 @@ FieldBuilder
     FieldBuilder addNestedUnionArray(string name)
     FieldBuilder endNested()
 </pre>
-<h4>FieldCreate</h4>
-<p>The methods are:</p>
-<dl>
-    <dt>FieldBuilder createFieldBuilder()</dt>
-      <dd>
-       Create a FieldBuilder which is described below.
-      </dd>
-    <dt>Scalar createScalar(ScalarType scalarType)</dt>
-      <dd>
-       Create a Scalar of the specified type.
-      </dd>
-    <dt>BoundedString createBoundedString(size_t maxLength)</dt>
-      <dd>
-        Create a BoundedString, which is a Scalar with ScalarType pvString and that has a bounded size.
-      </dd>
-    <dt>ScalarArray createScalarArray(ScalarType elementType)</dt>
-      <dd>
-       Create a ScalarArray that has elements of the specified ScalarType.
-      </dd>
-    <dt>ScalarArray createFixedScalarArray(ScalarType elementType, size_t size)</dt>
-      <dd>
-       Create a ScalarArray of the specified ScalarType and that will have the specified fixed size.
-      </dd>
-    <dt>ScalarArray createBoundedScalarArray(ScalarType elementType, size_t bound)</dt>
-      <dd>
-       Create a ScalarArray of the specified ScalarType and that will have the specified maximum size.
-      </dd>
-    <dt>StructureArray createStructureArray(Structure elementStructure)</dt>
-      <dd>
-       Create a StructureArray where each element will have the specified introspection interface.
-      </dd>
-    <dt>UnionArray createUnionArray(Union elementUnion)</dt>
-      <dd>
-       Create a UnionArray where each element will have the specified introspection interface.
-      </dd>
-    <dt>UnionArray createVariantUnionArray()</dt>
-      <dd>
-       Create a UnionArray where each element can have any valid type.
-      </dd>
-    <dt>Structure createStructure() //Java does not implement</dt>
-      <dd>
-       Create a Structure with no subFields.
-      </dd>
-    <dt>Structure createStructure(string[] fieldNames, Field[] fields)</dt>
-      <dd>
-       Create a Structure with the specified set of fieldNames and fields.
-       The length of the two arrays must be the same.
-      </dd>
-    <dt>Structure createStructure(string id, string[] fieldNames, Field[] fields)</dt>
-      <dd>
-       Create a Structure with the specified set of fieldNames and fields.
-       The length of the two arrays must be the same.
-        The Structure will have the ID specfied.
-      </dd>
-    <dt>Structure appendField(Structure structure,string fieldName, Field field)</dt>
-      <dd>
-        Create a new Structure that is the old structure with an appended subField.
-      </dd>
-    <dt>Structure appendFields(Structure structure,string[] fieldNames, Field[] fields)</dt>
-      <dd>
-        Create a new Structure that is the old structure with appended subFields.
-      </dd>
-    <dt>Structure createStructure(Structure structToClone) // CPP does not implement</dt>
-      <dd>
-        Create a new Structure that is a clone of an existing structure.
-      </dd>
-    <dt>Union createVariantUnion()</dt>
-      <dd>
-       Create a variant Union.
-      </dd>
-    <dt>Union createUnion(string[] fieldNames, Field[] fields)</dt>
-      <dd>
-        Create an restricted Union that can have a subField with an type specified by fields.
-      </dd>
-    <dt>Union createUnion(string id, string[] fieldNames, Field[] fields)</dt>
-      <dd>
-      Like the previous method but with the ID specified.
-      </dd>
-</dl>
+<p>FieldCreate is a factory for creating introspection objects.</p>
+<pre>
+FieldCreate
+    static FieldBuilder createFieldBuilder()
+    Scalar createScalar(ScalarType scalarType)
+    BoundedString createBoundedString(size_t maxLength)
+    ScalarArray createScalarArray(ScalarType elementType)
+    ScalarArray createFixedScalarArray(ScalarType elementType, size_t size)
+    ScalarArray createBoundedScalarArray(ScalarType elementType, size_t bound)
+    Structure createStructure() //Java does not implement
+    Structure createStructure(Structure structToClone) // CPP does not implement
+    Structure createStructure(string[] fieldNames, Field[] fields)
+    Structure createStructure(string id, string[] fieldNames, Field[] fields)
+    StructureArray createStructureArray(Structure elementStructure)
+    Union createVariantUnion()
+    Union createUnion(string[] fieldNames, Field[] fields)
+    Union createUnion(string id, string[] fieldNames, Field[] fields)
+    UnionArray createUnionArray(Union elementUnion)
+    UnionArray createVariantUnionArray()
+    Structure appendField(Structure structure,string fieldName, Field field)
+    Structure appendFields(Structure structure,string[] fieldNames, Field[] fields)
+</pre>
+
+
 <h4>FieldBuilder</h4>
 <p>This is an easier way to create introspection interfaces.
 A single instance can be used to create multiple introspection interfaces because
@@ -1481,576 +1408,86 @@ The methods are:</p>
         End of the current nested Structure, Union, StructureArray, or UnionArray.
        </dd>
 </dl>
-<h3>Java Introspection Basic Examples</h3>
-<p>The first example creates a Structure with a single subField:</p>
-<pre>
-String[] fieldName = new String[1];
-Field[] field = new Field[1];
-fieldName[0] = "value";
-field[0] = fieldCreate.createScalar(ScalarType.pvDouble);
-Structure structure = fieldCreate.createStructure(fieldName, field);
-System.out.println(structure);
-</pre>
-<p>This produces:</p>
-<pre>
-structure
-    double value
-</pre>
-<p>Using FieldBuilder the code is:</p>
-<pre>
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure structure = 
-    fb.add("value", ScalarType.pvDouble).
-    createStructure();
-System.out.println(structure);
-</pre>
-<p>The output is again:</p>
-<pre>
-structure
-    double value
-</pre>
-<p>The next example shows how to create a structure
-that has three field: a value field that is a scalarArray with
-element type double, an alarm structure, and a timeStamp structure.
-Later examples show that fieldBuilder and standard fields make it much easier to
-create complex structures.
-</p>
-<pre>
-String[] fieldName = new String[3];
-Field[] field = new Field[3];
-fieldName[0] ="severity";
-fieldName[1] ="status";
-fieldName[2] ="message";
-field[0] = fieldCreate.createScalar(ScalarType.pvInt);
-field[1] = fieldCreate.createScalar(ScalarType.pvInt);
-field[2] = fieldCreate.createScalar(ScalarType.pvString);
-Structure alarm = fieldCreate.createStructure(fieldName, field);
-fieldName = new String[3];
-field = new Field[3];
-fieldName[0] = "secondsPastEpoch";
-fieldName[1] = "nanoseconds";
-fieldName[2] = "userTag";
-field[0] = fieldCreate.createScalar(ScalarType.pvLong);
-field[1] = fieldCreate.createScalar(ScalarType.pvInt);
-field[2] = fieldCreate.createScalar(ScalarType.pvInt);
-Structure timeStamp = fieldCreate.createStructure(fieldName, field);
-fieldName = new String[3];
-field = new Field[3];
-fieldName[0] = "value";
-fieldName[1] = "alarm";
-fieldName[2] = "timeStamp";
-field[0] = fieldCreate.createScalarArray(ScalarType.pvDouble);
-field[1] = alarm;
-field[2] = timeStamp;
-Structure structure = fieldCreate.createStructure(fieldName, field);
-System.out.println(structure);
-</pre>
-This produces:
-<pre>
-structure
-    double[] value
-    structure alarm
-        int severity
-        int status
-        string message
-    structure timeStamp
-        long secondsPastEpoch
-        int nanoseconds
-        int userTag
-</pre>
-<p>The section after next shows the same example using FieldBuilder.</p>
-
-<h3>C++ Introspection Basic Examples</h3>
-<p>The first example creates a Structure with a single subField:</p>
-<pre>
-StringArray fieldName(1);
-FieldConstPtrArray field(1);
-fieldName[0] = "value";
-field[0] = fieldCreate-&gt;createScalar(pvDouble);
-
-StructureConstPtr structure =
-    fieldCreate-&gt;createStructure(fieldName, field);
-cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-<p>This produces:</p>
-<pre>
-structure
-    double value
-</pre>
-<p>The next example shows how to create a structure
-that has three field: a value field that is a scalarArray with
-element type double, an alarm structure, and a timeStamp structure.
-</p>
-<pre>
-size_t n = 3;
-StringArray fieldName(n);
-FieldConstPtrArray field(n);
-fieldName[0] ="severity";
-fieldName[1] ="status";
-fieldName[2] ="message";
-field[0] = fieldCreate-&gt;createScalar(pvInt);
-field[1] = fieldCreate-&gt;createScalar(pvInt);
-field[2] = fieldCreate-&gt;createScalar(pvString);
-StructureConstPtr alarm = fieldCreate-&gt;createStructure(fieldName, field);
-fieldName = StringArray(n);
-field = FieldConstPtrArray(n);
-fieldName[0] = "secondsPastEpoch";
-fieldName[1] = "nanoseconds";
-fieldName[2] = "userTag";
-field[0] = fieldCreate-&gt;createScalar(pvLong);
-field[1] = fieldCreate-&gt;createScalar(pvInt);
-field[2] = fieldCreate-&gt;createScalar(pvInt);
-StructureConstPtr timeStamp = fieldCreate-&gt;createStructure(fieldName, field);
-fieldName = StringArray(n);
-field = FieldConstPtrArray(n);
-fieldName[0] = "value";
-fieldName[1] = "alarm";
-fieldName[2] = "timeStamp";
-field[0] = fieldCreate-&gt;createScalarArray(pvDouble);
-field[1] = alarm;
-field[2] = timeStamp;
-StructureConstPtr structure = fieldCreate-&gt;createStructure(fieldName, field);
-cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-structure
-    double[] value
-    structure alarm
-        int severity
-        int status
-        string message
-    structure timeStamp
-        long secondsPastEpoch
-        int nanoseconds
-        int userTag
-</pre>
-<p>The next two sections shows the same example using FieldBuilder.</p>
-<h3>Java Introspection Examples Using FieldBuilder</h3>
+<h4>FieldCreate</h4>
+<p>The methods are:</p>
 <dl>
-   <dt>valueAlarmTimeStamp</dt>
-   <dd>
-      <pre>
-System.out.println("valueAlarmTimeStamp");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure alarm =
-     fb.add("severity", ScalarType.pvInt).
-     add("status",ScalarType.pvInt).
-     add("message",ScalarType.pvString).
-     createStructure();
-Structure timeStamp =
-     fb.add("secondsPastEpoch", ScalarType.pvLong).
-     add("nanoseconds",ScalarType.pvInt).
-     add("userTag",ScalarType.pvInt).
-     createStructure();
-Structure structure =
-     fb.addArray("value", ScalarType.pvDouble).
-     add("alarm",alarm).
-     add("timeStamp",timeStamp).
-     createStructure();
-System.out.println(structure);
-</pre>
-This produces:
-<pre>
-valueAlarmTimeStamp
-structure
-    double[] value
-    structure alarm
-        int severity
-        int status
-        string message
-    structure timeStamp
-        long secondsPastEpoch
-        int nanoseconds
-        int userTag
-</pre>
-   </dd>
-
-   <dt>valueAlarmTimeStampNested</dt>
-   <dd>
-      <pre>
-System.out.println("valueAlarmTimeStampNested");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure structure =
-    fb.addArray("value", ScalarType.pvDouble).
-    addNestedStructure("alarm").
-         add("severity", ScalarType.pvInt).
-         add("status",ScalarType.pvInt).
-         add("message",ScalarType.pvString).
-    endNested().
-    addNestedStructure("timeStamp").
-         add("secondsPastEpoch", ScalarType.pvLong).
-         add("nanoseconds",ScalarType.pvInt).
-         add("userTag",ScalarType.pvInt).
-    endNested().
-    createStructure();
-System.out.println(structure);
-</pre>
-This produces the same output as valueAlarmTimeStamp.
-   </dd>
-
-   <dt>valueAlarmTimeStampSimple</dt>
-   <dd>
-      <pre>
-System.out.println("valueAlarmTimeStampEasy");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure structure =
-    fb.addArray("value", ScalarType.pvDouble).
-    add("alarm",standardField.alarm()).
-    add("timeStamp",standardField.timeStamp()).
-    createStructure();
-System.out.println(structure);
-</pre>
-This produces:
-<pre>
-structure
-    double[] value
-    alarm_t alarm
-        int severity
-        int status
-        string message
-    time_t timeStamp
-        long secondsPastEpoch
-        int nanoseconds
-        int userTag
-</pre>
-   </dd>
-
-   <dt>union</dt>
-    <dd>
-<pre>
-System.out.println("union");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Union union =
-    fb.add("short", ScalarType.pvShort).
-    add("long", ScalarType.pvLong).
-    createUnion();
-Structure structure = 
-    fb.add("value",union).
-    createStructure();
-System.out.println(structure);
-</pre>
-This produces:
-<pre>
-union
-structure
-    union value
-        short short
-        long long`
-</pre>
-    </dd>
-   <dt>unionNested</dt>
-   <dd>
-<pre>
-System.out.println("unionNested");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure structure = 
-    fb.addNestedUnion("value").
-        add("short", ScalarType.pvShort).
-        add("long", ScalarType.pvLong).
-        endNested().
-    createStructure();
-System.out.println(structure);
-</pre>
-This produces the same result as union.
-   </dd>
-
-   <dt>unionArray</dt>
-   <dd>
-<pre>
-System.out.println("unionArray");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Union union =
-    fb.add("short", ScalarType.pvShort).
-    add("long", ScalarType.pvLong).
-    createUnion();
-Structure structure = 
-    fb.addArray("value",union).
-    createStructure();
-System.out.println(structure);
-</pre>
-This produces:
-<pre>
-unionArray
-structure
-    union[] value
-        union
-            short short
-            long long
-</pre>
-    </dd>
-
-   <dt>unionArrayNested</dt>
-   <dd>
-<pre>
-System.out.println("unionArrayNested");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure structure = 
-    fb.addNestedUnionArray("value").
-        add("short", ScalarType.pvShort).
-        add("long", ScalarType.pvLong).
-    endNested().
-    createStructure();
-System.out.println(structure);
-</pre>
-This produces the same result as unionArray.
-   </dd>
-
-   <dt>structureArray</dt>
-   <dd>
-<pre>
-System.out.println("structureArray");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure subStruct =
-    fb.add("short", ScalarType.pvShort).
-    add("long", ScalarType.pvLong).
-    createStructure();
-Structure structure = 
-    fb.addArray("value",subStruct).
-    createStructure();
-System.out.println(structure);
-</pre>
-This produces:
-<pre>
-structureArray
-structure
-    structure[] value
-        structure
-            short short
-            long long
-</pre>
-   </dd>
-
-   <dt>structureArrayNested</dt>
-   <dd>
-<pre>
-System.out.println("structureArrayNested");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure structure = 
-   fb.addNestedStructureArray("value").
-        add("short", ScalarType.pvShort).
-        add("long", ScalarType.pvLong).
-    endNested().
-    createStructure();
-System.out.println(structure);`
-</pre>
-This produces the same result as structureArray.
-   </dd>
-
-</dl>
-
-<h3>C++ Introspection Examples Using FieldBuilder</h3>
-<dl>
-   <dt>valueAlarmTimeStamp</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "valueAlarmTimeStamp\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr alarm =
-   fb-&gt;add("severity", pvInt)-&gt;
-   add("status",pvInt)-&gt;
-   add("message",pvString)-&gt;
-   createStructure();
-StructureConstPtr timeStamp =
-        fb-&gt;add("secondsPastEpoch", pvLong)-&gt;
-        add("nanoseconds",pvInt)-&gt;
-        add("userTag",pvInt)-&gt;
-        createStructure();
-StructureConstPtr structure  =
-    fb-&gt;addArray("value", pvDouble)-&gt;
-    add("alarm",alarm)-&gt;
-    add("timeStamp",timeStamp)-&gt;
-    createStructure();
-cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-valueAlarmTimeStamp
-structure
-    double[] value
-    structure alarm
-        int severity
-        int status
-        string message
-    structure timeStamp
-        long secondsPastEpoch
-        int nanoseconds
-        int userTag
-</pre>
-   </dd>
-
-   <dt>valueAlarmTimeStampNested</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "valueAlarmTimeStampNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;addArray("value", pvDouble)-&gt;
-    addNestedStructure("alarm")-&gt;
-        add("severity", pvInt)-&gt;
-        add("status",pvInt)-&gt;
-        add("message",pvString)-&gt;
-    endNested()-&gt;
-    addNestedStructure("timeStamp")-&gt;
-        add("secondsPastEpoch", pvLong)-&gt;
-        add("nanoseconds",pvInt)-&gt;
-        add("userTag",pvInt)-&gt;
-        endNested()-&gt;
-    createStructure();
-cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces the same output as valueAlarmTimeStamp.
-   </dd>
-
-   <dt>valueAlarmTimeStampSimple</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "valueAlarmTimeStampEasy\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;addArray("value", pvDouble)-&gt;
-    add("alarm",standardField-&gt;alarm())-&gt;
-    add("timeStamp",standardField-&gt;timeStamp())-&gt;
-        createStructure();
-    cout &lt;&lt; *structure &lt;&lt; endl;
-
-</pre>
-This produces:
-<pre>
-structure
-    double[] value
-    alarm_t alarm
-        int severity
-        int status
-        string message
-    time_t timeStamp
-        long secondsPastEpoch
-        int nanoseconds
-        int userTag
-</pre>
-   </dd>
-
-   <dt>union</dt>
-    <dd>
-<pre>
-cout &lt;&lt; "union\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-UnionConstPtr unionx =
-    fb-&gt;add("short", pvShort)-&gt;
-    add("long", pvLong)-&gt;
-    createUnion();
-StructureConstPtr structure  =
-    fb-&gt;add("value",unionx)-&gt;
-        createStructure();
-    cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-union
-structure
-    union value
-        short short
-        long long`
-</pre>
-    </dd>
-   <dt>unionNested</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "unionNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;addNestedUnion("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-        endNested()-&gt;
-    createStructure();
-cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces the same result as union.
-   </dd>
-
-   <dt>unionArray</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "unionArray\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-UnionConstPtr unionx =
-    fb-&gt;add("short", pvShort)-&gt;
-    add("long", pvLong)-&gt;
-    createUnion();
-StructureConstPtr structure  =
-    fb-&gt;addArray("value",unionx)-&gt;
-    createStructure();
-cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-unionArray
-structure
-    union[] value
-        union
-            short short
-            long long
-</pre>
-    </dd>
-
-   <dt>unionArrayNested</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "unionArrayNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;addNestedUnionArray("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-    endNested()-&gt;
-        createStructure();
-    cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces the same result as unionArray.
-   </dd>
-
-   <dt>structureArray</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "structureArray\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr subStruct =
-    fb-&gt;add("short", pvShort)-&gt;
-    add("long", pvLong)-&gt;
-    createStructure();
-StructureConstPtr structure  =
-    fb-&gt;addArray("value",subStruct)-&gt;
-createStructure();
-cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-structureArray
-structure
-structure[] value
-        structure
-            short short
-            long long
-</pre>
-   </dd>
-
-   <dt>structureArrayNested</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "structureArrayNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;addNestedStructureArray("value")-&gt;
-    add("short", pvShort)-&gt;
-    add("long", pvLong)-&gt;
-    endNested()-&gt;
-        createStructure();
-    cout &lt;&lt; *structure &lt;&lt; endl;
-</pre>
-This produces the same result as structureArray.
-   </dd>
-
+    <dt>FieldBuilder createFieldBuilder()</dt>
+      <dd>
+       Create a FieldBuilder which was described above.
+      </dd>
+    <dt>Scalar createScalar(ScalarType scalarType)</dt>
+      <dd>
+       Create a Scalar of the specified type.
+      </dd>
+    <dt>BoundedString createBoundedString(size_t maxLength)</dt>
+      <dd>
+        Create a BoundedString, which is a Scalar with ScalarType pvString and that has a bounded size.
+      </dd>
+    <dt>ScalarArray createScalarArray(ScalarType elementType)</dt>
+      <dd>
+       Create a ScalarArray that has elements of the specified ScalarType.
+      </dd>
+    <dt>ScalarArray createFixedScalarArray(ScalarType elementType, size_t size)</dt>
+      <dd>
+       Create a ScalarArray of the specified ScalarType and that will have the specified fixed size.
+      </dd>
+    <dt>ScalarArray createBoundedScalarArray(ScalarType elementType, size_t bound)</dt>
+      <dd>
+       Create a ScalarArray of the specified ScalarType and that will have the specified maximum size.
+      </dd>
+    <dt>Structure createStructure() //Java does not implement</dt>
+      <dd>
+       Create a Structure with no subFields.
+      </dd>
+   <dt>Structure createStructure(Structure structToClone) // CPP does not implement</dt>
+      <dd>
+        Create a new Structure that is a clone of an existing structure.
+      </dd>
+    <dt>Structure createStructure(string[] fieldNames, Field[] fields)</dt>
+      <dd>
+       Create a Structure with the specified set of fieldNames and fields.
+       The length of the two arrays must be the same.
+      </dd>
+    <dt>Structure createStructure(string id, string[] fieldNames, Field[] fields)</dt>
+      <dd>
+       Create a Structure with the specified set of fieldNames and fields.
+       The length of the two arrays must be the same.
+        The Structure will have the ID specfied.
+      </dd>
+    <dt>StructureArray createStructureArray(Structure elementStructure)</dt>
+      <dd>
+       Create a StructureArray where each element will have the specified introspection interface.
+      </dd>
+   <dt>Union createVariantUnion()</dt>
+      <dd>
+       Create a variant Union.
+      </dd>
+    <dt>Union createUnion(string[] fieldNames, Field[] fields)</dt>
+      <dd>
+        Create an restricted Union that can have a subField with one of the types specified by fields.
+      </dd>
+    <dt>Union createUnion(string id, string[] fieldNames, Field[] fields)</dt>
+      <dd>
+      Like the previous method but with the ID specified.
+      </dd>
+    <dt>UnionArray createUnionArray(Union elementUnion)</dt>
+      <dd>
+       Create a UnionArray where each element will have the specified introspection interface.
+      </dd>
+    <dt>UnionArray createVariantUnionArray()</dt>
+      <dd>
+       Create a UnionArray where each element can have any valid type.
+      </dd>
+    <dt>Structure appendField(Structure structure,string fieldName, Field field)</dt>
+      <dd>
+        Create a new Structure that is the old structure with an appended subField.
+      </dd>
+    <dt>Structure appendFields(Structure structure,string[] fieldNames, Field[] fields)</dt>
+      <dd>
+        Create a new Structure that is the old structure with appended subFields.
+      </dd>
+    
+    
 </dl>
 
 
@@ -2539,6 +1976,919 @@ shared_vector&lt;double&gt; data(n)
 pvDoubleArray-&gt;replace(freeze(data))
 </pre>
 
+
+
+
+<h3>BitSet and PVStructure</h3>
+<p>Some important features of pvAccess are:</p>
+<dl>
+  <dt>PVAccess Transmits Top Level PVStructures</dt>
+    <dd>
+     For example a channelGet sends data from server to client as a top
+     level PVStructure. For a channelPutGet a top level PVStructure
+     is sent from the client to the server and a different top
+     level PVStructure is returned from the server to the client.
+     </dd>
+  <dt>Top Level Introspection Immutable</dt>
+     <dd>
+     Once a top level PVStructure is created it's introspection
+     can not be modified.
+    Thus pvAccess has no need to send introspection information
+    with data. Consider channelGet as an example.
+    When a channelGet is created the server creates a top level
+    pvStructure for get requests.
+    The server sends the introspection info back to the client
+    side of pvAccess, which also creates a top level pvStructure.
+    Each time the client issues a get request the data is
+    copied into the top level pvStructure of the server and
+    transmitted to the client side of pvAccess,
+    which puts the data in it's top level pvStructure,
+    and finally presented to the client.
+     </dd>
+  <dt>Only fields that change are transmitted.</dt>
+    <dd>
+      Only the data for fields that change value between requests
+      are sent.
+     </dd>
+  <dt>Clients can request an arbitrary set of fields from server.</dt>
+    <dd>
+     The client does not have to receive all fields provided by the
+     server but can request an arbitrary subset of the fields.
+     </dd>
+</dl>
+<p>In order to implement the above features pvAccess uses bitSets,
+where each bit is associated with a field.
+The following is a top level pvStructure and how bits from a bitSet
+are assigned:</p>
+<a name="bitAssignment"></a>
+<pre>
+bit#    field
+0    structure
+1        double scalarValue
+2        double[] scalarArrayValue
+3        structure timeStamp
+4            long secondsPastEpoch
+5            int nanoSeconds
+6            int userTag
+7        union unionValue
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+8        structure[] structureValue
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+             structure timeStamp
+                 long secondsPastEpoch
+                 int nanoSeconds
+                 int userTag
+9        any[] unionValue
+             any
+                 structure timeStamp
+                     long secondsPastEpoch
+                     int nanoSeconds
+                     int userTag
+             any
+                 double value
+10       string lastValue
+</pre>
+<p>Note that bits for structure subfields are assigned recursively.
+But each scalar, union, scalarArray, structureArray, and unionArray field
+are assigned a single bit.
+This means that each subfield of a union, structuctureArray, or unionArray
+is treated just like a new top level field.
+If ANY change is made to a union, scalarArray, structureArray,
+or unionArray, the complete set of data for that field is sent.
+</p>
+<p>
+Below the following are discussed:</p>
+<dl>
+  <dt>Convert</dt>
+    <dd>A facility that supports copy and convert methods for PVData.
+     </dd>
+  <dt>pvCopy</dt>
+     <dd>A facility that transfers data between a client top level
+      PVStructure and the top level PVStructure from the server.
+     </dd>
+</dl>
+<p>An important featured provided by Convert is to copy data between
+compatible PVStructures.
+</p>
+<p>
+<b>Java feature:</b>
+pvDataJava does a deep copies of all fields 
+with the possible exception of scalar array fields.
+If the source and destination have the same scalarType
+and the source is immutable then the raw data array is shared
+and the destination is made immutable.
+</p>
+<p>
+<b>C++ feature:</b>
+pvDataCPP does deep copies between scalar and structure fields
+but shallow copies between scalarArray, structureArray, and unionArray fields.
+For scalarArray fields this is safe because the implementation of
+arrays implements COW (Copy on Write) by making the array data <b>const</b>.
+This forces code to create new raw data in order to change a scalar array
+field.
+It also uses <b>const</b> for structureArray and unionArray fields
+but this does not force all elements of the array to be <b>const</b>.
+Thus the elements can be changed.
+Thus any code that wants to share a top level PVStructure
+must be very careful when changing the value of a union,
+structureArray, or unionArray field.
+The rule is that the union, structureArray, or unionArray
+must be replaced with a new value.
+</p>
+<p>Since the pvCopy facility makes extensive use of Convert
+the same rules apply to it.</p>
+
+<h2>pvDataCPP examples</h2>
+
+<h3>C++ Introspection Basic Example</h3>
+<p>The first example creates a Structure with a single subField:</p>
+
+<h4>Using FieldBuilder</h4>
+
+<pre>
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure =
+    fb-&gt;add("value", pvDouble)-&gt;
+    createStructure();
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+<p>This produces:</p>
+<pre>
+structure
+    double value
+</pre>
+
+<h4>Using FieldCreate the code is</h4>
+
+<pre>
+StringArray fieldName(1);
+FieldConstPtrArray field(1);
+fieldName[0] = "value";
+field[0] = fieldCreate-&gt;createScalar(pvDouble);
+
+StructureConstPtr structure =
+    fieldCreate-&gt;createStructure(fieldName, field);
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+<p>This produces:</p>
+<pre>
+structure
+    double value
+</pre>
+
+<h3>C++ Introspection More Complex Example</h3>
+<p>The next example shows how to create a structure
+that has three field: a value field that is a scalarArray with
+element type double, an alarm structure, and a timeStamp structure.
+</p>
+
+<h4>Using FieldBuilder and StandardField</h4>
+
+<pre>
+cout &lt;&lt; "valueAlarmTimeStamp\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value", pvDouble)-&gt;
+    add("alarm",standardField->alarm()))-&gt;
+    add("timeStamp",standardField->timeStamp()))-&gt;
+    createStructure();
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure
+    double[] value
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+
+<h4>Using FieldBuilder</h4>
+
+<pre>
+cout &lt;&lt; "valueAlarmTimeStamp\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr alarm =
+   fb-&gt;add("severity", pvInt)-&gt;
+   add("status",pvInt)-&gt;
+   add("message",pvString)-&gt;
+   createStructure();
+StructureConstPtr timeStamp =
+        fb-&gt;add("secondsPastEpoch", pvLong)-&gt;
+        add("nanoseconds",pvInt)-&gt;
+        add("userTag",pvInt)-&gt;
+        createStructure();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value", pvDouble)-&gt;
+    add("alarm",alarm)-&gt;
+    add("timeStamp",timeStamp)-&gt;
+    createStructure();
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+<h4>Using FieldCreate</h4>
+<pre>
+size_t n = 3;
+StringArray fieldName(n);
+FieldConstPtrArray field(n);
+fieldName[0] ="severity";
+fieldName[1] ="status";
+fieldName[2] ="message";
+field[0] = fieldCreate-&gt;createScalar(pvInt);
+field[1] = fieldCreate-&gt;createScalar(pvInt);
+field[2] = fieldCreate-&gt;createScalar(pvString);
+StructureConstPtr alarm = fieldCreate-&gt;createStructure(fieldName, field);
+fieldName = StringArray(n);
+field = FieldConstPtrArray(n);
+fieldName[0] = "secondsPastEpoch";
+fieldName[1] = "nanoseconds";
+fieldName[2] = "userTag";
+field[0] = fieldCreate-&gt;createScalar(pvLong);
+field[1] = fieldCreate-&gt;createScalar(pvInt);
+field[2] = fieldCreate-&gt;createScalar(pvInt);
+StructureConstPtr timeStamp = fieldCreate-&gt;createStructure(fieldName, field);
+fieldName = StringArray(n);
+field = FieldConstPtrArray(n);
+fieldName[0] = "value";
+fieldName[1] = "alarm";
+fieldName[2] = "timeStamp";
+field[0] = fieldCreate-&gt;createScalarArray(pvDouble);
+field[1] = alarm;
+field[2] = timeStamp;
+StructureConstPtr structure = fieldCreate-&gt;createStructure(fieldName, field);
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+
+<h3>More C++ Introspection Examples Using FieldBuilder</h3>
+<dl>
+
+   <dt>valueAlarmTimeStampNested</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "valueAlarmTimeStampNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value", pvDouble)-&gt;
+    addNestedStructure("alarm")-&gt;
+        add("severity", pvInt)-&gt;
+        add("status",pvInt)-&gt;
+        add("message",pvString)-&gt;
+    endNested()-&gt;
+    addNestedStructure("timeStamp")-&gt;
+        add("secondsPastEpoch", pvLong)-&gt;
+        add("nanoseconds",pvInt)-&gt;
+        add("userTag",pvInt)-&gt;
+        endNested()-&gt;
+    createStructure();
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+   </dd>
+
+   <dt>union</dt>
+    <dd>
+<pre>
+cout &lt;&lt; "union\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+UnionConstPtr unionx =
+    fb-&gt;add("short", pvShort)-&gt;
+    add("long", pvLong)-&gt;
+    createUnion();
+StructureConstPtr structure  =
+    fb-&gt;add("value",unionx)-&gt;
+        createStructure();
+    cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+union
+structure
+    union value
+        short short
+        long long`
+</pre>
+    </dd>
+   <dt>unionNested</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "unionNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedUnion("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+        endNested()-&gt;
+    createStructure();
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces the same result as union.
+   </dd>
+
+   <dt>unionArray</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "unionArray\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+UnionConstPtr unionx =
+    fb-&gt;add("short", pvShort)-&gt;
+    add("long", pvLong)-&gt;
+    createUnion();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value",unionx)-&gt;
+    createStructure();
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+unionArray
+structure
+    union[] value
+        union
+            short short
+            long long
+</pre>
+    </dd>
+
+   <dt>unionArrayNested</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "unionArrayNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedUnionArray("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+    endNested()-&gt;
+        createStructure();
+    cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces the same result as unionArray.
+   </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "structureArray\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr subStruct =
+    fb-&gt;add("short", pvShort)-&gt;
+    add("long", pvLong)-&gt;
+    createStructure();
+StructureConstPtr structure  =
+    fb-&gt;addArray("value",subStruct)-&gt;
+createStructure();
+cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+structureArray
+structure
+structure[] value
+        structure
+            short short
+            long long
+</pre>
+   </dd>
+
+   <dt>structureArrayNested</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "structureArrayNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedStructureArray("value")-&gt;
+    add("short", pvShort)-&gt;
+    add("long", pvLong)-&gt;
+    endNested()-&gt;
+        createStructure();
+    cout &lt;&lt; structure &lt;&lt; endl;
+</pre>
+This produces the same result as structureArray.
+   </dd>
+
+</dl>
+
+<h3>C++ Data Examples</h3>
+<dl>
+   <dt>simpleExample</dt>
+    <dd>
+<pre>
+cout &lt;&lt; "simple\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;add("value", pvDouble)-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVDoublePtr pvDouble = pvStructure-&gt;getSubField&lt;PVDouble&gt;( "value");
+pvDouble-&gt;put(10.0);
+cout &lt;&lt; pvStructure &lt;&lt; endl;
+</pre>
+    This produces:
+<pre>
+simple
+structure 
+    double value 10.0
+</pre>
+    </dd>
+   <dt>valueAlarmTimeStamp</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "valueAlarmTimeStamp\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure =
+    fb-&gt;addArray("value", pvDouble)-&gt;
+    add("alarm",standardField-&gt;alarm())-&gt;
+    add("timeStamp",standardField-&gt;timeStamp())-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVDoubleArrayPtr pvDoubleArray = pvStructure-&gt;getSubField&lt;PVDoubleArray&gt;("value");
+size_t len = 4;
+PVDoubleArray::svector data(4);
+for(size_t i=0; i&lt;len; ++i) data[i] = i+1;
+pvDoubleArray-&gt;replace(freeze(data));
+    cout &lt;&lt; pvStructure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure 
+    double[] value [1.0,2.0,3.0,4.0]
+    alarm_t alarm
+        int severity 0
+        int status 0
+        string message 
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+</pre>
+   </dd>
+
+   <dt>union</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "unionNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedUnion("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+        endNested()-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVLongPtr pvlong = pvDataCreate-&gt;createPVScalar&lt;PVLong&gt;();
+pvlong-&gt;put(1000);
+PVUnionPtr pvUnion = pvStructure-&gt;getSubField&lt;PVUnion&gt;("value");
+pvUnion-&gt;set("long",pvlong);
+    cout &lt;&lt; pvStructure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+union
+structure 
+    union value
+        long  1000
+</pre>
+    </dd>
+
+   <dt>unionArray</dt>
+    <dd>
+<pre>
+cout &lt;&lt; "unionArrayNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedUnionArray("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+    endNested()-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVUnionArrayPtr pvValue = pvStructure-&gt;getSubField&lt;PVUnionArray&gt;("value");
+size_t len = 2;
+PVUnionArray::svector pvUnions(len);
+for(size_t i=0; i&lt;len; ++i) pvUnions[i] =
+    pvDataCreate-&gt;createPVUnion(pvValue-&gt;getUnionArray()-&gt;getUnion());
+pvUnions[0]-&gt;select("short");
+pvUnions[1]-&gt;select("long");
+PVShortPtr pvshort = pvUnions[0]-&gt;get&lt;PVShort&gt;();
+pvshort-&gt;put(1);
+PVLongPtr pvlong = pvUnions[1]-&gt;get&lt;PVLong&gt;();
+pvlong-&gt;put(5);
+pvValue-&gt;replace(freeze(pvUnions));
+cout &lt;&lt; pvStructure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+unionArray
+structure 
+    union[] value 
+        union 
+            short  1
+        union 
+            long  5
+</pre>
+    </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+cout &lt;&lt; "structureArrayNested\n";
+FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+StructureConstPtr structure  =
+    fb-&gt;addNestedStructureArray("value")-&gt;
+        add("short", pvShort)-&gt;
+        add("long", pvLong)-&gt;
+    endNested()-&gt;
+    createStructure();
+PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
+PVStructureArrayPtr pvValue = pvStructure-&gt;getSubField&lt;PVStructureArray&gt;("value");
+size_t len = 2;
+PVStructureArray::svector pvStructures(len);
+for(size_t i=0; i&lt;len; ++i) {
+    pvStructures[i] = pvDataCreate-&gt;createPVStructure(
+        pvValue-&gt;getStructureArray()-&gt;getStructure());
+    PVStructurePtr pvs = pvStructures[i];
+    PVShortPtr pvshort = pvs-&gt;getSubField&lt;PVShort&gt;("short");
+    pvshort-&gt;put(i);
+    PVLongPtr pvlong = pvs-&gt;getSubField&lt;PVLong&gt;("long");
+    pvlong-&gt;put(i);
+}
+pvValue-&gt;replace(freeze(pvStructures));
+    cout &lt;&lt; pvStructure &lt;&lt; endl;
+</pre>
+This produces:
+<pre>
+structureArray
+structure 
+    structure[] value 
+        structure 
+            short short 0
+            long long 0
+        structure 
+            short short 1
+            long long 1
+</pre>
+   </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+System.out.println("structureArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+   fb.addNestedStructureArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+System.out.println(structure);`
+</pre>
+This produces the same result as structureArray.
+   </dd>
+
+</dl>
+
+<h2>pvDataJava examples</h2>
+<h3>Java Introspection Basic Example</h3>
+<p>The first example creates a Structure with a single subField:</p>
+<h4>Using FieldBuilder</h4>
+<pre>
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.add("value", ScalarType.pvDouble).
+    createStructure();
+System.out.println(structure);
+</pre>
+<p>This produces:</p>
+<pre>
+structure
+    double value
+</pre>
+<h4>Using FieldCreate</h4>
+<pre>
+String[] fieldName = new String[1];
+Field[] field = new Field[1];
+fieldName[0] = "value";
+field[0] = fieldCreate.createScalar(ScalarType.pvDouble);
+Structure structure = fieldCreate.createStructure(fieldName, field);
+System.out.println(structure);
+</pre>
+<p>The output is again:</p>
+<pre>
+structure
+    double value
+</pre>
+<h3>Java Itrospection More Complex Example</h3>
+<p>This example shows how to create a structure
+that has three field: a value field that is a scalarArray with
+element type double, an alarm structure, and a timeStamp structure.</p>
+<h4>Using FieldBuilder and StandardField</h4>
+<pre>
+System.out.println("valueAlarmTimeStamp");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure =
+     fb.addArray("value", ScalarType.pvDouble).
+     add("alarm",standardField.alarm()).
+     add("timeStamp",standardField.timeStamp())).
+     createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure
+    double[] value
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+
+<h4>Using FieldBuilder</h4>
+<pre>
+System.out.println("valueAlarmTimeStamp");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure alarm =
+     fb.add("severity", ScalarType.pvInt).
+     add("status",ScalarType.pvInt).
+     add("message",ScalarType.pvString).
+     createStructure();
+Structure timeStamp =
+     fb.add("secondsPastEpoch", ScalarType.pvLong).
+     add("nanoseconds",ScalarType.pvInt).
+     add("userTag",ScalarType.pvInt).
+     createStructure();
+Structure structure =
+     fb.addArray("value", ScalarType.pvDouble).
+     add("alarm",alarm).
+     add("timeStamp",timeStamp).
+     createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+valueAlarmTimeStamp
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+<h4>Using FieldCreate</h4>
+<pre>
+String[] fieldName = new String[3];
+Field[] field = new Field[3];
+fieldName[0] ="severity";
+fieldName[1] ="status";
+fieldName[2] ="message";
+field[0] = fieldCreate.createScalar(ScalarType.pvInt);
+field[1] = fieldCreate.createScalar(ScalarType.pvInt);
+field[2] = fieldCreate.createScalar(ScalarType.pvString);
+Structure alarm = fieldCreate.createStructure(fieldName, field);
+fieldName = new String[3];
+field = new Field[3];
+fieldName[0] = "secondsPastEpoch";
+fieldName[1] = "nanoseconds";
+fieldName[2] = "userTag";
+field[0] = fieldCreate.createScalar(ScalarType.pvLong);
+field[1] = fieldCreate.createScalar(ScalarType.pvInt);
+field[2] = fieldCreate.createScalar(ScalarType.pvInt);
+Structure timeStamp = fieldCreate.createStructure(fieldName, field);
+fieldName = new String[3];
+field = new Field[3];
+fieldName[0] = "value";
+fieldName[1] = "alarm";
+fieldName[2] = "timeStamp";
+field[0] = fieldCreate.createScalarArray(ScalarType.pvDouble);
+field[1] = alarm;
+field[2] = timeStamp;
+Structure structure = fieldCreate.createStructure(fieldName, field);
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+structure
+    double[] value
+    structure alarm
+        int severity
+        int status
+        string message
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+</pre>
+
+<h3>More Java Introspection Examples Using FieldBuilder</h3>
+<dl>
+
+
+   <dt>valueAlarmTimeStampNested</dt>
+   <dd>
+      <pre>
+System.out.println("valueAlarmTimeStampNested");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure =
+    fb.addArray("value", ScalarType.pvDouble).
+    addNestedStructure("alarm").
+         add("severity", ScalarType.pvInt).
+         add("status",ScalarType.pvInt).
+         add("message",ScalarType.pvString).
+    endNested().
+    addNestedStructure("timeStamp").
+         add("secondsPastEpoch", ScalarType.pvLong).
+         add("nanoseconds",ScalarType.pvInt).
+         add("userTag",ScalarType.pvInt).
+    endNested().
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces the same output as valueAlarmTimeStamp.
+   </dd>
+
+
+   <dt>union</dt>
+    <dd>
+<pre>
+System.out.println("union");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Union union =
+    fb.add("short", ScalarType.pvShort).
+    add("long", ScalarType.pvLong).
+    createUnion();
+Structure structure = 
+    fb.add("value",union).
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+union
+structure
+    union value
+        short short
+        long long`
+</pre>
+    </dd>
+   <dt>unionNested</dt>
+   <dd>
+<pre>
+System.out.println("unionNested");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.addNestedUnion("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+        endNested().
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces the same result as union.
+   </dd>
+
+   <dt>unionArray</dt>
+   <dd>
+<pre>
+System.out.println("unionArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Union union =
+    fb.add("short", ScalarType.pvShort).
+    add("long", ScalarType.pvLong).
+    createUnion();
+Structure structure = 
+    fb.addArray("value",union).
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+unionArray
+structure
+    union[] value
+        union
+            short short
+            long long
+</pre>
+    </dd>
+
+   <dt>unionArrayNested</dt>
+   <dd>
+<pre>
+System.out.println("unionArrayNested");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+    fb.addNestedUnionArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces the same result as unionArray.
+   </dd>
+
+   <dt>structureArray</dt>
+   <dd>
+<pre>
+System.out.println("structureArray");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure subStruct =
+    fb.add("short", ScalarType.pvShort).
+    add("long", ScalarType.pvLong).
+    createStructure();
+Structure structure = 
+    fb.addArray("value",subStruct).
+    createStructure();
+System.out.println(structure);
+</pre>
+This produces:
+<pre>
+structureArray
+structure
+    structure[] value
+        structure
+            short short
+            long long
+</pre>
+   </dd>
+
+   <dt>structureArrayNested</dt>
+   <dd>
+<pre>
+System.out.println("structureArrayNested");
+FieldBuilder fb = fieldCreate.createFieldBuilder();
+Structure structure = 
+   fb.addNestedStructureArray("value").
+        add("short", ScalarType.pvShort).
+        add("long", ScalarType.pvLong).
+    endNested().
+    createStructure();
+System.out.println(structure);`
+</pre>
+This produces the same result as structureArray.
+   </dd>
+
+</dl>
+
 <h3>Java Data Examples</h3>
 <dl>
    <dt>simpleExample</dt>
@@ -2717,309 +3067,7 @@ This produces the same result as structureArray.
 
 </dl>
 
-<h3>CPP Data Examples</h3>
-<dl>
-   <dt>simpleExample</dt>
-    <dd>
-<pre>
-cout &lt;&lt; "simple\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;add("value", pvDouble)-&gt;
-    createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVDoublePtr pvDouble = pvStructure-&gt;getSubField&lt;PVDouble&gt;( "value");
-pvDouble-&gt;put(10.0);
-cout &lt;&lt; *pvStructure &lt;&lt; endl;
-</pre>
-    This produces:
-<pre>
-simple
-structure 
-    double value 10.0
-</pre>
-    </dd>
-   <dt>valueAlarmTimeStamp</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "valueAlarmTimeStamp\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure =
-    fb-&gt;addArray("value", pvDouble)-&gt;
-    add("alarm",standardField-&gt;alarm())-&gt;
-    add("timeStamp",standardField-&gt;timeStamp())-&gt;
-    createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVDoubleArrayPtr pvDoubleArray = pvStructure-&gt;getSubField&lt;PVDoubleArray&gt;("value");
-size_t len = 4;
-PVDoubleArray::svector data(4);
-for(size_t i=0; i&lt;len; ++i) data[i] = i+1;
-pvDoubleArray-&gt;replace(freeze(data));
-    cout &lt;&lt; *pvStructure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-valueAlarmTimeStamp
-structure 
-    double[] value [1.0,2.0,3.0,4.0]
-    alarm_t alarm
-        int severity 0
-        int status 0
-        string message 
-    time_t timeStamp
-        long secondsPastEpoch 0
-        int nanoseconds 0
-        int userTag 0
-</pre>
-   </dd>
 
-   <dt>union</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "unionNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;addNestedUnion("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-        endNested()-&gt;
-    createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVLongPtr pvlong = pvDataCreate-&gt;createPVScalar&lt;PVLong&gt;();
-pvlong-&gt;put(1000);
-PVUnionPtr pvUnion = pvStructure-&gt;getSubField&lt;PVUnion&gt;("value");
-pvUnion-&gt;set("long",pvlong);
-    cout &lt;&lt; *pvStructure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-union
-structure 
-    union value
-        long  1000
-</pre>
-    </dd>
-
-   <dt>unionArray</dt>
-    <dd>
-<pre>
-cout &lt;&lt; "unionArrayNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;addNestedUnionArray("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-    endNested()-&gt;
-    createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVUnionArrayPtr pvValue = pvStructure-&gt;getSubField&lt;PVUnionArray&gt;("value");
-size_t len = 2;
-PVUnionArray::svector pvUnions(len);
-for(size_t i=0; i&lt;len; ++i) pvUnions[i] =
-    pvDataCreate-&gt;createPVUnion(pvValue-&gt;getUnionArray()-&gt;getUnion());
-pvUnions[0]-&gt;select("short");
-pvUnions[1]-&gt;select("long");
-PVShortPtr pvshort = pvUnions[0]-&gt;get&lt;PVShort&gt;();
-pvshort-&gt;put(1);
-PVLongPtr pvlong = pvUnions[1]-&gt;get&lt;PVLong&gt;();
-pvlong-&gt;put(5);
-pvValue-&gt;replace(freeze(pvUnions));
-cout &lt;&lt; *pvStructure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-unionArray
-structure 
-    union[] value 
-        union 
-            short  1
-        union 
-            long  5
-</pre>
-    </dd>
-
-   <dt>structureArray</dt>
-   <dd>
-<pre>
-cout &lt;&lt; "structureArrayNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
-StructureConstPtr structure  =
-    fb-&gt;addNestedStructureArray("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-    endNested()-&gt;
-    createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVStructureArrayPtr pvValue = pvStructure-&gt;getSubField&lt;PVStructureArray&gt;("value");
-size_t len = 2;
-PVStructureArray::svector pvStructures(len);
-for(size_t i=0; i&lt;len; ++i) {
-    pvStructures[i] = pvDataCreate-&gt;createPVStructure(
-        pvValue-&gt;getStructureArray()-&gt;getStructure());
-    PVStructurePtr pvs = pvStructures[i];
-    PVShortPtr pvshort = pvs-&gt;getSubField&lt;PVShort&gt;("short");
-    pvshort-&gt;put(i);
-    PVLongPtr pvlong = pvs-&gt;getSubField&lt;PVLong&gt;("long");
-    pvlong-&gt;put(i);
-}
-pvValue-&gt;replace(freeze(pvStructures));
-    cout &lt;&lt; *pvStructure &lt;&lt; endl;
-</pre>
-This produces:
-<pre>
-structureArray
-structure 
-    structure[] value 
-        structure 
-            short short 0
-            long long 0
-        structure 
-            short short 1
-            long long 1
-</pre>
-   </dd>
-
-   <dt>structureArray</dt>
-   <dd>
-<pre>
-System.out.println("structureArray");
-FieldBuilder fb = fieldCreate.createFieldBuilder();
-Structure structure = 
-   fb.addNestedStructureArray("value").
-        add("short", ScalarType.pvShort).
-        add("long", ScalarType.pvLong).
-    endNested().
-    createStructure();
-System.out.println(structure);`
-</pre>
-This produces the same result as structureArray.
-   </dd>
-
-</dl>
-<h3>BitSet and PVStructure</h3>
-<p>Some important features of pvAccess are:</p>
-<dl>
-  <dt>PVAccess Transmits Top Level PVStructures</dt>
-    <dd>
-     For example a channelGet sends data from server to client as a top
-     level PVStructure. For a channelPutGet a top level PVStructure
-     is sent from the client to the server and a different top
-     level PVStructure is returned from the server to the client.
-     </dd>
-  <dt>Top Level Introspection Immutable</dt>
-     <dd>
-     Once a top level PVStructure is created it's introspection
-     can not be modified.
-    Thus pvAccess has no need to send introspection information
-    with data. Consider channelGet as an example.
-    When a channelGet is created the server creates a top level
-    pvStructure for get requests.
-    The server sends the introspection info back to the client
-    side of pvAccess, which also creates a top level pvStructure.
-    Each time the client issues a get request the data is
-    copied into the top level pvStructure of the server and
-    transmitted to the client side of pvAccess,
-    which puts the data in it's top level pvStructure,
-    and finally presented to the client.
-     </dd>
-  <dt>Only fields that change are transmitted.</dt>
-    <dd>
-      Only the data for fields that change value between requests
-      are sent.
-     </dd>
-  <dt>Clients can request an arbitrary set of fields from server.</dt>
-    <dd>
-     The client does not have to receive all fields provided by the
-     server but can request an arbitrary subset of the fields.
-     </dd>
-</dl>
-<p>In order to implement the above features pvAccess uses bitSets,
-where each bit is associated with a field.
-The following is a top level pvStructure and how bits from a bitSet
-are assigned:</p>
-<a name="bitAssignment"></a>
-<pre>
-bit#    field
-0    structure
-1        double scalarValue
-2        double[] scalarArrayValue
-3        structure timeStamp
-4            long secondsPastEpoch
-5            int nanoSeconds
-6            int userTag
-7        union unionValue
-             structure timeStamp
-                 long secondsPastEpoch
-                 int nanoSeconds
-                 int userTag
-8        structure[] structureValue
-             structure timeStamp
-                 long secondsPastEpoch
-                 int nanoSeconds
-                 int userTag
-             structure timeStamp
-                 long secondsPastEpoch
-                 int nanoSeconds
-                 int userTag
-9        any[] unionValue
-             any
-                 structure timeStamp
-                     long secondsPastEpoch
-                     int nanoSeconds
-                     int userTag
-             any
-                 double value
-10       string lastValue
-</pre>
-<p>Note that bits for structure subfields are assigned recursively.
-But each scalar, union, scalarArray, structureArray, and unionArray field
-are assigned a single bit.
-This means that each subfield of a union, structuctureArray, or unionArray
-is treated just like a new top level field.
-If ANY change is made to a union, scalarArray, structureArray,
-or unionArray, the complete set of data for that field is sent.
-</p>
-<p>
-Below the following are discussed:</p>
-<dl>
-  <dt>Convert</dt>
-    <dd>A facility that supports copy and convert methods for PVData.
-     </dd>
-  <dt>pvCopy</dt>
-     <dd>A facility that transfers data between a client top level
-      PVStructure and the top level PVStructure from the server.
-     </dd>
-</dl>
-<p>An important featured provided by Convert is to copy data between
-compatible PVStructures.
-</p>
-<p>
-<b>Java feature:</b>
-pvDataJava does a deep copies of all fields 
-with the possible exception of scalar array fields.
-If the source and destination have the same scalarType
-and the source is immutable then the raw data array is shared
-and the destination is made immutable.
-</p>
-<p>
-<b>C++ feature:</b>
-pvDataCPP does deep copies between scalar and structure fields
-but shallow copies between scalarArray, structureArray, and unionArray fields.
-For scalarArray fields this is safe because the implementation of
-arrays implements COW (Copy on Write) by making the array data <b>const</b>.
-This forces code to create new raw data in order to change a scalar array
-field.
-It also uses <b>const</b> for structureArray and unionArray fields
-but this does not force all elements of the array to be <b>const</b>.
-Thus the elements can be changed.
-Thus any code that wants to share a top level PVStructure
-must be very careful when changing the value of a union,
-structureArray, or unionArray field.
-The rule is that the union, structureArray, or unionArray
-must be replaced with a new value.
-</p>
-<p>Since the pvCopy facility makes extensive use of Convert
-the same rules apply to it.</p>
 
 <h2>API: normativeType</h2>
 
@@ -3859,13 +3907,11 @@ With the C++ implementation (pvDatabaseCPP) the pvDatabase
 can be provided via a Main program or can be part of a V3IOC. In the later case the IOC has both a database of V3 Records and a PVRecords.
 This version allows the development of V4 services for V3IOCs.
 </p>
-<p>pvDatabaseJava and pvDatabaseCPP both have example databases.
-Project pvaClientTestCPP has a database that is similar to pvDatabaseJava/exampleDatabase
-but also adds exampleHello, exampleHelloRPC, and powerSupply.
-This section will mainly describe the pvaClientTestCPP database, which also
-describes pvDatabaseJava/exampleDatabase.
+<p>exampleJava and exampleCPP both have example databases.
+Project exampleCPP has a database that is similar to exampleJava/
+This section will mainly describe exampleCPP/database.
 It shows how create a V3 IOC that has both V3 Records, PVRecords, and pvaSrv.
-After reading this section the examples in pvaDatabaseJava and pvDatabaseCPP should
+After reading this section the examples in exampleJava and exampleCPP should
 be easy to understand.
 </p>
 <h3>Starting the example</h3>
@@ -3878,13 +3924,13 @@ ca or pva.
 <p>To run the example as a main program:</p>
 <pre>
 mrk&gt; pwd
-/home/epicsv4/pvaClientTestCPP/database
+/home/epicsv4/exampleCPP/database
 mrk&gt; bin/linux-x86_64/exampleDatabaseMain 
 </pre>
 <p>To start the example as part of a V3 IOC:</p>
 <pre>
 mrk&gt; pwd
-/home/epicsv4/pvaClientTestCPP/database/iocBoot/exampleDatabase
+/home/epicsv4/exampleCPP/database/iocBoot/exampleDatabase
 mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
 <p>Once the database is running then the following can access exampleHello:</p>
@@ -3913,7 +3959,7 @@ structure
 mrk&gt;
 </pre>
 <h3>source code</h3>
-<p> <b>pvaClientTestCPP/database/src</b> has the following examples:</p>
+<p> <b>exampleCPP/database/src</b> has the following examples:</p>
 <dl>
    <dt>exampleHello</dt>
       <dd>This is an hello world example that is meant to be accesed via
@@ -4031,7 +4077,7 @@ The default process does nothing except that if a timeStamp field is present
 the time is set to the current time.
 Look at the code to see examples of how to create records.
 </p>
-<h3>pvaClientTestCPP/database/ioc</h3>
+<h3>exampleCPP/database/ioc</h3>
 This directory has two subdirectories:
 <dl>
   <dt>Db</dt>
@@ -4057,7 +4103,7 @@ The local server is implemented by pvDatabaseCPP.
 </p>
 <p><b>registrar("exampleDatabaseRegister")</b> is the only example specific statement.
 It is used to start the example database.</p>
-<h3>pvaClientTestCPP/database/iocBoot/exampleDatabase</h3>
+<h3>exampleCPP/database/iocBoot/exampleDatabase</h3>
 <p>This is where the V3 IOC is started.
 The <b>st.cmd</b> starts with normal way to start a V3 IOC.
 What is different is the statements after iocInit:</p>
