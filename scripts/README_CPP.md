@@ -69,7 +69,7 @@ With this in place, to build type:
 A bash configration script is provided for building on Linux. In which case
 the following will work:
 
-    make EPICS_BASE=/path/to/epics/base make configure
+    EPICS_BASE=/path/to/epics/base make configure
     make
 
 This will build everything except pvaPy and the Channel Archiver Service.
