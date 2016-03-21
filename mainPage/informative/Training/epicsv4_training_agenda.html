@@ -84,8 +84,8 @@
 <li>Building EPICS V4 and running examples.</li>
 <li>Using EPICS V4 tools: pvget, pvput, pvinfo, pvlist and eget.</li>
 <li>Creating and manipulating pvData objects.</li>
+<li>Normative Type wrappers</li>
 <li>Creating pvDatabase, pvaClient and RPC service examples.</li>
-<li>pvAccess API. Creating a monitored pvAccess client.</li> 
 </ul>
 </li>
 </ul>
@@ -95,22 +95,39 @@
 
 <h3>What is EPICS Version 4?</h3>
 
+<p>Add structured data to EPICS:</p>
+
 <ul>
-<li>Add structured data to EPICS</li>
-<li>New API and network protocol to transport data</li>
+<li>Set of data types: pvData</li>
+<li>New operations and network protocol to transport data: pvAccess</li>
 <li>PVs now structures. Get, put monitor etc. individual fields</li>
-<li>Atomic operations</li>
+<li>Atomic operations now possible</li>
 <li>Channel RPC</li>
 <li>Normative Types</li>
 <li>RPC services</li>
-<li>Applications:
-  <ul>
-  <li>RPC services</li>
-  <li>V4 for data acquisition: areaDetector, Neutron Server</li>
-  <li>V4 for complex control</li>
-  </ul>
-</li>
 </ul>
+<p>Applications:</p>
+<ul>
+<li>Everything Version 3 does (but slightly better):
+<ul>
+<li>Better handling of strings, arrays and enums</li>
+<li>Better support for operations with multiple record fields</li>
+</ul>
+<li>Atomic group operations</li>
+<li>Complex device control:
+<ul>
+<li>Distributed objects now possible</li>
+<li>Monitorable and can understand RPC</li>
+</ul></li>
+<li>Group operations or RPC</li>
+<li>Experiment data:</li>
+<ul>
+<li>Neutron data</li>
+<li>areaDetector data</li>
+</ul>
+<li>EPICS Version 4 services</li>
+</ul>
+
 
 <h3>pvData</h3>
 
@@ -219,9 +236,12 @@
 
 <h3>pvDatabase example</h3>
 
+<ul>
+<li>Run testDBPv and show output</li>
+<li>very quick use of  pvtools, e.g. pvget a PV (pvtools in depth later)</li>
+</ul>
 
 <h3>pvtools</h3>
-
 
 <ul>
 <li>pvinfo, pvget, pvget -m, pvput, pvlist, eget</li>
@@ -230,24 +250,9 @@
 <li>request syntax</li>
 </ul>
 
-<!--
-<h4>pvinfo</h4>
-
-<h4>pvget</h4>
-
-
-<h4>pvget -m </h4>
-
-
-<h4>pvput</h4>
 
 
 
-<h4>pvlist</h4>
-
-
-<h4>eget</h4>
--->
 
 <h3>Service example</h3>
 
@@ -265,22 +270,21 @@
 
 
 
-<h2>APIs for pvData</h2>
+<h2>pvData API</h2>
 
-<h3>pvData API</h3>
-
-<h4>Field and PVField</h4>
+<h3>Field and PVField</h3>
 
 <ul>
 <li>C++: shared_pointers and typedefs</li>
 <li>Field and PVField class hierarchies</li>
 <li>Field - getID, getType</li>
+<li>Field, FieldBuilder, DataCreate</li>
 <li>PVField getName(), getField(), getParent()</li>
 <li>serialize/deserialize</li>
 <li>FieldCreate, FieldBuilder, DataCreate</li>
 </ul>
 
-<h4>Creating simple structures</h4>
+<h3>Creating simple structures</h3>
 
 <ul>
 <li>Simple example of structure with scalar fields.
@@ -292,7 +296,7 @@ Structure of scalar fields e.g. aggregate type structure (mean, standard deviati
 <li>getScalar(), getScalarType()</li>
 </ul>
 
-<h4>Structure subfield examples</h4>
+<h3>Structure subfield examples</h3>
 
 <ul>
 <li>Example of structure with structure subfields with scalar fields,
@@ -300,7 +304,7 @@ e.g. timestamps.</li>
 </ul>
 
 
-<h4>Scalar arrays</h4>
+<h3>Scalar arrays</h3>
 
 <ul>
 <li>Create structure with array fields (one of NTScalarArray/NTTable/NTMatrix)</li>
@@ -308,55 +312,46 @@ e.g. timestamps.</li>
 <li>C++ API. shared_vector.</li>
 </ul>
 
-<h4>Regular Unions</h4>
+<h3>Regular Unions</h3>
 
-<h4>Variant Unions</h4>
-
-
-<h4>Structure arrays</h4>
+<h3>Variant Unions</h3>
 
 
+<h3>Structure arrays</h3>
 
-<h4>Union arrays</h4>
 
-<h4>Field Builder with Nested Structures and Unions</h4>
+
+<h3>Union arrays</h3>
+
+<h3>Field Builder with Nested Structures and Unions</h3>
 
 <h3>Standard Field</h3>
 
-<h3>Normative types</h3>
+<h2>normativeTypes</h2>
 
-<ul><li>Example of one type, e.g. NTScalar</li></ul>
-
-
-
-<h2>Services and Clients</h2>
-
-<h3>RPC Service example</h3>
-
-<h3>Writing a pvDatabase example</h3>
-
-<ul><li>Go through exampleServer</li></ul>
-
-<h3>Writing a pvaClient example</h3>
-
-
-
-
-<h2>[Brief into to] pvAccess API</h2>
-
-<h3>pvAccess API</h3>
+<p></p>
 <ul>
-<li>Channel, ChannelRequester</li>
-<li>ChannelGet, ChannelGetRequester</li>
-<li>ChannelMonitor, ChannelMonitorRequester</li>
-<li>ChannelPut, ChannelPutRequester</li>
-<li>ChannelRPC, ChannelRPCRequester</li>
+<li>Example of one type, e.g. NTScalar</li>
+<li>Builder. Creating structure, pvStructure and wrapper</li>
+<li>is_valid, isCompatible, isValid</li>
+<li>wrap</li>
 </ul>
 
 
-<h3>Example: Writing a monitored client</h3>
-<ul><li>E.g. Take example from pvDatabase, pvTools
-or data acquisition.</li></ul>
+
+<h2>pvDatabase</h2>
+
+<p></p>
+<ul>
+<li>Database and PVRecord</li>
+<li>Go through exampleServer</li>
+
+</ul>
+
+<h2>pvaClient</h2>
+
+
+
 </div>
 </body>
 </html>
