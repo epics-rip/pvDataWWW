@@ -1,3 +1,30 @@
+4.5.0.2 (2016/05/18)
+====================
+
+The only changes since release 4.5.0.1 are:
+
+pvDataCPP (5.0.4)
+-----------------
+
+* Fixed bitset serialization (issue #24)
+* Fixed truncation in BitSet::or_and (issue #27)
+
+
+pvAccessCPP (4.1.3)
+-------------------
+
+* Monitor fix: element no longer queued when overrun in progress.
+
+
+pvaSrv (0.11.3)
+---------------
+
+* Fixed pvaSrv does not always get first monitor (issue #1)
+* Fixed Maximum number of free monitor elements is 2, regardless of queue size
+  (issue #23)
+* Fix No updates after restarting monitors (issue #24)
+
+
 4.5.0.1 (2016/02/05)
 ====================
 

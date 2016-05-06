@@ -22,12 +22,6 @@ check_for_config_files()
 
 check_shell_vars()
 {
-    base=( base* )
-    if [ -d "${base[0]}" ]; then
-        echo "Using local EPICS Base ${base[0]}."
-        EPICS_BASE=$THISDIR/"${base[0]}"
-    fi
-
     if [ -z "${EPICS_BASE}" ]; then
         echo "EPICS_BASE unspecified." 
         exit 2       
@@ -35,6 +29,12 @@ check_shell_vars()
 
     if [ ! -d "${EPICS_BASE}" ]; then
         echo "EPICS_BASE (${EPICS_BASE}) does not exist."
+        exit 2
+    fi
+
+    if [ ! -f "${EPICS_BASE}/include/epicsVersion.h" ]; then
+        echo "EPICS_BASE version file (${EPICS_BASE}/include/epicsVersion.h) does not exist."
+        echo "Incorrect directory specified or not a valid EPICS installation."
         exit 2
     fi
 
