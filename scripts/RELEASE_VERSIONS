@@ -347,3 +347,14 @@ EPICS-CPP-4.5.0.2-rc1       pvaSrv            0.11.4
 EPICS-CPP-4.5.0.2-rc1       pvDatabaseCPP     4.1.1
 EPICS-CPP-4.5.0.2-rc1       pvaPy             0.5.2
 EPICS-CPP-4.5.0.2-rc1       exampleCPP        4.1.1
+
+
+EPICS-CPP-4.5.0.2           pvCommonCPP       4.1.1
+EPICS-CPP-4.5.0.2           pvDataCPP         5.0.4
+EPICS-CPP-4.5.0.2           normativeTypesCPP 5.0.2
+EPICS-CPP-4.5.0.2           pvAccessCPP       4.1.3
+EPICS-CPP-4.5.0.2           pvaClientCPP      4.1.2
+EPICS-CPP-4.5.0.2           pvaSrv            0.11.4
+EPICS-CPP-4.5.0.2           pvDatabaseCPP     4.1.1
+EPICS-CPP-4.5.0.2           pvaPy             0.5.2
+EPICS-CPP-4.5.0.2           exampleCPP        4.1.1
