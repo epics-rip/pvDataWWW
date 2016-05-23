@@ -1,0 +1,4 @@
+git clone https://github.com/hakimel/reveal.js.git
+cd reveal.js
+git checkout 2.6.2
+

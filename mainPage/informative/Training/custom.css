@@ -1,0 +1,74 @@
+.reveal h1 {
+    font-family: arial
+    background-color: #d0e4fe;
+    color: blue;
+}
+
+.reveal h2 {
+    font-family: arial
+    background-color: #d0e4fe;
+    color: blue;
+}
+
+.rendered_html h3 {
+    margin: 1.1em 0 0 0;
+}
+
+.rendered_html h4 {
+    font-size: 100%;
+    margin: 0.7em 0 0 0;
+}
+
+.rendered_html *+p {
+    margin-top: 0em;
+}
+
+div.text_cell_render {
+    padding: 0.5em 0.5em 0.0em 0.4em;
+}
+
+div.highlight pre {
+    background-color: #d0e4fe;
+}
+
+.reveal pre code {
+    background-color: #d0e4fe;
+    color: black;
+    letter-spacing: -0.02em;
+}
+.reveal pre {
+    background-color: #d0e4fe;
+    width: 100%;
+    font-size: 70%;
+}
+.reveal {
+    background-image: url(diamond.png);  /* fallback */
+    background-image: url(diamond.png), linear-gradient(30deg, white, white 25%, #b0c4de);
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    padding: 5px 5px 5px 5px;
+    font-size: 200%;
+}
+hr {
+    border-top: 5px solid blue;
+}
+
+pre.compressed-text {
+    font-size: 65%;
+}
+
+pre.small-text {
+    font-size: smaller;
+}
+
+.rendered_html pre, .rendered_html code {
+    background-color: #d0e4fe;
+}
+
+.reveal sup {
+  font-size: 60%;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
