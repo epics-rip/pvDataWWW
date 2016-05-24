@@ -1,0 +1,7 @@
+TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
+
+EV4_BASE=/opt/epics/v4/4.5.0.2/3.15.2
+PVACCESS=$(EV4_BASE)/pvAccessCPP
+PVDATA=$(EV4_BASE)/pvDataCPP
+
+EPICS_BASE=/opt/epics/bases/base-3.15.2
