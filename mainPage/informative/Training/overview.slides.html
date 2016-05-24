@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<title>exercise1 slides</title>
+<title>overview slides</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -252,7 +252,7 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Exercise-1">Exercise 1<a class="anchor-link" href="#Exercise-1">&#182;</a></h1><hr>
+<h1 id="Overview">Overview<a class="anchor-link" href="#Overview">&#182;</a></h1><hr>
 
 </div>
 </div>
@@ -262,44 +262,53 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Maths-Service">Maths Service<a class="anchor-link" href="#Maths-Service">&#182;</a></h1><p><br>
-You are going to write a simple service which takes 2 numbers and returns their sum.</p>
-
+<h1 id="Key-Concepts">Key Concepts<a class="anchor-link" href="#Key-Concepts">&#182;</a></h1>
 </div>
 </div>
-</div><div class="fragment">
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A template solution, "maths-template", is provided in exercise-templates.</p>
-<p>Make a copy and fill in the implementation.</p>
-<p>The layout is very similar to the <a href="https://github.com/epics-base/exampleCPP/tree/4.1.1/HelloWorld">Hello World service</a>. You can look there to see how you might supply the implementation for your service.</p>
+<h1 id="pvData">pvData<a class="anchor-link" href="#pvData">&#182;</a></h1><ul>
+<li>System of structured data types</li>
+<li>Scalar fields</li>
+<li>Variant and regular (tagged) unions</li>
+<li>Arrays</li>
+<li>Structured fields (nested structures)</li>
+</ul>
 
 </div>
 </div>
-</div></div></section></section><section><section>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>1. Using the template "maths-template", create a Maths service which takes a structure</p><pre>
-structure
-    string a
-    string b
-</pre><p>converts the values of the fields to doubles, calculates the sum and returns the structure</p>
-<pre>
-structure
-    double sum
-</pre><p>where the sum field contains the calculated sum.</p>
-<p>Test it by:</p>
-<p>a) starting the server with</p>
-<p>$ ./mathsServerRunner</p>
-<p>b) using eget:</p>
-<div class="highlight"><pre>$ eget -z -N -a <span class="s2">&quot;a=&lt;NUM1&gt;&quot;</span> -a <span class="s2">&quot;b=&lt;NUM2&gt;&quot;</span> mathService
-</pre></div>
+<h1 id="pvAccess">pvAccess<a class="anchor-link" href="#pvAccess">&#182;</a></h1><ul>
+<li>Defined by pvAccess protocol specification</li>
+<li>pvAccess is the EPICS Version 4 communication protocol.</li>
+<li>High performance network protocol.</li>
+<li>Designed to carry pvData.</li>
+<li>Successor to Channel Access. </li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Normative-Types">Normative Types<a class="anchor-link" href="#Normative-Types">&#182;</a></h1><ul>
+<li>Standard types to aid interoperability</li>
+<li>Defines standard structures for alarm, timestamps enumerations</li>
+<li>Standard types for scalar, scalar array and enum PVs</li>
+<li>More complex types such as tables and detector images</li>
+</ul>
 
 </div>
 </div>
@@ -309,18 +318,23 @@ structure
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>[ Hints:</p>
-<p>a) Look at the Hello World Service example, in particular <a href="https://github.com/epics-base/exampleCPP/blob/4.1.1/HelloWorld/helloWorldApp/HelloService.cpp">HelloService.cpp</a>. Use this
-   as a basis.</p>
-<p>b) Scalar fields of type double use PVDouble instead of PVString and have
-   ScalarType pvDouble instead of pvString. PVDouble has a similar API , but put() and get() respectively return and take a std::string instread of a double.</p>
-<p>c) You'll have to convert strings to doubles. atof(const char<code>*</code>) is good enough
-   for this here:</p>
-<div class="highlight"><pre><span class="n">atof</span><span class="p">(</span><span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">c_str</span><span class="p">())</span>
-</pre></div>
-<p><br></p>
-<p>d) Build using make.</p>
-<p>]</p>
+<pre>
+<span class="nterm" style="font-style: italic;">NTScalar</span> := 
+
+structure
+    <span class="nterm" style="font-style: italic;">scalar_t</span>    value
+    string      descriptor  :opt
+    <span class="nterm" style="font-style: italic;">alarm_t</span>     alarm       :opt
+    <span class="nterm" style="font-style: italic;">time_t</span>      timeStamp   :opt
+    <span class="nterm" style="font-style: italic;">display_t</span>   display     :opt
+    <span class="nterm" style="font-style: italic;">control_t   control     :opt
+</pre><ul>
+<li>Specification ofstandard, named type</li>
+<li>Often choices (field types, field names)</li>
+<li>Required and optional fields</li>
+<li>Extra fields can be added</li>
+<li>Italics denote definitions (non-terminal terms)</li>
+</ul>
 
 </div>
 </div>
@@ -330,15 +344,71 @@ structure
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>2. Modify client to send the structure instead of using eget.</p><p>(You'll need to uncomment the client in src/Makefile)</p>
-<p>Test it by:</p>
-<p>a) starting the server with</p>
-<pre>
-   $ ./mathsServerRunner
-</pre><p>b) using the client</p>
-<pre>
-   $ ./mathsClientRunner &lt;NUM1&gt; &lt;NUM2&gt;
-</pre>
+<h1 id="pvRequest-and-pvRequest-string">pvRequest and pvRequest string<a class="anchor-link" href="#pvRequest-and-pvRequest-string">&#182;</a></h1><ul>
+<li>Draft standard</li>
+<li>Requests for part of a structure</li>
+<li>Processing options (process, block)</li>
+<li>Monitoring options: Queue size. (Deadband, server-side filtering in the future)</li>
+<li>RPC: TBD</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="pvRequest">pvRequest<a class="anchor-link" href="#pvRequest">&#182;</a></h1><p><br>
+If a PV has structure</p>
+
+<pre><code>NTScalar
+    double value
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag</code></pre>
+<p>then the pvRequest structure</p>
+
+<pre><code>structure
+    structure field
+        structure value
+        structure alarm
+            structure severity
+        structure timeStamp
+            structure secondsPastEpoch
+            structure nanoseconds</code></pre>
+<p>supplied when you create a channel get, for example, is a request for</p>
+
+<pre><code>structure
+    double value
+    structure alarm
+        int severity
+    structure timeStamp
+        long secondsPastEpoch
+        int nanoseconds</code></pre>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="pvRequest-string">pvRequest string<a class="anchor-link" href="#pvRequest-string">&#182;</a></h1><p><br>
+A string representation of this is</p>
+
+<pre><code>    field(value,alarm.severity,timeStamp{secondsPastEpoch,nanoseconds})</code></pre>
+<p>The short form is also possible</p>
+
+<pre><code>    value,alarm.severity,timeStamp{secondsPastEpoch,nanoseconds}</code></pre>
+
 </div>
 </div>
 </div></section></section><section><section>
@@ -347,15 +417,7 @@ structure
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>3. Make the arguments doubles</p><p>(You'll need to modify the client to send doubles and the server to process them)</p>
-<p>Test it by:</p>
-<p>a) starting the server with</p>
-<pre>
-   $ ./mathsServerRunner
-</pre><p>b) using the client</p>
-<pre>
-   $ ./mathsClientRunner &lt;NUM1&gt; &lt;NUM2&gt;
-</pre>
+<h1 id="EPICS-V4--work">EPICS V4  work<a class="anchor-link" href="#EPICS-V4--work">&#182;</a></h1>
 </div>
 </div>
 </div></section></section><section><section>
@@ -364,13 +426,115 @@ structure
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><p>4. Add product and difference fields:</p></p>
-<pre>
-structure
-    double sum
-    double product
-    double difference
-</pre>
+<h1 id="EPICS-V4--...">EPICS V4  ...<a class="anchor-link" href="#EPICS-V4--...">&#182;</a></h1><ul>
+<li>Is a colaboration</li>
+<li>Produces open standards</li>
+<li>Provides reference implementations, including releases</li>
+<li>Is admintstered through the working group</li>
+</ul>
+<p><br/>
+Regular comunication (email/github, teleconference, face-to-face)</p>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Resources">Resources<a class="anchor-link" href="#Resources">&#182;</a></h1>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="EPICS-V4-Resouces">EPICS V4 Resouces<a class="anchor-link" href="#EPICS-V4-Resouces">&#182;</a></h1><ul>
+<li><p>SourceForge Website: <a href="http://epics-pvdata.sourceforge.net/">http://epics-pvdata.sourceforge.net/</a></p>
+</li>
+<li><p>Github: <a href="https://github.com/epics-base">https://github.com/epics-base</a></p>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Key-pages">Key pages<a class="anchor-link" href="#Key-pages">&#182;</a></h1><ul>
+<li>Documentation: <a href="http://epics-pvdata.sourceforge.net/literature.html">http://epics-pvdata.sourceforge.net/literature.html</a><ul>
+<li>Module documentation and doxygen/Javadoc</li>
+<li>Specifications/standards</li>
+<li>Guides</li>
+</ul>
+</li>
+<li>Downloads: <a href="https://sourceforge.net/projects/epics-pvdata/files/">https://sourceforge.net/projects/epics-pvdata/files/</a></li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Key-documents">Key documents<a class="anchor-link" href="#Key-documents">&#182;</a></h1><p>On the documentation page:</p><ul>
+<li><a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">pvAccess Protocol Specification</a></li>
+<li><a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">Normative Types Specification</a></li>
+<li><a href="http://epics-pvdata.sourceforge.net/informative/pvRequest.html">pvRequest specification</a></li>
+<li><a href="http://epics-pvdata.sourceforge.net/gettingStarted.html">Getting started guide</a></li>
+<li><a href="http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html">Developer Guide</a></li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Modules">Modules<a class="anchor-link" href="#Modules">&#182;</a></h1>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>pvDataCPP/pvDataJava: Implementation of pvData</li>
+<li>pvAccessCPP/pvAccessJava: Implementation of pvAccess</li>
+<li>normativeTypesCPP/normativeTypesJava: Implementation of Normative Types</li>
+<li>pvCommonCPP: Boost shared pointers (for RTEMS/VxWorks) and micro-benchmarking</li>
+<li>pvaSrv: Adding pvAccess to existing V3 IOC (C++ only)</li>
+<li>pvDatabaseCPP/pvDatabaseJava: Record/Database library for creating V4 IOCs</li>
+<li>pvaClientCPP/pvaClientJava: High-level client library</li>
+<li>pvaPy: EPICS V4 Python library</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Revision-numbering">Revision numbering<a class="anchor-link" href="#Revision-numbering">&#182;</a></h1><p><p>&lt;Major&gt;.&lt;Minor&gt;&lt;.Revision&gt;</p>
+<p>where major denotes ABI changes and minor denotes API changes (for major version 0 minor changes can be ABI changing).</p>
+<p>Also release bundles with numbering</p>
+<blockquote><p>p&gt;4.&lt;Major&gt;.&lt;Minor&gt;.&lt;Revision&gt;<p></p>
+</blockquote>
+
 </div>
 </div>
 </div></section></section>

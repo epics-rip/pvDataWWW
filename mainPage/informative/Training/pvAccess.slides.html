@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<title>exercise1 slides</title>
+<title>pvAccess slides</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -252,8 +252,7 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Exercise-1">Exercise 1<a class="anchor-link" href="#Exercise-1">&#182;</a></h1><hr>
-
+<h1 id="pvAccess-Overview">pvAccess Overview<a class="anchor-link" href="#pvAccess-Overview">&#182;</a></h1>
 </div>
 </div>
 </div></section></section><section><section>
@@ -262,44 +261,11 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Maths-Service">Maths Service<a class="anchor-link" href="#Maths-Service">&#182;</a></h1><p><br>
-You are going to write a simple service which takes 2 numbers and returns their sum.</p>
-
-</div>
-</div>
-</div><div class="fragment">
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>A template solution, "maths-template", is provided in exercise-templates.</p>
-<p>Make a copy and fill in the implementation.</p>
-<p>The layout is very similar to the <a href="https://github.com/epics-base/exampleCPP/tree/4.1.1/HelloWorld">Hello World service</a>. You can look there to see how you might supply the implementation for your service.</p>
-
-</div>
-</div>
-</div></div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>1. Using the template "maths-template", create a Maths service which takes a structure</p><pre>
-structure
-    string a
-    string b
-</pre><p>converts the values of the fields to doubles, calculates the sum and returns the structure</p>
-<pre>
-structure
-    double sum
-</pre><p>where the sum field contains the calculated sum.</p>
-<p>Test it by:</p>
-<p>a) starting the server with</p>
-<p>$ ./mathsServerRunner</p>
-<p>b) using eget:</p>
-<div class="highlight"><pre>$ eget -z -N -a <span class="s2">&quot;a=&lt;NUM1&gt;&quot;</span> -a <span class="s2">&quot;b=&lt;NUM2&gt;&quot;</span> mathService
-</pre></div>
+<h1 id="pvAccess">pvAccess<a class="anchor-link" href="#pvAccess">&#182;</a></h1><p><br></p>
+<p>pvAccess is the EPICS Version 4 communication protocol.</p>
+<p>High performance network protocol.</p>
+<p>Designed to carry pvData.</p>
+<p>Successor to Channel Access.</p>
 
 </div>
 </div>
@@ -309,18 +275,13 @@ structure
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>[ Hints:</p>
-<p>a) Look at the Hello World Service example, in particular <a href="https://github.com/epics-base/exampleCPP/blob/4.1.1/HelloWorld/helloWorldApp/HelloService.cpp">HelloService.cpp</a>. Use this
-   as a basis.</p>
-<p>b) Scalar fields of type double use PVDouble instead of PVString and have
-   ScalarType pvDouble instead of pvString. PVDouble has a similar API , but put() and get() respectively return and take a std::string instread of a double.</p>
-<p>c) You'll have to convert strings to doubles. atof(const char<code>*</code>) is good enough
-   for this here:</p>
-<div class="highlight"><pre><span class="n">atof</span><span class="p">(</span><span class="o">&lt;</span><span class="n">your</span><span class="o">-</span><span class="n">string</span><span class="o">&gt;</span><span class="p">.</span><span class="n">c_str</span><span class="p">())</span>
-</pre></div>
-<p><br></p>
-<p>d) Build using make.</p>
-<p>]</p>
+<p>Two key concepts</p>
+<ul>
+<li><p>Channel</p>
+</li>
+<li><p>Channel Provider</p>
+</li>
+</ul>
 
 </div>
 </div>
@@ -330,15 +291,18 @@ structure
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>2. Modify client to send the structure instead of using eget.</p><p>(You'll need to uncomment the client in src/Makefile)</p>
-<p>Test it by:</p>
-<p>a) starting the server with</p>
-<pre>
-   $ ./mathsServerRunner
-</pre><p>b) using the client</p>
-<pre>
-   $ ./mathsClientRunner &lt;NUM1&gt; &lt;NUM2&gt;
-</pre>
+<h1 id="Channel">Channel<a class="anchor-link" href="#Channel">&#182;</a></h1><p><br></p>
+<p>Channel services:</p>
+<ul>
+<li>Get Field: Get the pvData introspection data</li>
+<li>Channel Get: Get data.</li>
+<li>Channel Put: Put data.</li>
+<li>Channel PutGet: Put data, let server process it, and then get result.</li>
+<li>Channel Monitor: Monitor pvData changes.</li>
+<li>Channel Array: Get/Put subArray data.</li>
+<li>channelRPC</li>
+</ul>
+
 </div>
 </div>
 </div></section></section><section><section>
@@ -347,15 +311,42 @@ structure
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>3. Make the arguments doubles</p><p>(You'll need to modify the client to send doubles and the server to process them)</p>
-<p>Test it by:</p>
-<p>a) starting the server with</p>
-<pre>
-   $ ./mathsServerRunner
-</pre><p>b) using the client</p>
-<pre>
-   $ ./mathsClientRunner &lt;NUM1&gt; &lt;NUM2&gt;
-</pre>
+<h1 id="Channel-Provider">Channel Provider<a class="anchor-link" href="#Channel-Provider">&#182;</a></h1><p><br></p>
+<p>Something which implements Channel</p>
+<p>Remote and local providers</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Remote-providers">Remote providers<a class="anchor-link" href="#Remote-providers">&#182;</a></h3><p><br></p>
+<p>ca and pva</p>
+<ul>
+<li><p>pva uses pvAccess one the wire. Local Channel provider registered with servers pvAccess provides the channel.</p>
+</li>
+<li><p>ca uses ca on the wire. caProvider on client assembles pvData structures from DBR types</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Local-providers">Local providers<a class="anchor-link" href="#Local-providers">&#182;</a></h3><p><br></p>
+<ul>
+<li>rpcServer (pvAccess)</li>
+<li>dbPV (pvaSrv)</li>
+<li>local (pvDatabase)</li>
+</ul>
+
 </div>
 </div>
 </div></section></section><section><section>
@@ -364,13 +355,16 @@ structure
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><p>4. Add product and difference fields:</p></p>
-<pre>
-structure
-    double sum
-    double product
-    double difference
-</pre>
+<h1 id="Getting-a-PV">Getting a PV<a class="anchor-link" href="#Getting-a-PV">&#182;</a></h1><p><br></p>
+<ul>
+<li>Channel Find (UDP broadcast)</li>
+<li>Channel create </li>
+<li>GetField (optional)</li>
+<li>Create Channel Get </li>
+<li>Do Channel Get (with destoy) (Get status, data, changed bitset)</li>
+<li>Detroy Channel</li>
+</ul>
+
 </div>
 </div>
 </div></section></section>
