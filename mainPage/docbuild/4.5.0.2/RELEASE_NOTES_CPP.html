@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<htm lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Release 4.5.0.2 C++ Release Notes</title>
+  <link rel="stylesheet" type="text/css" href="../../base.css" />
+  <link rel="stylesheet" type="text/css" href="../../epicsv4.css" />
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="../../script/tocgen.js"></script>
+</head>
+
+<body>
+<div class="head">
+<h1>EPICS V4 Release 4.5.0.2 C++ Release Notes (2016/05/25)</h1>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Items for the Table of Contents go inside this contents div -->
+<div id="contents" class="contents">
+<hr />
+
+<p>The only changes since release 4.5.0.1 are:</p>
+
+<h2>pvDataCPP (5.0.4)</h2>
+
+<ul>
+<li>Fixed bitset serialization (issue #24)</li>
+<li>Fixed truncation in BitSet::or_and (issue #27)</li>
+</ul>
+
+<h2>pvAccessCPP (4.1.3)</h2>
+
+<ul>
+<li>Monitor fix: element no longer queued when overrun in progress.</li>
+</ul>
+
+<h2>pvaSrv (0.11.4)</h2>
+
+<ul>
+<li>Fixed more issues:
+#38, #41, #44, #46, #48 (fields, structures, enums)</li>
+<li>Added support for Cygwin and MinGW</li>
+<li>Fixed issues #34, #35 (weak pointers and locking)</li>
+</ul>
+
+<h2>pvaSrv (0.11.3)</h2>
+
+<ul>
+<li>Fixed pvaSrv does not always get first monitor (issue #1)</li>
+<li>Fixed Maximum number of free monitor elements is 2, regardless of queue size
+(issue #23)</li>
+<li>Fixed No updates after restarting monitors (issue #24)</li>
+</ul>
+
+</div> <!-- contents -->
+
+<hr />
+<address>Contact author: David Hickin, Diamond</address>
+</body>
+</html>
