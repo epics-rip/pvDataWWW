@@ -16,13 +16,21 @@ pvAccessCPP (4.1.3)
 * Monitor fix: element no longer queued when overrun in progress.
 
 
+pvaSrv (0.11.4)
+---------------
+
+* Fixed more issues:
+  #38, #41, #44, #46, #48 (fields, structures, enums)
+* Added support for Cygwin and MinGW
+* Fixed issues #34, #35 (weak pointers and locking)
+
 pvaSrv (0.11.3)
 ---------------
 
 * Fixed pvaSrv does not always get first monitor (issue #1)
 * Fixed Maximum number of free monitor elements is 2, regardless of queue size
   (issue #23)
-* Fix No updates after restarting monitors (issue #24)
+* Fixed No updates after restarting monitors (issue #24)
 
 
 4.5.0.1 (2016/02/05)
