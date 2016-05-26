@@ -8,7 +8,7 @@ pvCommon : FORCE
 	make -C pvCommonCPP
 
 pvData : FORCE
-	make -C pvDataCPP 
+	make -C pvDataCPP
 
 nt : FORCE
 	make -C normativeTypesCPP
@@ -34,10 +34,10 @@ archSrv : FORCE
 pvaPy : FORCE
 	make -C pvaPy
 
-base%: FORCE
+base-%: FORCE
 	make -C $@
 
-clean : 
+clean :
 	make -C pvCommonCPP clean
 	make -C pvDataCPP clean
 	make -C pvAccessCPP clean

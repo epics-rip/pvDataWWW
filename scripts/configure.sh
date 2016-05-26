@@ -23,14 +23,15 @@ check_for_config_files()
 check_shell_vars()
 {
     base=( base* )
-    if [ -d "${base[0]}" ]; then
-        echo "Using local EPICS Base ${base[0]}."
-        EPICS_BASE=$THISDIR/"${base[0]}"
-    fi
 
     if [ -z "${EPICS_BASE}" ]; then
-        echo "EPICS_BASE unspecified." 
-        exit 2       
+        if [ -d "${base[0]}" ]; then
+            echo "Using local EPICS Base ${base[0]}."
+            EPICS_BASE=$THISDIR/"${base[0]}"
+        else
+            echo "EPICS_BASE unspecified." 
+            exit 2
+        fi
     fi
 
     if [ ! -d "${EPICS_BASE}" ]; then
