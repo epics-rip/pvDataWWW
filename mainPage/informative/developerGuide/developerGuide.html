@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 10-Feb-2016</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 02-June-2016</h2>
 <p>
 <b>NOTE: If you are using EPICS V4 Release 4.5 then look at the previous version.</b>
 </p>
@@ -325,44 +325,84 @@ the value and its meta data (graphics limits, alarm status, timestamp) to or fro
 pvData structures (NTScalar, NTScalarArray).</p>
 <h3>Overview: pvaPy</h3>
 <p>A Python wrapper for pvData and pvAccess.</p>
-<h3>Overview: channelProvider implementations</h3>
-<p>The basic requirements for  channel provider are:</p>
+<h3>Overview: channelProvider</h3>
+<p>The basic requirements for a channel provider are:</p>
 <ol>
-   <li>Given a channel name find and connect to the data source</li>
+   <li>Given a channel name, find and connect to the data source</li>
    <li>Implement one or more of the channel methods: getField, createChannelGet, etc.</li>
    <li>get/put all data as pvData.</li>
    <li>Prefer normative types instead of raw pvData</li>
 </ol>
 <p><b>pvAccess</b> implements <b>channelProviderRegistry</b>, which
-allows an arbitrary number of providers for a client.
+allows an arbitrary number of providers.
 </p>
 <p>
-In addition pvAccess implements two providers:</p>
+A provider is one of the following:</p>
 <dl>
-   <dt>pva</dt>
-      <dd>This is a connection between a client and a server that uses the pva network
+   <dt>Client Provider</dt>
+     <dd>Called by code that wants to access a <b>channel</b>, where
+       each channel has a unique channel name</dd>
+   <dt>Server Provider</dt>
+     <dd>A provider for the remote side of the <b>pva</b> provider, which is
+       described next.</dd>
+</dl>
+<p>
+Before either kind of provider can be used it must first register itself with the 
+<b>channelProviderRegistry</b>
+</p>
+<h4>Provider pva</h4>
+<p>An important component of EPICS V4 is provider <b>pva</b>, which is a provider
+that implements a connection between a client and a server that uses the pva network
       protocal as defined in:
          <a
           href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">
           pvAccess_Protocol_Specification.html</a>
-       </dd>
-   <dt>ca</dt>
-     <dd>This is a connection that uses channel access to access an epics V3 Database.</dd>
+</p>
+<p>Provider <b>pva</b> has two components:</p>
+<dl>
+  <dt>client</dt>
+     <dd>This is what a pvAccess client uses.</dd>
+  <dt>remote</dt>
+     <dd>This connects to server providers</dd>
 </dl>
-<p>Provider <b>pva</b> has two components, client and remote, which is what the client uses.
-Network communcation is used between client and server.
+<p>Network communcation is used between client and server.
 Remote <b>pva</b> transfers data between the network and channel providers that
 have registered at the remote node.</p>
-<p>At present two providers are available for the remote side of <b>pva</b></p>
+<h4>Client Providers</h4>
+<p>An arbitrary number of client providers can be implemented.
+Each provider must implement the <b>channel</b> interface
+mentioned above and must register with the <b>channelProviderRegistry</b>
+before it can be used by a client.
+</p>
+<p>pvAccess itself provides the following client providers:</p>
+<dl>
+   <dt>pva</dt>
+      <dd>The client side of provider <b>pva</b>.
+       </dd>
+   <dt>ca</dt>
+     <dd>This is a connection that uses channel access to access an epics V3 channel.</dd>
+   <dt>zeroMQ</dt>
+     <dd>Matej?? What to say</dd>
+   <dt>pipelineService</dt>
+      <dd>Matej?? What to say</dd>
+</dl>
+<h4>Server Providers</h4>
+<p>At present the following providers are available for the remote side of <b>pva</b></p>
 <dl>
    <dt>local</dt>
       <dd>This is implemented by pvDatabase</dd>
    <dt>pvSrv</dt>
       <dd>This is a provider that directly accesses V3 DBRecord.</dd>
+   <dt>zeroMQ</dt>
+     <dd>Matej?? What to say</dd>
+   <dt>pipelineService</dt>
+      <dd>Matej?? What to say</dd>
 </dl>
-<p>Thus at present a client that is not running as part of a V3 IOC or a pvDatabase
+<h4>Client Provider Choices</h4>
+<p>At present a client that is not running as part of a V3 IOC or a pvDatabase
 has two choices for channelProvider: <b>pva</b> and <b>ca</b>.
-A client running as part of a V3 IOC or pvDatabase has all of the following choices:
+A client running as part of a V3 IOC that is also
+using pvDatabase has all of the following choices:
 <b>pva</b>, <b>ca</b>, <b>local</b>, and <b>pvSrv</b>.
 Note that if a client directly connects to either <b>local</b> or <b>pvSrv</b>
 no network communication is involved.
@@ -449,8 +489,11 @@ The following should be consulted for detailed documentation:</p>
     </li>
   
 </ul>
-<p>In addition a standard for normativeTypes exists:</p>
+<p>In addition the following are standards:</p>
 <ul>
+    <li><a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html">
+  Network protocol for <b>pva</b> provider</a>
+   </li>
     <li><a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html">
   Normative Types Specification</a>
    </li>
@@ -509,14 +552,14 @@ export PATH=$PATH:${EPICSV4}/pvAccessCPP/bin/${EPICS_HOST_ARCH}
 <h3>pvlist</h3>
 <p>The options are:</p>
 <pre>
-mrk&gt; pvlist -help
+mrk> pvlist -help
 
-Usage: pvlist [options] [&lt;server address or GUID starting with '0x'&gt;]...
+Usage: pvlist [options] [server address or GUID starting with '0x']...
 
   -h: Help: Print this message
 options:
   -i                 Print server info (when server address list/GUID is given)
-  -w &lt;sec&gt;:          Wait time, specifies timeout, default is 3.000000 second(s)
+  -w sec:            Wait time, specifies timeout, default is 3.000000 second(s)
   -q:                Quiet mode, print only error messages
   -d:                Enable debug output
 
@@ -556,40 +599,40 @@ DBRdouble00
 <p>pvget provides functionality similar to caget.
 For example:</p>
 <pre>
-mrk&gt; caget DBRdouble01
+mrk> caget DBRdouble01
 double01                       0
-mrk&gt; pvget DBRdouble01
+mrk> pvget DBRdouble01
 double01                       0
 </pre>
 <p>The options are:</p>
 <pre>
-mrk&gt; pvget -help
+mrk> pvget -help
 
-Usage: pvget [options] &lt;PV name&gt;...
+Usage: pvget [options] PVname...
 
-  -h: Help: Print this message
+  -h Help: Print this message
 options:
-  -r &lt;pv request&gt;:   Request, specifies what fields to return and options, default is 'field(value)'
-  -w &lt;sec&gt;:          Wait time, specifies timeout, default is 3.000000 second(s)
-  -t:                Terse mode - print only value, without names
-  -i:                Do not format standard types (enum_t, time_t, ...)
-  -m:                Monitor mode
-  -p &lt;provider&gt;:     Set default provider name, default is 'pva'
-  -q:                Quiet mode, print only error messages
-  -d:                Enable debug output
-  -F &lt;ofs&gt;:          Use &lt;ofs&gt; as an alternate output field separator
-  -f &lt;input file&gt;:   Use &lt;input file&gt; as an input that provides a list PV name(s) to be read, use '-' for stdin
-  -c:                Wait for clean shutdown and report used instance count (for expert users)
+  -r pvrequest       Request, specifies what fields to return and options, default is 'field(value)'
+  -w sec             Wait time, specifies timeout, default is 3.000000 second(s)
+  -t                 Terse mode - print only value, without names
+  -i                 Do not format standard types (enum_t, time_t, ...)
+  -m                 Monitor mode
+  -p provider       Set default provider name, default is 'pva'
+  -q                 Quiet mode, print only error messages
+  -d                 Enable debug output
+  -F ofs             Use ofs as an alternate output field separator
+  -f input_file     Use input_file as an input that provides a list PV name(s) to be read, use '-' for stdin
+  -c                 Wait for clean shutdown and report used instance count (for expert users)
  enum format:
-  -n: Force enum interpretation of values as numbers (default is enum string)
+  -n  Force enum interpretation of values as numbers (default is enum string)
 
 example: pvget double01
 </pre>
 <p>Some examples are:</p>
 <pre>
-mrk&gt; pvget PVRenum01
+mrk> pvget PVRenum01
 PVRenum01                         zero
-mrk&gt; pvget -i PVRenum01
+mrk> pvget -i PVRenum01
 enum01
 epics:nt/NTEnum:1.0 
     enum_t value
@@ -597,7 +640,7 @@ epics:nt/NTEnum:1.0
         string[] choices [zero,one,two,three]
 
 
-mrk&gt; pvget -i -r "value,alarm,timeStamp" enum01
+mrk> pvget -i -r "value,alarm,timeStamp" enum01
 PVRenum01
 epics:nt/NTEnum:1.0 
     enum_t value
@@ -614,7 +657,7 @@ epics:nt/NTEnum:1.0
 </pre>
 <p>Multiple channels can be accessed witn a single command. For example:</p>
 <pre>
-mrk&gt; pvget PVRdouble01 PVRdouble02
+mrk> pvget PVRdouble01 PVRdouble02
 PVRdouble01                       0
 PVRdouble02                       0
 </pre>
@@ -624,9 +667,9 @@ It is also possible to use ca, i. e. the channel access server that comes with i
 Thus it can access a V3 IOC even if the IOC has no V4 support.
 </p>
 <pre>
-mrk&gt; pvget -p ca DBRdouble01
+mrk> pvget -p ca DBRdouble01
 DBRdouble01                       0
-mrk&gt; pvget -p ca -r "value,alarm,timeStamp" DBRdouble01
+mrk> pvget -p ca -r "value,alarm,timeStamp" DBRdouble01
 DBRdouble01
 epics:nt/NTScalar:1.0 
     double value 0
@@ -635,12 +678,12 @@ epics:nt/NTScalar:1.0
 </pre>
 <p>pvget can also be used to monitor, i. e. it has functionality similer to camonitor.</p>
 <pre>
-mrk&gt; pvget -m -r "value,alarm,timeStamp" PVRdouble02
+mrk> pvget -m -r "value,alarm,timeStamp" PVRdouble02
 PVRdouble02
 epics:nt/NTScalar:1.0 
     double value 0
     alarm_t alarm INVALID NO_STATUS UDF
-    time_t timeStamp &lt;undefine&gt;> 0
+    time_t timeStamp &lt;undefine&gt; 0
 
 
 PVRdouble02
@@ -654,33 +697,33 @@ epics:nt/NTScalar:1.0
 <p>pvput provides functionality similar to caput.
 For example:</p>
 <pre>
-mrk&gt; caput DBRdouble01 1.0
+mrk> caput DBRdouble01 1.0
 Old : DBRdouble01                       1
 New : DBRdouble01                       1
-mrk&gt; pvput DBRdouble01 1.0
+mrk> pvput DBRdouble01 1.0
 Old : DBRdouble01                       1
 New : DBRdouble01                       1
 </pre>
 <p>The options are:</p>
 <pre>
-mrk&gt; pvput -help
+mrk> pvput -help
 
-Usage: pvput [options] &lt;PV name&gt; &lt;values&gt;...
+Usage: pvput [options] PVname values...
 
-  -h: Help: Print this message
+  -h Help: Print this message
 options:
-  -r &lt;pv request&gt;:   Request, specifies what fields to return and options, default is 'field(value)'
-  -w &lt;sec&gt;:          Wait time, specifies timeout, default is 3.000000 second(s)
-  -t:                Terse mode - print only successfully written value, without names
-  -p &lt;provider&gt;:     Set default provider name, default is 'pva'
-  -q:                Quiet mode, print only error messages
-  -d:                Enable debug output
-  -F &lt;ofs&gt;:          Use &lt;ofs&gt; as an alternate output field separator
-  -f &lt;input file&gt;:   Use &lt;input file&gt; as an input that provides a list PV name(s) to be read, use '-' for stdin
+  -r pv_request      Request, specifies what fields to return and options, default is 'field(value)'
+  -w sec             Wait time, specifies timeout, default is 3.000000 second(s)
+  -t                 Terse mode - print only successfully written value, without names
+  -p provider        Set provider name, default is 'pva'
+  -q                 Quiet mode, print only error messages
+  -d                 Enable debug output
+  -F ofs             Use ofs as an alternate output field separator
+  -f input_file      Use input_file as an input that provides a list PV name(s) to be read, use '-' for stdin
  enum format:
-  default: Auto - try value as enum string, then as index number
-  -n: Force enum interpretation of values as numbers
-  -s: Force enum interpretation of values as strings
+  default Auto - try value as enum string, then as index number
+  -n  Force enum interpretation of values as numbers
+  -s  Force enum interpretation of values as strings
 
 example: pvput double01 1.234
 </pre>
@@ -693,53 +736,145 @@ channelRPC and understands some of the normative types.
 </p>
 <p>The options are:</p>
 <pre>
-mrk&gt; eget -h
+mrk> eget -h
 
-Usage: eget [options] [&lt;PV name&gt;... | -s &lt;service name&gt;]
+Usage: eget [options] [PV_name ... | -s service_name]
 
-  -h: Help: Print this message
+  -h  Help: Print this message
 
 options:
-  -s &lt;service name&gt;:   Service API compliant based RPC service name (accepts NTURI request argument)
-  -a &lt;service arg&gt;:    Service argument in 'name[=value]' or 'name value' form
-  -r &lt;pv request&gt;:     Get request string, specifies what fields to return and options, default is 'field(value)'
-  -w &lt;sec&gt;:            Wait time, specifies timeout, default is 3.000000 second(s)
-  -z:                  Pure pvAccess RPC based service (send NTURI.query as request argument)
-  -N:                  Do not format NT types, dump structure instead
-  -i:                  Do not format standard types (enum_t, time_t, ...)
-  -t:                  Terse mode
-  -T:                  Transpose vector, table, matrix
-  -m:                  Monitor mode
-  -x:                  Use column-major order to decode matrix
-  -p &lt;provider&gt;:       Set default provider name, default is 'pva'
-  -q:                  Quiet mode, print only error messages
-  -d:                  Enable debug output
-  -F &lt;ofs&gt;:            Use &lt;ofs&gt; as an alternate output field separator
-  -f &lt;input file&gt;:     Use &lt;input file&gt; as an input that provides a list PV name(s) to be read, use '-' for stdin
-  -c:                  Wait for clean shutdown and report used instance count (for expert users)
+  -s service_name      Service API compliant based RPC service name (accepts NTURI request argument)
+  -a service_arg       Service argument in 'name[=value]' or 'name value' form
+  -r request           Get request string, specifies what fields to return and options, default is 'field(value)'
+  -w sec               Wait time, specifies timeout, default is 3.000000 second(s)
+  -z                   Pure pvAccess RPC based service (send NTURI.query as request argument)
+  -N                   Do not format NT types, dump structure instead
+  -i                   Do not format standard types (enum_t, time_t, ...)
+  -t                   Terse mode
+  -T                   Transpose vector, table, matrix
+  -m                   Monitor mode
+  -x                   Use column-major order to decode matrix
+  -p provider          Set provider name, default is 'pva'
+  -q                   Quiet mode, print only error messages
+  -d                   Enable debug output
+  -F ofs               Use ofs as an alternate output field separator
+  -f input_file        Use input_file as an input that provides a list PV name(s) to be read, use '-' for stdin
+  -c                   Wait for clean shutdown and report used instance count (for expert users)
  enum format:
-  -n: Force enum interpretation of values as numbers (default is enum string)
+  -n  Force enum interpretation of values as numbers (default is enum string)
 
 
 examples:
 
 #! Get the value of the PV corr:li32:53:bdes
-&gt; eget corr:li32:53:bdes
+> eget corr:li32:53:bdes
 
 #! Get the table of all correctors from the rdb service
-&gt; eget -s rdbService -a entity=swissfel:devicenames
+> eget -s rdbService -a entity=swissfel:devicenames
 
 #! Get the archive history of quad45:bdes;history between 2 times, from the archive service
-&gt; eget -s archiveService -a entity=quad45:bdes;history -a starttime=2012-02-12T10:04:56 -a endtime=2012-02-01T10:04:56
+> eget -s archiveService -a entity=quad45:bdes;history -a starttime=2012-02-12T10:04:56 -a endtime=2012-02-01T10:04:56
 
 #! Get polynomials for bunch of quads using a stdin to give a list of PV names
-&gt; eget -s names -a pattern=QUAD:LTU1:8%:POLYCOEF | eget -f -
+> eget -s names -a pattern=QUAD:LTU1:8%:POLYCOEF | eget -f -
+</pre>
+
+<h2>Channel Provider Context</h2>
+<p>A channel provider normally has "context" associated with it.
+For example the client side of provider <b>pva</b> needs threads for broadcasts,
+connecting to a channel, and passing data between client and server.
+This section discusses how existing providers are initialized so that a provider can create it's context.
+</p>
+<p>If <b>pvaClient</b> is used by a client it helps with initiatizing required providers.
+This this section discusses client provider initialization via pvaClient.
+</p>
+<p>
+If pvDatabase is used then implements and registers server provider <b>local</b>.
+This this section discusses server provider initialization via pvDatabase.
+</p>
+<h3>Fundamental Rules For Initializing Provider Context</h3>
+<h4>Client Providers</h4>
+<p>A client should only initialize the client providers it uses.
+Since each provider can have overhead associated with it's context,
+I client should not be started unless it is actually used.</p>
+<h4>Server Providers</h4>
+<p>The remote side of <b>pva</b> is started via a call to:</p>
+<pre>
+startPVAServer("providerList",...
+</pre>
+<p><b>providerList</b> should only include the server providers required.
+and each provider must have registered with <b>channelProviderRegistry</b>
+before <b>startPVAServer</b> is called.
+</p>
+<p>
+In particular the list should not include any client providers or network loops may occur.
+</p>
+<h3>Context Initialization via pvaClient</h3>
+<p><b>PvaClient</b> is a singleton class.
+It initializes client providers, can cache channel connections, and some other channel methods.
+</p>
+<p>A C++ client starts pvaClient via:</p>
+<pre>
+PvaClientPtr pva= PvaClient::get("providerList");
+</pre>
+<p>A Java client starts pvaClient via:</p>
+<pre>
+PvaClient pva= PvaClient.get("providerList");
+</pre>
+<p><b>providerList</b> is a space separated list of provider names.
+If this is called by a pure client the the only currently supported options are:</p>
+<dl>
+   <dt>"pva"</dt>
+     <dd>The context for the client side of provider <b>pva</b> is started.</dd>
+   <dt>"ca"</dt>
+     <dd>The context for the client side of provider <b>ca</b> is started.</dd>
+   <dt>"pva ca"</dt>
+     <dd>The context for the client side of provider <b>pva</b> and <b>ca</b> are started.</dd>
+</dl>
+<p>Other client providers can also be implemented but each must call provide a way to
+initialize their context and each must register itself before PvaClient is started.
+</p>
+<p>
+It is also possible for PvaClient to be used in a server to access other channels.
+An example is a PVRecord that has a link to another channel.
+In this case the <b>providerList</b> can also include service providers,
+but the service providers must have registered with <b>channelProviderRegistry</b>
+before PvaClient is started.
+</p>
+<h3>Server Context Initialization</h3>
+<p>Both Java and C++ has a pvAccess method named <b>startPVAServer</b>,
+which starts the server context for the remote side of provider <b>pva</b>.
+The first argument to this method is a string that has a space separated list
+of provider names.
+Each provider must be  registered with  <b>channelProviderRegistry</b> before <b>startPVAServer</b> is called.
+</p>
+<p><b>pvDatabase</b> implements a provider named <b>local</b>,
+which is a provider that accesses PVRecords.
+</p>
+<p><b>pvaSrv</b> implements provider <b>dbPv</b>,
+which is a provider for accessing V3 DBRecords.
+This is only available for a V3 IOC.
+</p>
+<p>Other server providers can also be provided but each must register with <b>channelProviderRegistry</b> before <b>startPVAServer</b> is called.
+</p>
+<p>In Java the context for the remote side of provider <b>pva</b> is started via:</p>
+<pre>
+ServerContextImpl context = ServerContextImpl.("local",0,true,System.out);
+</pre>
+<p>In C++ a server that is not part of a V3 IOC, the context for the remote side of provider. <b>pva</b> is started via:</p>
+<pre>
+ServerContextImpl context = ServerContextImpl.startPVAServer("local",0,true,System.out);
+</pre>
+<p>In C++ a server that is part of a V3 IOC, the context for the remote side of provider
+is started via the following statement in a st.cmd file.</p>
+<pre>
+startPVAServer "local dbPv"
 </pre>
 
 <h2>example code</h2>
 
 <p><b>exampleCPP</b> and <b>exampleJava</b> both have examples that use code from all modules
-described in this document except for <b>pvaPv</b>.
+described in this document except for <b>pvaPy</b>.
 In particuar they both have examples <b>database</b> and <b>exampleClient</b>.
 These examples that can be used while learning what is described in this document.
 </p>
@@ -748,12 +883,16 @@ These examples that can be used while learning what is described in this documen
 <p>
 In addition <b>exampleCPP/database</b>
 shows how to have PVRecords and V3 Records both running as part of a V3 IOC.
-It also shows how to start pvaSrv so that both <b>ca</b> and <b>pva</b> can be used
+It also shows how to start provider <b>dbPv</b> so that both <b>ca</b> and <b>pva</b> can be used
 to access the V3 records.
 </p>
 <p><b>exampleClient</b> has example client code using the API for pvaClient.
 </p>
-
+<p>Both <b>exampleCPP</b> and <b>exampleJava</b> also have and example named <b>exampleLink</b>.
+which implements a PVRecord that monitors a channel.
+Thus <b>exampleLink</b> is a server for provider <b>pva</b> and has a record that is a 
+<b>pva</b> client.
+</p>
 
 <p>Examples for <b>exampleJava/exampleClient</b>, <b>exampleCPP/exampleClient</b>, and <b>pvaPy</b> require that the database in <b>exampleCPP/exampleClient</b> 
 or <b>exampleJava/exampleClient</b> 
@@ -768,46 +907,46 @@ All the V4 PVRecords have the prefix <b>PVR</b> and all the V3 DBRecords have th
 <p>
 In linux <b>exampleCPP/database</b> can be started as follows:</p>
 <pre>
-mrk&gt; pwd
+mrk> pwd
 /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
+mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
 <p>The example database has both V3 IOC records and V4 PVRecords.
 In addition <b>pvaSrv</b> is running. Thus all V3 records are available via either <b>ca</b> or <b>pva</b>.
 The PVRecords are only available via <b>pva</b>.
 Examples of using ca and pva command line tools are:</p>
 <pre>
-mrk&gt; pvlist 
+mrk> pvlist 
 GUID 0x7F06B2560000000047B97D25, version 1: tcp@[10.0.0.37:45345, 192.168.124.1:45345]
-mrk&gt; pvlist 0x7F06B2560000000047B97D25
+mrk> pvlist 0x7F06B2560000000047B97D25
 DBRao01
 DBRdouble00
 .... many more records
-mrk&gt; pvget PVRlong
+mrk> pvget PVRlong
 Channel connect timed out: 'PVRlong' not found.
 PVRlong                        0
-mrk&gt; caget PVRlong
-mrk&gt; caget DBRdouble01
+mrk> caget PVRlong
+mrk> caget DBRdouble01
 DBRdouble01                       0
-mrk&gt; pvget DBRdouble01
+mrk> pvget DBRdouble01
 DBRdouble01                       0
-mrk&gt; caget PVRushort01
+mrk> caget PVRushort01
 Channel connect timed out: 'PVRushort01' not found.
-mrk&gt; pvget PVRushort01
+mrk> pvget PVRushort01
 PVRushort01                       0
-mrk&gt; 
+mrk> 
 </pre>
 <p>The examples in <b>exampleCPP/exampleClient</b> and <b>exampleJava/exampleClient</b> can now be run.
 For example:</p>
 <pre>
-mrk&gt; pwd
+mrk> pwd
 /home/epicsv4/master/exampleCPP/exampleClient
-mrk&gt; ls bin/linux-x86_64/
+mrk> ls bin/linux-x86_64/
 examplePvaClientGet          examplePvaClientNTMulti  helloWorldPutGet
 examplePvaClientMonitor      examplePvaClientProcess  helloWorldRPC
 examplePvaClientMultiDouble  examplePvaClientPut
 
-mrk&gt; bin/linux-x86_64/examplePvaClientGet
+mrk> bin/linux-x86_64/examplePvaClientGet
 _____examplePvaClientGet starting_______
 __exampleDouble__
 short way
@@ -819,9 +958,9 @@ as double 0
 </pre>
 <p>An example of running the examples in pvaPy is:</p>
 <pre>
-mrk&gt; pwd
+mrk> pwd
 /home/epicsv4/pvaPy/examples
-mrk&gt; python testPut.py
+mrk> python testPut.py
 ****************************
 Testing string
 Got old value:  
@@ -831,7 +970,7 @@ Putting value:  ; b
 Got new value:  ; b
 
 ...... lots more output
-mrk&gt;
+mrk>
 </pre>
 
 
@@ -1973,7 +2112,7 @@ class PVDoubleArray
 // to change the raw array use code like:
 shared_vector&lt;double&gt; data(n)
 // put values into data and then
-pvDoubleArray-&gt;replace(freeze(data))
+pvDoubleArray->replace(freeze(data))
 </pre>
 
 
@@ -2104,6 +2243,7 @@ must be replaced with a new value.
 <p>Since the pvCopy facility makes extensive use of Convert
 the same rules apply to it.</p>
 
+
 <h2>pvDataCPP examples</h2>
 
 <h3>C++ Introspection Basic Example</h3>
@@ -2112,9 +2252,9 @@ the same rules apply to it.</p>
 <h4>Using FieldBuilder</h4>
 
 <pre>
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure =
-    fb-&gt;add("value", pvDouble)-&gt;
+    fb->add("value", pvDouble)->
     createStructure();
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2130,10 +2270,10 @@ structure
 StringArray fieldName(1);
 FieldConstPtrArray field(1);
 fieldName[0] = "value";
-field[0] = fieldCreate-&gt;createScalar(pvDouble);
+field[0] = fieldCreate->createScalar(pvDouble);
 
 StructureConstPtr structure =
-    fieldCreate-&gt;createStructure(fieldName, field);
+    fieldCreate->createStructure(fieldName, field);
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
 <p>This produces:</p>
@@ -2152,11 +2292,11 @@ element type double, an alarm structure, and a timeStamp structure.
 
 <pre>
 cout &lt;&lt; "valueAlarmTimeStamp\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;addArray("value", pvDouble)-&gt;
-    add("alarm",standardField->alarm()))-&gt;
-    add("timeStamp",standardField->timeStamp()))-&gt;
+    fb->addArray("value", pvDouble)->
+    add("alarm",standardField->alarm()))->
+    add("timeStamp",standardField->timeStamp()))->
     createStructure();
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2179,21 +2319,21 @@ structure
 
 <pre>
 cout &lt;&lt; "valueAlarmTimeStamp\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr alarm =
-   fb-&gt;add("severity", pvInt)-&gt;
-   add("status",pvInt)-&gt;
-   add("message",pvString)-&gt;
+   fb->add("severity", pvInt)->
+   add("status",pvInt)->
+   add("message",pvString)->
    createStructure();
 StructureConstPtr timeStamp =
-        fb-&gt;add("secondsPastEpoch", pvLong)-&gt;
-        add("nanoseconds",pvInt)-&gt;
-        add("userTag",pvInt)-&gt;
+        fb->add("secondsPastEpoch", pvLong)->
+        add("nanoseconds",pvInt)->
+        add("userTag",pvInt)->
         createStructure();
 StructureConstPtr structure  =
-    fb-&gt;addArray("value", pvDouble)-&gt;
-    add("alarm",alarm)-&gt;
-    add("timeStamp",timeStamp)-&gt;
+    fb->addArray("value", pvDouble)->
+    add("alarm",alarm)->
+    add("timeStamp",timeStamp)->
     createStructure();
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2219,28 +2359,28 @@ FieldConstPtrArray field(n);
 fieldName[0] ="severity";
 fieldName[1] ="status";
 fieldName[2] ="message";
-field[0] = fieldCreate-&gt;createScalar(pvInt);
-field[1] = fieldCreate-&gt;createScalar(pvInt);
-field[2] = fieldCreate-&gt;createScalar(pvString);
-StructureConstPtr alarm = fieldCreate-&gt;createStructure(fieldName, field);
+field[0] = fieldCreate->createScalar(pvInt);
+field[1] = fieldCreate->createScalar(pvInt);
+field[2] = fieldCreate->createScalar(pvString);
+StructureConstPtr alarm = fieldCreate->createStructure(fieldName, field);
 fieldName = StringArray(n);
 field = FieldConstPtrArray(n);
 fieldName[0] = "secondsPastEpoch";
 fieldName[1] = "nanoseconds";
 fieldName[2] = "userTag";
-field[0] = fieldCreate-&gt;createScalar(pvLong);
-field[1] = fieldCreate-&gt;createScalar(pvInt);
-field[2] = fieldCreate-&gt;createScalar(pvInt);
-StructureConstPtr timeStamp = fieldCreate-&gt;createStructure(fieldName, field);
+field[0] = fieldCreate->createScalar(pvLong);
+field[1] = fieldCreate->createScalar(pvInt);
+field[2] = fieldCreate->createScalar(pvInt);
+StructureConstPtr timeStamp = fieldCreate->createStructure(fieldName, field);
 fieldName = StringArray(n);
 field = FieldConstPtrArray(n);
 fieldName[0] = "value";
 fieldName[1] = "alarm";
 fieldName[2] = "timeStamp";
-field[0] = fieldCreate-&gt;createScalarArray(pvDouble);
+field[0] = fieldCreate->createScalarArray(pvDouble);
 field[1] = alarm;
 field[2] = timeStamp;
-StructureConstPtr structure = fieldCreate-&gt;createStructure(fieldName, field);
+StructureConstPtr structure = fieldCreate->createStructure(fieldName, field);
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
 This produces:
@@ -2264,19 +2404,19 @@ structure
    <dd>
 <pre>
 cout &lt;&lt; "valueAlarmTimeStampNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;addArray("value", pvDouble)-&gt;
-    addNestedStructure("alarm")-&gt;
-        add("severity", pvInt)-&gt;
-        add("status",pvInt)-&gt;
-        add("message",pvString)-&gt;
-    endNested()-&gt;
-    addNestedStructure("timeStamp")-&gt;
-        add("secondsPastEpoch", pvLong)-&gt;
-        add("nanoseconds",pvInt)-&gt;
-        add("userTag",pvInt)-&gt;
-        endNested()-&gt;
+    fb->addArray("value", pvDouble)->
+    addNestedStructure("alarm")->
+        add("severity", pvInt)->
+        add("status",pvInt)->
+        add("message",pvString)->
+    endNested()->
+    addNestedStructure("timeStamp")->
+        add("secondsPastEpoch", pvLong)->
+        add("nanoseconds",pvInt)->
+        add("userTag",pvInt)->
+        endNested()->
     createStructure();
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2299,13 +2439,13 @@ structure
     <dd>
 <pre>
 cout &lt;&lt; "union\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 UnionConstPtr unionx =
-    fb-&gt;add("short", pvShort)-&gt;
-    add("long", pvLong)-&gt;
+    fb->add("short", pvShort)->
+    add("long", pvLong)->
     createUnion();
 StructureConstPtr structure  =
-    fb-&gt;add("value",unionx)-&gt;
+    fb->add("value",unionx)->
         createStructure();
     cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2322,12 +2462,12 @@ structure
    <dd>
 <pre>
 cout &lt;&lt; "unionNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;addNestedUnion("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-        endNested()-&gt;
+    fb->addNestedUnion("value")->
+        add("short", pvShort)->
+        add("long", pvLong)->
+        endNested()->
     createStructure();
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2338,13 +2478,13 @@ This produces the same result as union.
    <dd>
 <pre>
 cout &lt;&lt; "unionArray\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 UnionConstPtr unionx =
-    fb-&gt;add("short", pvShort)-&gt;
-    add("long", pvLong)-&gt;
+    fb->add("short", pvShort)->
+    add("long", pvLong)->
     createUnion();
 StructureConstPtr structure  =
-    fb-&gt;addArray("value",unionx)-&gt;
+    fb->addArray("value",unionx)->
     createStructure();
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2363,12 +2503,12 @@ structure
    <dd>
 <pre>
 cout &lt;&lt; "unionArrayNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;addNestedUnionArray("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-    endNested()-&gt;
+    fb->addNestedUnionArray("value")->
+        add("short", pvShort)->
+        add("long", pvLong)->
+    endNested()->
         createStructure();
     cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2379,13 +2519,13 @@ This produces the same result as unionArray.
    <dd>
 <pre>
 cout &lt;&lt; "structureArray\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr subStruct =
-    fb-&gt;add("short", pvShort)-&gt;
-    add("long", pvLong)-&gt;
+    fb->add("short", pvShort)->
+    add("long", pvLong)->
     createStructure();
 StructureConstPtr structure  =
-    fb-&gt;addArray("value",subStruct)-&gt;
+    fb->addArray("value",subStruct)->
 createStructure();
 cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2404,12 +2544,12 @@ structure[] value
    <dd>
 <pre>
 cout &lt;&lt; "structureArrayNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;addNestedStructureArray("value")-&gt;
-    add("short", pvShort)-&gt;
-    add("long", pvLong)-&gt;
-    endNested()-&gt;
+    fb->addNestedStructureArray("value")->
+    add("short", pvShort)->
+    add("long", pvLong)->
+    endNested()->
         createStructure();
     cout &lt;&lt; structure &lt;&lt; endl;
 </pre>
@@ -2424,13 +2564,13 @@ This produces the same result as structureArray.
     <dd>
 <pre>
 cout &lt;&lt; "simple\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;add("value", pvDouble)-&gt;
+    fb->add("value", pvDouble)->
     createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVDoublePtr pvDouble = pvStructure-&gt;getSubField&lt;PVDouble&gt;( "value");
-pvDouble-&gt;put(10.0);
+PVStructurePtr pvStructure = pvDataCreate->createPVStructure(structure);
+PVDoublePtr pvDouble = pvStructure->getSubField&lt;PVDouble&gt;( "value");
+pvDouble->put(10.0);
 cout &lt;&lt; pvStructure &lt;&lt; endl;
 </pre>
     This produces:
@@ -2444,18 +2584,18 @@ structure
    <dd>
 <pre>
 cout &lt;&lt; "valueAlarmTimeStamp\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure =
-    fb-&gt;addArray("value", pvDouble)-&gt;
-    add("alarm",standardField-&gt;alarm())-&gt;
-    add("timeStamp",standardField-&gt;timeStamp())-&gt;
+    fb->addArray("value", pvDouble)->
+    add("alarm",standardField->alarm())->
+    add("timeStamp",standardField->timeStamp())->
     createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVDoubleArrayPtr pvDoubleArray = pvStructure-&gt;getSubField&lt;PVDoubleArray&gt;("value");
+PVStructurePtr pvStructure = pvDataCreate->createPVStructure(structure);
+PVDoubleArrayPtr pvDoubleArray = pvStructure->getSubField&lt;PVDoubleArray&gt;("value");
 size_t len = 4;
 PVDoubleArray::svector data(4);
 for(size_t i=0; i&lt;len; ++i) data[i] = i+1;
-pvDoubleArray-&gt;replace(freeze(data));
+pvDoubleArray->replace(freeze(data));
     cout &lt;&lt; pvStructure &lt;&lt; endl;
 </pre>
 This produces:
@@ -2478,18 +2618,18 @@ structure
    <dd>
 <pre>
 cout &lt;&lt; "unionNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;addNestedUnion("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-        endNested()-&gt;
+    fb->addNestedUnion("value")->
+        add("short", pvShort)->
+        add("long", pvLong)->
+        endNested()->
     createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVLongPtr pvlong = pvDataCreate-&gt;createPVScalar&lt;PVLong&gt;();
-pvlong-&gt;put(1000);
-PVUnionPtr pvUnion = pvStructure-&gt;getSubField&lt;PVUnion&gt;("value");
-pvUnion-&gt;set("long",pvlong);
+PVStructurePtr pvStructure = pvDataCreate->createPVStructure(structure);
+PVLongPtr pvlong = pvDataCreate->createPVScalar&lt;PVLong&gt;();
+pvlong->put(1000);
+PVUnionPtr pvUnion = pvStructure->getSubField&lt;PVUnion&gt;("value");
+pvUnion->set("long",pvlong);
     cout &lt;&lt; pvStructure &lt;&lt; endl;
 </pre>
 This produces:
@@ -2505,26 +2645,26 @@ structure
     <dd>
 <pre>
 cout &lt;&lt; "unionArrayNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;addNestedUnionArray("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-    endNested()-&gt;
+    fb->addNestedUnionArray("value")->
+        add("short", pvShort)->
+        add("long", pvLong)->
+    endNested()->
     createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVUnionArrayPtr pvValue = pvStructure-&gt;getSubField&lt;PVUnionArray&gt;("value");
+PVStructurePtr pvStructure = pvDataCreate->createPVStructure(structure);
+PVUnionArrayPtr pvValue = pvStructure->getSubField&lt;PVUnionArray&gt;("value");
 size_t len = 2;
 PVUnionArray::svector pvUnions(len);
 for(size_t i=0; i&lt;len; ++i) pvUnions[i] =
-    pvDataCreate-&gt;createPVUnion(pvValue-&gt;getUnionArray()-&gt;getUnion());
-pvUnions[0]-&gt;select("short");
-pvUnions[1]-&gt;select("long");
-PVShortPtr pvshort = pvUnions[0]-&gt;get&lt;PVShort&gt;();
-pvshort-&gt;put(1);
-PVLongPtr pvlong = pvUnions[1]-&gt;get&lt;PVLong&gt;();
-pvlong-&gt;put(5);
-pvValue-&gt;replace(freeze(pvUnions));
+    pvDataCreate->createPVUnion(pvValue->getUnionArray()->getUnion());
+pvUnions[0]->select("short");
+pvUnions[1]->select("long");
+PVShortPtr pvshort = pvUnions[0]->get&lt;PVShort&gt;();
+pvshort->put(1);
+PVLongPtr pvlong = pvUnions[1]->get&lt;PVLong&gt;();
+pvlong->put(5);
+pvValue->replace(freeze(pvUnions));
 cout &lt;&lt; pvStructure &lt;&lt; endl;
 </pre>
 This produces:
@@ -2543,27 +2683,27 @@ structure
    <dd>
 <pre>
 cout &lt;&lt; "structureArrayNested\n";
-FieldBuilderPtr fb = fieldCreate-&gt;createFieldBuilder();
+FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
 StructureConstPtr structure  =
-    fb-&gt;addNestedStructureArray("value")-&gt;
-        add("short", pvShort)-&gt;
-        add("long", pvLong)-&gt;
-    endNested()-&gt;
+    fb->addNestedStructureArray("value")->
+        add("short", pvShort)->
+        add("long", pvLong)->
+    endNested()->
     createStructure();
-PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(structure);
-PVStructureArrayPtr pvValue = pvStructure-&gt;getSubField&lt;PVStructureArray&gt;("value");
+PVStructurePtr pvStructure = pvDataCreate->createPVStructure(structure);
+PVStructureArrayPtr pvValue = pvStructure->getSubField&lt;PVStructureArray&gt;("value");
 size_t len = 2;
 PVStructureArray::svector pvStructures(len);
 for(size_t i=0; i&lt;len; ++i) {
-    pvStructures[i] = pvDataCreate-&gt;createPVStructure(
-        pvValue-&gt;getStructureArray()-&gt;getStructure());
+    pvStructures[i] = pvDataCreate->createPVStructure(
+        pvValue->getStructureArray()->getStructure());
     PVStructurePtr pvs = pvStructures[i];
-    PVShortPtr pvshort = pvs-&gt;getSubField&lt;PVShort&gt;("short");
-    pvshort-&gt;put(i);
-    PVLongPtr pvlong = pvs-&gt;getSubField&lt;PVLong&gt;("long");
-    pvlong-&gt;put(i);
+    PVShortPtr pvshort = pvs->getSubField&lt;PVShort&gt;("short");
+    pvshort->put(i);
+    PVLongPtr pvlong = pvs->getSubField&lt;PVLong&gt;("long");
+    pvlong->put(i);
 }
-pvValue-&gt;replace(freeze(pvStructures));
+pvValue->replace(freeze(pvStructures));
     cout &lt;&lt; pvStructure &lt;&lt; endl;
 </pre>
 This produces:
@@ -3067,8 +3207,6 @@ This produces the same result as structureArray.
 
 </dl>
 
-
-
 <h2>API: normativeType</h2>
 
 <p><b>Dave Hickin</b> please update this section</p>
@@ -3132,6 +3270,2105 @@ epics:nt/NTScalar:1.0
     string extra1                       // extra
     string[] extra2                     //
 </pre>
+
+<h2>API: pvaClient</h2>
+
+<p>The following sections use psuedo code to describe methods.
+Consult the Java or C++ documentation for the exact syntax.
+</p>
+<h3>PvaClient Overview</h3>
+<p>The pvAccess Client API is:</p>
+<ul>
+   <li>
+       Callback based, i. e. the client must provided code to handle callbacks
+      from the server side of pvAccess.
+       PvaClient provides a synchronous interface for a client.
+   </li>
+   <li>Uses Status to show the result of client requests.
+       PvaClient throws an exception for a failure status,
+       but also provides some methods that allow the client to handle a status failure.
+   </li>
+</ul>
+<p>PvaClient is a synchronous API for accessing PVData via PVAccess.
+It also provides a number of convenience methods.
+It allows the client to request access without checking for failure,
+but throws an exception when a reuest fails.
+A client can also check for failues and thus prevent failures.</p>
+
+<p>The PvaClient API has the following features:</p>
+<ol>
+  <li>Provides a synchronous API rather than the callback API provided by pvAccess.</li>
+  <li>Makes common requests easy.</li>
+  <li>Provides full access to the pvAccess API for more demanding
+  applications</li>
+  <li>Allows efficient client side programs.</li>
+  <li>Can cache channels, channelGets, and channelPuts.</li>
+  <li>Takes care of most object resource management problems.</li>
+</ol>
+<p>Simple examples of using pvaClient:</p>
+<pre>
+// easyGet
+PvaClientPtr pvaClient = PvaClient::create();
+double value = pvaClient->channel("exampleDouble")->get()->getData()->getDouble();
+
+// easyPut
+PvaClientChannelPtr channel = pvaClient->channel("exampleDouble");
+PvaClientPutPtr put = channel->put();
+PvaClientPutDataPtr putData = put->getData();
+putData->putDouble(3.0); put->put();
+
+// easyMonitor
+PvaClientMonitorPtr monitor = pvaClient->channel("examplePowerSupply")->monitor("");
+PvaClientMonitorDataPtr easyData = monitor->getData();
+while(true) {
+    monitor->waitEvent();
+    cout &lt;&lt; "changed\n";
+    easyData->showChanged(cout);
+    cout &lt;&lt; "overrun\n";
+    easyData->showOverrun(cout);
+    monitor->releaseEvent();
+}
+// easyProcess
+PvaClientChannelPtr channel = pvaClient->channel("exampleDouble");
+PvaClientProcessPtr process = channel->createProcess();
+process->process();
+</pre>
+
+
+<p>PvaClient can cache channels, channelGets, and channelPuts.</p>
+<p>A simple example is:</p>
+<pre>
+string channelName = "someChannel";
+double value =  pva.channel(channelName).get().getData().getDouble();
+...
+value = pva.channel(channelName).get().getData().getDouble();
+...
+</pre>
+<p>
+The simple example allows the client to get a value from the server with a single call.
+This example results in a channel and channelGet both being cached.
+The first call results in connecting to the server,
+creating a channelGet, and issuing a get request.
+The second call reuses the channel and channelGet that were cached by the first request.
+If any part of the request fails an exception occurs.
+</p>
+<p>The same request could also be done by:</p>
+<pre>
+string channelName = "someChannel";
+PvaClientChannel pvaChannel = pva.createChannel(channelName);
+pvaChannel.issueConnect();
+Status status = pvaChannel.waitConnect(2.0);
+if(!status.isOK()) {System.out.println(" connect failed"); return;}
+PvaClientGet pvaGet = pvaChannel.createGet();
+pvaGet.issueConnect();
+status = pvaGet.waitConnect();
+if(!status.isOK()) {System.out.println(" createGet failed"); return;}
+PvaClientGetData pvaData = pvaGet.getData();
+value = pvaData.getDouble();
+...
+pvaData = pvaGet.getData();
+value = pvaData.getDouble();
+</pre>
+<p>In this case no caching occurs but the client is responsible for lots more then in the simple
+example.
+</p>
+<h3>Class PvaClient</h3>
+<pre>
+class PvaClient
+{
+    // methods for creating and accessing the singleton instance of PvaClient
+    static PvaClient get(string providerNames = "pva ca");
+    // method for creating cached instances of PvaClientChannel
+    PvaClientChannel channel(
+        string channelName,
+        string providerName = "pva",
+        double timeOut = 5.0);
+    // method for creating non-cached instances of PvaClientChannel
+    PvaClientChannel createChannel(
+        string channelName,
+        string providerName = "pva");
+    // methods for ChannelRequester and Requester
+    string getRequesterName();
+    void message(string message, MessageType type);
+    void setRequester(Requester requester);
+    void clearRequester();
+    // methods for channel cache
+    void showCache();
+    size_t cacheSize();
+    // debug methods
+    void setDebug(boolean value);
+    boolean getDebug();
+    // destroy the singleton instance of PvaClient
+    void destroy(); // JAVA Only
+}
+</pre>
+<dl>
+    <dt>get</dt>
+       <dd>
+    <p>For both Java and C++ PvaClient is a singleton class, i. e. there is a single instance created.
+    In Java it is created via:</p>
+    <pre>
+    PvaClient pva= PvaClient.get("providerList");
+    </pre>
+    An example is:
+    <pre>
+    PvaClient pva= PvaClient.get("pva ca");
+    </pre>
+    <p>
+    In C++ it is created via:
+    </p>
+    <pre>
+    PvaClientPtr pva= PvaClient::get("providerList");
+    </pre>
+    An example is:
+    <pre>
+    PvaClientPtr pva= PvaClient::get("pva ca");
+    </pre>
+    <p>For both Java and C++ if no argument is specified for get than the default is <b>"pva ca"</b>
+    </p>
+    <p>If get is called multiple times only the first call creates the single instance
+    of PvaClient. Additional calls return the same instance.</p> 
+    <p>Two providers are special:</p>
+    <dl>
+      <dt>pva</dt>
+         <dd>The client side of provider <b>pva</b>
+           is registered and started.</dd>
+      <dt>ca</dt>
+         <dd>The client side of provider <b>ca</b> is registered and started.
+           V3 implements the server side of the <b>ca</b> network protocal.
+         </dd>
+    </dl>
+    <p>Other client providers can be specicified but must be registered and started before
+    PvaClient is started.</p>
+    <p>PvaClient provides a cache for channels, channelGet, etc.
+    Thus in the following:</p>
+    <pre>
+    PvaClient pva= PvaClient.get();
+    ...
+    double value = pva.channel(channelName).get().getData().getDouble();
+    ...
+    value = pva.channel(channelName).get().getData().getDouble();
+    </pre>
+    <p>Only the first call for value will result in connection to channelName and creation of
+    a ChannelGet.
+    The second call uses a cached channel and a cached channelGet.
+    The next section describes when instances are cached.
+    </p>
+    <p>
+    All cached objects and context for providers <b>pva</b> and <b>ca</b> are destroyed when
+    the destructor for PvaClient is called.
+    For Java the client must call <b>pva.destroy()</b>.
+    For C++ this is done automatically when the destructor for PvaClient is called.
+    </p>
+    </dd>
+
+   <dt>channel</dt>
+   <dd>
+    This method creates and connects to cached channels.<br />
+    If a channel for <b>channelName</b> and <b>providerName</b> already exists in the cache
+    it is just returned.
+    <br />
+    If it is not found in the cache
+    Then an attempt is made to connect to the channel.
+    If the attempt fails an exception is thrown.<br />
+    If the attempt succeeds the channel is cached and returned to the caller.
+    <br />
+    </dd>
+
+    <dt>createChannel</dt>
+    <dd>
+    A channel is created and returned to the caller,
+    but the channel is not connected to the server.
+     <br />
+    The caller must call PvaClientChannel methods to connect.
+     <br />
+    The channel is not cached.
+    <br />
+    </dd>
+    <dt>Requester Methods</dt>
+    <dd>
+    PvaClient implements interfaces ChannelRequester and Requester,
+     which are required by pvAccess, but also allows the user to implement Requester.
+    </dd>
+    <dt>Cache Methods</dt>
+    <dd>These are methods for seeing what is in the cache.</dd>
+    <dt>PvaClient:: Debug Merhods</dt>
+    <dd>This is a way to get debug output while using PvaClient.
+    These are static methods that can be used by all the classes that are part of PvaClient.
+    They can also be used by client code.
+    </dd>
+</dl>
+
+<h3>Class PvaClientChannel</h3>
+
+<pre>
+class PvaClientChannel
+{
+    // connect and throw if failure
+    void connect(double timeOut = 5.0);
+    // connect and return Status if failure
+    void issueConnect();
+    Status waitConnect(double timeOut = 5.0);
+    // Create a PvaClientField   NOT IMPLEMENTED
+    PvaClientField createField(string subField = "");
+    // create a PvaClientProcess
+    PvaClientProcess createProcess(string  request = "");
+    PvaClientProcess createProcess(PVStructure   pvRequest);
+    // create a cached PvaClientGet
+    PvaClientGet get(string  request = "value,alarm,timeStamp");
+    // create a non cached PvaClientGet
+    PvaClientGet createGet(string  request  = "value,alarm,timeStamp");
+    PvaClientGet createGet(PVStructure   pvRequest);
+    // create a cached PvaClientPut
+    PvaClientPut put(string  request = "value");
+    // create a non cached PvaClientPut
+    PvaClientPut createPut(std::string  request = "value");
+    PvaClientPut createPut(PVStructure  pvRequest);
+    // create a PvaClientPutGet
+    PvaClientPutGet createPutGet(string  request ="putField(argument)getField(result)" );
+    PvaClientPutGet createPutGet(PVStructure  pvRequest);
+    // create, connect, and start PvaClientMonitor
+    PvaClientMonitor monitor(string  request = "value,alarm,timeStamp");
+    PvaClientMonitor monitor(PvaClientMonitorRequester  pvaClientMonitorRequester);
+    PvaClientMonitor monitor(string  request,PvaClientMonitorRequester pvaClientMonitorRequester);
+    // create PvaClientMonitor. client must call PvaClientMonitor methods to create and start.
+    PvaClientMonitor createMonitor(request = "value,alarm,timeStamp");
+    PvaClientMonitor createMonitor(PVStructure   pvRequest);
+    // create a PvaClientArray NOT IMPLEMENTED
+    PvaClientArray createArray(string request = "");
+    // create a PvaClientArray NOT IMPLEMENTED
+    PvaClientArray createArray(PVStructure pvRequest);
+    // methods for get and put cache
+    void showCache();
+    size_t cacheSize();
+    // misc methods
+    string getChannelName();
+    Channel getChannel();
+}
+</pre>
+<dl>
+   <dt>connect</dt>
+     <dd>
+      This calls issueConnect and waitConnect.
+      An exception is thrown if the connection request fails.
+     </dd>
+   <dt>issueConnect</dt>
+     <dd>
+      A connection request is issued and the method returns to the caller who must
+      call waitConnect. Note that the caller can issue multiple issueConnect calls, for different PvaChannels, before
+      calling waitConnect for each issueConnect.
+      Thus the issueConnect calls are making parallel requests to connect to the servers.
+     </dd>
+     <dt>waitConnect</dt>
+     <dd>
+       Wait for the issueConnect request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+     </dd>
+     <dt>createField</dt>
+       <dd>NOT IMPLEMENTED</dd>
+     <dt>createProcess</dt>
+     <dd>
+      If the channel is not connected call connect.<br />
+      A PvaClientProcess is created.<br />
+      The client must call the PvaClientProcess to connect and issue process requests.
+     </dd>
+     <dt>get</dt>
+     <dd>
+      See if a get for the same request is cached.
+      If so it is returned.
+      <br />
+      If none is cached, create and connect to a PvaClientGet, cache it, and returns it to the client.
+      <br />
+      If any part of the request fails an exception is thrown. 
+     </dd>
+     <dt>createGet</dt>
+      <dd>
+      If the channel is not connected call connect.
+      <br />
+      A PvaClientGet is created.
+      <br />
+      The client must call the PvaClientGet methods to connect and issue put requests.
+      <br />
+       The channelGet is not cached.
+     </dd>
+     <dt>put</dt>
+     <dd>
+      See if a put for the same request is cached.
+      If so it is returned.
+      <br />
+      If none is cached it creates and connects a PvaClientPut, caches it, and returns it to the client.
+      <br />
+      If any part of the request fails an exception is thrown. 
+     </dd>
+     <dt>createPut</dt>
+      <dd>
+      If the channel is not connected call connect.<br />
+      A PvaClientPut is created.
+      <br />
+      The client must call the PvaClientPut methods to connect and issue put requests.
+      <br />
+       The channelPut is not cached.
+     </dd>
+     <dt>createPutGet</dt>
+      <dd>
+      If the channel is not connected call connect.
+      <br />
+      A PvaClientPutGet is created.
+      <br />
+      The client must call the PvaClientPutGet methods to connect and issue put requests.
+     </dd>
+     <dt>monitor</dt>
+     <dd>
+      Create and connect to a new PvaClientMonitor.
+      <br />
+      Then call the start method.
+      <br />
+      If any part of the request fails an exception is thrown.
+      <br />
+      If the caller provides argument PvaClientMonitorRequester,
+      then the caller will be notified when new events are available.
+      Otherwise the caller must call poll and/or waitEvent. 
+     </dd>
+     <dt>createMonitor</dt>
+      <dd>
+      If the channel is not connected call connect.<br />
+      A PvaClientMonitor is created.
+      <br />
+      The client must call the PvaClientMonitor methods to connect and start.
+      </dd>
+     <dt>createArray</dt>
+     <dd>
+     NOT IMPLEMENTED.
+     </dd>
+</dl>
+<p>
+The following is a class that a client can implement it it wants to be notified when the sever sends
+new monitors to the client.
+The client can also handle monitors by polling.
+See PvaClientMonitor below for details.
+</p>
+<pre>
+class PvaClientMonitorRequester
+{
+    void event(PvaCientMonitor monitor);
+}
+</pre>
+where
+<dl>
+   <dt>event</dt>
+   <dd>One or more new events are available.</dd>
+</dl>
+<h3>Class PvaClientGet</h3>
+<pre>
+class PvaClientGet
+{
+    void connect();
+    void issueConnect();
+    Status waitConnect();
+    void get();
+    void issueGet();
+    Status waitGet();
+    PvaClientGetData getData();
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+    This calls issueConnect and waitConnect.
+    An exception is thrown if the connection request fails.
+    </dd>
+    <dt>issueConnect</dt>
+     <dd>
+       A connection request is issued and the method returns to the caller who must
+      call waitConnect.
+      Note that the caller can issue multiple issueConnect calls, 
+       for different PvaChannelGets,
+      before calling waitConnect for each issueConnect.
+      Thus the issueConnect calls are making parallel requests to connect to the servers.
+    
+    </dd>
+    <dt>waitConnect</dt>
+    <dd>
+       Wait for the issueConnect request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>get</dt>
+    <dd>
+      This calls issueGet and waitGet.
+      An exception is thrown if any error arises.
+    </dd>
+    <dt>issueGet</dt>
+    <dd>
+      A get request is issued and the method returns to the caller who must
+      call waitGet. Note that the caller can issue multiple issueGet calls before
+      calling waitGet for each issueGet.
+      Thus the issueGet calls are making parallel requests to the servers.
+    </dd>
+    <dt>waitGet</dt>
+    <dd>
+       Wait for the issueGet request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>getData</dt>
+    <dd>
+       Get the data for the previous get.
+       This must be called after each successful get.
+    </dd>
+</dl>
+<p>The following is for the data</p>
+<pre>
+class PvaClientGetData
+{
+    Structure getStructure();
+    PVStructure getPVStructure();
+    BitSet getChangedBitSet();
+    showChanged() // different syntax for Java and C++
+    void setData(PVStructure pvStructure, BitSet bitSetFrom);
+    bool hasValue();
+    bool isValueScalar();
+    bool isValueScalarArray();
+    PVField getValue();
+    PVScalar getScalarValue();
+    PVArray[] getArrayValue();
+    PVScalarArray getScalarArrayValue();
+    double getDouble();
+    string getString();
+    double[] getDoubleArray();
+    string[] getStringArray();
+    Alarm getAlarm();
+    TimeStamp getTimeStamp();
+}
+</pre>
+where
+<dl>
+    <dt>getStructure</dt>
+    <dd>
+     Get the introspection interface for the data.
+    </dd>
+    <dt>getPVStructure</dt>
+    <dd>
+       Get all the data.
+    </dd>
+    <dt>getChangedBitSet</dt>
+    <dd>
+       Get the changed bit set for PVStructure,
+    </dd>
+    <dt>showChanged</dt>
+    <dd>
+       Show all fields that have changed value since the previous get.
+    </dd>
+    <dt>setData</dt>
+    <dd>
+       Set data into PVStructure.<br />
+       This is <b>not</b> normally called by the client but by the implementation.
+    </dd>
+    <dt>hasValue</dt>
+    <dd>
+      Does the Structure have a top level field named <b>value</b>?
+    </dd>
+    <dt>isValueScalar</dt>
+    <dd>
+      Is the <b>value</b> field a scalar?
+    </dd>
+    <dt>isValueScalarArray</dt>
+    <dd>
+      Is the <b>value</b> field a scalar array?
+    </dd>
+    <dt>getValue</dt>
+    <dd>
+      Get the value field as a PVField.<br />
+      The caller can use introspection to find the actual type.<br />
+      An exception is thrown if a top level field named <b>value</b> does not exist.
+    </dd>
+    <dt>getScalarValue</dt>
+    <dd>
+       Get the <b>value</b> field as a scalar.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getArrayValue</dt>
+    <dd>
+      Get the <b>value</b> field as an array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getScalarArrayValue</dt>
+    <dd>
+       Get the <b>value</b> field as a scalar array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getDouble</dt>
+    <dd>
+       Get the <b>value</b> field as a double.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getString</dt>
+    <dd>
+      Get the <b>value</b> field as a string.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getDoubleArray</dt>
+    <dd>
+      Get the <b>value</b> field as a double array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getStringArray</dt>
+    <dd>
+      Get the <b>value</b> field as a string.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getAlarm</dt>
+    <dd>
+      Get the data for a top level alarm field.<br />
+      An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getTimeStamp</dt>
+    <dd>
+       Get the data for a top level timeStamp field.<br />
+      An exception is thrown if the request is not valid.
+    </dd>
+</dl>
+<h3>Class PvaClientPut</h3>
+<pre>
+class PvaClientPut
+{
+    void connect();
+    void issueConnect();
+    Status waitConnect();
+    void get();
+    void issueGet();
+    Status waitGet();
+    void put();
+    void issuePut();
+    Status waitPut();
+    PvaClientPutData getData();
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+    This calls issueConnect and waitConnect.
+    An exception is thrown if the connection request fails.
+    </dd>
+    <dt>issueConnect</dt>
+    <dd>
+       A connection request is issued and the method returns to the caller who must
+      call waitConnect. Note that the caller can issue multiple issueConnect calls, 
+       for different PvaChannelPuts, before
+      calling waitConnect for each issueConnect.
+      Thus the issueConnect calls are making parallel requests to connect to the servers.
+    </dd>
+    <dt>waitConnect</dt>
+    <dd>
+       Wait for the issueConnect request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>get</dt>
+    <dd>
+      Get the curent value stored in the server.
+      This calls issueGet and waitGet.
+      An exception is thrown if any error arises.
+    </dd>
+    <dt>issueGet</dt>
+    <dd>
+      A get request is issued and the method returns to the caller who must
+      call waitGet. Note that the caller can issue multiple issueGet calls before
+      calling waitGet for each issueGet.
+      Thus the issueGet calls are making parallel requests to the servers.
+    </dd>
+    <dt>waitGet</dt>
+    <dd>
+       Wait for the issueGet request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>put</dt>
+    <dd>
+      Put data to the server.
+      All fields in PvaClientPutData that have a changed BitSet are sent to the server. 
+      This calls issuePut and waitPut.
+      An exception is thrown if any error arises.
+    </dd>
+    <dt>issuePut</dt>
+    <dd>
+      A put request is issued and the method returns to the caller who must
+      call waitPut. Note that the caller can issue multiple issuePut calls before
+      calling waitPut for each issuePut.
+      Thus the issuePut calls are making parallel requests to the servers.
+    </dd>
+    <dt>waitPut</dt>
+    <dd>
+       Wait for the issuePut request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>getData</dt>
+    <dd>
+      Get the PvaClientPutData.
+      This only needs to be called before the first put.
+      The BitSet is cleared automatically after each successful put.
+      If get is issued then the BitSet shows the changes since the last get.
+      In this case the BitSet should be cleared before the next put.
+    </dd>
+</dl>
+<pre>
+class PvaClientPutData
+{
+    Structure getStructure();
+    PVStructure getPVStructure();
+    BitSet getChangedBitSet();
+    showChanged() // different syntax for Java and C++
+    bool hasValue();
+    bool isValueScalar();
+    bool isValueScalarArray();
+    PVField getValue();
+    PVScalar getScalarValue();
+    PVArray[] getArrayValue();
+    PVScalarArray getScalarArrayValue();
+    double getDouble();
+    string getString();
+    double[] getDoubleArray();
+    string[] getStringArray();
+    void putDouble(double value);
+    void putString(string value);
+    void putDoubleArray(double[] value);
+    void putStringArray(string[] value);
+}
+</pre>
+where
+<dl>
+    <dt>getStructure</dt>
+    <dd>
+     Get the introspection interface for the data.
+    </dd>
+    <dt>getPVStructure</dt>
+    <dd>
+       Get all the data.
+    </dd>
+    <dt>getChangedBitSet</dt>
+    <dd>
+       Get the changed bit set for PVStructure,
+    </dd>
+    <dt>showChanged</dt>
+    <dd>
+       Show all fields that have changed value since the previous get or put.
+    </dd>
+    <dt>hasValue</dt>
+    <dd>
+      Does the Structure have a top level field named <b>value</b>?
+    </dd>
+    <dt>isValueScalar</dt>
+    <dd>
+      Is the <b>value</b> field a scalar?
+    </dd>
+    <dt>isValueScalarArray</dt>
+    <dd>
+      Is the <b>value</b> field a scalar array?
+    </dd>
+    <dt>getValue</dt>
+    <dd>
+      Get the value field as a PVField.<br />
+      The caller can use introspection to find the actual type.<br />
+      An exception is thrown if a top level field named <b>value</b> does not exist.
+    </dd>
+    <dt>getScalarValue</dt>
+    <dd>
+       Get the <b>value</b> field as a scalar.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getArrayValue</dt>
+    <dd>
+      Get the <b>value</b> field as an array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getScalarArrayValue</dt>
+    <dd>
+       Get the <b>value</b> field as a scalar array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getDouble</dt>
+    <dd>
+       Get the <b>value</b> field as a double.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getString</dt>
+    <dd>
+      Get the <b>value</b> field as a string.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getDoubleArray</dt>
+    <dd>
+      Get the <b>value</b> field as a double array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getStringArray</dt>
+    <dd>
+      Get the <b>value</b> field as a string.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>putDouble</dt>
+    <dd>
+       Get the <b>value</b> field as a double.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>putString</dt>
+    <dd>
+      Put the <b>value</b> field as a string.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>putDoubleArray</dt>
+    <dd>
+      Put the <b>value</b> field as a double array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+   <dt>putStringArray</dt>
+    <dd>
+      Put the <b>value</b> field as a string.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+</dl>
+<h3>Class PvaClientPutGet</h3>
+<pre>
+class PvaClientPutGet
+{
+    void connect();
+    void issueConnect();
+    Status waitConnect();
+    void putGet();
+    void issuePutGet();
+    Status waitPutGet();
+    void getGet();
+    void issueGetPut();
+    Status waitGetPut();
+    void getGet();
+    void issueGetGet();
+    Status waitGetGet();
+    void getPut();
+    void issueGetPut();
+    Status waitGetPut();
+    PvaClientPutData getPutData();
+    PvaClientGetData getGetData(); 
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+    This calls issueConnect and waitConnect.
+    An exception is thrown if the connection request fails.
+    </dd>
+    <dt>issueConnect</dt>
+    <dd>
+       A connection request is issued and the method returns to the caller who must
+      call waitConnect. Note that the caller can issue multiple issueConnect calls,
+      for different PvaChannelPutGets, before
+      calling waitConnect for each issueConnect.
+      Thus the issueConnect calls are making parallel requests to connect to the servers.
+    </dd>
+    <dt>waitConnect</dt>
+    <dd>
+       Wait for the issueConnect request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>putGet</dt>
+    <dd>
+      All fields in PvaClientPutData that have a changed BitSet are sent to the server,
+      the server normally issues a process request, and the data received from the server
+      is put into PvaClientGetData.
+      This calls issuePutGet and waitPutGet.
+      An exception is thrown if any error arises.
+    </dd>
+    <dt>issuePutGet</dt>
+    <dd>
+      A putGet request is issued and the method returns to the caller who must
+      call waitPutGet. Note that the caller can issue multiple issuePutGet calls before
+      calling waitPutGet for each issuePutGet.
+      Thus the issuePutGet calls are making parallel requests to the servers.
+    </dd>
+    <dt>waitPutGet</dt>
+    <dd>
+       Wait for the issuePutGet request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>getGet</dt>
+    <dd>
+      Get the curent PvaClientGetData is retrieved from the server.
+      This calls issueGetGet and waitGetGet.
+      An exception is thrown if any error arises.
+    </dd>
+    <dt>issueGetGet</dt>
+    <dd>
+      A getGet request is issued and the method returns to the caller who must
+      call waitGetGet. Note that the caller can issue multiple issueGetGet calls before
+      calling waitGetGet for each issueGetGet.
+      Thus the issueGetGet calls are making parallel requests to the servers.
+    </dd>
+    <dt>waitGetGet</dt>
+    <dd>
+       Wait for the issueGetGet request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>getPut</dt>
+    <dd>
+      Get the curent PvaClientPutData is retrieved from the server.
+      This calls issueGetPut and waitGetPut.
+      An exception is thrown if any error arises.
+    </dd>
+    <dt>issueGetPut</dt>
+    <dd>
+      A getPut request is issued and the method returns to the caller who must
+      call waitGetPut. Note that the caller can issue multiple issueGetPut calls before
+      calling waitGetPut for each issueGetPut.
+      Thus the issueGetPut calls are making parallel requests to the servers.
+    </dd>
+    <dt>waitGetPut</dt>
+    <dd>
+       Wait for the issueGetPut request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>   
+    <dt>getPutData</dt>
+    <dd>
+      Get the PvaClientPutData.
+      This only needs to be called before the first putGet.
+      The BitSet is cleared automatically after each successful putGet.
+      If getPut is issued then the BitSet shows the changes since the last getPut.
+      In this case the BitSet should be cleared before the next putGet.
+    </dd>
+    <dt>getGetData</dt>
+    <dd>
+      Get the PvaClientGetData.
+      This must be called after each successfull putGet and getGet.
+    </dd>
+</dl>
+<h3>Class PvaClientProcess</h3>
+<pre>
+class PvaClientProcess
+{
+    void connect();
+    void issueConnect();
+    Status waitConnect();
+    void process();
+    void issueProcess();
+    Status waitProcessx();
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+    This calls issueConnect and waitConnect.
+    An exception is thrown if the connection request fails.
+    </dd>
+    <dt>issueConnect</dt>
+    <dd>
+       A connection request is issued and the method returns to the caller who must
+      call waitConnect. Note that the caller can issue multiple issueConnect calls,
+      for different PvaChannelProcesss, before
+      calling waitConnect for each issueConnect.
+      Thus the issueConnect calls are making parallel requests to connect to the servers.
+    </dd>
+    <dt>waitConnect</dt>
+    <dd>
+       Wait for the issueConnect request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>process</dt>
+    <dd>
+    This calls issueProcess and waitProcess.
+    An exception is thrown if the request fails.
+    </dd>
+    <dt>issueProcess</dt>
+    <dd>
+       A process request is issued and the method returns to the caller who must
+      call waitProcess. Note that the caller can issue multiple issueProcess calls before
+      calling waitProcess for each issueProcess.
+      Thus the issueProcess calls are making parallel requests to the servers.
+    </dd>
+    <dt>waitProcess</dt>
+     <dd>
+       Wait for the issueProcess request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+</dl>
+<h3>Class PvaClientMonitor</h3>
+<pre>
+class PvaClientMonitor
+{
+    void connect();
+    void issueConnect();
+    Status waitConnect();
+    void setRequester(PvaClientMonitorRequesterpvaClientMonitorrRequester);
+    void start();
+    void stop();
+    bool poll();
+    bool waitEvent(double secondsToWait = 0.0);
+    void releaseEvent();
+    PvaClientMonitorData getData(); 
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+    This calls issueConnect and waitConnect.
+    An exception is thrown if the connection request fails.
+    </dd>
+    <dt>issueConnect</dt>
+    <dd>
+       A connection request is issued and the method returns to the caller who must
+      call waitConnect. Note that the caller can issue multiple issueConnect calls,
+      for different PvaChannelMonitors, before
+      calling waitConnect for each issueConnect.
+      Thus the issueConnect calls are making parallel requests to connect to the servers.
+    </dd>
+    <dt>waitConnect</dt>
+    <dd>
+       Wait for the issueConnect request to complete.
+       Status shows the result of the request.
+       If status.isOK() is false then the request failed and status.getMessage() can
+         be called to see why the request failed.
+    </dd>
+    <dt>setRequester</dt>
+    <dd>
+    </dd>
+    <dt>start</dt>
+    <dd>
+      Start monitoring.
+    </dd>
+    <dt>stop</dt>
+    <dd>
+       Stop moitoring.
+    </dd>
+    <dt>poll</dt>
+    <dd>
+      Poll for a new monitor event.<br />
+      If the return value is <b>true</b> then
+      <b>getData</b> is called to get the data and <b>releaseEvent</b> must be called
+      when the client is done with the data.
+    </dd>
+    <dt>waitEvent</dt>
+    <dd>
+      Wait for an event. A value of 0 means wait forever.
+      Is success the <b>poll</b> is called to get the outstanding events.
+    </dd>
+    <dt>releaseEvent</dt>
+    <dd>
+      Must be called to release the event.
+    </dd>
+    <dt>getData</dt>
+    <dd>
+       Get the data for the last successful poll request.
+       This must be called after each successful pull.
+    </dd>
+</dl>
+<pre>
+class PvaClientMonitorData
+{
+    Structure getStructure();
+    PVStructure getPVStructure();
+    BitSet getChangedBitSet();
+    BitSet getOverrunBitSet();
+    showChanged() // different syntax for Java and C++
+    showOverrun() // different syntax for Java and C++
+    bool hasValue();
+    bool isValueScalar();
+    bool isValueScalarArray();
+    PVField getValue();
+    PVScalar getScalarValue();
+    PVArray[] getArrayValue();
+    PVScalarArray getScalarArrayValue();
+    double getDouble();
+    string getString();
+    double[] getDoubleArray();
+    string[] getStringArray();
+    Alarm getAlarm();
+    TimeStamp getTimeStamp();
+    
+}
+</pre>
+where
+<dl>
+    <dt>getStructure</dt>
+    <dd>
+     Get the introspection interface for the data.
+    </dd>
+    <dt>getPVStructure</dt>
+    <dd>
+       Get all the data.
+    </dd>
+    <dt>getChangedBitSet</dt>
+    <dd>
+       Get the changed bit set for PVStructure,
+    </dd>
+    <dt>getOverrunBitSet</dt>
+    <dd>
+       Get the overrun bit set for PVStructure,
+    </dd>
+    <dt>showChanged</dt>
+    <dd>
+       Show all fields that have changed value since the previous poll.
+    </dd>
+    <dt>showOverrun</dt>
+    <dd>
+       Show all fields that have overrun since the previous poll.
+    </dd>
+    <dt>hasValue</dt>
+    <dd>
+      Does the Structure have a top level field named <b>value</b>?
+    </dd>
+    <dt>isValueScalar</dt>
+    <dd>
+      Is the <b>value</b> field a scalar?
+    </dd>
+    <dt>isValueScalarArray</dt>
+    <dd>
+      Is the <b>value</b> field a scalar array?
+    </dd>
+    <dt>getValue</dt>
+    <dd>
+      Get the value field as a PVField.<br />
+      The caller can use introspection to find the actual type.<br />
+      An exception is thrown if a top level field named <b>value</b> does not exist.
+    </dd>
+    <dt>getScalarValue</dt>
+    <dd>
+       Get the <b>value</b> field as a scalar.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getArrayValue</dt>
+    <dd>
+      Get the <b>value</b> field as an array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getScalarArrayValue</dt>
+    <dd>
+       Get the <b>value</b> field as a scalar array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getDouble</dt>
+    <dd>
+       Get the <b>value</b> field as a double.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getString</dt>
+    <dd>
+      Get the <b>value</b> field as a string.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getDoubleArray</dt>
+    <dd>
+      Get the <b>value</b> field as a double array.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getStringArray</dt>
+    <dd>
+      Get the <b>value</b> field as a string.<br />
+       An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getAlarm</dt>
+    <dd>
+      Get the data for a top level alarm field.<br />
+      An exception is thrown if the request is not valid.
+    </dd>
+    <dt>getTimeStamp</dt>
+    <dd>
+       Get the data for a top level timeStamp field.<br />
+      An exception is thrown if the request is not valid.
+    </dd>
+</dl>
+<h3>Class PvaMultiChannel</h3>
+<pre>
+class PvaMultiChannel
+{
+    static PvaClientMultiChannel create(
+        PvaClient pvaClient,
+        string[] channelNames,
+        string providerName = "pva",
+        size maxNotConnected = 0);
+    string[] getChannelNames();
+    Status connect(double timeout=5.0);
+    bool allConnected();
+    bool connectionChange();
+    bool[] getIsConnected();
+    PvaClientChannel[] getPvaClientChannelArray();
+    PvaClient getPvaClient();
+    PvaClientMultiGetDouble createGet();
+    PvaClientMultiPutDouble createPut();
+    PvaClientMultiMonitorDoublePtr createMonitor();
+    PvaClientNTMultiPut createNTPut();
+    PvaClientNTMultiGet createNTGet(string request = "value,alarm,timeStamp");
+    PvaClientNTMultiMonitor createNTMonitor(string request = "value,alarm,timeStamp");
+}
+</pre>
+where
+<dl>
+    <dt>create</dt>
+    <dd>
+    A static method for creating a new instance of PvaMultiChannel,
+    which is a class for connection to a set of channels.
+    </dd>
+    <dt>getChannelNames</dt>
+    <dd>
+     Get the channel names.
+    </dd>
+    <dt>connect</dt>
+    <dd>
+     Connect to the channels.
+     The Status provides the result.
+    </dd>
+    <dt>allConnected</dt>
+    <dd>
+     Are all channels connected?
+    </dd>
+    <dt>connectionChange</dt>
+    <dd>
+     Is there a change in connection status since the last call?
+    </dd>
+    <dt>getIsConnected</dt>
+    <dd>
+      Get the connection state of all the channels.
+    </dd>
+    <dt>getPvaClientChannelArray</dt>
+    <dd>
+      Get the array of PvaClientChannel.
+    </dd>
+    <dt>getPvaClient</dt>
+    <dd>
+      Get the singleton instance of PvaClient.
+    </dd>
+    <dt>createGet</dt>
+    <dd>
+      Create a PvaClientMultiGetDouble for getting each channel as a double.
+      This throws an exception if the request is not valid.
+    </dd>
+    <dt>createPut</dt>
+    <dd>
+      Create a PvaClientMultiPutDouble for getting each channel as a double.
+      This throws an exception if the request is not valid.
+    </dd>
+    <dt>createMonitor</dt>
+    <dd>
+      Create a PvaClientMultiMonitorDouble for getting each channel as a double.
+      This throws an exception if the request is not valid.
+    </dd>
+    <dt>createNTPut</dt>
+    <dd>
+     Creates a PvaClientNTMultiPut.
+     This throws an exception if any channel does not have a field named <b>value</b>.
+    </dd>
+    <dt>createNTGet</dt>
+    <dd>
+    Creates a PvaClientNTMultiGet.
+     This throws an exception if any channel does not have a field named <b>value</b>.
+    </dd>
+    <dt>createNTMonitor</dt>
+    <dd>
+     Creates a PvaClientNTMultiMonitor.
+     This throws an exception if any channel does not have a field named <b>value</b>.
+    </dd>
+</dl>
+<h3>Class PvaMultiGetDouble</h3>
+<pre>
+class PvaMultiGetDouble
+{
+    void connect();
+    double[] get();
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+     Create a channelGet for each channel.
+    </dd>
+    <dt>get</dt>
+    <dd>
+     Issue a get for each channel.
+      Return the data as an array of doubles.
+    </dd>
+</dl>
+<h3>Class PvaMultiPutDouble</h3>
+<pre>
+class PvaMultiPutDouble {
+    void connect();
+    void put(double[] value);
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+     Create a channelPut for each channel.
+    </dd>
+    <dt>get</dt>
+    <dd>
+     Issue a put for each channel.
+     Returns when all puts are complete.
+    </dd>
+</dl>
+<h3>Class PvaMultiMonitorDouble</h3>
+<pre>
+class PvaMultiMonitorDouble
+{
+    void connect();
+    bool poll();
+    bool waitEvent(double secondsToWait);
+    double[] get();
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+     Create a monitor for each channel.
+    </dd>
+    <dt>poll</dt>
+    <dd>
+     Poll for new events.
+    </dd>
+    <dt>waitEvent</dt>
+    <dd>
+       Wait for events or until timeout.
+       It return is <b>true</b> then poll is called to get the data.
+    </dd>
+    <dt>get</dt>
+      <dd>
+       Get the data. This call also releases the current event for each channel.
+    </dd>
+</dl>
+<h3>Class PvaClientNTMultiPut</h3>
+<pre>
+class PvaClientNTMultiPut
+{
+    void connect();
+    PVUnion[] getValues();
+    void put();
+
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+     Create a channelPut for each channel.
+    </dd>
+    <dt>getValues</dt>
+    <dd>
+     Get an array of PVUnion for the value field of each channel.
+      The client sets values before making a call to <b>put</b>. 
+    </dd>
+    <dt>put</dt>
+    <dd>
+     Put a value to each channel.
+    </dd>
+</dl>
+<h3>Class PvaClientNTMultiGet</h3>
+<pre>
+class PvaClientNTMultiGet
+{
+    void connect();
+    void get();
+    PvaClientNTMultiData getData();
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+     Create a channelGet for each channel.
+    </dd>
+    <dt>get</dt>
+    <dd>
+    Issue a get for each channel.<br />
+     <b>getData</b> is called to get the data.
+    </dd>
+    <dt>getData</dt>
+    <dd>
+     Get the data as an PvaClientNTMultiData.
+    </dd>
+</dl>
+<pre>
+class PvaClientNTMultiData
+{
+    size_t getNumber();
+    void startDeltaTime();
+    void endDeltaTime();
+    TimeStamp getTimeStamp();
+    NTMultiChannel getNTMultiChannel();
+}
+</pre>
+<dl>
+    <dt>getNumber</dt>
+    <dd>
+    Get the number of channels.
+    </dd>
+    <dt>startDeltaTime</dt>
+    <dd>
+      Set the timeStamp base for computing deltaTimes.
+    </dd>
+    <dt>endDeltaTime</dt>
+    <dd>
+      Update NTMultiChannel fields.
+    </dd>
+    <dt>getTimeStamp</dt>
+    <dd>
+     Get the time when the last get was made.
+    </dd>
+    <dt>getNTMultiChannel</dt>
+    <dd>
+     Get the  NTMultiChannel.
+    </dd>
+</dl>
+<h3>Class PvaClientNTMultiMonitor</h3>
+<pre>
+class PvaClientNTMultiMonitor
+{
+    void connect();
+    bool poll();
+    bool waitEvent(double secondsToWait);
+    PvaClientNTMultiData getData();
+}
+</pre>
+where
+<dl>
+    <dt>connect</dt>
+    <dd>
+     Create a channel monitor for each channel
+    </dd>
+    <dt>poll</dt>
+    <dd>
+     poll each channel.<br />
+     If result is true than <b>getData</b> returns the data.
+    </dd>
+    <dt>waitEvent</dt>
+    <dd>
+      Wait until poll returns true.<br />
+      A thread sleep of .1 seconds occurs between each call to poll.
+    </dd>
+    <dt>getData</dt>
+    <dd>
+     Get the data.
+    </dd>
+</dl>
+<pre>
+class PvaClientNTMultiData
+{
+    size getNumber();
+    void startDeltaTime();
+    void endDeltaTime();
+    TimeStamp getTimeStamp(); 
+    NTMultiChannel getNTMultiChannel();
+}
+</pre>
+where
+<dl>
+    <dt>getNumber</dt>
+    <dd>
+    Get the number of channels.
+    </dd>
+    <dt>startDeltaTime</dt>
+    <dd>
+     Set the timeStamp base for computing deltaTimes.
+    </dd>
+    <dt>endDeltaTime</dt>
+    <dd>
+      Update NTMultiChannel fields.
+    </dd>
+    <dt>getTimeStamp</dt>
+    <dd>
+     Get the time when the last get was made or monitor poll returned true.
+    </dd>
+    <dt>getNTMultiChannel</dt>
+    <dd>
+      Get the  NTMultiChannel.
+    </dd>
+</dl>
+
+<h2>API: pvDatabase</h2>
+<h3>pvDatabase Overview</h3>
+<p>A brief description of a pvDatabase is that it is a set of network accessible, smart, memory resident records. Each record has data composed of a top level PVStructure. Each record has a name which is the channelName for pvAccess. A local Channel Provider implements the complete ChannelProvider and Channel interfaces as defined by pvAccess. The local provider provides access to the records in the pvDatabase. This local provider is accessed by the remote pvAccess server. A record is smart because code can be attached to a record, which is accessed via a method named process.</p>
+<p>Implementations for both Java and C++ are available.</p>
+<p>
+With the C++ implementation (pvDatabaseCPP) the pvDatabase
+can be provided via a Main program or can be part of a V3IOC. In the later case the IOC has both a database of V3 Records and PVRecords.
+Thus pvDatabase can be used to develop V4 services for V3IOCs.
+</p>
+<h3>Class PVRecord</h3>
+<p>Note that exampleCPP and exampleJava both provide examples for implementing pvRecords.</p>
+<h4>Class PVListener</h4>
+<pre>
+class PVListener // class for local provider
+{
+    void dataPut(PVRecordField pvRecordField);
+    void dataPut(PVRecordStructure requested,PVRecordField pvRecordField); 
+    void beginGroupPut(PVRecord pvRecord);
+    void endGroupPut(PVRecord pvRecord);
+    void unlisten(PVRecord pvRecord);
+}
+</pre>
+<p>where</p>
+<dl>
+   <dt>dataPut(PVRecordFieldPtr const &amp; pvRecordField)</dt>
+     <dd>pvField has been modified.
+        This is called if the listener has called PVRecordField::addListener for pvRecordField.</dd>
+   <dt>dataPut(
+        PVRecordStructurePtr const &amp;
+        requested,PVRecordFieldPtr const &amp; pvRecordField)</dt>
+     <dd>pvField has been modified.
+         Requested is the field to which the requester issued a pvField-&gt;addListener.
+         This is called if the listener has called PVRecordField-&gt;addListener for requested.</dd>
+   <dt>beginGroupPut</dt>
+     <dd>A related set of changes is being started.</dd>
+   <dt>endGroupPut</dt>
+     <dd>A related set of changes is done.</dd>
+   <dt>unlisten</dt>
+     <dd>The record is being destroyed. The listener must release all
+     access to the record.</dd>
+</dl>
+<h4>class PVRecordClient</h4>
+<pre>
+class PVRecordClient // class for local provider
+{
+   void detach(PVRecord pvRecord)
+}
+</pre>
+<p>where</p>
+<dl>
+   <dt>detach</dt>
+     <dd>The record is being removed from the master database,</dd>
+</dl>
+<h4>Class PVRecord</h4>
+<pre>
+class PVRecordField // class for pvCopy
+class PVRecordStructure // class for pvCopy
+
+class PVRecord
+{
+    static PVRecord create(string recordName,PVStructure pvStructure);  // C++ only
+    PVRecord(string recordName,PVStructure pvStructure);
+    ~PVRecord()          // C++ only
+    boolean init();      // C++ only
+    void initPVRecord(); // C++ only
+    void start();        // C++ only
+    void destroy() 
+    // Override to implement semantics
+    void process();
+    // Override to implement channelRPC
+    Service getService(PVStructure pvRequest)
+    // methods called by code that accesses a record
+    void lock();
+    void unlock();
+    boolean tryLock()
+    void lockOtherRecord(PVRecordPtr const &amp; otherRecord);
+    // method called when record is deleted.
+    void detachClients();
+    // methods called by code that changes data in a record.
+    void beginGroupPut();
+    void endGroupPut();
+    // methods called by local provider
+    boolean addPVRecordClient(PVRecordClientPtr const &amp; pvRecordClient);
+    boolean removePVRecordClient(PVRecordClientPtr const &amp; pvRecordClient);
+    // methods for pvCopy, i.e. to find fields that have changed value
+    bool addListener(PVListener pvListener,PVCopy pvCopy);
+    void nextMasterPVField(PVField pvField);
+    boolean removeListener(PVListener pvListener,PVCopy pvCopy);
+    // misc methods
+    string getRecordName();
+    PVRecordStructure getPVRecordStructure();
+    PVRecordField findPVRecordField(PVField pvField);
+    // methods for debugging output
+    int getTraceLevel();
+    void setTraceLevel(int level)
+}
+</pre>
+where
+<dl>
+   <dt>create - C++ only</dt>
+      <dd>Can be called to create a soft PVRecord.
+       A soft record implements process by setting an optional top level timeStamp
+       to the current time.
+       <br />
+       A derived class should have it's own static create method.
+      </dd>
+   <dt>PVRecord</dt>
+      <dd>
+     Constructor.
+     <br />
+     Create a PVRecord named recordName and that has pvStructure as it's top level structure.
+     A derived class must call the base class constructor before performing any other
+     initialization.
+      </dd>
+   <dt>~PVRecord - C++ only</dt>
+      <dd>
+      This calls destroy.
+      </dd>
+   <dt>init - C++ only</dt>
+      <dd>
+       Virtual method. Derived classes must implement this method.
+       This method Must call initPVRecord.
+      </dd>
+   <dt>start - C++ only</dt>
+      <dd>
+       Virtual method. Optional method for derived class.
+       It is called before record is added to database.
+       The base method does nothing.
+      </dd>
+   <dt>destroy</dt>
+      <dd>
+      Destroy the PVRecord and any context.
+      <br />
+      Release any resources used and get rid of listeners and requesters.
+      <br />
+      If a derived class overrides this, it must call the base class destroy
+      after it has destroyed any resorces it uses.
+       <br />
+      Destroy can be called for several reasons.
+      Some examples are:
+      <ul>
+         <li>By pvDatabase when it is destroyed.</li>
+         <li>By other code that wants to destroy the record.</li>
+      </ul>
+      </dd>
+   <dt>process</dt>
+      <dd>
+      Virtual method.
+      Derived classes usually implement this method.
+      It implements the semantics for the record.
+      <br />
+      If a top level timeStamp exists the base class set it equal
+       to the current time.
+      </dd>
+   <dt>getService</dt>
+      <dd>
+      A derived class implements this method if it supports channelRPC.
+       It implements the semantics for the channelRPC.
+      The base class returns null.
+      </dd>
+  <dt>lock and unlock</dt>
+     <dd>Lock and Unlock the record.
+        Any code accessing the data in the record or calling other PVRecord methods
+        must have the record locked.</dd>
+   <dt>tryLock</dt>
+      <dd>If true then just like lock.
+       If false client can not access record.
+       A client can try to simultaneously hold the lock for more than two records
+       by calling this method. But must be willing to accept failure.
+       </dd>
+   <dt>lockOtherRecord</dt>
+      <dd>A client that holds the lock for one record can lock one other record.
+        A client must not call this if the client already has the lock for
+        more then one record.
+      </dd>
+   <dt>detachClients</dt>
+     <dd>
+        Ask all clients to detach from the record
+      </dd>
+   <dt>beginGroupPut</dt>
+     <dd>Begin a group of puts.
+     This results in all registered PVListeners being called</dd>
+   <dt>endGroupPut</dt>
+     <dd>End a group of puts.
+       This results in all registered PVListeners being called.</dd>
+   <dt>addPVRecordClient</dt>
+     <dd>
+      Every client that accesses the record must call this so that
+      the client can be notified when the record is deleted.
+     </dd>
+   <dt>removePVRecordClient</dt>
+     <dd>
+      Client is no longer accessing the record.
+     </dd>
+   <dt>addListener</dt>
+     <dd>
+       Add a PVListener.
+       This must be called before calling pvRecordField.addListener.
+     </dd>
+   <dt>nextMasterPVField</dt>
+      <dd>
+       Called by pvCopy monitor support.
+      </dd>
+   <dt>removeListener</dt>
+     <dd>
+       Removes a listener.
+       The listener will also be removed from all fields to which it is attached.
+      </dd>
+   <dt>getRecordName</dt>
+     <dd>Return the recordName.</dd>
+   <dt>getPVRecordStructure</dt>
+     <dd>Get the top level PVStructure.</dd>
+   <dt>findPVRecordField</dt>
+     <dd>Given a PVFieldPtr return the PVRecordFieldPtr for the field.</dd>
+   <dt>getTraceLevel</dt>
+      <dd>This can be used for debugging. There are currently three 
+      levels that are used by existing code.
+      <dl>
+         <dt>0</dt>
+            <dd>Produce no trace messages.</dd>
+         <dt>1</dt>
+            <dd>Issue a message to std::cout whenever anything is created
+            or destroyed.</dd>
+         <dt>2</dt>
+            <dd>In addition to lifetime messages also issue a message
+            whenever the record is accessed by pvAccess client.</dd>
+      </dl>
+      </dd>
+   <dt>setTraceLevel</dt>
+      <dd>Set the trace level. Note that special, described below.
+       provides a record support that allows a pvAccess client
+       to set the trace level of a record.</dd>
+</dl>
+<h3>Class PVDatabase</h3>
+<pre>
+class PVDatabase
+{
+     PVDatabase getMaster();
+     PVDatabase();
+     ~PVDatabase();      // C++ only
+     destroy();
+     PVRecord findRecord(String recordName);
+     boolean addRecord(PVRecord record);
+     boolean removeRecord(PVRecord record);
+     string[] getRecordNames();
+}
+</pre>
+where
+<dl>
+    <dt>getMaster</dt>
+      <dd>
+       Get the master database.
+      <br />
+       The master database is what provider <b>local</b> uses.
+      </dd>
+    <dt>PVDatabase</dt>
+      <dd>
+       Constructor.
+      </dd>
+    <dt>~PVDatabase C++ only</dt>
+      <dd>
+      The destructor.
+      </dd>
+   <dt>destroy</dt>
+     <dd>
+       This is called by remote channelAccess when process exits.
+       This destroys and removes all records in the PVDatabase.
+      </dd>
+   <dt>findRecord</dt>
+     <dd>Find a record. An empty pointer is returned if the record is not in the database.</dd>
+   <dt>addRecord</dt>
+     <dd>Add a record to the database.
+        If the record already exists it is not modified and false is returned.</dd>
+   <dt>getRecordNames</dt>
+     <dd>Returns an array of all the record names.</dd>
+   <dt>removeRecord</dt>
+     <dd>Remove a record from the database.
+       If the record was not in the database false is returned.</dd>
+</dl>
+<h3>local channel provider</h3>
+<p>This is code that provides an implementation of channelProvider as
+defined by pvAccess.
+It provides access to PVRecords and is accessed by the server side of remote pvAccess.
+It uses the copy and monitor facilities from pvDataCPP and connects
+them to a PVRecord.
+</p>
+<p>The implementation is a complete implementation of channelProvider
+and channel.</p>
+<p>The following provides a brief description of each channel method that
+is implemented.</p>
+<h4>channelProcessLocal</h4>
+<p>Implements channelProcess.</p>
+<h4>channelGetLocal</h4>
+<p>Implements channelGet.</p>
+<h4>channelPutLocal</h4>
+<p>Implements channelPut.</p>
+<h4>channelPutGetLocal</h4>
+<p>Implements channelPutGet.</p>
+<h4>channelArrayLocal</h4>
+<p>Implements channelArray.</p>
+<h4>ChannelRPCLocal</h4>
+<p>Implements channelRPC.</p>
+<h4>MonitorLocal</h4>
+<p>This is the code that implements monitors on changes to fields of a PVRecord.
+Because it is called by pvAccess client (monitor methods) and by
+PVRecord (when postPut is called), it must be careful to prevent deadlocks.
+The implementation is via class MonitorLocal (implemented in monitorFactory.cpp)
+and PVCopyMonitor.
+MonitorLocal is the interface between pvAccess and PVCopyMonitor.
+PVCopyMonitor is the interface between MonitorLocal and PVRecord.
+MonitorLocal manages a MonitorElement queue.
+While monitoring is active (between start and stop) it keeps an active element
+for use by PVCopyMonitor.
+While monitoring is active PVCopyMonitor updates the active monitor element whenever
+a postPut is issued to any field being monitored.
+</p>
+<p>The following two sections provide a few more details about MonitorLocal
+and PVCopyMonitor.</p>
+<h5>MonitorLocal</h5>
+<p>MonitorLocal implements the following abstract base classes:</p>
+<dl>
+  <dt>Monitor</dt>
+     <dd>This is described by pvDataCPP.
+     It has methods start, stop, poll, and release.
+      These methods are called by the pvAccess client
+     </dd>
+  <dt>PVCopyMonitorRequester</dt>
+     <dd>This has methods releaseActiveElement and unlisten.
+      These methods are called by PVCopyMonitor.
+     </dd>
+</dl>
+MonitorLocal manages the following:
+<dl>
+  <dt>MonitorElementQueue</dt>
+    <dd>This is a queue of monitor elements.
+     A Queue is implemented by pvDataCPP and used by MonitorLocal.
+     It is a finite queue.
+     A monitor element is described by pvDataCPP.
+     It has fields pvStructure, changedBitSet, and overrunBitSet.
+     The pvStructure holds data for a subset of the fields in a PVRecord.
+     The changedBitSet and overrunBitSet describe changes between
+      monitor event.
+      MonitorLocal creates an instance of PVCopy (implemented by pvDataCPP),
+      which manages the interaction between the set of fields being
+      monitored and the fields in the top level PVStructure of the PVRecord.
+      pvCopy is also used to create the pvStructure for each monitor element.
+      </dd>
+  <dt>activeElement</dt>
+    <dd>Whenever monitoring is active monitorLocal
+     keeps an active element for use by pvCopyMonitor.
+     It changes the active element based on calls to poll (by the
+     client) and calls to releaseActiveElement (by pvCopyMonitor).
+     If there are no free element when releaseActiveElement is
+     called the current active element is returned.
+     If a free element is available the client is notified that a new
+      monitor element is available and the free element becomes the
+    active element.
+    </dd>
+</dl>
+<p>A brief description on each method in MonitorLocal is:</p>
+<dl>
+   <dt>start</dt>
+     <dd>
+        Called by client.
+        With a lock held it clears the monitorElement queue
+       and allocates an active element.
+      With no lock held calls pvCopyMonitor-&gt;startMonitoring(activeElement)
+     </dd>
+   <dt>stop</dt>
+      <dd>
+        Called by client.
+      With no lock held calls pvCopyMonitor-&gt;stopMonitoring(activeElement)
+      </dd>
+   <dt>poll</dt>
+      <dd>
+        Called by client.
+       With a lock held it calls queue-&gt;getUsed();
+      </dd>
+   <dt>release</dt>
+      <dd>
+        Called by client.
+       With a lock held it calls queue-&gt;releaseUsed();
+      </dd>
+   <dt>releaseActiveElement</dt>
+      <dd>
+       Called by PVCopyMonitor with no locks held.
+       With a lock held it tries to get a new free element.
+       If it can't it just returns the current active element.
+       Otherwise it does the following.
+       Using the activeElement it updates the pvStructure
+        and compresses the changed and overrun bitSet.
+       It then calls queue-&gt;setUsed(activeElement);
+       It then sets the active element to the new free element.
+        With no lock held it calls monitorRequester-&gt;monitorEvent(getPtrSelf())
+       and finally returns the new active element,
+      </dd>
+   <dt>unlisten</dt>
+      <dd>
+       With no lock held it calls monitorRequester-&gt;unlisten(getPtrSelf());
+      </dd>
+</dl>
+<h5>PVCopyMonitor</h5>
+<p>
+pvCopyMonitor is the code that manages changes to
+fields in the record.
+It is called by PVRecord whenever a postPut is issued to a field.
+pvCopyMonitor uses the active monitor element provided by monitorFactory.
+Note that this method is called with the record locked.
+It only modifies the changedBitSet and overrunBitSet of the
+active element but never modifies the pvStructure.
+</p>
+<p>A brief description of the pvCopyMonitor methods is:</p>
+<dl>
+  <dt>startMonitoring</dt>
+     <dd>With no lock held it sets its monitorElement to the
+     startElement passed by monitorLocal and calls pvRecord-&gt;addListener(getPtrSelf()).
+     It locks the pvRecord.
+      It calls calls addListener for every field in the record that is being
+      monitored.
+     It clears the overrun and changed bit sets.
+     It sets bit 0 of the changed bit set and calls
+     pvCopyMonitorRequester-&gt;releaseActiveElement();
+     Thus the client will get the initial values for every field being monitored.
+     The record is unlocked and the method returns to the caller.
+      </dd>
+  <dt>stopMonitoring</dt>
+     <dd>
+      With no lock held it calls pvRecord-&gt;removeListener(getPtrSelf());
+     </dd>
+  <dt>dataPut</dt>
+     <dd>
+      This is called because of a call to postPut.
+      It is called with the record locked.
+      It updates the changed and overrun bitSets.
+      It isGroupPut is false it calls
+      pvCopyMonitorRequester-&gt;releaseActiveElement().
+      Otherwise it sets dataChanged true.
+     </dd>
+  <dt>beginGroupPut</dt>
+     <dd>
+      With a lock held it
+      sets isGroupPut true and dataChanged false.
+     </dd>
+  <dt>endGroupPut</dt>
+     <dd>
+      With a lock held it sets isGroupPut false.
+      With no lock held and dataChanged true it calls
+      pvCopyMonitorRequester-&gt;releaseActiveElement()
+     </dd>
+  <dt>unlisten</dt>
+     <dd>
+      Just calls pvCopyMonitorRequester-&gt;unlisten();
+     </dd>
+</dl>
+<h2>exampleJava and exampleCPP</h2>
+<p>exampleJava and exampleCPP both have example databases.
+Project exampleCPP has a database that is similar to exampleJava/
+This section will mainly describe exampleCPP/database.
+It shows how create a V3 IOC that has both V3 Records, PVRecords, and pvaSrv.
+After reading this section the examples in exampleJava and exampleCPP should
+be easy to understand.
+</p>
+<h3>Starting the example</h3>
+<p>The example database can be run either as a standalone main program
+or as part of a V3 IOC (Input Output Controller).
+If as part of a V3 IOC the IOC has both V3 and V4 records.
+It also starts pvaSrv so that the V3 records can be accessed via either
+ca or pva.
+</p>
+<p>To run the example as a main program:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/exampleCPP/database
+mrk> bin/linux-x86_64/exampleDatabaseMain 
+</pre>
+<p>To start the example as part of a V3 IOC:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/exampleCPP/database/iocBoot/exampleDatabase
+mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd
+</pre>
+<p>Once the database is running then the following can access exampleHello:</p>
+<pre>
+pvput -r "argument" exampleHello World
+pvget -r "result.value" exampleHello
+exampleHello
+structure 
+    structure result
+        string value Hello World
+</pre>
+<p>The following also works:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/pvaClientCPP/example
+mrk> bin/linux-x86_64/helloWorldPutGet
+helloWorldPutGet
+structure 
+    structure result
+        string value Hello World
+        time_t timeStamp
+            long secondsPastEpoch 1440095693
+            int nanoseconds 281748793
+            int userTag 0
+
+mrk>
+</pre>
+<h3>source code</h3>
+<p> <b>exampleCPP/database/src</b> has the following examples:</p>
+<dl>
+   <dt>exampleHello</dt>
+      <dd>This is an hello world example that is meant to be accesed via
+      a channelPutGet request. It can also be accessed via pvput
+      followed by a pvget.</dd>
+   <dt>exampleHelloRPC</dt>
+       <dd>
+         The is an hello world example that is accessed via a channelRPC request.
+       </dd>
+   <dt>exampleDatabase</dt>
+      <dd>This creates an exampleHello record.
+       It also creates a large set of records of all possible types that
+       have only the default process semantics, which only sets the timeStamp when
+       the record is processed.
+      </dd>
+   <dt>powerSupply</dt>
+      <dd>This has a example record that models a power supply.
+         Given a value for desired voltage and power, it computes the current.
+      </dd>
+</dl>
+
+The src directory also has the following files:
+<dl>
+   <dt>exampleDatabaseMain.cpp</dt>
+      <dd>code to run example as main program</dd>
+   <dt>exampleDatabaseInclude.dbd<br />
+       exampleDatabaseRegister.cpp</dt>
+      <dd>code to run example as part of V3 IOC</dd>
+</dl>
+<h4>exampleDatabaseMain.cpp</h4>
+<p>This is the file that runs the example as a main program.
+The main program is:</p>
+<pre>
+int main(int argc,char *argv[])
+{
+    PVDatabasePtr master = PVDatabase::getMaster();
+    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
+    ExampleDatabase::create();
+    ServerContext::shared_pointer ctx =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+    cout &lt;&lt; "exampleDatabase\n";
+    PVStringArrayPtr pvNames = master->getRecordNames();
+    cout &lt;&lt; "recordNames" &lt;&lt; endl &lt;&lt; *pvNames &lt;&lt; endl;
+    string str;
+    while(true) {
+        cout &lt;&lt; "Type exit to stop: \n";
+        getline(cin,str);
+        if(str.compare("exit")==0) break;
+
+    }
+    ctx->destroy();
+    epicsThreadSleep(1.0);
+    channelProvider->destroy();
+    return 0; 
+}
+</pre>
+The only code that is not generic is:
+<pre>
+    ExampleDatabase::create();
+</pre>
+<h3>exampleDatabaseRegister.cpp</h3>
+This is used to create an iocshell command to start the example database as part
+of a V3 IOC.
+It is almost generic.
+The guts of the code is:
+<pre>
+static const iocshArg testArg0 = { "prefix", iocshArgString };
+static const iocshArg *testArgs[] = {
+    &amp;testArg0};
+
+static const iocshFuncDef exampleDatabaseFuncDef = {
+    "exampleDatabase", 1, testArgs};
+static void exampleDatabaseCallFunc(const iocshArgBuf *args)
+{
+    ExampleDatabase::create();
+}
+
+static void exampleDatabaseRegister(void)
+{
+    static int firstTime = 1;
+    if (firstTime) {
+        firstTime = 0;
+        iocshRegister(&amp;exampleDatabaseFuncDef, exampleDatabaseCallFunc);
+    }
+}
+
+extern "C" {
+    epicsExportRegistrar(exampleDatabaseRegister);
+}
+</pre>
+Other than <b>exampleDatabase</b> as part of the names it is boiler plate code.
+<h3>exampleDatabaseInclude.dbd</h3>
+This is just:
+<pre>
+registrar("exampleDatabaseRegister")
+</pre>
+It again is generic except for <b>exampleDatabase</b> as part of the name.
+<h3>Makefile</h3>
+Look at the Make file to see how each other file is used.
+<h3>exampleDatabase</h3>
+<b>exampleDatabase.h</b> is almost completely generic.
+It has the code:
+<pre>
+class epicsShareClass  ExampleDatabase{
+public:
+    static void create();
+};
+</pre>
+It defines a factory methods for creating the example database.
+<p>
+<b>exampleDatabase.cpp</b> is not generic.
+It shows how to create records of various types.
+Most of the records have only the default process method.
+The default process does nothing except that if a timeStamp field is present
+the time is set to the current time.
+Look at the code to see examples of how to create records.
+</p>
+<h3>exampleCPP/database/ioc</h3>
+This directory has two subdirectories:
+<dl>
+  <dt>Db</dt>
+    <dd>This creates some V3 records.</dd>
+  <dt>src</dt>
+    <dd>This has to files to load the V3 and V4 support for a V3 IOC.</dd>
+</dl>
+<h4>src</h4>
+<p>exampleDatabaseMain.cpp is standard code to start a V3 IOC</p>
+<p>exampleDatabaseInclude.dbd contains:</p>
+<pre>
+include "base.dbd"
+include "PVAServerRegister.dbd"
+include "registerChannelProviderLocal.dbd"
+include "dbPv.dbd"
+registrar("exampleDatabaseRegister")
+</pre>
+<p><b>base.dbd</b> is standard way to include the base V3 code.
+<b>PVAServerRegister.dbd</b> is how the pvAccess Server code is included.
+<b>registerChannelProviderLocal.dbd</b> is how the local pva server is started.
+The local server is implemented by pvDatabaseCPP.
+<b>dbPv.dbd</b> is how pvaSrv, the pva server that accesses V3 revords, is started.
+</p>
+<p><b>registrar("exampleDatabaseRegister")</b> is the only example specific statement.
+It is used to start the example database.</p>
+<h3>exampleCPP/database/iocBoot/exampleDatabase</h3>
+<p>This is where the V3 IOC is started.
+The <b>st.cmd</b> starts with normal way to start a V3 IOC.
+What is different is the statements after iocInit:</p>
+<pre>
+exampleDatabase
+startPVAServer
+</pre>
+<p>The first statement creates the example database.
+The second statement starts the pva server.
+After it is started clients can access the V4 records and the V3 records via pva.
+</p>
 
 <h2>API: pvAccess</h2>
 <h3>ChannelProvider</h3>
@@ -3854,267 +6091,8 @@ ChannelRPC extends ChannelRequest
       calling destroy after the request is complete.</dd>
 </dl>
 
-<h2>API: pvaClient</h2>
-<p>PvaClient is a synchronous API for accessing PVData via PVAccess.
-It also provides a number of convenience methods.
-It allows the client to request access without checking for failure,
-but throws an exception when a reuest fails.
-A client can also check for failues and thus prevent failures.</p>
-
-<p>The PvaClient API has the following features:</p>
-<ol>
-  <li>Provides a synchronous API rather than the callback API provided by pvAccess.</li>
-  <li>Makes common requests easy.</li>
-  <li>Provides full access to the pvAccess API for more demanding
-  applications</li>
-  <li>Allows efficient client side programs.</li>
-  <li>Takes care of most object resource management problems.</li>
-</ol>
-<p>Simple examples of using pvaClient:</p>
-<pre>
-// easyGet
-PvaClientPtr pvaClient = PvaClient::create();
-double value = pvaClient-&gt;channel("exampleDouble")-&gt;get()-&gt;getData()-&gt;getDouble();
-
-// easyPut
-PvaClientChannelPtr channel = pvaClient-&gt;channel("exampleDouble");
-PvaClientPutPtr put = channel-&gt;put();
-PvaClientPutDataPtr putData = put-&gt;getData();
-putData-&gt;putDouble(3.0); put-&gt;put();
-
-// easyMonitor
-PvaClientMonitorPtr monitor = pvaClient-&gt;channel("examplePowerSupply")-&gt;monitor("");
-PvaClientMonitorDataPtr easyData = monitor-&gt;getData();
-while(true) {
-    monitor-&gt;waitEvent();
-    cout &lt;&lt; "changed\n";
-    easyData-&gt;showChanged(cout);
-    cout &lt;&lt; "overrun\n";
-    easyData-&gt;showOverrun(cout);
-    monitor-&gt;releaseEvent();
-}
-// easyProcess
-PvaClientChannelPtr channel = pvaClient-&gt;channel("exampleDouble");
-PvaClientProcessPtr process = channel-&gt;createProcess();
-process-&gt;process();
-</pre>
 
 
-<h2>API: pvDatabase</h2>
-<p>A brief description of a pvDatabase is that it is a set of network accessible, smart, memory resident records. Each record has data composed of a top level PVStructure. Each record has a name which is the channelName for pvAccess. A local Channel Provider implements the complete ChannelProvider and Channel interfaces as defined by pvAccess. The local provider provides access to the records in the pvDatabase. This local provider is accessed by the remote pvAccess server. A record is smart because code can be attached to a record, which is accessed via a method named process.</p>
-<p>Implementations for both Java and C++ are available.
-With the C++ implementation (pvDatabaseCPP) the pvDatabase
-can be provided via a Main program or can be part of a V3IOC. In the later case the IOC has both a database of V3 Records and a PVRecords.
-This version allows the development of V4 services for V3IOCs.
-</p>
-<p>exampleJava and exampleCPP both have example databases.
-Project exampleCPP has a database that is similar to exampleJava/
-This section will mainly describe exampleCPP/database.
-It shows how create a V3 IOC that has both V3 Records, PVRecords, and pvaSrv.
-After reading this section the examples in exampleJava and exampleCPP should
-be easy to understand.
-</p>
-<h3>Starting the example</h3>
-<p>The example database can be run either as a standalone main program
-or as part of a V3 IOC (Input Output Controller).
-If as part of a V3 IOC the IOC has both V3 and V4 records.
-It also starts pvaSrv so that the V3 records can be accessed via either
-ca or pva.
-</p>
-<p>To run the example as a main program:</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/exampleCPP/database
-mrk&gt; bin/linux-x86_64/exampleDatabaseMain 
-</pre>
-<p>To start the example as part of a V3 IOC:</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/exampleCPP/database/iocBoot/exampleDatabase
-mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
-</pre>
-<p>Once the database is running then the following can access exampleHello:</p>
-<pre>
-pvput -r "argument" exampleHello World
-pvget -r "result.value" exampleHello
-exampleHello
-structure 
-    structure result
-        string value Hello World
-</pre>
-<p>The following also works:</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/pvaClientCPP/example
-mrk&gt; bin/linux-x86_64/helloWorldPutGet
-helloWorldPutGet
-structure 
-    structure result
-        string value Hello World
-        time_t timeStamp
-            long secondsPastEpoch 1440095693
-            int nanoseconds 281748793
-            int userTag 0
-
-mrk&gt;
-</pre>
-<h3>source code</h3>
-<p> <b>exampleCPP/database/src</b> has the following examples:</p>
-<dl>
-   <dt>exampleHello</dt>
-      <dd>This is an hello world example that is meant to be accesed via
-      a channelPutGet request. It can also be accessed via pvput
-      followed by a pvget.</dd>
-   <dt>exampleHelloRPC</dt>
-       <dd>
-         The is an hello world example that is accessed via a channelRPC request.
-       </dd>
-   <dt>exampleDatabase</dt>
-      <dd>This creates an exampleHello record.
-       It also creates a large set of records of all possible types that
-       have only the default process semantics, which only sets the timeStamp when
-       the record is processed.
-      </dd>
-   <dt>powerSupply</dt>
-      <dd>This has a example record that models a power supply.
-         Given a value for desired voltage and power, it computes the current.
-      </dd>
-</dl>
-
-The src directory also has the following files:
-<dl>
-   <dt>exampleDatabaseMain.cpp</dt>
-      <dd>code to run example as main program</dd>
-   <dt>exampleDatabaseInclude.dbd<br />
-       exampleDatabaseRegister.cpp</dt>
-      <dd>code to run example as part of V3 IOC</dd>
-</dl>
-<h4>exampleDatabaseMain.cpp</h4>
-<p>This is the file that runs the example as a main program.
-The main program is:</p>
-<pre>
-int main(int argc,char *argv[])
-{
-    PVDatabasePtr master = PVDatabase::getMaster();
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-    ExampleDatabase::create();
-    ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    cout &lt;&lt; "exampleDatabase\n";
-    PVStringArrayPtr pvNames = master->getRecordNames();
-    cout &lt;&lt; "recordNames" &lt;&lt; endl &lt;&lt; *pvNames &lt;&lt; endl;
-    string str;
-    while(true) {
-        cout &lt;&lt; "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
-    }
-    ctx->destroy();
-    epicsThreadSleep(1.0);
-    channelProvider->destroy();
-    return 0; 
-}
-</pre>
-The only code that is not generic is:
-<pre>
-    ExampleDatabase::create();
-</pre>
-<h3>exampleDatabaseRegister.cpp</h3>
-This is used to create an iocshell command to start the example database as part
-of a V3 IOC.
-It is almost generic.
-The guts of the code is:
-<pre>
-static const iocshArg testArg0 = { "prefix", iocshArgString };
-static const iocshArg *testArgs[] = {
-    &amp;testArg0};
-
-static const iocshFuncDef exampleDatabaseFuncDef = {
-    "exampleDatabase", 1, testArgs};
-static void exampleDatabaseCallFunc(const iocshArgBuf *args)
-{
-    ExampleDatabase::create();
-}
-
-static void exampleDatabaseRegister(void)
-{
-    static int firstTime = 1;
-    if (firstTime) {
-        firstTime = 0;
-        iocshRegister(&amp;exampleDatabaseFuncDef, exampleDatabaseCallFunc);
-    }
-}
-
-extern "C" {
-    epicsExportRegistrar(exampleDatabaseRegister);
-}
-</pre>
-Other than <b>exampleDatabase</b> as part of the names it is boiler plate code.
-<h3>exampleDatabaseInclude.dbd</h3>
-This is just:
-<pre>
-registrar("exampleDatabaseRegister")
-</pre>
-It again is generic except for <b>exampleDatabase</b> as part of the name.
-<h3>Makefile</h3>
-Look at the Make file to see how each other file is used.
-<h3>exampleDatabase</h3>
-<b>exampleDatabase.h</b> is almost completely generic.
-It has the code:
-<pre>
-class epicsShareClass  ExampleDatabase{
-public:
-    static void create();
-};
-</pre>
-It defines a factory methods for creating the example database.
-<p>
-<b>exampleDatabase.cpp</b> is not generic.
-It shows how to create records of various types.
-Most of the records have only the default process method.
-The default process does nothing except that if a timeStamp field is present
-the time is set to the current time.
-Look at the code to see examples of how to create records.
-</p>
-<h3>exampleCPP/database/ioc</h3>
-This directory has two subdirectories:
-<dl>
-  <dt>Db</dt>
-    <dd>This creates some V3 records.</dd>
-  <dt>src</dt>
-    <dd>This has to files to load the V3 and V4 support for a V3 IOC.</dd>
-</dl>
-<h4>src</h4>
-<p>exampleDatabaseMain.cpp is standard code to start a V3 IOC</p>
-<p>exampleDatabaseInclude.dbd contains:</p>
-<pre>
-include "base.dbd"
-include "PVAServerRegister.dbd"
-include "registerChannelProviderLocal.dbd"
-include "dbPv.dbd"
-registrar("exampleDatabaseRegister")
-</pre>
-<p><b>base.dbd</b> is standard way to include the base V3 code.
-<b>PVAServerRegister.dbd</b> is how the pvAccess Server code is included.
-<b>registerChannelProviderLocal.dbd</b> is how the local pva server is started.
-The local server is implemented by pvDatabaseCPP.
-<b>dbPv.dbd</b> is how pvaSrv, the pva server that accesses V3 revords, is started.
-</p>
-<p><b>registrar("exampleDatabaseRegister")</b> is the only example specific statement.
-It is used to start the example database.</p>
-<h3>exampleCPP/database/iocBoot/exampleDatabase</h3>
-<p>This is where the V3 IOC is started.
-The <b>st.cmd</b> starts with normal way to start a V3 IOC.
-What is different is the statements after iocInit:</p>
-<pre>
-exampleDatabase
-startPVAServer
-</pre>
-<p>The first statement creates the example database.
-The second statement starts the pva server.
-After it is started clients can access the V4 records and the V3 records via pva.
-</p>
 
 
 <h2>API: pvaSrv</h2>
@@ -4478,14 +6456,14 @@ For scalar and scalarArray conversion between the various scalarTypes is support
 <p>The following:</p>
 <pre>
     PVDataCreatePtr create = getPVDataCreate();
-    PVDoublePtr pvDouble = create-&gt;createPVScalar&lt;PVDouble&gt;();
-    PVBytePtr pvByte = create-&gt;createPVScalar&lt;PVByte&gt;();
-    pvByte-&gt;put(10);
-    pvDouble-&gt;copy(*pvByte);
+    PVDoublePtr pvDouble = create->createPVScalar&lt;PVDouble&gt;();
+    PVBytePtr pvByte = create->createPVScalar&lt;PVByte&gt;();
+    pvByte->put(10);
+    pvDouble->copy(*pvByte);
     cout &lt;&lt; "double " &lt;&lt; pvDouble &lt;&lt; " byte " &lt;&lt; pvByte &lt;&lt; endl;
 
-    PVStringPtr pvString = create-&gt;createPVScalar&lt;PVString&gt;();
-    pvString-&gt;copy(*pvByte);
+    PVStringPtr pvString = create->createPVScalar&lt;PVString&gt;();
+    pvString->copy(*pvByte);
     cout &lt;&lt; "string " &lt;&lt; pvString &lt;&lt; " byte " &lt;&lt; pvByte &lt;&lt; endl;
 </pre>
 produces:
@@ -4496,16 +6474,16 @@ string 10 byte 10
 <p>Likewise for scalarArray:</p>
 <pre>
     PVDataCreatePtr create = getPVDataCreate();
-    PVDoubleArrayPtr pvDoubleArray = create-&gt;createPVScalarArray&lt;PVDoubleArray&gt;();
-    PVByteArrayPtr pvByteArray = create-&gt;createPVScalarArray&lt;PVByteArray&gt;();
+    PVDoubleArrayPtr pvDoubleArray = create->createPVScalarArray&lt;PVDoubleArray&gt;();
+    PVByteArrayPtr pvByteArray = create->createPVScalarArray&lt;PVByteArray&gt;();
     shared_vector&lt;int8&gt; data(2);
     data[0] = 1; data[1] = 10;
-    pvByteArray-&gt;replace(freeze(data));
-    pvDoubleArray-&gt;copy(*pvByteArray);
+    pvByteArray->replace(freeze(data));
+    pvDoubleArray->copy(*pvByteArray);
     cout &lt;&lt; "double " &lt;&lt; pvDoubleArray &lt;&lt; " byte " &lt;&lt; pvByteArray &lt;&lt; endl;
 
-    PVStringArrayPtr pvStringArray = create-&gt;createPVScalarArray&lt;PVStringArray&gt;();
-    pvStringArray-&gt;copy(*pvByteArray);
+    PVStringArrayPtr pvStringArray = create->createPVScalarArray&lt;PVStringArray&gt;();
+    pvStringArray->copy(*pvByteArray);
     cout &lt;&lt; "string " &lt;&lt; pvStringArray &lt;&lt; " byte " &lt;&lt; pvByteArray &lt;&lt; endl;
 </pre>
 produces:
@@ -4936,7 +6914,7 @@ structure
     <dd>The options that apply to the entire record.</dd>
   <dt>option</dt>
     <dd>This is of the form
-      <b>string &lt;name&gt; &lt;value&gt;</b>
+      <b>string name value</b>
     </dd>
   <dt>field</dt>
     <dd>Definitions that select fields of the PVRecord and options for the
@@ -5334,8 +7312,7 @@ TimeStamp
 <p>where:</p>
 <dl>
   <dt>normalize</dt>
-    <dd>Adjust secondsPastEpoch and nanoseconds so that 0&lt;=nanoseconds&lt;
-      nanoSecPerSec.</dd>
+    <dd>Adjust secondsPastEpoch and nanoseconds so that 0&lt;=nanoseconds&lt;nanoSecPerSec.</dd>
   <dt>getSecondsPastEpoch</dt>
     <dd>Get the seconds part of timeStamp</dd>
   <dt>getEpicsSecondsPastEpoch</dt>
@@ -5371,7 +7348,7 @@ TimeStamp
 </dl>
 <p>The TimeStamp class provides arithmetic and comparison methods for time
 stamps. The result is always kept in normalized form, which means that the
-nanosecond portion is 0&le;=nano&lt;nanoSecPerSec. Note that it is OK to have
+nanosecond portion is 0&lt;=nano&lt;nanoSecPerSec. Note that it is OK to have
 timeStamps for times previous to the epoch.</p>
 
 <h4>PVTimeStamp</h4>
@@ -5526,12 +7503,13 @@ PVControl
 <p>where</p>
 <dl>
   <dt>attach</dt>
-    <dd>Attempts to attach to <span
-     >pvField</span> It returns (false,true) if
+    <dd>
+      Attempts to attach to <span>pvField</span> It returns (false,true) if
       it found an appropriate pvData structure. It looks first a pvField itself
       and if is not an appropriate pvData structure but the field name is value
       it looks to see if the parent structure has an appropriate sub
-    structure.</dd>
+    structure.
+     </dd>
   <dt>detach</dt>
     <dd>Just detaches from the pvData structure.</dd>
   <dt>isAttached</dt>
