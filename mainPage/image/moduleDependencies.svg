@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="17cm" height="15cm" viewBox="9 10 326 282" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="10" y="30" width="59.35" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="10" y="30" width="59.35" height="19.7611"/>
+    <rect style="fill: #ffffff" x="10" y="12" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="10" y="12" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="16" y="41.8">
+      <tspan x="16" y="41.8">pvCommonCPP</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="180" y="30" width="50" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="180" y="30" width="50" height="19.7611"/>
+    <rect style="fill: #ffffff" x="180" y="12" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="180" y="12" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="186" y="41.8">
+      <tspan x="186" y="41.8">pvDataCPP</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="100" y="100" width="52.65" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="100" y="100" width="52.65" height="19.7611"/>
+    <rect style="fill: #ffffff" x="100" y="82" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="100" y="82" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="106" y="111.8">
+      <tspan x="106" y="111.8">pvAccessCPP</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="260" y="100" width="73.05" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="260" y="100" width="73.05" height="19.7611"/>
+    <rect style="fill: #ffffff" x="260" y="82" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="260" y="82" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="266" y="111.8">
+      <tspan x="266" y="111.8">normativeTypesCPP</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="180" y="170" width="53.2" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="180" y="170" width="53.2" height="19.7611"/>
+    <rect style="fill: #ffffff" x="180" y="152" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="180" y="152" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="186" y="181.8">
+      <tspan x="186" y="181.8">pvaClientCPP</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="10" y="170" width="60.95" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="10" y="170" width="60.95" height="19.7611"/>
+    <rect style="fill: #ffffff" x="10" y="152" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="10" y="152" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="16" y="181.8">
+      <tspan x="16" y="181.8">pvDatabaseCPP</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="100" y="170" width="50" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="100" y="170" width="50" height="19.7611"/>
+    <rect style="fill: #ffffff" x="100" y="152" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="100" y="152" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="106" y="181.8">
+      <tspan x="106" y="181.8">pvaSrv</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="100" y="240" width="50.55" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="100" y="240" width="50.55" height="19.7611"/>
+    <rect style="fill: #ffffff" x="100" y="222" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="100" y="222" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="106" y="251.8">
+      <tspan x="106" y="251.8">exampleCPP</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="260" y="240" width="50" height="19.7611"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="260" y="240" width="50" height="19.7611"/>
+    <rect style="fill: #ffffff" x="260" y="222" width="30" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="260" y="222" width="30" height="18"/>
+    <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="266" y="251.8">
+      <tspan x="266" y="251.8">pvaPy</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="259.164" y1="81.3063" x2="224.386" y2="54.707"/>
+    <polygon style="fill: #000000" points="226.208,52.3241 219.62,51.062 222.563,57.09 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="226.208,52.3241 219.62,51.062 222.563,57.09 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="153.648" y1="85.5703" x2="187.918" y2="55.0789"/>
+    <polygon style="fill: #000000" points="189.912,57.3202 192.401,51.0906 185.924,52.8376 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="189.912,57.3202 192.401,51.0906 185.924,52.8376 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke-dasharray: 4; stroke: #000000" x1="99.0353" y1="87.8347" x2="58.1963" y2="54.8429"/>
+    <polygon style="fill: #000000" points="60.0815,52.5093 53.529,51.0724 56.311,57.1766 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="60.0815,52.5093 53.529,51.0724 56.311,57.1766 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="71.9352" y1="154.229" x2="107.947" y2="124.866"/>
+    <polygon style="fill: #000000" points="109.842,127.191 112.597,121.074 106.051,122.541 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="109.842,127.191 112.597,121.074 106.051,122.541 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="178.996" y1="155.81" x2="143.698" y2="125.03"/>
+    <polygon style="fill: #000000" points="145.67,122.769 139.176,121.087 141.727,127.291 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="145.67,122.769 139.176,121.087 141.727,127.291 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="234.197" y1="158.399" x2="277.422" y2="124.751"/>
+    <polygon style="fill: #000000" points="279.265,127.118 282.157,121.065 275.579,122.384 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="279.265,127.118 282.157,121.065 275.579,122.384 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="125.546" y1="151.016" x2="125.996" y2="127.257"/>
+    <polygon style="fill: #000000" points="128.996,127.314 126.11,121.258 122.997,127.2 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="128.996,127.314 126.11,121.258 122.997,127.2 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="125.162" y1="221.016" x2="125.068" y2="197.258"/>
+    <polygon style="fill: #000000" points="128.068,197.246 125.045,191.258 122.068,197.27 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="128.068,197.246 125.045,191.258 122.068,197.27 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="99.0027" y1="228.194" x2="58.6653" y2="194.896"/>
+    <polygon style="fill: #000000" points="60.5751,192.583 54.0381,191.077 56.7555,197.21 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="60.5751,192.583 54.0381,191.077 56.7555,197.21 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="151.523" y1="227.288" x2="189.036" y2="194.999"/>
+    <polygon style="fill: #000000" points="190.993,197.272 193.584,191.084 187.079,192.725 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="190.993,197.272 193.584,191.084 187.079,192.725 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="258.997" y1="226.664" x2="223.632" y2="195.087"/>
+    <polygon style="fill: #000000" points="225.63,192.85 219.156,191.091 221.634,197.325 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="225.63,192.85 219.156,191.091 221.634,197.325 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="20" y="279.5" width="299.95" height="13.2"/>
+    <text style="fill: #000000;text-anchor:start;font-size:11.2887;font-family:sanserif;font-style:normal;font-weight:normal" x="20" y="290">
+      <tspan x="20" y="290">Direct Build Dependencies of EPICS V4 C++ modules</tspan>
+    </text>
+  </g>
+</svg>
