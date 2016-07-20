@@ -143,4 +143,15 @@
       <tspan x="20" y="290">Direct Build Dependencies of EPICS V4 C++ modules</tspan>
     </text>
   </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke-dasharray: 4; stroke: #000000" x1="178.996" y1="39.8806" x2="76.6891" y2="39.8806"/>
+    <polygon style="fill: #000000" points="76.6891,36.8806 70.6891,39.8806 76.6891,42.8806 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" points="76.6891,36.8806 70.6891,39.8806 76.6891,42.8806 "/>
+  </g>
+  <text style="fill: #000000;text-anchor:middle;font-size:6.20879;font-family:sanserif;font-style:normal;font-weight:normal" x="124.593" y="38.3806">
+    <tspan x="124.593" y="38.3806">VxWorks</tspan>
+  </text>
+  <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:monospace;font-style:normal;font-weight:normal" x="76.0877" y="67.7964">
+    <tspan x="76.0877" y="67.7964">WITH_MICROBENCH</tspan>
+  </text>
 </svg>
