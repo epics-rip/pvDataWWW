@@ -37,13 +37,15 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 02-June-2016</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 08-August-2016</h2>
 <p>
 <b>NOTE: If you are using EPICS V4 Release 4.5 then look at the previous version.</b>
 </p>
 <p>
-This version will be for EPICS V4 Release 4.6.
-It is currently under development.
+This version is for EPICS V4 Release 4.6.
+</p>
+<p>
+<b>NOTE:</b> It is currently under development.
 </p>
   <dl>
     <dt>Latest version:</dt>
@@ -77,11 +79,8 @@ related set of products:<br />
 
 <h2 class="nocount">Status of this Document</h2>
 
-<p>This is the 10-Feb-2016 version of the Developer's Guide.
-It is for EPICS V4 Release 4.6.
+<p>This is the version of the Developer's Guide for EPICS V4 Release 4.6.
 </p>
-
-
 
 </div>
 
@@ -93,7 +92,7 @@ It is for EPICS V4 Release 4.6.
 
 <h2>Overview of V4</h2>
 <p>
-This document briefly describes a set of application programming interfaces (API)
+This document briefly describes a set of application programming interfaces (APIs)
 for EPICS V4.</p>
 <p>
 These core APIs provide a toolkit for creating applications that access and/or provide sources of structured data. This document is intended for EPICS V4 software developers who want to implement applications via the core APIs.
@@ -4985,7 +4984,116 @@ where
      <dd>Remove a record from the database.
        If the record was not in the database false is returned.</dd>
 </dl>
-<h3>local channel provider</h3>
+<h3>TraceRecord</h3>
+<p>An instance of TraceRecord provides the ability to remove another record in the local PVDatabase.
+<b>exampleCPP</b> and <b>exampleJava</b> each has a submodule named <b>database</b>
+that creates a PVDatabase that has a record named <b>PVRtraceRecord</b>.
+It has the structure:</p>
+<pre>
+structure 
+    structure argument
+        string recordName 
+        int level
+    structure result
+        string status 
+</pre>
+<p>It is designed to be used via a channelPutGet request but can also be used via pvget and pvput.
+For example:
+</p>
+<pre>
+pvget -m PVRtraceRecord
+</pre>
+<p>Then in another window:</p>
+<pre>
+pvput -r "argument{recordName,level}" PVRtraceRecord name level
+</pre>
+where
+<dl>
+   <dt>name</dt>
+      <dd>The name of the record</dd>
+   <dt>level</dt>
+      <dd>The trace level, which should be one of 0, 1, 2.</dd>
+</dl>
+<p>For example if the command is:</p>
+<pre>
+pvput -r "argument{recordName,level}" PVRtraceRecord PVRdouble 2
+</pre>
+<p>Then the monitor will show:</p>
+<pre>
+pvget -m PVRtraceRecord
+PVRtraceRecord
+structure 
+    structure argument
+        string recordName 
+        int level 0
+    structure result
+        string status 
+
+
+PVRtraceRecord
+structure 
+    structure argument
+        string recordName PVRdouble
+        int level 2
+    structure result
+        string status success
+
+</pre>
+<p>Record <b>PVRdouble</b> will now show debug infomation when the record is accessed.
+</p>
+<h3>RemoveRecord</h3>
+<p>An instance of RemoveRecord provides the ability to remove another record in the local PVDatabase.
+<b>exampleCPP</b> and <b>exampleJava</b> each has a submodule named <b>database</b>
+that creates a PVDatabase that has a record named <b>PVRremoveRecord</b>.
+It has the structure:</p>
+<pre>
+structure 
+    structure argument
+        string recordName 
+    structure result
+        string status 
+</pre>
+<p>It is designed to be used via a channelPutGet request but can also be used via pvget and pvput.
+For example:
+</p>
+<pre>
+pvget -m PVRremoveRecord
+</pre>
+<p>Then in another window:</p>
+<pre>
+pvput -r "argument.recordName" PVRremoveRecord name
+</pre>
+where
+<dl>
+   <dt>name</dt>
+      <dd>The name of the record to remove</dd>
+</dl>
+<p>For example if the command is:</p>
+<pre>
+pvput -r "argument.recordName" PVRremoveRecord PVRdouble
+</pre>
+<p>Then the monitor will show:</p>
+<pre>
+pvget -m PVRremoveRecord
+PVRremoveRecord
+structure 
+    structure argument
+        string recordName 
+    structure result
+        string status 
+
+
+PVRremoveRecord
+structure 
+    structure argument
+        string recordName PVRdouble
+    structure result
+        string status success
+</pre>
+<p>Record <b>PVRdouble</b> is no longer in the PVDatabase.
+</p>
+
+<h3>Channel Provider local</h3>
 <p>This is code that provides an implementation of channelProvider as
 defined by pvAccess.
 It provides access to PVRecords and is accessed by the server side of remote pvAccess.
@@ -7528,7 +7636,538 @@ PVControl
 <h3>alarmLimit</h3>
 <p>This has unresolved issues.</p>
 
+<h2>Appendix I What has been tested</h2>
+<h3>exampleJava/database</h3>
+<p>The following tests are using the database:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleJava/database/shell
+mrk> ./exampleDatabase 
+</pre>
+<h4>exampleJava/exampleClient</h4>
+<table>
+   <tr>
+      <th>Test</th>
+      <th>Result</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientGet</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientMonitor</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientMultiDouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientNTMulti</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientProcess</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientPut</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>helloWorldPutGet</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>helloWorldRPC</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>getForever pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>monitorForever pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+</table>
+<h4>exampleCPP/exampleClient</h4>
+<table>
+   <tr>
+      <th>Test</th>
+      <th>Result</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientGet</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientMonitor</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientMultiDouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientNTMulti</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientProcess</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientPut</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>helloWorldPutGet</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>helloWorldRPC</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>getForever pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>monitorForever pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>testRAII pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>testRAIIMultiDouble</th>
+      <th>Only works with DBRecords</th>
+   </tr>
+  <tr>
+      <th>testRAIINTMulti</th>
+      <th>Only works with DBRecords</th>
+  </tr>
+</table> 
 
+
+<h3>exampleCPP/database</h3>
+<p>The following tests are using the database:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
+mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd 
+</pre>
+<h4>exampleJava/exampleClient</h4>
+<table>
+   <tr>
+      <th>Test</th>
+      <th>Result</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientGet</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientMonitor</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientMultiDouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientNTMulti</th>
+      <th>many extra 0 elements on array</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientProcess</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientPut</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>helloWorldPutGet</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>helloWorldRPC</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>getForever pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>getForever pva DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>getForever ca DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>monitorForever pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>monitorForever pva DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>monitorForever ca DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+</table>
+<h4>exampleCPP/exampleClient</h4>
+<table>
+   <tr>
+      <th>Test</th>
+      <th>Result</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientGet</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientMonitor</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientMultiDouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientNTMulti</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientProcess</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>examplePvaClientPut</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>helloWorldPutGet</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>helloWorldRPC</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>getForever pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>getForever pva DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>getForever ca DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>monitorForever pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>monitorForever pva DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>monitorForever ca DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>testRAII pva PVRdouble</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>testRAII pva DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>testRAII ca DBRdouble00</th>
+      <th>Success</th>
+   </tr>
+   <tr>
+      <th>testRAIIMultiDouble pva</th>
+      <th>Success</th>
+   </tr>
+  <tr>
+      <th>testRAIIMultiDouble ca</th>
+      <th>Success</th>
+   </tr>
+  <tr>
+      <th>testRAIINTMulti pva</th>
+      <th>Success</th>
+  </tr>
+  <tr>
+      <th>testRAIINTMulti ca</th>
+      <th>Success</th>
+  </tr>
+</table> 
+<h3>exampleJava/exampleLink</h3>
+<p>Starting either:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleJava/exampleLink/shell
+mrk> ./exampleLinkMain pva doubleArray true
+</pre>
+or
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleJava/exampleLink/shell
+mrk> ./exampleLinkMain local doubleArray true
+</pre>
+<p>exampleLinkClient works in both exampleJava and exampleCPP.</p>
+<p>Starting both</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleJava/exampleLink/shell
+mrk> ./doubleArrayMain
+</pre>
+and 
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleJava/exampleLink/shell
+mrk> ./exampleLinkMain pva doubleArray true
+</pre>
+<p>exampleLinkClient works in both exampleJava and exampleCPP.</p>
+<h3>exampleCPP/exampleLink</h3>
+<h4>Success</h4>
+<p>Starting either:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink/iocBoot/exampleLink
+mrk> ../../bin/linux-x86_64/exampleLink st.cmd 
+</pre>
+or
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink/iocBoot/exampleLink
+mrk> ../../bin/linux-x86_64/exampleLink st.local
+</pre>
+<p>exampleLinkClient works in both exampleJava and exampleCPP.</p>
+<p>Starting:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink/iocBoot/doubleArrayExternal
+mrk> ../../bin/linux-x86_64/exampleLink st.cmd
+</pre>
+and either
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink/iocBoot/exampleLink
+mrk> ../../bin/linux-x86_64/exampleLink st.extca
+</pre>
+or
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink/iocBoot/exampleLink
+mrk> ../../bin/linux-x86_64/exampleLink st.extpva
+</pre>    
+<p>exampleLinkClient works in both exampleJava and exampleCPP.
+</p>
+<p>
+But exampleLinkClient must be run with the arguments "pva doubleArrayExternal"
+</p>
+
+<h3>exampleJava/helloPutGet and exampleCPP/helloPutGet</h3>
+<p>The following servers were tested:</p>
+<ol>
+    <li>Java implementation of helloPutGetMain</li>
+    <li>C++ implementation of helloPutGetMain</li>
+    <li>helloPutGet as part of a V3 IOC</li>
+</ol>
+<p>For each server both the Java and C++ versions of helloPutGetClient were tested</p>
+<p>All tests were successfull.</p>
+<h3>exampleJava/helloRPC and exampleCPP/helloRPC</h3>
+<p>The following servers were tested:</p>
+<ol>
+    <li>Java implementation of helloService</li>
+    <li>C++ implementation of HelloService</li>
+</ol>
+<p>For each server both the Java and C++ versions of helloClient were tested</p>
+<p>All tests were successfull.</p>
+<p><b>But</b> neither server terminated wnen exit was issued.</p>
+
+<h3>exampleJava/powerSupply and exampleCPP/powerSupply</h3>
+<p>The following servers were tested:</p>
+<ol>
+    <li>Java implementation of powerSupplyMain</li>
+    <li>C++ implementation of powerSupplyMain</li>
+    <li>powerSupply as part of a V3 IOC</li>
+</ol>
+<p>For each server both the Java and C++ versions of powerSupplyMonitore were tested.
+After both were started then the following was run:</p>
+<pre>
+pvput -r "power.value,voltage.value" powerSupply 1 2
+</pre>
+This test was successful.
+<p>However when powerSupplyClient was run a failure occurs.
+See the next section for details.
+</p>
+
+<h3>exampleJava/pvDatabaseRPC and exampleCPP/pvDatabaseRPC</h3>
+<p>The following servers were tested:</p>
+<ol>
+    <li>Java implementation of exampleRPCMain</li>
+    <li>C++ implementation of exampleRPCMain</li>
+    <li>exampleRPC as part of a V3 IOC</li>
+</ol>
+<p>The following was started to see the result of move requests:</p>
+<pre>
+pvget -m mydevice
+</pre>
+<p>Next the move command was issued on both Java and C++.
+For example:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleJava/pvDatabaseRPC/shell
+mrk> ./move  10 20 30 40
+</pre>
+<p>All tests were successful.</p>
+
+<h3>exampleJava/serviceAPI</h3>
+<p>The server was started and then the client.</p>
+<p>The test was successful but the server does not accept an exit command.</p>
+<h2>Appendix II Known Problems</h2>
+<h3>C++ Server Segmentation Fault on exit</h3>
+<p>Sometimes a segmantation fault occurs when a C++ server terminates.</p>
+<h3>exampleCPP/ChannelArchiverService</h3>
+<p>Needs documentation.</p>
+<h3>exampleJava</h3>
+<h4>exampleClient</h4>
+<dl>
+   <dt>helloRPC</dt>
+      <dd>helloWorldRPC does not terminate.</dd>
+   <dt>provider ca</dt>
+      <dd>numeric arrays are filled out with 0s</dd>
+</dl>
+
+<h4>helloRPC</h4>
+<ul>
+   <li>This is left almost unchanged since release 4.5</li>
+   <li>helloService does not terminate.</li>
+   <li>The CPP version allows a client to issueConnect and waitConnect.
+      The Java version does not support this.
+   </li>
+</ul>
+
+<h4>powerSupply</h4>
+<p>
+The powerSupplyClient ends with setting voltage to 0.
+This causes the PVRecord to throw an exception, which pvAccess passes back to the client.
+All appears OK except that if another client has a monitor on the PVRecord,
+that client no longer gets an monitor updates.
+</p>
+<h4>rdbService and serviceAPI</h4>
+<p>
+These are left almost unchanged since release 4.5.
+</p>
+<p>
+<b>Greg:</b> Please look at these examples and decide what should be done.
+</p>
+
+<h3>exampleCPP</h3>
+<h4>monitors</h4>
+<p>
+When a monitor is issued to a channel that is served by dbPv (pvaSrv),
+Each monitor shows that all requested fields have changed.
+</p>
+<h4>helloRPC</h4>
+<p>
+helloService does not terminate.
+</p>
+<h4>exampleLink</h4>
+<dl>
+    <dt>st.ca</dt>
+      <dd>
+         Starting:
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink/iocBoot/exampleLink
+mrk> ../../bin/linux-x86_64/exampleLink st.ca
+</pre>
+           Does not work.<br />
+           When started this way the LinkRecord sets a monitor via provider "ca",
+            which means that
+            pvAccess sets a monitor via provider ca on a V3 record that is in the same IOC.
+            The linkRecord never receives monitors.
+      </dd>
+      <dt>Using provider dbPv</dt>
+         <dd>Attempting to use provider dbPv, i.e. pvaSrv, does not work.</dd>
+</dl>
+<h4>powerSupply</h4>
+<p>
+The powerSupplyClient ends with setting voltage to 0.
+This causes the PVRecord to throw an exception, which pvAccess passes back to the client.
+All appears OK except that if another client has a monitor on the PVRecord,
+that client no longer gets an monitor updates.
+</p>
+<h4>memory leaks</h4>
+<p>
+When any of the examples terminate valgrind shows memory leaks.
+Clients not so bad but servers not so good.
+</p>
+<h3>epicsbase: 3_14 vs 3_15</h3>
+<p>
+The following is from the exampleLink in https://github.com/mrkraimer/exampleCPP.
+</p>
+<p>
+I also added some print statement in pvAccessCPP/src/server/responseHandlers.cpp 
+</p>
+<p>
+The example is started as part of an IOC with two channel providers started: dbPv and local.
+</p>
+<p>
+Then I did a:</p>
+<pre> pvget exampleLink
+</pre>
+<p>
+Note that the provider for exampleLink is local. 
+</p>
+<p>
+With base 3.14 I get</p>
+<pre>
+epics> ServerChannelFindRequesterImpl::channelFindResult _responseCount 0 _expectedResponseCount 2 wasFound 0
+ServerChannelFindRequesterImpl::channelFindResult _responseCount 1 _expectedResponseCount 2 wasFound 1
+ServerChannelRequesterImpl::channelCreated status 1 channel exampleLink
+epics> ServerChannelFindRequesterImpl::channelFindResult _responseCount 0 _expectedResponseCount 2 wasFound 0
+ServerChannelFindRequesterImpl::channelFindResult _responseCount 1 _expectedResponseCount 2 wasFound 1
+ServerChannelRequesterImpl::channelCreated status 1 channel exampleLink
+</pre>
+<p>
+With base 3.15 I get</p>
+<pre>
+epics> ServerChannelFindRequesterImpl::channelFindResult _responseCount 0 _expectedResponseCount 2 wasFound 0
+ServerChannelFindRequesterImpl::channelFindResult _responseCount 1 _expectedResponseCount 2 wasFound 1
+ServerChannelRequesterImpl::channelCreated status 0
+</pre>
+<p>
+NOTE that it never tried the second provider, i. e. provider local.
+Instead something tried to create channel from provider dbPv.
+</p>
+<p>
+I did some more looking and it does not appear that pvaSrv is the problem.
+It looked like something in base3.15 src/ioc/db/dbChannel.c was calling dbChannelCreate as a result of calling dbChannelTest.
+But I never got to the final problem.
+</p>
+<p>
+Also I created a example application for both 3.14 and for 3.15.
+Running the example ioc via valgrind shows some memory problems under both 3.14 and 3.15.
+BUT 3.15 has LOT more problems.
+</p>
+<p>
+I saw the same thing when I ran exampleCPP/exampleLink/iocBoot/exampleLink.
+</p>
 
 </div>
 </body>
