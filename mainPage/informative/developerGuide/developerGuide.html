@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 08-August-2016</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 23-August-2016</h2>
 <p>
 <b>NOTE: If you are using EPICS V4 Release 4.5 then look at the previous version.</b>
 </p>
@@ -118,11 +118,11 @@ V4 includes the following core components:
       </dd>
    <dt>pvDatabase</dt>
       <dd>
-       A pvAccess server for accessing pvData.
+       A memory resident database of PVRecords and a pvAccess channel provider for accessing the PVRecords.
       </dd>
    <dt>pvaSrv</dt>
       <dd>
-       A pvAccess server for EPICS V3 DBRecords.
+       A pvAccess channel provider for EPICS V3 DBRecords.
       </dd>
    <dt>example</dt>
        <dd>
@@ -136,8 +136,7 @@ V4 includes the following core components:
 
 
 <p><b>pvaSrv</b> and <b>pvaPy</b> are implemented only in C++.
-Each has a single github repository, e. g.
-<a href="https://github.com/epics-base/pvaSrv">pvaSrv</a>
+Each has a single github repository.
 </p>
 <p>
 The other components are implemented in both C++ and Java,
@@ -187,7 +186,7 @@ and
        <dd>Generic name for any valid Data API type.
         </dd>
      <dt>Special Field</dt>
-        <dd>These are a set of widely used structure definitions:
+        <dd>These are a set standard structure definitions:
         <b>enum</b>, <b>alarm</b>, <b>timeStamp</b>, <b>control</b>, <b>display</b>, and <b>alarmLimit</b>.
         </dd>
 </dl>
@@ -197,7 +196,7 @@ is composed of one of the following types:
 <dl>
    <dt>scalar</dt>
       <dd>
-        The field holds data that has a scalarType:
+        The field holds data that has a single scalarType:
         <dl>
             <dt>boolean</dt>
                <dd>Can be <b>true</b> or <b>false</b>.
@@ -318,7 +317,7 @@ The minimum that an extension must provide is a top level PVStructure and a proc
 </p>
 
 <h3>Overview: pvaSrv</h3>
-<p><b>pvaSrv</b> is a pvAccess server that runs in a EPICS V3 IOC.
+<p><b>pvaSrv</b> is a channel provider for DBRecords in an EPICS V3 IOC.
 pvaSrv allows clients to get, put and monitor V3 PVs (fields of EPICS DB records) via pvAccess, translating
 the value and its meta data (graphics limits, alarm status, timestamp) to or from V4 Normative Type (NT)
 pvData structures (NTScalar, NTScalarArray).</p>
@@ -380,22 +379,26 @@ before it can be used by a client.
        </dd>
    <dt>ca</dt>
      <dd>This is a connection that uses channel access to access an epics V3 channel.</dd>
-   <dt>zeroMQ</dt>
-     <dd>Matej?? What to say</dd>
    <dt>pipelineService</dt>
-      <dd>Matej?? What to say</dd>
+      <dd>
+       A pipelineService is a service that provides a lossless channel monitor.
+       A client requests access to a pipelineService via a pvRequest argument.<br />
+      pvGet and eget provide support.<br />
+      Other clients could also access a server that implements a pipelineService.
+       </dd>
 </dl>
 <h4>Server Providers</h4>
 <p>At present the following providers are available for the remote side of <b>pva</b></p>
 <dl>
    <dt>local</dt>
       <dd>This is implemented by pvDatabase</dd>
-   <dt>pvSrv</dt>
+   <dt>pvaSrv</dt>
       <dd>This is a provider that directly accesses V3 DBRecord.</dd>
-   <dt>zeroMQ</dt>
-     <dd>Matej?? What to say</dd>
    <dt>pipelineService</dt>
-      <dd>Matej?? What to say</dd>
+      <dd>
+        
+         pvAccess provides a helper class for a service that wants to implement a  pipelineService.
+      </dd>
 </dl>
 <h4>Client Provider Choices</h4>
 <p>At present a client that is not running as part of a V3 IOC or a pvDatabase
@@ -428,7 +431,7 @@ The following should be consulted for detailed documentation:</p>
     </li>
     <li>
     <a target="_top"
-    href="http://epics-pvdata.sourceforge.net/docbuild/normativeTypesCPP/tip/documentation/ntJava.html">
+    href="http://epics-pvdata.sourceforge.net/docbuild/normativeTypesJava/tip/documentation/ntJava.html">
     normativeTypesJava</a>
     </li>
     <li>
@@ -513,8 +516,8 @@ The following should be consulted for detailed documentation:</p>
       </dd>
    <dt>pvaClient</dt>
       <dd>
-       EPICS V4 Release 4.6 has an implementation for both Java and CPP
-       However, getField and channelArray are not implemented.
+       EPICS V4 Release 4.6 has an implementation for both Java and CPP<br />
+       However getField and channelArray are not implemented.
       </dd>
    <dt>pvDatabase</dt>
       <dd>
@@ -660,7 +663,7 @@ mrk> pvget PVRdouble01 PVRdouble02
 PVRdouble01                       0
 PVRdouble02                       0
 </pre>
-<p>The above examples all used the pva server, i. e. the pvAccess server for network
+<p>The above examples all use channel provider pva, i. e. the pvAccess server for network
 communication.
 It is also possible to use ca, i. e. the channel access server that comes with iocCore.
 Thus it can access a V3 IOC even if the IOC has no V4 support.
@@ -675,7 +678,7 @@ epics:nt/NTScalar:1.0
     alarm_t alarm INVALID RECORD UDF_ALARM
     time_t timeStamp &lt;undefined&gt; 0
 </pre>
-<p>pvget can also be used to monitor, i. e. it has functionality similer to camonitor.</p>
+<p>pvget can also monitor, i. e. it has functionality similer to camonitor.</p>
 <pre>
 mrk> pvget -m -r "value,alarm,timeStamp" PVRdouble02
 PVRdouble02
@@ -785,17 +788,17 @@ connecting to a channel, and passing data between client and server.
 This section discusses how existing providers are initialized so that a provider can create it's context.
 </p>
 <p>If <b>pvaClient</b> is used by a client it helps with initiatizing required providers.
-This this section discusses client provider initialization via pvaClient.
+This section discusses client provider initialization via pvaClient.
 </p>
 <p>
-If pvDatabase is used then implements and registers server provider <b>local</b>.
-This this section discusses server provider initialization via pvDatabase.
+If pvDatabase implements and registers server provider <b>local</b>.
+Tshis section discusses server provider initialization via pvDatabase.
 </p>
 <h3>Fundamental Rules For Initializing Provider Context</h3>
 <h4>Client Providers</h4>
 <p>A client should only initialize the client providers it uses.
 Since each provider can have overhead associated with it's context,
-I client should not be started unless it is actually used.</p>
+A client should not be started unless it is actually used.</p>
 <h4>Server Providers</h4>
 <p>The remote side of <b>pva</b> is started via a call to:</p>
 <pre>
@@ -830,8 +833,8 @@ If this is called by a pure client the the only currently supported options are:
    <dt>"pva ca"</dt>
      <dd>The context for the client side of provider <b>pva</b> and <b>ca</b> are started.</dd>
 </dl>
-<p>Other client providers can also be implemented but each must call provide a way to
-initialize their context and each must register itself before PvaClient is started.
+<p>Other client providers can also be implemented but each must call provide a method to
+initialize it's context and each must register itself before PvaClient is started.
 </p>
 <p>
 It is also possible for PvaClient to be used in a server to access other channels.
@@ -841,7 +844,7 @@ but the service providers must have registered with <b>channelProviderRegistry</
 before PvaClient is started.
 </p>
 <h3>Server Context Initialization</h3>
-<p>Both Java and C++ has a pvAccess method named <b>startPVAServer</b>,
+<p>Both Java and C++ implement a pvAccess method named <b>startPVAServer</b>,
 which starts the server context for the remote side of provider <b>pva</b>.
 The first argument to this method is a string that has a space separated list
 of provider names.
@@ -874,26 +877,31 @@ startPVAServer "local dbPv"
 
 <p><b>exampleCPP</b> and <b>exampleJava</b> both have examples that use code from all modules
 described in this document except for <b>pvaPy</b>.
-In particuar they both have examples <b>database</b> and <b>exampleClient</b>.
-These examples that can be used while learning what is described in this document.
-</p>
-<p><b>database</b> provides example server code implemented via PVRecords.
-</p>
-<p>
-In addition <b>exampleCPP/database</b>
-shows how to have PVRecords and V3 Records both running as part of a V3 IOC.
-It also shows how to start provider <b>dbPv</b> so that both <b>ca</b> and <b>pva</b> can be used
-to access the V3 records.
-</p>
-<p><b>exampleClient</b> has example client code using the API for pvaClient.
-</p>
-<p>Both <b>exampleCPP</b> and <b>exampleJava</b> also have and example named <b>exampleLink</b>.
-which implements a PVRecord that monitors a channel.
-Thus <b>exampleLink</b> is a server for provider <b>pva</b> and has a record that is a 
-<b>pva</b> client.
+In particular they both have examples:</p>
+<dl>
+    <dt>database</dt>
+       <dd>
+         Example server code implemented via pvDatabase.<br />
+         In addition it shows how to have PVRecords and V3 Records both running as part of a V3 IOC.
+         <br />
+         It also shows how to start provider <b>dbPv</b> so that both <b>ca</b> and <b>pva</b>
+         can be used to access the V3 records.
+       </dd>
+    <dt>exampleClient</dt>
+        <dd>
+          example client code using the API for pvaClient
+       </dd>
+    <dt>exampleLink</dt>
+        <dd>
+        Implements PVRecords that monitor, get, and put to channel.<br />
+        For now the other channel must exists of initialization fails.
+        </dd>
+</dl>
+<p>These examples that can be used while learning what is described in this document.
+Both exampleJava and exampleCPP have other examples.
 </p>
 
-<p>Examples for <b>exampleJava/exampleClient</b>, <b>exampleCPP/exampleClient</b>, and <b>pvaPy</b> require that the database in <b>exampleCPP/exampleClient</b> 
+<p>Examples in <b>exampleJava/exampleClient</b>, <b>exampleCPP/exampleClient</b>, and <b>pvaPy</b> require that the database in <b>exampleCPP/exampleClient</b> 
 or <b>exampleJava/exampleClient</b> 
 is started.
 If exampleCPP is used the exampleDatabase can be started either as a main
@@ -1098,7 +1106,7 @@ structure
         int nanoseconds 0
         int userTag 0
 </pre>
-<p>The following is an example is a structure with a single subfield that is itself a structure.</p>
+<p>The following example is a structure with a single subfield that is itself a structure.</p>
 <pre>
 structure
     enum_t value
@@ -1151,7 +1159,7 @@ structure
         union
             double  1.245
 </pre>
-<p>This is an example of a structure array where each element is a
+<p>This is a structure array where each element is a
 <b>time_t</b> structure.
 </p>
 <pre>
@@ -1219,9 +1227,9 @@ Field
         string getFieldName(size_t fieldIndex)
         boolean isVariant()
 
-    Array
-        ArraySizeType getArraySizeType()
-        size_t getMaximumCapacity()
+        Array
+            ArraySizeType getArraySizeType()
+            size_t getMaximumCapacity()
 
         ScalarArray
             ScalarType getElementType()
@@ -1272,15 +1280,14 @@ It has the members:</p>
    <dt>display</dt>
      <dd>
        These methods are used to display the value of an introspection
-       object. Java provides methods to implement <b>toString</b>.
-      C++ provides methods that implement C++ <b>steams</b>.
-      Thus the Java and C++ methods are completely different.
+       object. Java provides <b>toString</b> methods.
+      C++ provides C++ <b>steam</b> methods. 
       See pvDataCPP or pvDataJava for details.
      </dd>
 </dl>
 <h4>Scalar</h4>
-<p>This is the API for all scalar types, i. e. boolean, byte, ... , string.
-It has method:</p>
+<p>This is the API for type scalar.
+It has a single method:</p>
 <dl>
    <dt>ScalarType getScalarType()</dt>
      <dd>
@@ -1476,7 +1483,7 @@ FieldCreate
 
 
 <h4>FieldBuilder</h4>
-<p>This is an easier way to create introspection interfaces.
+<p>This is an easy way to create introspection interfaces.
 A single instance can be used to create multiple introspection interfaces because
 everytime createStructure or createUnion is called the internal state is reset to start over.
 Each method except createStructure and createUnion return the FieldBuilder itself so that
@@ -1704,9 +1711,8 @@ PVField
    <dt>display</dt>
      <dd>
        These methods are used to display the value of a data
-       object. Java provides methods to implement <b>toString</b>.
-      C++ provides methods that implement C++ <b>steams</b>.
-      Thus the Java and C++ methods are completely different.
+       object. Java provides <b>toString</b> methods.
+      C++ provides <b>steam</b> methods.
       See pvDataCPP or pvDataJava for details.
      </dd>
    <dt>string getFieldName()</dt>
@@ -2140,8 +2146,8 @@ pvDoubleArray->replace(freeze(data))
     Each time the client issues a get request the data is
     copied into the top level pvStructure of the server and
     transmitted to the client side of pvAccess,
-    which puts the data in it's top level pvStructure,
-    and finally presented to the client.
+    which puts the data in it's top level pvStructure.
+    This is the data presented to the client.
      </dd>
   <dt>Only fields that change are transmitted.</dt>
     <dd>
@@ -2283,12 +2289,15 @@ structure
 
 <h3>C++ Introspection More Complex Example</h3>
 <p>The next example shows how to create a structure
-that has three field: a value field that is a scalarArray with
+that has three fields: a value field that is a scalarArray with
 element type double, an alarm structure, and a timeStamp structure.
 </p>
+<p><b>NOTE:</b> Three different ways to create the same structure are shown.</p>
 
 <h4>Using FieldBuilder and StandardField</h4>
-
+<p><b>Prefered way!!</b>
+This is the easiest way to create the example and also creates the
+correct introspection interface for standard fields.</p>
 <pre>
 cout &lt;&lt; "valueAlarmTimeStamp\n";
 FieldBuilderPtr fb = fieldCreate->createFieldBuilder();
@@ -3208,8 +3217,6 @@ This produces the same result as structureArray.
 
 <h2>API: normativeType</h2>
 
-<p><b>Dave Hickin</b> please update this section</p>
-
 <p><b>normativeTypes</b> defines a set of standard structures.
 Each normative type consists of a set of mandatory fields, a set of optional fields,
 and any arbitrary number of extra fields.
@@ -3220,7 +3227,10 @@ The extra fields are for specialized tools.
 
 <p>normativeTypesCPP provides a set of helper classes for implementing
 and using normative types.
-At present it has support for the following:</p>
+For the complete set of normative types see normativeTypesJava or normativeTypesCPP.
+</p>
+<p>
+Some of the types it supports are:</p>
 <dl>
   <dt>NTScalar</dt>
      <dd>This has a value field that has type scalar</dd>
@@ -3305,6 +3315,7 @@ A client can also check for failues and thus prevent failures.</p>
   <li>Takes care of most object resource management problems.</li>
 </ol>
 <p>Simple examples of using pvaClient:</p>
+<p>This is a C++ example.</p>
 <pre>
 // easyGet
 PvaClientPtr pvaClient = PvaClient::create();
@@ -3335,9 +3346,9 @@ process->process();
 
 
 <p>PvaClient can cache channels, channelGets, and channelPuts.</p>
-<p>A simple example is:</p>
+<p>A simple Java example is:</p>
 <pre>
-string channelName = "someChannel";
+String channelName = "someChannel";
 double value =  pva.channel(channelName).get().getData().getDouble();
 ...
 value = pva.channel(channelName).get().getData().getDouble();
@@ -3353,7 +3364,7 @@ If any part of the request fails an exception occurs.
 </p>
 <p>The same request could also be done by:</p>
 <pre>
-string channelName = "someChannel";
+String channelName = "someChannel";
 PvaClientChannel pvaChannel = pva.createChannel(channelName);
 pvaChannel.issueConnect();
 Status status = pvaChannel.waitConnect(2.0);
@@ -3406,23 +3417,23 @@ class PvaClient
        <dd>
     <p>For both Java and C++ PvaClient is a singleton class, i. e. there is a single instance created.
     In Java it is created via:</p>
-    <pre>
-    PvaClient pva= PvaClient.get("providerList");
-    </pre>
+<pre>
+PvaClient pva= PvaClient.get("providerList");
+</pre>
     An example is:
-    <pre>
-    PvaClient pva= PvaClient.get("pva ca");
-    </pre>
+<pre>
+PvaClient pva= PvaClient.get("pva ca");
+</pre>
     <p>
     In C++ it is created via:
     </p>
-    <pre>
-    PvaClientPtr pva= PvaClient::get("providerList");
-    </pre>
+<pre>
+PvaClientPtr pva= PvaClient::get("providerList");
+</pre>
     An example is:
-    <pre>
-    PvaClientPtr pva= PvaClient::get("pva ca");
-    </pre>
+<pre>
+PvaClientPtr pva= PvaClient::get("pva ca");
+</pre>
     <p>For both Java and C++ if no argument is specified for get than the default is <b>"pva ca"</b>
     </p>
     <p>If get is called multiple times only the first call creates the single instance
@@ -3441,13 +3452,13 @@ class PvaClient
     PvaClient is started.</p>
     <p>PvaClient provides a cache for channels, channelGet, etc.
     Thus in the following:</p>
-    <pre>
-    PvaClient pva= PvaClient.get();
-    ...
-    double value = pva.channel(channelName).get().getData().getDouble();
-    ...
-    value = pva.channel(channelName).get().getData().getDouble();
-    </pre>
+<pre>
+PvaClient pva= PvaClient.get();
+...
+double value = pva.channel(channelName).get().getData().getDouble();
+...
+value = pva.channel(channelName).get().getData().getDouble();
+</pre>
     <p>Only the first call for value will result in connection to channelName and creation of
     a ChannelGet.
     The second call uses a cached channel and a cached channelGet.
@@ -3537,12 +3548,16 @@ class PvaClientChannel
     PvaClientArray createArray(string request = "");
     // create a PvaClientArray NOT IMPLEMENTED
     PvaClientArray createArray(PVStructure pvRequest);
+    void setStateChangeRequester(PvaClientChannelStateChangeRequester stateChangeRequester);
+    oid clearRequester();
     // methods for get and put cache
     void showCache();
     size_t cacheSize();
     // misc methods
     string getChannelName();
     Channel getChannel();
+    void destroy(); // Java only
+
 }
 </pre>
 <dl>
@@ -3641,7 +3656,22 @@ class PvaClientChannel
      <dd>
      NOT IMPLEMENTED.
      </dd>
+     <dt>setStateChangeRequester</dt>
+        <dd>Set a user callback for channel change of state.</dd>
+     <dt>clearRequester</dt>
+        <dd>Clear the user callback</dd>
+     <dt>getChannelName</dt>
+        <dd>Get the channel name.</dd>
+     <dt>getChannel</dt>
+        <dd>get the pvAccess channel interface.<br />
+          This can be used if the client needs access to methods not provided by pvaClient.
+        </dd>
+     <dt>destroy</dt>
+        <dd>Java only. C++ implemnts RAII.<br />
+          Disconnect the channel and destroy the channel context.
+        </dd>
 </dl>
+<h4>PvaClientMonitorRequester</h4>
 <p>
 The following is a class that a client can implement it it wants to be notified when the sever sends
 new monitors to the client.
@@ -3658,6 +3688,23 @@ where
 <dl>
    <dt>event</dt>
    <dd>One or more new events are available.</dd>
+</dl>
+
+<h4>PvaClientChannelStateChangeRequester</h4>
+<p>
+The following is a class that a client can implement it it wants to be notified when a change of
+state for a channel occurs.
+</p>
+<pre>
+class PvaClientChannelStateChangeRequester 
+{
+    void channelStateChange(PvaClientChannel channel, boolean isConnected);
+}
+</pre>
+where
+<dl>
+   <dt>channelStateChange</dt>
+   <dd>A change in state for the channel has occured,</dd>
 </dl>
 <h3>Class PvaClientGet</h3>
 <pre>
@@ -3683,11 +3730,11 @@ where
      <dd>
        A connection request is issued and the method returns to the caller who must
       call waitConnect.
-      Note that the caller can issue multiple issueConnect calls, 
+      <br />
+      The caller can issue multiple issueConnect calls, 
        for different PvaChannelGets,
       before calling waitConnect for each issueConnect.
       Thus the issueConnect calls are making parallel requests to connect to the servers.
-    
     </dd>
     <dt>waitConnect</dt>
     <dd>
@@ -3703,10 +3750,16 @@ where
     </dd>
     <dt>issueGet</dt>
     <dd>
+      <p>
+      If the channel is not connected then a connect request is issued.
+      If the connect request fails an exception is thrown.
+      </p>
+      <p>
       A get request is issued and the method returns to the caller who must
       call waitGet. Note that the caller can issue multiple issueGet calls before
       calling waitGet for each issueGet.
       Thus the issueGet calls are making parallel requests to the servers.
+      </p>
     </dd>
     <dt>waitGet</dt>
     <dd>
@@ -3858,7 +3911,9 @@ where
     <dt>issueConnect</dt>
     <dd>
        A connection request is issued and the method returns to the caller who must
-      call waitConnect. Note that the caller can issue multiple issueConnect calls, 
+      call waitConnect.
+      <br />
+       The caller can issue multiple issueConnect calls, 
        for different PvaChannelPuts, before
       calling waitConnect for each issueConnect.
       Thus the issueConnect calls are making parallel requests to connect to the servers.
@@ -3879,7 +3934,9 @@ where
     <dt>issueGet</dt>
     <dd>
       A get request is issued and the method returns to the caller who must
-      call waitGet. Note that the caller can issue multiple issueGet calls before
+      call waitGet.
+      <br />
+      The caller can issue multiple issueGet calls before
       calling waitGet for each issueGet.
       Thus the issueGet calls are making parallel requests to the servers.
     </dd>
@@ -3900,7 +3957,9 @@ where
     <dt>issuePut</dt>
     <dd>
       A put request is issued and the method returns to the caller who must
-      call waitPut. Note that the caller can issue multiple issuePut calls before
+      call waitPut.
+      <br />
+      The caller can issue multiple issuePut calls before
       calling waitPut for each issuePut.
       Thus the issuePut calls are making parallel requests to the servers.
     </dd>
@@ -4069,7 +4128,9 @@ where
     <dt>issueConnect</dt>
     <dd>
        A connection request is issued and the method returns to the caller who must
-      call waitConnect. Note that the caller can issue multiple issueConnect calls,
+      call waitConnect.
+      <br />
+      The caller can issue multiple issueConnect calls,
       for different PvaChannelPutGets, before
       calling waitConnect for each issueConnect.
       Thus the issueConnect calls are making parallel requests to connect to the servers.
@@ -4092,7 +4153,9 @@ where
     <dt>issuePutGet</dt>
     <dd>
       A putGet request is issued and the method returns to the caller who must
-      call waitPutGet. Note that the caller can issue multiple issuePutGet calls before
+      call waitPutGet.
+      <br />
+      The caller can issue multiple issuePutGet calls before
       calling waitPutGet for each issuePutGet.
       Thus the issuePutGet calls are making parallel requests to the servers.
     </dd>
@@ -4112,7 +4175,9 @@ where
     <dt>issueGetGet</dt>
     <dd>
       A getGet request is issued and the method returns to the caller who must
-      call waitGetGet. Note that the caller can issue multiple issueGetGet calls before
+      call waitGetGet.
+      <br />
+      The caller can issue multiple issueGetGet calls before
       calling waitGetGet for each issueGetGet.
       Thus the issueGetGet calls are making parallel requests to the servers.
     </dd>
@@ -4132,7 +4197,9 @@ where
     <dt>issueGetPut</dt>
     <dd>
       A getPut request is issued and the method returns to the caller who must
-      call waitGetPut. Note that the caller can issue multiple issueGetPut calls before
+      call waitGetPut.
+      <br />
+      The caller can issue multiple issueGetPut calls before
       calling waitGetPut for each issueGetPut.
       Thus the issueGetPut calls are making parallel requests to the servers.
     </dd>
@@ -4179,7 +4246,9 @@ where
     <dt>issueConnect</dt>
     <dd>
        A connection request is issued and the method returns to the caller who must
-      call waitConnect. Note that the caller can issue multiple issueConnect calls,
+      call waitConnect.
+      <br />
+      The caller can issue multiple issueConnect calls,
       for different PvaChannelProcesss, before
       calling waitConnect for each issueConnect.
       Thus the issueConnect calls are making parallel requests to connect to the servers.
@@ -4199,7 +4268,9 @@ where
     <dt>issueProcess</dt>
     <dd>
        A process request is issued and the method returns to the caller who must
-      call waitProcess. Note that the caller can issue multiple issueProcess calls before
+      call waitProcess.
+      <br />
+      The caller can issue multiple issueProcess calls before
       calling waitProcess for each issueProcess.
       Thus the issueProcess calls are making parallel requests to the servers.
     </dd>
@@ -4237,7 +4308,9 @@ where
     <dt>issueConnect</dt>
     <dd>
        A connection request is issued and the method returns to the caller who must
-      call waitConnect. Note that the caller can issue multiple issueConnect calls,
+      call waitConnect.
+      <br />
+      The caller can issue multiple issueConnect calls,
       for different PvaChannelMonitors, before
       calling waitConnect for each issueConnect.
       Thus the issueConnect calls are making parallel requests to connect to the servers.
@@ -4251,6 +4324,10 @@ where
     </dd>
     <dt>setRequester</dt>
     <dd>
+       Set a client requester to be called when a monitor occurs.
+       The argument can be null if the client no longer wants to be called directly.
+       <br />
+        If the client is directly notified then the client can call poll and releaseEvent.
     </dd>
     <dt>start</dt>
     <dd>
@@ -4397,9 +4474,9 @@ where
       An exception is thrown if the request is not valid.
     </dd>
 </dl>
-<h3>Class PvaMultiChannel</h3>
+<h3>Class PvaClientMultiChannel</h3>
 <pre>
-class PvaMultiChannel
+class PvaClientMultiChannel
 {
     static PvaClientMultiChannel create(
         PvaClient pvaClient,
@@ -4795,6 +4872,7 @@ class PVRecord
     boolean removeListener(PVListener pvListener,PVCopy pvCopy);
     // misc methods
     string getRecordName();
+    PVStructure getPVStructure();
     PVRecordStructure getPVRecordStructure();
     PVRecordField findPVRecordField(PVField pvField);
     // methods for debugging output
@@ -4915,8 +4993,10 @@ where
       </dd>
    <dt>getRecordName</dt>
      <dd>Return the recordName.</dd>
-   <dt>getPVRecordStructure</dt>
+   <dt>getPVStructure</dt>
      <dd>Get the top level PVStructure.</dd>
+   <dt>getPVRecordStructure</dt>
+     <dd>Get the top level PVRecordStructure.</dd>
    <dt>findPVRecordField</dt>
      <dd>Given a PVFieldPtr return the PVRecordFieldPtr for the field.</dd>
    <dt>getTraceLevel</dt>
@@ -4942,7 +5022,7 @@ where
 <pre>
 class PVDatabase
 {
-     PVDatabase getMaster();
+     PVDatabase getMaster();  // C++ pnly
      PVDatabase();
      ~PVDatabase();      // C++ only
      destroy();
@@ -4950,6 +5030,11 @@ class PVDatabase
      boolean addRecord(PVRecord record);
      boolean removeRecord(PVRecord record);
      string[] getRecordNames();
+}
+
+class PVDatabaseFactory
+{
+     PVDatabase getMaster();  // Java only
 }
 </pre>
 where
@@ -4966,7 +5051,7 @@ where
       </dd>
     <dt>~PVDatabase C++ only</dt>
       <dd>
-      The destructor.
+      Calls destroy;
       </dd>
    <dt>destroy</dt>
      <dd>
@@ -5297,28 +5382,12 @@ mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
 <p>Once the database is running then the following can access exampleHello:</p>
 <pre>
-pvput -r "argument" exampleHello World
-pvget -r "result.value" exampleHello
+pvput -r "argument" PVRhelloPutGet World
+pvget -r "result.value" PVRhelloPutGet
 exampleHello
 structure 
     structure result
         string value Hello World
-</pre>
-<p>The following also works:</p>
-<pre>
-mrk> pwd
-/home/epicsv4/pvaClientCPP/example
-mrk> bin/linux-x86_64/helloWorldPutGet
-helloWorldPutGet
-structure 
-    structure result
-        string value Hello World
-        time_t timeStamp
-            long secondsPastEpoch 1440095693
-            int nanoseconds 281748793
-            int userTag 0
-
-mrk>
 </pre>
 <h3>source code</h3>
 <p> <b>exampleCPP/database/src</b> has the following examples:</p>
@@ -5336,10 +5405,6 @@ mrk>
        It also creates a large set of records of all possible types that
        have only the default process semantics, which only sets the timeStamp when
        the record is processed.
-      </dd>
-   <dt>powerSupply</dt>
-      <dd>This has a example record that models a power supply.
-         Given a value for desired voltage and power, it computes the current.
       </dd>
 </dl>
 
@@ -5361,10 +5426,8 @@ int main(int argc,char *argv[])
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     ExampleDatabase::create();
     ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+        startPVAServer("local",0,true,true);
     cout &lt;&lt; "exampleDatabase\n";
-    PVStringArrayPtr pvNames = master->getRecordNames();
-    cout &lt;&lt; "recordNames" &lt;&lt; endl &lt;&lt; *pvNames &lt;&lt; endl;
     string str;
     while(true) {
         cout &lt;&lt; "Type exit to stop: \n";
@@ -5373,8 +5436,6 @@ int main(int argc,char *argv[])
 
     }
     ctx->destroy();
-    epicsThreadSleep(1.0);
-    channelProvider->destroy();
     return 0; 
 }
 </pre>
@@ -5388,12 +5449,8 @@ of a V3 IOC.
 It is almost generic.
 The guts of the code is:
 <pre>
-static const iocshArg testArg0 = { "prefix", iocshArgString };
-static const iocshArg *testArgs[] = {
-    &amp;testArg0};
+static const iocshFuncDef exampleDatabaseFuncDef = {"exampleDatabase", 0};
 
-static const iocshFuncDef exampleDatabaseFuncDef = {
-    "exampleDatabase", 1, testArgs};
 static void exampleDatabaseCallFunc(const iocshArgBuf *args)
 {
     ExampleDatabase::create();
@@ -5420,7 +5477,7 @@ registrar("exampleDatabaseRegister")
 </pre>
 It again is generic except for <b>exampleDatabase</b> as part of the name.
 <h3>Makefile</h3>
-Look at the Make file to see how each other file is used.
+Look at the Makefile to see how other files.
 <h3>exampleDatabase</h3>
 <b>exampleDatabase.h</b> is almost completely generic.
 It has the code:
@@ -5461,7 +5518,7 @@ registrar("exampleDatabaseRegister")
 <b>PVAServerRegister.dbd</b> is how the pvAccess Server code is included.
 <b>registerChannelProviderLocal.dbd</b> is how the local pva server is started.
 The local server is implemented by pvDatabaseCPP.
-<b>dbPv.dbd</b> is how pvaSrv, the pva server that accesses V3 revords, is started.
+<b>dbPv.dbd</b> is how dbPv, the  server that accesses V3 revords, is started.
 </p>
 <p><b>registrar("exampleDatabaseRegister")</b> is the only example specific statement.
 It is used to start the example database.</p>
@@ -6204,8 +6261,8 @@ ChannelRPC extends ChannelRequest
 
 
 <h2>API: pvaSrv</h2>
-<p>pvaSrv is a pvAccess server that runs in the EPICS V3 IOC</p>
-<p>pvaSrv allows you to get, put and monitor V3 PVs (fields of EPICS DB records) over pvAccess, translating the value and its meta data (graphics limits, alarm status, timestamp) to or from V4 Normative Type (NT) pvData structures (NTScalar, NTScalarArray).</p>
+<p>pvaSrv implements channel provider <b>dbPv</b> that runs in the EPICS V3 IOC</p>
+<p><b>dbPv</b> allows you to get, put and monitor V3 PVs (fields of EPICS DB records) over pvAccess, translating the value and its meta data (graphics limits, alarm status, timestamp) to or from V4 Normative Type (NT) pvData structures (NTScalar, NTScalarArray).</p>
 
 <h2>API: pvaPy</h2>
 <p><b>pvaPy</b> provides a python interface to pvData and pvAccess.</p>
@@ -8039,6 +8096,24 @@ mrk> ./move  10 20 30 40
 <p>The server was started and then the client.</p>
 <p>The test was successful but the server does not accept an exit command.</p>
 <h2>Appendix II Known Problems</h2>
+<h3>pvDataJava</h3>
+<dl>
+    <dt>Field</dt>
+      <dd>Does not implement getNumberFields</dd>
+    <dt>PVDataCreate</dt>
+       <dd>Why does the following method exist?
+<pre>
+PVStructure createPVStructure(string[] fieldNames,PVField[] pvFields)
+</pre>
+        </dd>
+</dl>
+<h3>pvaClient</h3>
+<dl>
+    <dt>getField</dt>
+       <dd>Not implemented</dd>
+    <dt>channelArray</dt>
+       <dd>Not implemented</dd>
+</dl>
 <h3>C++ Server Segmentation Fault on exit</h3>
 <p>Sometimes a segmantation fault occurs when a C++ server terminates.</p>
 <h3>exampleCPP/ChannelArchiverService</h3>
