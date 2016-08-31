@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<htm lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Release 4.6.0-rc1 C++ Bundle Release Notes</title>
+  <link rel="stylesheet" type="text/css" href="../../base.css" />
+  <link rel="stylesheet" type="text/css" href="../../epicsv4.css" />
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="../../script/tocgen.js"></script>
+</head>
+
+<body>
+<div class="head">
+  <h1>EPICS V4 Release 4.6.0-rc1</h1>
+
+  <h2 class="nocount">C++ Bundle Release Notes for EPICS V4 Release 4.6.0</h2>
+
+  <dl>
+    <dt>Editors:</dt>
+    <dd>Andrew Johnson, Argonne</dd>
+  </dl>
+
+  <h2 class="nocount">Abstract</h2>
+
+  <p>This document contains the Release Notes entries from each individual C++
+    submodule for this bundled version of EPICS V4. For future patch releases
+    any notes about patch changes will supplement the note entries from the
+    original release.</p>
+  <!-- Boilerplate references -->
+  <p>
+    For information about EPICS, please refer to the main
+    <a href="http://www.aps.anl.gov/epics/">EPICS website</a>.<br />
+    For more information about EPICS V4, please refer to the
+    <a href="../../index.html">EPICS V4 website</a>.</p>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Items for the Table of Contents go inside this contents div -->
+<div id="contents" class="contents">
+<hr />
+
+<h2>pvCommonCPP 4.2.2</h2>
+
+<p>The Boost header files are now only installed for VxWorks target architectures, since they are only essential for that OS. This prevents clashes with sofware that has been built with a different version of Boost.</p>
+
+<hr />
+
+<h2>pvDataCPP 6.0.0</h2>
+
+<p>The main changes since release 5.0.4 are:</p>
+
+<ul>
+<li>Linux shared library version added</li>
+<li>Headers have been moved into pv directories</li>
+<li>Bitset functions declared const where possible</li>
+<li>Bitset::swap added</li>
+<li>Requester::message has default implementation</li>
+<li>Serialization/deserialization helpers added</li>
+<li>Non-template getSubField char* overload added</li>
+<li>MonitorPlugin deprecated</li>
+<li>Field name validation performed</li>
+<li>Now builds for Cygwin and MinGW targets</li>
+<li>Fix for debug build issue.</li>
+<li>New license file replaces LICENSE and COPYRIGHT</li>
+</ul>
+
+<h3>Shared library version added</h3>
+
+<p>Linux shared library version numbers have been added by setting SHRLIB_VERSION
+(to 6.0 in this case). So shared object will be libpvData.so.6.0 instead of
+libpvData.so.</p>
+
+<h3>Headers have been moved into pv directories</h3>
+
+<p>For example</p>
+
+<pre><code>src/property/alarm.h -&gt; src/property/pv/alarm.h
+</code></pre>
+
+<p>This facilitates using some IDEs such as Qt Creator.</p>
+
+<h3>Requester::message has default implementation</h3>
+
+<p>Requester::message is no longer pure virtual. Default implementation sends
+string to <code>std::cerr</code>.</p>
+
+<h3>Serialization/deserialization helpers added</h3>
+
+<p>A helper function, serializeToVector, has been added which serializes a
+Serializable object into a standard vector of <code>UInt8</code>s.</p>
+
+<p>Similarly a function deserializeFromVector deserializes a standard vector into
+a Deserializable object.</p>
+
+<p>A function deserializeFromBuffer deserializes a <code>ByteBuffer</code> into a
+Deserializable object.</p>
+
+<h3>Field name validation performed</h3>
+
+<p>On creating a Structure or Union the field names are now validated.</p>
+
+<p>Valid characters for a field name are upper or lowercase letters, numbers and
+underscores and intial numbers are invalid, i.e. names must be of the form
+<code>[A-Za-z_][A-Za-z0-9_]*</code>.</p>
+
+<h3>Now builds for Cygwin and MinGW targets</h3>
+
+<p>Includes cross-compiling MinGW on Linux.</p>
+
+<hr />
+
+<h2>pvAccessCPP 5.0.0</h2>
+
+<ul>
+<li>Remote channel destroy support</li>
+<li>Multiple network inteface support</li>
+<li>Local multicast (repetitor) reimplemented</li>
+<li>Monitor reconnect when channel type changes fix</li>
+<li>C++11 compilation fixes</li>
+<li>Added version to pvaTools</li>
+<li>Memory management improved</li>
+<li>pipeline: ackAny argument percentage support</li>
+<li>Monitor overrun memory issues fixed</li>
+<li>CA provider destruction fixed</li>
+<li>Replaced LGPL wildcard matcher with simplistic EPICS version</li>
+</ul>
+
+<hr />
+
+<h2>normativeTypesCPP 5.1.1</h2>
+
+<p>The main changes since release 5.0 are:</p>
+
+<ul>
+<li>Linux shared library version added</li>
+<li>Headers and source locations have changed</li>
+<li>Missing is_a implementations added</li>
+<li>NTAttribute::addTags() is now non-virtual</li>
+<li>New license file replaces LICENSE and COPYRIGHT</li>
+</ul>
+
+<h3>Shared library version added</h3>
+
+<p>Linux shared library version numbers have been added by setting SHRLIB_VERSION
+(to 5.1 in this case). So shared object will be libnt.so.5.1 instead of
+libpvData.so.</p>
+
+<h3>Headers and source locations have changed</h3>
+
+<p>Source has moved out of nt directory directly into src.</p>
+
+<p>Headers have been moved into a pv directory. This facilitates using some IDEs
+such as Qt Creator.</p>
+
+<pre><code>src/nt/ntscalar.cpp -&gt; src/ntscalar.cpp
+src/nt/ntscalar.h   -&gt; src/pv/ntscalar.h
+</code></pre>
+
+<h3>Missing is_a implementations added</h3>
+
+<p><code>is_a(PVStructurePtr const &amp;)</code> implementation has been added for each type.</p>
+
+<hr />
+
+<h2>pvaClientCPP 4.2.1</h2>
+
+<ul>
+<li>The examples are moved to exampleCPP.</li>
+<li>Support for channelRPC is now available.</li>
+<li>In PvaClientMultiChannel <code>checkConnected()</code> now throws an exception if connect fails.</li>
+</ul>
+
+<hr />
+
+<h2>pvaSrv 0.12.1</h2>
+
+<ul>
+<li>Major clean-up wrt returned structures on gets and monitors</li>
+<li>Treat enum as uint16 (not int32)</li>
+<li>Security plugin improvements</li>
+<li>Fix issues #3, #5</li>
+<li>SHRLIB_VERSION can be overridden</li>
+<li>Changes in Jenkins jobs (@CloudBees)</li>
+</ul>
+
+<hr />
+
+<h2>pvDatabaseCPP 4.2.1</h2>
+
+<ul>
+<li>The examples are moved to exampleCPP</li>
+<li>Support for channelRPC is now available.</li>
+<li>removeRecord and traceRecord are now available.</li>
+</ul>
+
+<p>The test is now a regression test that can be run using</p>
+
+<pre><code>make runtests
+</code></pre>
+
+<hr />
+
+<h2>exampleCPP 4.2.1</h2>
+
+<ul>
+<li><p>HelloWorld has been renamed helloRPC.</p></li>
+<li><p>The following examples have been moved from pvDatabaseCPP:</p>
+
+<ul>
+<li>arrayPerformance</li>
+<li>database</li>
+<li>exampleLink</li>
+<li>helloPutGet</li>
+<li>powerSupply</li>
+<li>pvDatabaseRPC</li>
+</ul></li>
+<li><p>The following have been moved from pvaClientCPP:</p>
+
+<ul>
+<li>exampleClient</li>
+<li>test</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h2>pvaPy 0.6.2</h2>
+
+<ul>
+<li>added support for channel putGet() and getPut() operations</li>
+<li>introduced PvObject support for field path notation (e.g, 'x.y.z')</li>
+<li>introduced PvObject support for <code>getitem</code>, <code>setitem</code>, <code>contains</code></li>
+<li>new constructor for PvObject allows optional value dictionary</li>
+<li>added PvObject support for retrieving numeric scalar arrays as
+read-only numpy arrays (requires compiling with Boost.NumPy)</li>
+<li>added ability to specify PV request in RPC client code</li>
+<li>fixed PvObject type ID issues</li>
+<li>reworked monitor code to allow two processing modes: immediate processing
+and processing in a separate thread (requires copying/queueing monitor data);
+the processing thread mode now utilizes monitor requester callbacks, and
+unnecessary monitor polling when monitor queue is full has been eliminated</li>
+</ul>
+
+<hr />
+
+<h2>bundleCPP 4.6.0-rc1</h2>
+
+<ul>
+<li>New module created for bundling the other EPICS V4 C++ modules.</li>
+<li>Makefile supports simple configuration and parallel builds.</li>
+</ul>
+
+</div> <!-- contents -->
+
+<hr />
+<address>Contact author: Andrew Johnson, Argonne</address>
+</body>
+</html>
