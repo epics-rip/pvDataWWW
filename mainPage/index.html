@@ -11,11 +11,12 @@
   <link rel="stylesheet" type="text/css" href="http://epics-pvdata.sourceforge.net/epicsv4web.css" />
   <link href="https://plus.google.com/114828842338418222242" rel="publisher" />
   <style type="text/css">
+
   div.newrel {
     font-size: 20px;
     line-height: 1.3542;
     font-weight: 100;
-    text-align: center;
+    text-align: left;
     margin-left: auto;
     margin-right: auto;
     max-width: 70.3333%;
@@ -37,7 +38,7 @@
 
 
 <body>
-<div width="100%" style="font-size:70%;text-align:right;">
+<div style="font-size:70%;text-align:right;">
 <!-- hhmts start -->Last modified: Mon Nov 23 14:12:04 PST 2015 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
@@ -61,12 +62,12 @@
       "text-align:center;letter-spacing:0.2em;font-size:350%;color:#4C3BCA">EPICS
       Version 4
     </td>
-    <td padding="0px" border-width="0px"></td>
+
   </tr>
 
 </table>
 
-<table class="masthead" vspace="4px" width="100%" style="font-weight:bold">
+<table class="masthead" width="100%" style="font-weight:bold">
   <tbody align="center">
     <tr>
       <!-- #005a9c rgb(0,128,255); -->
@@ -91,7 +92,40 @@
 <div class="newrel">
     <p>EPICS Version 4 is the most powerful and versatile EPICS yet. The familiar EPICS you use every day extended with complex data structures, a new network-accessible application framework, and Service Oriented Architecture (SOA). 
     </p>
-    <p>The latest release, v4.5, builds on the enormous performance upgrades of v4.4, with further performance improvements, usability improvements, and bug fixes throughout the system. The new application framework, pvDatabase, is now available in both C++ and Java, and the C++ implementation has been extended with simplified monitoring. v4.5 makes it easier than ever to use the Normative Types - the Version 4 standard types for scientific data. Python support has been extended, and all the command line tools; pvget, pvput, eget and pvinfo now support Channel Access as well as the new protocol of EPICS Version 4, pvAccess. </p>
+<p>The latest release, v4.6 consists of the following modules:</p>
+<dl>
+ <dt>pvDataJava and pvDataCPP</dt>
+    <dd>Minor changes since previous release</dd>
+ <dt>normativeTypesJava and normativeTypesCPP</dt>
+    <dd>Minor changes since previous release</dd>
+ <dt>pvAccessJava and pvAccessCPP</dt>
+    <dd>Minor changes since previous release</dd>
+ <dt>pvaClientJava and pvaClientCPP</dt>
+    <dd>More robust than previous release.<br />
+       easyPva Java no longer  supported.
+    </dd>
+ <dt>pvDatabaseJava and pvDatabaseCPP</dt>
+ <dt>pvaSrv</dt>
+    <dd>Minor changes since last release.</dd>
+ <dt>pvaPy</dt>
+    <dd>Several changes since last release.</dd>
+ <dt>exampleJava and exampleCPP</dt>
+    <dd>Many new examples since last release<br />
+      Several examples that were in pvaClient and pvDatabase have been moved
+      to here.
+    </dd>
+</dl>
+<p>A lot of changes were made to
+<a href="informative/developerGuide/developerGuide.html">Developer Guide</a>.
+It is a good way to understand the various v4.6 modules.
+</p>
+</div>
+</div>
+
+
+<div style="width=100%; padding-top:10px; padding-bottom:10px"> 
+<div class="newrel">
+    <p>Release, v4.5, builds on the enormous performance upgrades of v4.4, with further performance improvements, usability improvements, and bug fixes throughout the system. The new application framework, pvDatabase, is now available in both C++ and Java, and the C++ implementation has been extended with simplified monitoring. v4.5 makes it easier than ever to use the Normative Types - the Version 4 standard types for scientific data. Python support has been extended, and all the command line tools; pvget, pvput, eget and pvinfo now support Channel Access as well as the new protocol of EPICS Version 4, pvAccess. </p>
   
        <p>EPICS v4.5 supports all Base releases since late 3.14.12, specifically including all 3.15 releases. For more of the features of EPICS v4.5, see the <a href="features.html#newin4-5">Features</a> page.</p>
     <p>Supporting the next generation of scientific control systems.</p>
@@ -108,7 +142,7 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
         style="width:11em; background-color:rgb(245,245,245); padding:4px"> <!-- Column of quicklinks-->
 
       <ul class="quicklinks_outer">
-	<li>SEARCH EPICS Version 4</li>
+	<li>SEARCH EPICS Version 4
 	  <form name="google-search" method="get" action="http://www.google.com/search">
 	    <div style="border:1px;padding:4px;font-size:90%;width=20em">
 	      <input type="hidden" name="sitesearch" value="http://epics-pvdata.sourceforge.net" />
@@ -116,22 +150,23 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	      <input type="submit" name="sa" style="margin-top:0.5em;font-size:90%" value="Google" />
 	    </div>
 	  </form>
-	</li>
+         </li>
       </ul>   
        
       <ul  class="quicklinks_outer">
-	<li>HOME</li>
+	<li>HOME
 	<ul class="quicklinks_inner">
 	  <li><a 
 	  href="#nutshell">In a Nutshell</a></li>
 	  <li><a href="#interop" >V4/Base Interoperation</a></li>
 	  <li><a href="#perf" >Performance</a></li>
 	</ul>
+        </li>
       </ul>
 
      
       <ul class="quicklinks_outer">
-	<li><a href="development.html">DEVELOPMENT</a></li>
+	<li><a href="development.html">DEVELOPMENT</a>
 	<ul class="quicklinks_inner">
 	  <li><a href="gettingStarted.html">Getting Started</a></li>
 	  <li><a href="informative/developerGuide/developerGuide.html">Developer Guide</a></li>
@@ -156,6 +191,7 @@ href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIO
 	<li><a href="Ev4buildtracker.xls" >Compatibility Tracker (Excel)</a></li>
         <li><a href="pvAccessConfig.xlsx" >pvAccess Configuration (Excel)</a></li>
 	</ul>
+        </li>
       </ul>
 
       <ul  class="quicklinks_outer">
@@ -164,7 +200,7 @@ href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIO
       </ul>
 
       <ul class="quicklinks_outer">
-	<li><a href="literature.html">DOCUMENTATION</a></li>
+	<li><a href="literature.html">DOCUMENTATION</a>
 	<ul class="quicklinks_inner">
 	  <li><a href="literature.html#swdoc">Programmers Reference</a></li>
 	  <li><a href="literature.html#normativedocs">pvAccess
@@ -177,18 +213,20 @@ href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIO
 	  <li><a href="literature.html#internal">Internal Documents</a></li>
 	  <li><a href="literature.html#talks">Talks and Papers</a></li>
 	</ul>
+         </li>
       </ul>
 
       <ul class="quicklinks_outer">
-	<li><a href="features.html">FEATURES</a></li>
+	<li><a href="features.html">FEATURES</a>
 	<ul class="quicklinks_inner">
 	  <li><a href="features.html#features">Feature List</a></li>
 	  <li><a href="features.html#solutions">Solutions</a></li>
 	</ul>
+        </li>
       </ul>
       
       <ul class="quicklinks_outer">
-	<li><a href="home.html">WORKING GROUP</a></li>
+	<li><a href="home.html">WORKING GROUP</a>
 	<ul class="quicklinks_inner">
 	  <li><a href="home.html#status">Activities</a></li>
 	  <li><a href="https://docs.google.com/spreadsheet/pub?key=0AiY7lwlw4Y4XdDNBVzRUN0FOMGw1Ty1pZk9MeGtPVnc&output=html">Dashboard</a></li>
@@ -209,6 +247,7 @@ href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIO
 	  </li>
 	  <li><a href="https://sourceforge.net/tracker/?group_id=249167&atid=2483530">Resolutions</a></li>
 	</ul>
+         </li>
       </ul>
       
       <ul class="quicklinks_outer">
@@ -255,7 +294,12 @@ system and online scientific services of large experimental facilities.</p>
 
        
 <p>To get started, see the <a href="https://sourceforge.net/projects/epics-pvdata/files/4.5.0/" >v4.5 Downloads</a> and the <a href="http://epics-pvdata.sourceforge.net/gettingStarted.html" > Getting Started with EPICS V4</a> guide.</p>
-  <p>The <a href="http://epics-pvdata.sourceforge.net/literature.html#swdoc" >programmers reference documentation</a> for each software component of EPICS V4 is listed in the <a href="http://epics-pvdata.sourceforge.net/literature.html" >Literature</a> page. A fledgling <a href="informative/developerGuide/developerGuide.html" >EPICS V4 Developer's Guide</a> is being written, but is useful now. </p>
+  <p>The <a href="http://epics-pvdata.sourceforge.net/literature.html#swdoc" >programmers reference documentation</a> for each software component of EPICS V4 is listed in the <a href="http://epics-pvdata.sourceforge.net/literature.html" >Literature</a> page.
+</p>
+<p>
+The
+<a href="informative/developerGuide/developerGuide.html" >EPICS V4 Developer's Guide</a>
+ describes the modules that are provided with EPICS V4. </p>
 <p>The pvAccess protocol is described in its <a href="http://epics-pvdata.sourceforge.net/pvAccess_Protocol_Specification.html" >specification</a>. Environment settings, such as <kbd>EPICS_PVA_ADDR_LIST</kbd> etc, are described in the <a href="http://epics-pvdata.sourceforge.net/pvAccessConfig.xlsx" >pvAccess Configuration spreadsheet (Excel)</a>. Check the present status of V4's CPU architecture compatibility in the <a href="http://epics-pvdata.sourceforge.net/Ev4buildtracker.xls" >Compatibility Tracker (Excel)</a>.</p>
   <p>If you get into trouble, you might first check the <a href="troubleshooting.html">Troubleshooting EPICS V4</a>
 cheatsheet, which lists very first steps in finding and resolving problems with EPICS
