@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;" />
   <meta name="keywords" content="EPICS, EPICSv4" />
-  <title>EPICS V4 Release 4.6.0-rc1 C++ Bundle Release Notes</title>
+  <title>EPICS V4 Release 4.6.0 Java Bundle Release Notes</title>
   <link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css" href="../../epicsv4.css" />
 
@@ -14,12 +14,13 @@
 
 <body>
 <div class="head">
-  <h1>EPICS V4 Release 4.6.0-rc1</h1>
+  <h1>EPICS V4 Release 4.6.0</h1>
 
-  <h2 class="nocount">Java Bundle Release Notes for EPICS V4 Release 4.6.0</h2>
+  <h2 class="nocount">EPICS V4 Release 4.6.0 Java Bundle Release Notes</h2>
 
   <dl>
     <dt>Editors:</dt>
+    <dd>Ralph Lange, ITER</dd>
     <dd>Andrew Johnson, Argonne</dd>
   </dl>
 
@@ -47,55 +48,28 @@
 <div id="contents" class="contents">
 <hr />
 
-<h2>pvDataJava (6.0.1)</h2>
+<h2>Java Bundle (4.6.0)</h2>
 
-<p>The main changes since release 5.0.3 are:</p>
+<p>The main changes since release 4.5.0.1 are:</p>
 
 <ul>
-<li>License and copyright has changed</li>
+<li>The EPICS Core libraries are deployed to Maven Central.
+Maven applications should add a dependency to epics-core,
+using the version number of the bundle release.</li>
+</ul>
+
+<h2>pvDataJava (6.0.2)</h2>
+
+<ul>
+<li>Fixed issue with PVStructure's equals() method</li>
+<li>Unit tests for equality of Structures/PVStructures added</li>
 <li>PVAuxInfo has been removed</li>
 <li>Field name validation has been added</li>
 <li>Fixed truncation in BitSet::or_and</li>
 <li>Extra postPut() in ConvertFactory.copyScalar array removed</li>
-<li>Fixed issue with PVStructure's equals() method</li>
-<li>Unit tests for equality of Structures/PVStructures added</li>
 </ul>
 
-<h3>Fixed issue with PVStructure's equals() method</h3>
-
-<p><code>equals()</code> was returning true if two structures had the same number of fields,
-of equal type and equal value data, even if type IDs or field names were not
-equal - see #10. Fixed this by checking introspection type.</p>
-
-<p>This brings Java behaviour in line with C++.</p>
-
-<p>Note: Exact meaning of equality of (PV)Fields is  unclear/undefined. In particular two scalar or scalar array PVFields are currently "equal" if
-their values are equal, irrespective of their field names.</p>
-
-<h3>Fixed truncation in BitSet::or_and (issue #27)</h3>
-
-<p>If <code>n</code>, <code>n1</code> and <code>n2</code> words are used to store the values of the bitsets
-<code>bitset</code>, <code>bitset1</code> and <code>bitset2</code> respectively then <code>max(n, min(n1,n2))</code> words
-are needed to store <code>bitset.or_(bitset1, bitset2)</code>.</p>
-
-<p>Previously <code>min(n1,n2)</code> words were used and the result would be truncated in
-some instances. This has been fixed.</p>
-
-<p>Analogous to issue #27 in pvDataCPP</p>
-
-<h3>Field name validation has been added</h3>
-
-<p>Field name validation is performed when contructing Structures or Unions.</p>
-
-<p>Field names must now consist of upper or lower case letters, numbers and
-underscores with an initial number forbidden, i.e. they must match the pattern
-<code>[_a-zA-Z][_a-zA-Z0-9]</code>*</p>
-
-<p>An illegal name throws an IllegalArgumentException.</p>
-
-<hr />
-
-<h2>pvAccessJava (5.0.1)</h2>
+<h2>pvAccessJava (5.0.2)</h2>
 
 <ul>
 <li>Duplicate channel response from the same server warning removed</li>
@@ -109,53 +83,36 @@ underscores with an initial number forbidden, i.e. they must match the pattern
 <li>pipeline support added</li>
 </ul>
 
-<hr />
+<h2>pvDatabaseJava (4.2.2)</h2>
 
-<h2>normativeTypesJava (0.2.1)</h2>
+<ul>
+<li>Move examples to exampleJava.</li>
+<li>Add support for channelRPC.</li>
+<li>Add removeRecord and traceRecord.</li>
+</ul>
 
-<p>No documented changes.</p>
+<h2>normativeTypesJava (0.2.2)</h2>
 
-<hr />
+<p>(No significant changes.)</p>
 
-<h2>pvaClientJava (4.2.1)</h2>
+<h2>pvaClientJava (4.2.2)</h2>
 
 <ul>
 <li>The examples are moved to exampleCPP.</li>
 <li>Support for channelRPC is now available.</li>
 </ul>
 
-<hr />
-
-<h2>pvDatabaseJava (4.2.1)</h2>
+<h2>exampleJava (4.2.2)</h2>
 
 <ul>
-<li>The examples are moved to exampleCPP.</li>
-<li>Support for channelRPC is now available.</li>
-<li>removeRecord and traceRecord are now available.</li>
+<li>Move all example code to exampleJava.</li>
+<li>Make each example is a separate Maven module.</li>
+<li>Simplify documentation structure by moving docs to the parent.</li>
 </ul>
-
-<hr />
-
-<h2>directoryService (0.5.1)</h2>
-
-<p>No documented changes.</p>
-
-<hr />
-
-<h2>exampleJava (4.2.1)</h2>
-
-<p>exampleJava now has examples that were in:</p>
-
-<ul>
-<li>pvDatabaseJava</li>
-<li>pvaClientJava</li>
-</ul>
-
-<p>The pom files now use the parent pom model as defined by epicsCoreJava.</p>
 
 </div> <!-- contents -->
 
 <hr />
-<address>Contact author: Andrew Johnson, Argonne</address>
+<address>Contact editor: Ralph Lange, ITER</address>
 </body>
 </html>

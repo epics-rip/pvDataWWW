@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;" />
   <meta name="keywords" content="EPICS, EPICSv4" />
-  <title>EPICS V4 Release 4.6.0-rc1 C++ Bundle Release Notes</title>
+  <title>EPICS V4 Release 4.6.0 C++ Bundle Release Notes</title>
   <link rel="stylesheet" type="text/css" href="../../base.css" />
   <link rel="stylesheet" type="text/css" href="../../epicsv4.css" />
 
@@ -14,9 +14,9 @@
 
 <body>
 <div class="head">
-  <h1>EPICS V4 Release 4.6.0-rc1</h1>
+  <h1>EPICS V4 Release 4.6.0</h1>
 
-  <h2 class="nocount">C++ Bundle Release Notes for EPICS V4 Release 4.6.0</h2>
+  <h2 class="nocount">EPICS V4 Release 4.6.0 C++ Bundle Release Notes</h2>
 
   <dl>
     <dt>Editors:</dt>
@@ -29,6 +29,7 @@
     submodule for this bundled version of EPICS V4. For future patch releases
     any notes about patch changes will supplement the note entries from the
     original release.</p>
+
   <!-- Boilerplate references -->
   <p>
     For information about EPICS, please refer to the main
@@ -52,7 +53,7 @@
 
 <hr />
 
-<h2>pvDataCPP 6.0.0</h2>
+<h2>pvDataCPP 6.0.1</h2>
 
 <p>The main changes since release 5.0.4 are:</p>
 
@@ -144,6 +145,8 @@ underscores and intial numbers are invalid, i.e. names must be of the form
 <li>Missing is_a implementations added</li>
 <li>NTAttribute::addTags() is now non-virtual</li>
 <li>New license file replaces LICENSE and COPYRIGHT</li>
+<li>NTUnionBuilder: Add missing value() function</li>
+<li>Updated document: Now document all Normative Types</li>
 </ul>
 
 <h3>Shared library version added</h3>
@@ -227,6 +230,9 @@ src/nt/ntscalar.h   -&gt; src/pv/ntscalar.h
 <li>exampleClient</li>
 <li>test</li>
 </ul></li>
+<li><p>The pvDatabaseRPC example sub-module generates build warnings on Windows
+related to name decoration. These issues will be fixed in an upcoming patch
+release.</p></li>
 </ul>
 
 <hr />
@@ -250,7 +256,7 @@ unnecessary monitor polling when monitor queue is full has been eliminated</li>
 
 <hr />
 
-<h2>bundleCPP 4.6.0-rc1</h2>
+<h2>bundleCPP 4.6.0</h2>
 
 <ul>
 <li>New module created for bundling the other EPICS V4 C++ modules.</li>
@@ -260,6 +266,6 @@ unnecessary monitor polling when monitor queue is full has been eliminated</li>
 </div> <!-- contents -->
 
 <hr />
-<address>Contact author: Andrew Johnson, Argonne</address>
+<address>Contact editor: Andrew Johnson, Argonne</address>
 </body>
 </html>
