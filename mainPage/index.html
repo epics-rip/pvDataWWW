@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
@@ -19,7 +19,7 @@
     text-align: left;
     margin-left: auto;
     margin-right: auto;
-    max-width: 70.3333%;
+    max-width: 80.3333%;
     color: #C0C0C0 <!-- #FFF -->
    }
    @media print {
@@ -39,7 +39,7 @@
 
 <body>
 <div style="font-size:70%;text-align:right;">
-<!-- hhmts start -->Last modified: Mon Nov 23 14:12:04 PST 2015 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sept 26 2016 <!-- hhmts end -->
 </div>
 <table width="100%" style="border-width:1px">
   <tr>
@@ -81,17 +81,21 @@
       <td align="center"><a href="features.html">FEATURES</a></td>
       <td align="center"><a href="home.html">WORKING GROUP</a></td>
       <td align="center"><a href="https://github.com/epics-base">GITHUB</a></td>
-      <td align="center"><a href="https://docs.google.com/spreadsheet/pub?key=0AiY7lwlw4Y4XdDNBVzRUN0FOMGw1Ty1pZk9MeGtPVnc&output=html">DASHBOARD</a></td>
+      <td align="center"><a href="https://docs.google.com/spreadsheet/pub?key=0AiY7lwlw4Y4XdDNBVzRUN0FOMGw1Ty1pZk9MeGtPVnc&amp;output=html">DASHBOARD</a>
+      <br />
+      <b>Needs Updating</b>
+      </td>
    </tr>
    </tbody>
 </table>
 
 
-<h2 id="whatdoesitbring" style="margin-bottom:10px">New Release EPICS Version 4.5</h2>
+<h2 id="whatdoesitbring" style="margin-bottom:10px">EPICS Version 4 Releases</h2>
 <div style="width=100%; padding-top:10px; padding-bottom:10px"> 
 <div class="newrel">
     <p>EPICS Version 4 is the most powerful and versatile EPICS yet. The familiar EPICS you use every day extended with complex data structures, a new network-accessible application framework, and Service Oriented Architecture (SOA). 
     </p>
+<h3>Release 4.6</h3>
 <p>The latest release, v4.6 consists of the following modules:</p>
 <dl>
  <dt>pvDataJava and pvDataCPP</dt>
@@ -123,12 +127,14 @@ It is a good way to understand the various v4.6 modules.
 </div>
 
 
+
 <div style="width=100%; padding-top:10px; padding-bottom:10px"> 
 <div class="newrel">
+<h3>Release 4.5</h3>
+
     <p>Release, v4.5, builds on the enormous performance upgrades of v4.4, with further performance improvements, usability improvements, and bug fixes throughout the system. The new application framework, pvDatabase, is now available in both C++ and Java, and the C++ implementation has been extended with simplified monitoring. v4.5 makes it easier than ever to use the Normative Types - the Version 4 standard types for scientific data. Python support has been extended, and all the command line tools; pvget, pvput, eget and pvinfo now support Channel Access as well as the new protocol of EPICS Version 4, pvAccess. </p>
   
        <p>EPICS v4.5 supports all Base releases since late 3.14.12, specifically including all 3.15 releases. For more of the features of EPICS v4.5, see the <a href="features.html#newin4-5">Features</a> page.</p>
-    <p>Supporting the next generation of scientific control systems.</p>
   </div>
 </div>
 
@@ -178,8 +184,7 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	  <li><a
 	href="https://github.com/epics-base/">GitHub
 	Repos</a></li>
-	<li><a
-	href="http://epics.sourceforge.net/maven2/org/epics/">Maven Products</a></li>
+	
 	<li><a href="https://openepics.ci.cloudbees.com/view/EPICS%20V4%20C++/">
 	C++ module Cloudbees</a></li>
 	<li><a href="https://openepics.ci.cloudbees.com/view/EPICS%20V4%20Java/">
@@ -188,7 +193,6 @@ style="width:90%;height:1px;border-width:0;color:gray;background-color:gray"/ --
 	<li><a
 href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIONS"
 	>RELEASE VERSIONS</a></li>
-	<li><a href="Ev4buildtracker.xls" >Compatibility Tracker (Excel)</a></li>
         <li><a href="pvAccessConfig.xlsx" >pvAccess Configuration (Excel)</a></li>
 	</ul>
         </li>
@@ -227,9 +231,11 @@ href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIO
       
       <ul class="quicklinks_outer">
 	<li><a href="home.html">WORKING GROUP</a>
+       
 	<ul class="quicklinks_inner">
+         <li>FOLLOWING NEED UPDATING</li>
 	  <li><a href="home.html#status">Activities</a></li>
-	  <li><a href="https://docs.google.com/spreadsheet/pub?key=0AiY7lwlw4Y4XdDNBVzRUN0FOMGw1Ty1pZk9MeGtPVnc&output=html">Dashboard</a></li>
+	  <li><a href="https://docs.google.com/spreadsheet/pub?key=0AiY7lwlw4Y4XdDNBVzRUN0FOMGw1Ty1pZk9MeGtPVnc&amp;output=html">Dashboard</a></li>
 	  <li><a href="home.html#meetings">Meetings</a></li>
 	  <li><a href="home.html#usefulinfo">Meeting Info</a></li>
 	  <li><a href="home.html#membership">Membership</a></li>
@@ -237,23 +243,17 @@ href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIO
 	  href="http://sourceforge.net/mailarchive/forum.php?forum_name=epics-pvdata-devel">Mail
 	  Archive</a></li>
 	  <li><a
-	  href="https://sourceforge.net/tracker/?group_id=249167&atid=2482257">Action
+	  href="https://sourceforge.net/tracker/?group_id=249167&amp;atid=2482257">Action
 	  Items</a>
 	  </li>
 	  <li><a
-	  href="https://sourceforge.net/tracker/?group_id=249167&atid=2483551">Issues</a></li>
+	  href="https://sourceforge.net/tracker/?group_id=249167&amp;atid=2483551">Issues</a></li>
 	  <li><a
-	  href="https://sourceforge.net/tracker/?group_id=249167&atid=2585448">Bugs</a>
+	  href="https://sourceforge.net/tracker/?group_id=249167&amp;atid=2585448">Bugs</a>
 	  </li>
-	  <li><a href="https://sourceforge.net/tracker/?group_id=249167&atid=2483530">Resolutions</a></li>
+	  <li><a href="https://sourceforge.net/tracker/?group_id=249167&amp;atid=2483530">Resolutions</a></li>
 	</ul>
-         </li>
-      </ul>
-      
-      <ul class="quicklinks_outer">
-	<li><a
-	href="http://sourceforge.net/projects/epics-pvdata/">EPICS V4
-	SOURCEFORGE</a></li>
+        </li>
       </ul>
 
       <ul class="quicklinks_outer">
@@ -267,22 +267,25 @@ href="https://github.com/epics-base/pvDataWWW/blob/master/scripts/RELEASE_VERSIO
       </ul> -->
 
       <ul class="quicklinks_outer">
-	<li><a href="charter.html">CHARTER</a></li>
+	<li><a href="charter.html">CHARTER</a>
 	<ul class="quicklinks_inner">
+          <li>FOLLOWING NEED UPDATING</li>
 	  <li><a href="charter.html#scope">Goals</a></li>
 	  <li><a href="charter.html#deliverables">Deliverables</a></li>
 	  <li><a href="charter.html#milestones">Milestones</a></li>
 	</ul>
+        </li>
       </ul>
 
        <ul class="quicklinks_outer">
-	 <li><a href="http://www.aps.anl.gov/epics/">EPICS</a></li>
+	 <li><a href="http://www.aps.anl.gov/epics/">EPICS</a>
 	 <ul class="quicklinks_inner">
 	   <li><a href="http://www.aps.anl.gov/epics/download/base/index.php">Base
 	   Downloads</a></li>
 	   <li><a
 	 href="	http://www.aps.anl.gov/epics/tech-talk/index.php">Tech-talk forum</a></li>
 	 </ul>
+       </li>
        </ul>
 
     </td> <!-- End Quicklinks column -->
@@ -293,7 +296,7 @@ This is the homepage of EPICS Version 4, a software toolkit for writing the cont
 system and online scientific services of large experimental facilities.</p>
 
        
-<p>To get started, see the <a href="https://sourceforge.net/projects/epics-pvdata/files/4.6.0/" >v4.6 Downloads</a> and the <a href="http://epics-pvdata.sourceforge.net/gettingStarted.html" > Getting Started with EPICS V4</a> guide.</p>
+<p>To get started, see the <a href="https://sourceforge.net/projects/epics-pvdata/files/4.6.0/" >v4.6 Downloads</a> and the <a href="gettingStarted.html" > Getting Started with EPICS V4</a> guide.</p>
   <p>The <a href="http://epics-pvdata.sourceforge.net/literature.html#swdoc" >programmers reference documentation</a> for each software component of EPICS V4 is listed in the <a href="http://epics-pvdata.sourceforge.net/literature.html" >Literature</a> page.
 </p>
 <p>
@@ -307,7 +310,7 @@ V4 connections. After that, email <a href="http://www.aps.anl.gov/epics/tech-tal
 
      
 <h2 id="nutshell">EPICS Version 4 Components in a Nutshell</h2>
-<p>EPICS Version 4 is composed of five parts, the regular <a href="http://www.aps.anl.gov/epics/base/index.php" >EPICS Base</a> (3.14 or 3.15) including the IOC, plus 4 new components: pvData, pvAccess, pvDatabase and pvaSrv.</p>
+<p>EPICS Version 4 is composed of five parts, the regular <a href="http://www.aps.anl.gov/epics/base/index.php" >EPICS Base</a> (3.14 or 3.15) including the IOC, plus new components: pvData, pvAccess, pvDatabase, pvaClient, pvaPy, and pvaSrv.</p>
     <p><a href="http://www.aps.anl.gov/epics/download/base/index.php">EPICS Base</a>: as commonly known to EPICS engineers, an IOC (Input/Output Controller) is the software framework for front-end processors and device facing hardware in an EPICS control system. Optimized for low-latency I/O, IOCs
 control and/or monitor a collection of devices such as actuators and measurement diagnostics. Each IOC node contains a memory resident real time database. The real time database has a set of "smart" records,
 which are interconnected in a <a href="http://en.wikipedia.org/wiki/Dataflow" > Data
@@ -317,6 +320,12 @@ Flow</a> pattern. The records may contain "device support" code, to interface th
  the client can ask for, or monitor, just a subset of a pvData structure on the server.</p>
 <p> <a href="literature.html#pvaSrv" >pvaSrv</a>: there are 2 ways one can use the pvAccess software API to talk to an IOC; one can use Channel Access on wire, just through the pvAccess API, or one can use pvaSrv, a module which intermediates pvAccess to the record processing on an IOC. </p>
 <p><a href="literature.html#pvDatabaseCPP" >pvDatabase</a> is a server-side software framework for writing high-performance network-accessible applications. It implements a memory-resident database of records defined in terms of pvData structures. Like the IOC database of classic EPICS, the records of pvDatabase can process on I/O events; unlike the IOC the records may be of any structure the engineer wishes, and may pull in data from any pvAccess-ible data source, plus Channel Access. pvDatabase images may be standalone, or hosted within an IOC, where they might interface directly to base records, asynchronous device driver support (asynDriver), or detector control (areaDetector). pvDatabase is then useful for complex optimal control tasks, data assembly, and preprocessing. Combined with pvAccess streaming, it can be used as the basis of a data processing pipeline.</p>
+<p><a href="literature.html#pvaClientCPP" >pvaClient</a> 
+is a synchronous wrapper on top of pvAccess, which is a callback based API.
+</p>
+<p><a href="literature.html#pvaPy" >pvPy</a> 
+is a Python interface to pvData and pvAccess.
+</p>
 <p><q>So now one can create services on the network that do more than Channel Access,</q> Kay Kasemir. <q>Creativity can only be anarchic, capitalist, Darwinian, based on EPICS Version 4,</q> Umberto Eco. <q>Wow. Fantastic. Let's Go!</q> Tom Cruise. </p>
 
 <h2 id="interop">Version 4 / EPICS Base Interoperation</h2>
@@ -398,7 +407,7 @@ additionally has the capability to transfer only actually changed structure fiel
 </td>
 </tr>
 </table>
-<hr>
+
 <address>Greg White, SLAC, greg at slac.stanford.edu, for EPICS V4 Working Group</address>
 
 </body>
