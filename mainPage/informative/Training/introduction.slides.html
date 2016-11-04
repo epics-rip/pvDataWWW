@@ -606,14 +606,14 @@ EPICS V4 allows possibility of atomic operations on group of PVs.</p>
 <p>For example, for PVs X and Y, representing x and y coordinates, can have a channel to group PV and get the values and time stamps of the 2 position PVs:</p>
 
 <pre><code>structure
-    NTScalar
-        double X 1.1
+    NTScalar X
+        double value 1.1
         time_t timeStamp
             long secondsPastEpoch 1460589140
             int nanoseconds 385960397
             int userTag 0
-    NTScalar
-        double Y 2.3
+    NTScalar Y
+        double value 2.3
         time_t timeStamp
             long secondsPastEpoch 1460589140
             int nanoseconds 385643513
@@ -658,6 +658,15 @@ pvData can encode more complex data types like a table:</p>
         int[] nanoseconds       [ 164235768,  164235245,  164235256]
         int[] severity          [         0,          0,          1]
         int[] status            [         0,          0,          3]</code></pre>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>or a request:</p>
 
 <pre><code>NTURI 
@@ -724,15 +733,6 @@ Can put experiment data in a structure “PV” and monitor.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>For example 1 frame of areaDetector data can be encoded using the structure of the following type:</p>
-
-</div>
-</div>
-</div><div class="fragment">
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <pre class="small-text">
 NTNDArray
     union value
@@ -774,7 +774,7 @@ NTNDArray
 </pre>
 </div>
 </div>
-</div></div></section></section>
+</div></section></section>
 </div>
 </div>
 
