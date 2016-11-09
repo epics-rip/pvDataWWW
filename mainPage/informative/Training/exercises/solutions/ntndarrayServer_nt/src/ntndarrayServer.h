@@ -48,7 +48,7 @@ private:
         epics::pvData::PVStructurePtr const & pvStructure);
     NTNDArrayRecordThreadPtr ntndarrayServerThread;
 
-    void setValue(epics::pvData::PVByteArray::const_svector const & bytes);
+    void setValue(epics::pvData::PVUByteArray::const_svector const & bytes);
     void setDimension(const int32_t * dims, size_t ndims);
     void setAttributes();
     void setSizes(int64_t size);
@@ -62,7 +62,7 @@ private:
     epics::pvData::PVTimeStamp pvDataTimeStamp;
     epics::pvData::TimeStamp dataTimeStamp;
 
-    int8_t count;
+    int32_t count;
     bool firstTime;
     double angle;
 };

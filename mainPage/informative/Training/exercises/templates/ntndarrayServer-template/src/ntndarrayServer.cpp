@@ -12,15 +12,16 @@
 #include <pv/standardPVField.h>
 #include <pv/ntndarrayServer.h>
 
-#include "epicsv4Grayscale.h"
 
-namespace epics { namespace ntndarrayServer { 
+
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
 using namespace epics::nt;
 using std::tr1::static_pointer_cast;
 using std::tr1::dynamic_pointer_cast;
 using std::string;
+
+namespace epics { namespace ntndarrayServer { 
 
 NTNDArrayRecordPtr NTNDArrayRecord::create(
     string const & recordName)
@@ -47,8 +48,10 @@ NTNDArrayRecord::NTNDArrayRecord(
 {
     ndarray = NTNDArray::wrap(pvStructure);
 
-    imageGen = RotatingImageGenerator::create(epicsv4_raw, epicsv4_width,
-        epicsv4_height);
+    //imageGen = RotatingImageGenerator::create("data/epicsv4Grayscale.data");
+    //imageGen = RotatingImageGenerator::create("data/testImage_small.data");
+    imageGen = RotatingImageGenerator::create("data/testImage_large.data");
+    //imageGen = RotatingImageGenerator::create("data/ess.data");
 }
 
 NTNDArrayRecord::~NTNDArrayRecord()
@@ -76,14 +79,15 @@ void NTNDArrayRecord::update()
     try
     {
         beginGroupPut();
-        PVByteArray::svector bytes;
+        PVUByteArray::svector bytes;
         imageGen->fillSharedVector(bytes,angle);
         setValue(freeze(bytes));
         if (firstTime)
         {
-            setDimension(epicsv4_raw_dim, 2);
+            int dims[] = { imageGen->getWidth(), imageGen->getHeight() };
+            setDimension(dims, 2);
             setAttributes();
-            setSizes(static_cast<int64_t>(epicsv4_raw_size));
+            setSizes(static_cast<int64_t>(imageGen->getSize()));
             firstTime = false;
         }
         setDataTimeStamp();
@@ -100,7 +104,7 @@ void NTNDArrayRecord::update()
     unlock();
 }
 
-void NTNDArrayRecord::setValue(PVByteArray::const_svector const & bytes)
+void NTNDArrayRecord::setValue(PVUByteArray::const_svector const & bytes)
 {
     // Get the union value field
 
@@ -115,23 +119,32 @@ void NTNDArrayRecord::setValue(PVByteArray::const_svector const & bytes)
 void NTNDArrayRecord::setDimension(const int32_t * dims, size_t ndims)
 {
     // Get the dimension field
+    PVStructureArrayPtr dimField = pvStructure->getSubField<PVStructureArray>("dimension");
 
     // create a shared_vector or try to reuse the dimension field's one  
-
+    PVStructureArray::svector dimVector(dimField->reuse());
     // resize/reserve the number of elements
+    dimVector.resize(ndims);
 
     // Iterate over the number of dimensions, creating and adding the
     // appropriate dimension structures.
-
+    for (size_t i = 0; i < ndims; i++)
+    {
+        PVStructurePtr d = dimVector[i];
+        // If d is null or not unique create a new PVStructure
+        if (!d || !d.unique())
+            d = dimVector[i] = getPVDataCreate()->createPVStructure(dimField->getStructureArray()->getStructure());
+        // Set the size, offset, fullSize, binning and reverse fields
+        // (binning should be 1)
+    }
     // replace the dimensions field's shared_vector
     // (Remember to freeze first)
-
+    dimField->replace(freeze(dimVector));
 }
 
 void NTNDArrayRecord::setAttributes()
 {
     // Get the attribute field
-
 
     // Create a shared vector or reuse
 
@@ -144,7 +157,8 @@ void NTNDArrayRecord::setAttributes()
 
     // Add the attribute to the shared_vector
 
-    // Replace the attribute fields stored
+    // Replace the attribute field's shared vector
+    // (Remember to freeze first)
 }
 
 

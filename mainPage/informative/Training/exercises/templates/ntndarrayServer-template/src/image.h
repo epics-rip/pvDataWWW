@@ -22,17 +22,25 @@ class RotatingImageGenerator
 {
 public:
     POINTER_DEFINITIONS(RotatingImageGenerator);
-    static RotatingImageGenerator::shared_pointer create(const int8_t* data, size_t width, size_t height);
+    static RotatingImageGenerator::shared_pointer create(const uint8_t* data, size_t width, size_t height);
 
-    void fillSharedVector(epics::pvData::PVByteArray::svector & sv, float deg);
+    static RotatingImageGenerator::shared_pointer create(const std::string & filename);
+
+    size_t getWidth() { return m_width; }
+    size_t getHeight() { return m_height; }
+    size_t getSize() { return m_size; }
+
+    void fillSharedVector(epics::pvData::PVUByteArray::svector & sv, float deg);
 
 private:
-    RotatingImageGenerator(const int8_t* data, size_t width, size_t height);
+    RotatingImageGenerator(const uint8_t* data, size_t width, size_t height);
 
-    const int8_t* m_data;
+    const uint8_t* m_data;
     size_t m_width;
     size_t m_height;
-    size_t m_size;    
+    size_t m_size;
+
+    std::vector<uint8_t> bytes;
 };
 
 typedef RotatingImageGenerator::shared_pointer RotatingImageGeneratorPtr;

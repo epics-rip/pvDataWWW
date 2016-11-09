@@ -12,15 +12,16 @@
 #include <pv/standardPVField.h>
 #include <pv/ntndarrayServer.h>
 
-#include "epicsv4Grayscale.h"
 
-namespace epics { namespace ntndarrayServer { 
+
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
 using namespace epics::nt;
 using std::tr1::static_pointer_cast;
 using std::tr1::dynamic_pointer_cast;
 using std::string;
+
+namespace epics { namespace ntndarrayServer { 
 
 NTNDArrayRecordPtr NTNDArrayRecord::create(
     string const & recordName)
@@ -47,10 +48,12 @@ NTNDArrayRecord::NTNDArrayRecord(
 {
     ndarray = NTNDArray::wrap(pvStructure);
 
-    imageGen = RotatingImageGenerator::create(epicsv4_raw, epicsv4_width,
-        epicsv4_height);
+    //imageGen = RotatingImageGenerator::create("data/epicsv4Grayscale.data");
+    //imageGen = RotatingImageGenerator::create("data/testImage_small.data");
+    imageGen = RotatingImageGenerator::create("data/testImage_large.data");
+    //imageGen = RotatingImageGenerator::create("data/ess.data");
 
-    pvDataTimeStamp.attach(pvStructure->getSubField<PVStructure>("dataTimeStamp"));
+    pvDataTimeStamp.attach(pvStructure->getSubFieldT<PVStructure>("dataTimeStamp"));
 }
 
 NTNDArrayRecord::~NTNDArrayRecord()
@@ -78,14 +81,15 @@ void NTNDArrayRecord::update()
     try
     {
         beginGroupPut();
-        PVByteArray::svector bytes;
+        PVUByteArray::svector bytes;
         imageGen->fillSharedVector(bytes,angle);
         setValue(freeze(bytes));
         if (firstTime)
         {
-            setDimension(epicsv4_raw_dim, 2);
+            int dims[] = { imageGen->getWidth(), imageGen->getHeight() };
+            setDimension(dims, 2);
             setAttributes();
-            setSizes(static_cast<int64_t>(epicsv4_raw_size));
+            setSizes(static_cast<int64_t>(imageGen->getSize()));
             firstTime = false;
         }
         setDataTimeStamp();
@@ -102,14 +106,14 @@ void NTNDArrayRecord::update()
     unlock();
 }
 
-void NTNDArrayRecord::setValue(PVByteArray::const_svector const & bytes)
+void NTNDArrayRecord::setValue(PVUByteArray::const_svector const & bytes)
 {
     // Get the union value field
     PVUnionPtr value = pvStructure->getSubFieldT<PVUnion>("value");
-    // Select the byteValue field stored in "value"
-    PVByteArrayPtr byteValue = value->select<PVByteArray>("byteValue");
+    // Select the ubyteValue field stored in "value"
+    PVUByteArrayPtr ubyteValue = value->select<PVUByteArray>("ubyteValue");
     // replace the shared vector with "bytes"
-    byteValue->replace(bytes);
+    ubyteValue->replace(bytes);
     // call postPut so that the union sees the change in the stored field  
     value->postPut();
 }
@@ -123,13 +127,17 @@ void NTNDArrayRecord::setDimension(const int32_t * dims, size_t ndims)
     PVStructureArray::svector dimVector(dimField->reuse());
     // resize/reserve the number of elements
     dimVector.resize(ndims);
+
     // Iterate over the number of dimensions, creating and adding the
     // appropriate dimension structures.
     for (size_t i = 0; i < ndims; i++)
     {
         PVStructurePtr d = dimVector[i];
+        // If d is null or not unique create a new PVStructure
         if (!d || !d.unique())
             d = dimVector[i] = getPVDataCreate()->createPVStructure(dimField->getStructureArray()->getStructure());
+        // Set the size, offset, fullSize, binning and reverse fields
+        // (binning should be 1)
         d->getSubField<PVInt>("size")->put(dims[i]);
         d->getSubField<PVInt>("offset")->put(0);
         d->getSubField<PVInt>("fullSize")->put(dims[i]);
@@ -170,7 +178,8 @@ void NTNDArrayRecord::setAttributes()
     // Add the attribute to the shared_vector
     attributes.push_back(attribute);
 
-    // Replace the attribute fields stored
+    // Replace the attribute field's shared vector
+    // (Remember to freeze first)
     attributeField->replace(freeze(attributes));
 }
 
@@ -185,7 +194,6 @@ void NTNDArrayRecord::setSizes(int64_t size)
 void NTNDArrayRecord::setUniqueId(int32_t id)
 {
     pvStructure->getSubFieldT<PVInt>("uniqueId")->put(id);
-    //ndarray->getUniqueId()->put(id);
 }
 
 void NTNDArrayRecord::setDataTimeStamp()
