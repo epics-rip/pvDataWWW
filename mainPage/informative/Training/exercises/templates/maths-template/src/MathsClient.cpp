@@ -16,7 +16,7 @@ using namespace epics::pvData;
 // define the client side API of the maths service.
 static StructureConstPtr makeRequestStructure()
 {
-
+    return StructureConstPtr(); 
 }
 
 // Set a pvAccess connection timeout, after which the client gives up trying 

@@ -15,7 +15,7 @@ namespace mathsService
 // returns this service's result structure type definition.
 StructureConstPtr makeResponseStructure()
 {
-
+    return StructureConstPtr(); 
 }
 
 
