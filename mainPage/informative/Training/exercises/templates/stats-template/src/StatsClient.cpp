@@ -53,13 +53,10 @@ int main (int argc, char *argv[])
         // Set the value of the data object.
 
         // Create an RPC client to the "statsService" service
-        epics::pvAccess::RPCClient::shared_pointer client
-             = epics::pvAccess::RPCClient::create("statsService"); 
 
         // Create an RPC request and block until response is received. There is
         // no need to explicitly wait for connection; this method takes care of it.
         // In case of an error, an exception is thrown.
-        PVStructurePtr response = client->request(arguments, REQUEST_TIMEOUT);
  
         // Check for expected fields and print them.
     }
