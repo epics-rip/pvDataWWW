@@ -1,6 +1,7 @@
 EPICS4_DIR=/home/epicsv4/master
 
 PVACCESS=${EPICS4_DIR}/pvAccessCPP
+NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
 PVDATA=${EPICS4_DIR}/pvDataCPP
 PVCOMMON=${EPICS4_DIR}/pvCommonCPP
 
