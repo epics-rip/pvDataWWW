@@ -275,7 +275,7 @@ You are going to write a simple service which takes 2 numbers and returns their 
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>A template solution, "maths-template", is provided in exercise-templates.</p>
 <p>Make a copy and fill in the implementation.</p>
-<p>The layout is very similar to the <a href="https://github.com/epics-base/exampleCPP/tree/4.1.1/HelloWorld">Hello World service</a>. You can look there to see how you might supply the implementation for your service.</p>
+<p>The layout is very similar to the <a href="https://github.com/epics-base/exampleCPP/tree/4.2.2/helloRPC">Hello World service</a>. You can look there to see how you might supply the implementation for your service.</p>
 
 </div>
 </div>
@@ -298,7 +298,7 @@ structure
 <p>a) starting the server with</p>
 <p>$ ./mathsServerRunner</p>
 <p>b) using eget:</p>
-<div class="highlight"><pre>$ eget -z -N -a <span class="s2">&quot;a=&lt;NUM1&gt;&quot;</span> -a <span class="s2">&quot;b=&lt;NUM2&gt;&quot;</span> mathService
+<div class="highlight"><pre>$ eget -z -N -a <span class="s2">&quot;a=&lt;NUM1&gt;&quot;</span> -a <span class="s2">&quot;b=&lt;NUM2&gt;&quot;</span> -s mathsService
 </pre></div>
 
 </div>
@@ -310,7 +310,7 @@ structure
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>[ Hints:</p>
-<p>a) Look at the Hello World Service example, in particular <a href="https://github.com/epics-base/exampleCPP/blob/4.1.1/HelloWorld/helloWorldApp/HelloService.cpp">HelloService.cpp</a>. Use this
+<p>a) Look at the Hello World Service example, in particular <a href="https://github.com/epics-base/exampleCPP/tree/4.2.2/helloRPC/helloWorldApp/HelloService.cpp">HelloService.cpp</a>. Use this
    as a basis.</p>
 <p>b) Scalar fields of type double use PVDouble instead of PVString and have
    ScalarType pvDouble instead of pvString. PVDouble has a similar API , but put() and get() respectively return and take a std::string instread of a double.</p>
