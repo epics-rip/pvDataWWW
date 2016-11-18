@@ -262,7 +262,7 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Maths-Service">Maths Service<a class="anchor-link" href="#Maths-Service">&#182;</a></h1><p><br>
+<h1 id="pvTools">pvTools<a class="anchor-link" href="#pvTools">&#182;</a></h1><p><br>
 You are going to run some simple example servers and use pvTools to find out the PVs published and their structure, get set and monitor their their values and execute RPCs.</p>
 
 </div>
@@ -275,15 +275,14 @@ You are going to run some simple example servers and use pvTools to find out the
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>1. cd to pvaSrv/testTop/iocBoot/testDbPv. Start the server with</p>
 <pre><code>   $ ../../bin/linux-x86_64/testDbPv st.cmd</code></pre>
-<p><br></p>
 <p>In a separate window.</p><p>a. Use pvlist to find the set of available channels.</p>
 <p>b. Use pvinfo to find out the structure of the PVs.</p>
-<p>c. Use pvget to get the values of some of the the PV.</p>
+<p>c. Use pvget to get the values of some of the the PVs.</p>
 <p>d. Use pvget with the -r option to get all fields.</p>
 <p>e. Use the -r option to get selected fields (e.g. value + timeStamp).</p>
 <p>f. Get combinations of field including subfields of structure fields, such as timeStamp.secondsPastEpoch or alarm.status and alarm.severity.</p>
 <p>g. Use pvget with the -m option to monitor a PV (you may want to do this in a new window).</p>
-<p>h. Try setting the PV with pvput.</p>
+<p>h. Try setting the PV's value field with pvput.</p>
 
 </div>
 </div>
@@ -303,14 +302,20 @@ You are going to run some simple example servers and use pvTools to find out the
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>3. cd to exampleCPP/pvDatabaseRPC. Start the server with</p>
+<p>3. pvDatabaseRPC example: (see <a href="http://epics-pvdata.sourceforge.net/docbuild/4.6.0/exampleCPP/documentation/pvDatabaseRPC.html">here</a> for documentation.)
+
+<p>cd to exampleCPP/pvDatabaseRPC. Start the server with</p>
 <pre><code>./bin/$EPICS_HOST_ARCH/exampleRPCMain</code></pre>
 <p>In a separate window</p><p>a. Use pvinfo to find the structure of "mydevice"</p>
 <p>b. Try getting the full structure with pvget.</p>
 <p>c. Get selected subfields.</p>
 <p>d. Monitor the structure using pvget -m</p>
 <p>e. Try setting the positionSP.value field using pvget</p>
-<p>f. Use the client do the following operations: configure, run, scan, stop, abort, pause, resume, rewind. Keep track of the values of mydevice with pvget -m.</p>
+<p>f. Use the client application to do the following operations: configure, run, scan, stop, abort, pause, resume, rewind. Keep track of the values of mydevice with pvget -m.</p>
+<p>The client can be controlled with</p>
+
+<pre><code>./bin/$EPICS_HOST_ARCH/control &lt;command-name&gt;</code></pre>
+<p>(The command help gives help on commands)</p>
 
 </div>
 </div>
