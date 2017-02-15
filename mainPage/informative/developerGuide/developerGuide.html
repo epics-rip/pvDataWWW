@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 01-September-2016</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 16-Feb-2017</h2>
 <p>
 <b>NOTE: This is the working version of the developerGuide.</b>
 <br />
@@ -7144,7 +7144,8 @@ valueAlarm_t
 <p>Like structure except that <b>[]</b> is appended.
 </p>
 <h2>pvRequest and pvCopy</h2>
-<p>Both pvDataJava and pvDataCPP provide facilities:</p>
+<h3>Oveview</h3>
+<p>Both pvDataJava and pvDataCPP implement the following:</p>
 <dl>
    <dt>CreateRequest</dt>
       <dd>
@@ -7158,20 +7159,54 @@ ChannelGet createChannelGet(
     ChannelGetRequester channelGetRequester,
     PVStructure pvRequest);
 </pre>
+      A pvRequest structure allows a client to select:
+      <ol>
+         <li>An arbitrary subset of the fields in the top level data structure for the channel.</li>
+         <li>Global and field specific options</li>
+      </ol> 
       </dd>
    <dt>PVCopy</dt>
      <dd>
-      A client can request an arbitrary subset of the fields
-      in the top level PVStructure that server provides.
       PVCopy is a facility that copies data between a top
-      level PVStructure that has the clients data and the
+      level PVStructure for the client and the
       top level PVStructure from the server.
-      CreateRequest allows the client to select fields desired.
+      CreateRequest allows the client to select the fields desired.
       PVCopy is used by the server side of pvAccess to 
       transfer data between the two top level PVStructures.
      </dd>
 </dl>
+<p>The following subsections discuss:</p>
+<dl>
+    <dt>CreateRequest</dt>
+      <dd>CreateRequest creates a pvRequest structure from a string argument.
+         This subsection describes the syntax for the string argument.</dd>
+    <dt>pvRequest</dt>
+       <dd>The layout of a valid pvRequest structure is described.</dd>
+    <dt>PVCopy</dt>
+       <dd>Some details about PVCopy are described.</dd> 
+    <dt>Guidelines for pvDatabase services</dt>
+       <dd>This subsection is of interest for implementing new services for channel providers.</dd>
+</dl>
 <h3>CreateRequest</h3>
+<h4>Goals</h4>
+<p>CreateRequest is a parser that creates a pvRequest structure from a string.
+It was created with the following goals:</p>
+<dl>
+   <dt>Create any valid pvRequest</dt>
+     <dd>The layout of a valid pvRequest structure is described below.</dd>
+   <dt>Concise Syntax</dt>
+     <dd>The goal is to allow simple and concise syntax for common requests.
+         For example:
+<pre>
+pvget -r "value,alarm,timeStamp" channelName
+</pre>
+      </dd>
+   <dt>Simple to parse</dt>
+     <dd>This does result in the syntax being somewhat rigid.
+      For example order matters.
+      A more flexible parser could be created but for now only the existing parser is described.
+     </dd>
+</dl>
 <h4>Definition</h4>
 <pre>
 CreateRequest
@@ -7190,8 +7225,8 @@ CreateRequest
      </dd>
 </dl>
 <h4>Purpose</h4>
-<p>CreateRequest allows the clients to select an arbitrary subset of the fields in the top level structure
-associated with the channel.
+<p>CreateRequest allows a client to select an arbitrary subset of the fields in the top level structure
+associated with a channel.
 It also allows the client to specify options.
 Thus the client can specify:</p>
 <dl>
@@ -7212,14 +7247,62 @@ PVStructures to which a pvAcccess Channel can be attached.
 <b>pvaSrv</b>, which provides access to iocCore V3 records, is an example that also accepts a pvRequest
 created by a call to createRequest.
 </p>
-<h4>Syntax</h4>
-<p>A request argument has the syntax:</p>
+<h4>Relationship to Channel methods of pvAccess</h4>
+<p>Channel has methods:</p>
+<dl>
+   <dt>createChannelGet,createChannelPut,and createMonitor</dt>
+     <dd>For these the request string is of the form:
 <pre>
-record[option,...]field(fieldDef,...)putField(fieldDef,...)getField(fieldDef,...)
+record[option,...]field(fieldDef,...)
+OR
+field(fieldDef,...)
 OR
 fieldDef,...
 </pre>
-
+   </dd>
+   <dt>createChannelPutGet</dt>
+     <dd>For these the request string is of the form:
+<pre>
+record[option,...]putField(fieldDef,...)getField(fieldDef,...)
+OR
+putField(fieldDef,...)getField(fieldDef,...)
+</pre>
+   </dd>
+   <dt>createChannelProcess</dt>
+     <dd>Server dependent. Provider <b>local</b> accepts an empty string.</dd>
+   <dt>createChannelRPC</dt>
+      <dd>Server dependent.</dd>
+   <dt>createChannelArray</dt>
+      <dd>Server dependent. Provider <b>local</b> accepts an empty string or a string which is the field name.</dd>
+</dl>
+ 
+<h4>Syntax</h4>
+<p>A request argument has the syntax:</p>
+<pre>
+record[option,...]field(fieldDef,...)
+OR
+field(fieldDef,...)
+OR
+fieldDef,...
+OR
+record[option,...]putField(fieldDef,...)getField(fieldDef,...)
+OR
+putField(fieldDef,...)getField(fieldDef,...)
+</pre>
+<p>NOTES:</p>
+<ul>
+    <li>An empty string is also valid.
+       In this case an empty pvRequest structure is created.</li>
+    <li>Order is important, e. g. record can not appear after field.</li>
+    <li>For the following:
+<pre>
+field()
+getField()
+putField()
+</pre>
+       Means the entire data structure associated with the channel.
+      </li>
+</ul> 
 <p>Thus a request consists of record options and sets of field definitions or
 just field definitions. A record option is of the form:</p>
 <pre>
@@ -7233,30 +7316,68 @@ fullFieldName
 or
 fullFieldName[option,...]
 or
-fullFieldName{fieldDef}     // recursive definition
+fullFieldName{fieldDef,...}     // recursive definition
+or
+fullFieldName[option,...]{fieldDef,...}     // recursive definition
 </pre>
 
-<p>A fullFieldName is the full name of a field in the PVRecord. The name in a
-generated data structure will have just the field name. If
-<b>fieldName{request}</b> is given then the generated data structure will have
-a structure field with subfields. Note that request is a recursive
-definition.</p>
+<p><b>fullFieldName</b> selects a subfield of the current sub-structure being accessed.
+Initially this means the top level structure of the data associated with the channel.
+In a recursive definition the current sub-structure becomes the location asscociated with fullFieldName
+</p>
+<p>If
+<b>fieldName{fieldDef,...}</b> is given then the generated data structure will have
+a structure field with subfields.</p>
 
-<p>If request is null or an empty string than the entire top level structure of the PVRecord is
-selected.</p>
+<p>Assume that the channel has the following data:</p>
+<pre>
+pvget -r "field()" -i powerSupply
+powerSupply
+structure 
+    alarm_t alarm
+        int severity 2
+        int status 0
+        string message bad voltage
+    time_t timeStamp
+        long secondsPastEpoch 0
+        int nanoseconds 0
+        int userTag 0
+    structure power
+        double value 0
+    structure voltage
+        double value 0
+    structure current
+        double value 0
+</pre>
+Then the following selects a subset of the fields:
+<pre>
+mrk> pvget -r "field(alarm{severity,message},timeStamp.secondsPastEpoch,power)" -i powerSupply
+powerSupply
+structure 
+    structure alarm
+        int severity 2
+        string message bad voltage
+    structure timeStamp
+        long secondsPastEpoch 0
+    structure power
+        double value 0
+</pre>
+
+        
+
 
 <p>The syntax was chosen to be easy to use and to parse:</p>
 <dl>
-   <dt>record[]</dt>
+   <dt>record[...]</dt>
       <dd>
       Specifies a set of global options, i. e., options that apply to the record itself. 
       </dd>
-   <dt>field()</dt>
-   <dt>putField()</dt>
-   <dt>getField()</dt>
+   <dt>field(...)</dt>
+   <dt>putField(...)</dt>
+   <dt>getField(...)</dt>
       <dd>
       Each selects a set of subfields of the top level structure.
-      Each defines a comma separated set of <b>fieldDef</b>s.
+      Each specifies a comma separated set of <b>fieldDef</b>s.
       </dd>
    <dt>fieldDef</dt>
      <dd>Selects a single subfield of the current structure.</dd>
@@ -7264,11 +7385,11 @@ selected.</p>
       <dd>
       A <b>name=value</b> pair. Both <b>name</b> and <b>value</b> are character strings.
       </dd>
-   <dt>[]</dt>
+   <dt>[...]</dt>
       <dd>
       Holds a comma separated set of <b>option</b>s.
       </dd>
-   <dt>{}</dt>
+   <dt>{...}</dt>
       <dd>
       Selects a set of subfields of a substructure within the top level structure.
       Each defines a comma separated set of <b>fieldDef</b>s.
@@ -7276,6 +7397,45 @@ selected.</p>
       Thus a <b>fullFieldName</b> within <b>{}</b> is relative to structure that is referenced
       by <b>{}</b>.
       </dd>
+</dl>
+<h4>Naming conventions</h4>
+<dl>
+  <dt>blanks</dt>
+      <dd>All blanks are removed before parsing is started.</dd>
+   <dt>reserved characters</dt>
+      <dd>The following characters may not be used except as used in the above syntax:
+<pre>
+{ } ( ) [ ] = ,
+</pre>
+       <br />
+       The character
+<pre>
+.
+</pre>
+      in a fieldDef separates field names.
+      </dd>
+    <dt>field name</dt>
+       <dd>
+       A field name can only contain alphanumeric characters and the character <b>_</b>,
+       but must not start with the character <b>_</b>.
+       <br />
+       This is not enforced by the current parser but should be a rule for field names.
+       </dd>
+    <dt>option name</dt>
+      <dd>This should follow the same convertion as field name.
+       <br />
+       This is not enforced by the parser but future changes could.
+      </dd>
+   <dt>option value</dt>
+       <dd>For now the only illegal characters are the reserved characters.
+        At least the following character should also be allowed:
+<pre>
+: 
+</pre>
+       <br />
+       What other characters should be allowed?
+      </dd>
+
 </dl>
 <h4>Standard Options</h4>
 <p>At present the following record options are in use:</p>
@@ -7429,7 +7589,7 @@ record psEmbeded
 </pre>
 
 
-<h4>Syntax for pvRequest structure created by createRequest</h4>
+<h3>Syntax for pvRequest structure created by createRequest</h3>
 <p><b>NOTE:</b> This section is only of interest to someone who is implementing code that
 has to introspect a structure generated by createRequest.</p>
 
