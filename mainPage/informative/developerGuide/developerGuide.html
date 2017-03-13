@@ -37,7 +37,7 @@
 <h1>EPICS V4 Developer's Guide</h1>
 <!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
 
-<h2 class="nocount">EPICS v4 Working Group, Working Draft, 16-Feb-2017</h2>
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 13-March-2017</h2>
 <p>
 <b>NOTE: This is the working version of the developerGuide.</b>
 <br />
@@ -7437,38 +7437,7 @@ structure
       </dd>
 
 </dl>
-<h4>Standard Options</h4>
-<p>At present the following record options are in use:</p>
-<dl>
-    <dt>queueSize</dt>
-     <dd>
-      This is used to define the queueSize for monitors.
-      The default is:
-<pre>
-record[queueSize=2]
-</pre>
-      A larger size can be specified.
-     </dd>
-    <dt>process</dt>
-     <dd>
-      This is used by pvaSrv and pvDatabaseCPP to specify of records should be processed.
-      The default is <b>false</b> channelGet and <b>true</b> for channelPut and channelPutGet,
-       An example is:
-<pre>
-record[process=false]
-</pre>
-     </dd>
-    <dt>block</dt>
-     <dd>
-      This is used by pvaSrv to specify if a request to process a record should
-      block until the record completes processing.
-      The default is the same as the value ofi the  <b>process</b> option.
-      An example is:
-<pre>
-record[block=false]
-</pre>
-     </dd>
-</dl>
+
 <h4>Simple Examples</h4>
 <p>Clients like CSS, Synoptic Displays, Alarm, and Archive only want access to
 some combination of the following fields: <b>value</b>, <b>alarm</b>, <b>timeStamp</b>, <b>display</b>, and
@@ -7838,6 +7807,279 @@ of the bitSet assigned to it <b>must</b> be replaced.
 Modifing subFields of the field is <b>not</b> permisible.
 </p>
 
+<h2>pvRequest Options</h2>
+<p>
+<b>NOTE:</b>
+This section describes work in progress.
+What is described is only implemented in Java and only in:
+<a href="https://github.com/mrkraimer/pvDataJava">pvDataJava</a>
+</p>
+<h3>Overview</h3>
+<p>As described in the previous section, both record and field options can be specified.
+This section provides some details about support for options.
+</p>
+<p>Some examples are:</p>
+<ul>
+    <li>
+       Get the subset of an array after making the record process.
+<pre>
+pvget -r "record[process=true]field(value[array=5:10])" someScalarArray
+</pre>
+     </li>
+     <li>
+      Monitor a record that has a numeric scalar value field<br />
+      But only when value changes by at least 1.0 should a monitor occur.
+      Changes in the timeStamp field are ignored if no other fields being monitored
+      change value.
+<pre>
+pvget -m -r "field(value[deadband=abs:1.0],timeStamp[ignore=true]" someChannel 
+</pre>
+      </li>
+</ul>
+<h3>Record Options</h3>
+<p>At present the following record options are in use:</p>
+<dl>
+    <dt>queueSize</dt>
+     <dd>
+      This is used to define the queueSize for monitors.
+      The default is:
+<pre>
+record[queueSize=2]
+</pre>
+      A larger size can be specified.
+     </dd>
+    <dt>process</dt>
+     <dd>
+      This is used by pvaSrv and pvDatabaseCPP to specify of records should be processed.
+      The default is <b>false</b> for channelGet and <b>true</b> for channelPut and channelPutGet,
+       An example is:
+<pre>
+record[process=false]
+</pre>
+     </dd>
+    <dt>block</dt>
+     <dd>
+      This is used by pvaSrv to specify if a request to process a record should
+      block until the record completes processing.
+      The default is the same as the value ofi the  <b>process</b> option.
+      An example is:
+<pre>
+record[block=false]
+</pre>
+     </dd>
+</dl>
+<h3>Field Plugin Filters</h3>
+<p><b>pvCopy</b>, which was described above, implements plugin filters that can optionally
+be attached to fields accessed via pvCopy.
+Thus, if a  channel provider uses pvCopy, it automatically has plugin filter support.
+</p>
+<p>
+<b>pvCopy</b> itself provides the following plugins: <b>array</b>, <b>deadband</b>,
+<b>timestamp</b>, and <b>ignore</b>.
+Other plugins can also be implemented and registered.
+</p>
+<p>
+The following interfaces are used for implementing plugin filters:
+<b>PVPlugin</b>, <b>PVFilter</b>, and <b>PVPluginRegistry</b>.
+</p>
+<h4>PVPlugin</h4>
+<p>
+Method <b>create</b> is called when an instance of pvCopy is created by a channel provider.
+</p>
+<pre>
+interface PVPlugin {
+    PVFilter create(String requestValue,PVCopy pvCopy,PVField master);
+}
+</pre>
+where
+<dl>
+   <dt>requestValue</dt>
+   <dd>
+    The value part of a name=value request option.
+   </dd>
+   <dt>pvCopy</dt>
+   <dd>
+    The PVCopy to which the PVFilter will be attached.
+   </dd>
+   <dt>master</dt>
+   <dd>
+   The field in the master PVStructure to which the PVFilter will be attached.
+   </dd>
+</dl>
+<p>
+Returns the PVFilter. A null is returned if master or requestValue is not appropriate for the plugin.
+</p>
+<h4>PVFilter</h4>
+<p>
+The method <b>filter</b> is called whenever pvCopy is used to access a field of the client
+PVStructure.
+</p>
+<pre>
+interface PVFilter {
+    boolean filter(PVField copy,BitSet bitSet,boolean toCopy);
+    String getName();
+}
+</pre>
+where
+<dl>
+   <dt>copy</dt>
+   <dd>
+    The data for copy.
+   </dd>
+   <dt>bitSet</dt>
+   <dd>
+    The BitSet for copy.
+   </dd>
+   <dt>toCopy</dt>
+   <dd>
+   (true,false) means copy (from master to copy,from copy to master)
+   </dd>
+</dl>
+<p>
+Returns (true,false) if filter modified destination.
+</p>
+<h4>PVPluginRegistry</h4>
+<pre>
+class PVPluginRegistry {
+    static void registerPlugin(String name,PVPlugin pvPlugin);
+    static PVPlugin find(String name);
+}
+</pre>
+The arguments are:
+<dl>
+   <dt>name</dt>
+   <dd>
+    The name part of a name=value request option.
+   </dd>
+   <dt>pvPlugin</dt>
+   <dd>
+    The plugin implementation.
+   </dd>
+</dl>
+<p>The return value for <b>find</b> is the plugin implementation or null if no plugin
+with that name has been registered.
+</p>
+<h3>Array Plugin</h3>
+<p>
+This  filter is used to retrieve parts of an array (subarrays and strided subarrays).
+It is modeled after the array Filter that is provided with epics base starting with
+the 3.15 releases.
+</p>
+<p>
+This filter works for both get and put.
+It works for any scalarArray field.
+It has not been tested for structureArray or unionArray fields.
+</p>
+<p>The syntax is one of the following:</p>
+<pre>
+[array=start]
+[array=start:end]
+[array=start:increment:end]
+</pre>
+<p>
+<b>start</b> and <b>end</b> both specify an index.
+<b>increment</b> must be a positive integer.
+</p>
+<p>
+<b>start</b> and <b>end</b> can be a positive or negative integer.
+If negative it is relative to the end of the array with -1 meaning the last element.
+</p>
+<p>Suppose that the master array is:</p>
+<pre>
+1,2,3,4,5,6,7,8,9,10
+</pre>
+<p>Then the get request</p>
+<pre>
+[array=0:4]
+</pre>
+gets
+<pre>
+1,2,3,4,5
+</pre>
+The request:
+<pre>
+[array=-3:-1]
+</pre>
+gets
+<pre>
+8,9,10
+</pre>
+The request:
+<pre>
+[array=2:5]
+</pre>
+gets
+<pre>
+3,4,5,6
+</pre>
+The request:
+<pre>
+[array=0:2:-1]
+</pre>
+gets
+<pre>
+0,2,4,6,8,10
+</pre>
+<h3>Deadband Plugin</h3>
+<p>
+This filter is used to limit the changes to a numeric scalar field that are reported to a client. 
+It is modeled after the deadband Filter that is provided with epics base starting with
+the 3.15 releases.
+</p>
+<p>
+This filter only works for numeric scalar fields and only for toCopy.
+</p>
+<p>The syntax is one of the following:</p>
+<pre>
+[deadband=abs:value]
+[deadband=rel:value]
+</pre>
+where
+<dl>
+   <dt>abs</dt>
+    <dd>The value must change by at least this amount since the last value the client received.</dd>
+   <dt>rel</dt>
+     <dd>
+       The percentage amount the value must change since the last value the client received. 
+     </dd>
+</dl>
+<h3>TimeStamp Plugin</h3>
+<p>
+This filter is used for accessing a timeStamp field. 
+It is modeled after the timeStamp Filter that is provided with epics base starting with
+the 3.15 releases.
+</p>
+<p>
+This filter only works for a timeStamp field.
+</p>
+<p>The syntax is one of the following:</p>
+<pre>
+[timestamp=current]
+[timestamp=copy]
+</pre>
+where
+<dl>
+  <dt>current</dt>
+     <dd>
+      Only works for toCopy=true.
+      Instead of taking the timestamp from master the timeStamp for the client is set to
+      the current time.
+     </dd>
+   <dt>copy</dt>
+     <dd>
+      Only works for toCopy=false.
+      The timestamp in master is set equal to the timeStamp from the client.
+     </dd>
+</dl>
+<h3>Ignore Plugin</h3>
+<p>This is not an actual plugin but is handled by pvCopy itself.
+It is used to suppress sending data to a client unless other fields have changed.
+</p>
+<p>The syntax is:</p>
+<pre>
+[ignore=true]
+</pre>
+One of the examples shown at the beginning of this section shows how it can be used.
 <h2>Appendix I What has been tested</h2>
 <h3>exampleJava/database</h3>
 <p>The following tests are using the database:</p>
