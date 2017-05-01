@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>Requirements: Plugin Filters for pvCopy</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+  </script>
+</head>
+<body>
+
+<div class="head">
+<h1>Requirements: Plugin Filters for pvCopy</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 2017.05.01</h2>
+<p>
+
+<dl>
+    <dt>Editors:</dt>
+      <dd>Marty Kraimer
+      </dd>
+  </dl>
+
+<p><b>NOTE:</b>
+Although this is a requirements document,
+it is written so that it become a section in the developerGuide.html.
+</p>
+
+
+</div>
+
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+<div id="contents" class="contents">
+
+<h2>Plugin Filters for pvCopy</h2>
+<h3>Background</h3>
+<h4>epics base</h4>
+<p>Starting with 3.15 epics-base provides plugin filters,
+which allows a channel Access client to attach filters when accessing
+a DBRecord.
+</p>
+<p>
+The initial implementation implements the following filters:
+<b>timeStamp</b>, <b>deadband</b>, <b>array</b> and <b>synchronize</b>. 
+</p>
+<p>
+Other than <b>synchronize</b> the other filters are also described below.
+</p>
+<h4>javaIOC</h4>
+<p>The <b>javaIOC</b> was a Java only project started in 2006.
+It bacame the basis for what is now pvData, pvAccess, pvDatabase,etc.
+It allowed a client to specify options similar to plugin filters but
+the implementation relied on code implemented in the IOC portion of javaIOC,
+via what was called record and field support.
+</p>
+<p>
+In about 2010 a decision was made to implement major portions of the javaIOC
+in both Java and C++.
+The record and field support was abandoned when the IOC portion of javaIOC was replaced
+by pvDatabaseJava, pvDatabaseCPP, and pvaSrv.
+</p>
+<p>The <b>pvData</b> part of the <b>javaIOC</b> already had the
+copy support that <b>pvDataJava</b> and <b>pvDataCPP</b> both implement.
+Thus if the copy facility implements plugin filter support
+then all providers that use the copy facility will automatically have plugin
+filter support.
+</p>
+<p>
+This is what is described below.
+</p>
+<h3>Objective</h3>
+<dl>
+    <dt>Primary Objective</dt>
+       <dd>The primary objective is to allow a client to optionally attach
+       filters to any field of the data structure it is accessing via the data provider.
+       </dd>
+    <dt>Mechanism</dt>
+       <dd>
+          Plugin Filter Support via the copy facility of <b>pvData</b>.
+       </dd>
+</dl>
+<p>The following filters are provided by pvData itself and the plugin
+automatically registered when an instance of <b>pvCopy</b> is created.
+</p>
+<dl>
+    <dt>array</dt>
+       <dd>
+          Specifies a subset of a scalar array field.
+       </dd>
+    <dt>deadband</dt>
+       <dd>
+         Specifies a deadband for monitors for a numeric scalar field.
+       </dd>
+    <dt>timestamp</dt>
+       <dd>
+        Allows the client to receive the current time rather than the time from the data.
+       </dd>
+    <dt>ignore</dt>
+       <dd>
+        For monitors the field does not result in a monitor event.
+       </dd>
+</dl>
+<p>Additional plugins can also implemented.</p>
+<h3>Overview</h3>
+<p>As described in a previous section, both record and field options can be specified.
+This section describes field options.
+</p>
+<p>Some examples are:</p>
+<ul>
+    <li>
+       Get a subset of an array. In this example elements 5 through 10.
+<pre>
+pvget -r "field(value[array=5:10])" someScalarArray
+</pre>
+     </li>
+     <li>
+      Monitor a record that has a numeric scalar value field<br />
+      But only when value changes by at least 1.0 should a monitor occur.
+      Changes in the timeStamp field are ignored if no other fields being monitored
+      change value.
+<pre>
+pvget -m -r "field(value[deadband=abs:1.0],timeStamp[ignore=true]" someNumericScalar 
+</pre>
+      </li>
+</ul>
+<h3>Field Plugin Filters</h3>
+<p><b>pvCopy</b>, which was described above, implements plugin filters that can optionally
+be attached to fields accessed via pvCopy.
+Thus, if a  channel provider uses pvCopy, it automatically has plugin filter support.
+</p>
+<p>
+<b>pvCopy</b> itself provides the following plugins: <b>array</b>, <b>deadband</b>,
+<b>timestamp</b>, and <b>ignore</b>.
+Other plugins can also be implemented and registered.
+</p>
+<p>
+The following interfaces are used for implementing plugin filters:
+<b>PVPlugin</b>, <b>PVFilter</b>, and <b>PVPluginRegistry</b>.
+</p>
+<h4>PVPlugin</h4>
+<p>
+Method <b>create</b> is called when an instance of pvCopy is created by a channel provider.
+</p>
+<pre>
+interface PVPlugin {
+    PVFilter create(String requestValue,PVCopy pvCopy,PVField master);
+}
+</pre>
+where
+<dl>
+   <dt>requestValue</dt>
+   <dd>
+    The value part of a name=value request option.
+   </dd>
+   <dt>pvCopy</dt>
+   <dd>
+    The PVCopy to which the PVFilter will be attached.
+   </dd>
+   <dt>master</dt>
+   <dd>
+   The field in the master PVStructure to which the PVFilter will be attached.
+   </dd>
+</dl>
+<p>
+Returns the PVFilter. A null is returned if master or requestValue is not appropriate for the plugin.
+</p>
+<h4>PVFilter</h4>
+<p>
+The method <b>filter</b> is called whenever pvCopy is used to access a field of the client
+PVStructure.
+</p>
+<pre>
+interface PVFilter {
+    boolean filter(PVField copy,BitSet bitSet,boolean toCopy);
+    String getName();
+}
+</pre>
+where
+<dl>
+   <dt>copy</dt>
+   <dd>
+    The data for copy.
+   </dd>
+   <dt>bitSet</dt>
+   <dd>
+    The BitSet for copy.
+   </dd>
+   <dt>toCopy</dt>
+   <dd>
+   (true,false) means copy (from master to copy,from copy to master)
+   </dd>
+</dl>
+<p>
+Returns (true,false) if filter modified destination.
+</p>
+<h4>PVPluginRegistry</h4>
+<pre>
+class PVPluginRegistry {
+    static void registerPlugin(String name,PVPlugin pvPlugin);
+    static PVPlugin find(String name);
+}
+</pre>
+The arguments are:
+<dl>
+   <dt>name</dt>
+   <dd>
+    The name part of a name=value request option.
+   </dd>
+   <dt>pvPlugin</dt>
+   <dd>
+    The plugin implementation.
+   </dd>
+</dl>
+<p>The return value for <b>find</b> is the plugin implementation or null if no plugin
+with that name has been registered.
+</p>
+<h3>Array Plugin</h3>
+<p>
+This  filter is used to retrieve parts of an array (subarrays and strided subarrays).
+It is modeled after the array Filter that is provided with epics base starting with
+the 3.15 releases.
+</p>
+<p>
+This filter works for both get and put.
+It works for any scalarArray field.
+It has not been tested for structureArray or unionArray fields.
+</p>
+<p>The syntax is one of the following:</p>
+<pre>
+[array=start]
+[array=start:end]
+[array=start:increment:end]
+</pre>
+<p>
+<b>start</b> and <b>end</b> both specify an index.
+<b>increment</b> must be a positive integer.
+</p>
+<p>
+<b>start</b> and <b>end</b> can be a positive or negative integer.
+If negative it is relative to the end of the array with -1 meaning the last element.
+</p>
+<p>Suppose that the master array is:</p>
+<pre>
+1,2,3,4,5,6,7,8,9,10
+</pre>
+<p>Then the get request</p>
+<pre>
+[array=0:4]
+</pre>
+gets
+<pre>
+1,2,3,4,5
+</pre>
+The request:
+<pre>
+[array=-3:-1]
+</pre>
+gets
+<pre>
+8,9,10
+</pre>
+The request:
+<pre>
+[array=2:5]
+</pre>
+gets
+<pre>
+3,4,5,6
+</pre>
+The request:
+<pre>
+[array=0:2:-1]
+</pre>
+gets
+<pre>
+0,2,4,6,8,10
+</pre>
+<h3>Deadband Plugin</h3>
+<p>
+This filter is used to limit the changes to a numeric scalar field that are reported to a client. 
+It is modeled after the deadband Filter that is provided with epics base starting with
+the 3.15 releases.
+</p>
+<p>
+This filter only works for numeric scalar fields and only for toCopy.
+</p>
+<p>The syntax is one of the following:</p>
+<pre>
+[deadband=abs:value]
+[deadband=rel:value]
+</pre>
+where
+<dl>
+   <dt>abs</dt>
+    <dd>The value must change by at least this amount since the last value the client received.</dd>
+   <dt>rel</dt>
+     <dd>
+       The percentage amount the value must change since the last value the client received. 
+     </dd>
+</dl>
+<h3>TimeStamp Plugin</h3>
+<p>
+This filter is used for accessing a timeStamp field. 
+It is modeled after the timeStamp Filter that is provided with epics base starting with
+the 3.15 releases.
+</p>
+<p>
+This filter only works for a timeStamp field.
+</p>
+<p>The syntax is one of the following:</p>
+<pre>
+[timestamp=current]
+[timestamp=copy]
+</pre>
+where
+<dl>
+  <dt>current</dt>
+     <dd>
+      Only works for toCopy=true.
+      Instead of taking the timestamp from master the timeStamp for the client is set to
+      the current time.
+     </dd>
+   <dt>copy</dt>
+     <dd>
+      Only works for toCopy=false.
+      The timestamp in master is set equal to the timeStamp from the client.
+     </dd>
+</dl>
+<h3>Ignore Plugin</h3>
+<p>This is not an actual plugin but is handled by pvCopy itself.
+It is used to suppress sending data to a client unless other fields have changed.
+</p>
+<p>The syntax is:</p>
+<pre>
+[ignore=true]
+</pre>
+One of the examples shown at the beginning of this section shows how it can be used.
+
+</div>
+</body>
+</html>
