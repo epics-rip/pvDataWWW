@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>Proposal: Asynchronous PVRecord</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+  /*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     span.opt { color: grey }
+     span.nterm { font-style:italic }
+     span.term { font-family:courier }
+     span.user { font-family:courier }
+     span.user:before { content:"<" }
+     span.user:after { content:">" }
+     .nonnorm { font-style:italic }
+     p.ed { color: #AA0000 }
+     span.ed { color: #AA0000 }
+     p.ed.priv { display: inline; }
+     span.ed.priv { display: inline; }
+  /*]]>*/</style>
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript"
+  src="http://epics-pvdata.sourceforge.net/script/tocgen.js">
+  </script>
+</head>
+<body>
+
+<div class="head">
+<h1>Proposal: Asynchronous PVRecord</h1>
+<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
+
+<h2 class="nocount">EPICS v4 Working Group, Working Draft, 2017.05.10</h2>
+
+<dl>
+    <dt>Editors:</dt>
+      <dd>Marty Kraimer
+      </dd>
+  </dl>
+
+</div>
+
+
+<div id="toc">
+<h2 class="nocount" style="page-break-before: always">Table of Contents</h2>
+</div>
+<div id="contents" class="contents">
+
+<h2>PVRecord processing</h2>
+<h3>Background</h3>
+<p>A V3 IOC has a set of DBRecords.
+Each DBRecord has record support and device support attached to it.
+The code that calls record support allows a record to be processed either synchronously or asynchronously.
+A combination of the record and device support decides if processing is synchronous or asynchronous.
+</p>
+<h3>Introduction to PVRecord processing</h3>
+<p>Currently the only process method for PVRecord is:</p>
+<pre>
+void process();
+</pre>
+<p>This method does not return until it is done,
+i. e. it is a synchronous method.</p>
+<p>What process does is determined by the support code attached to the record instance.
+It can be an action that completes quickly or may take a long time to complete.</p>
+<p>This proposal specifies additional process methods that support asynchronous record processing.
+It is up to the support code to decide if it should be a synchronous or asynchronous record.
+</p>
+<h3>Synchronous Processing</h3>
+<pre>
+boolean isAsynRecord() { return false;}
+void process();
+</pre>
+<h3>Asynchronous Processing</h3>
+<p>The following method makes a record asynchronous:</p>
+<pre>
+boolean isAsynRecord() { return true;}
+</pre>
+<h4>ChannelProcess</h4>
+<pre>
+void process(
+     ChannelProcess channelProcess,
+     ChannelProcessRequester channelProcessRequester,
+     boolean block);
+</pre>
+where
+<dl>
+    <dt>channelProcess</dt>
+    <dd>
+      The channelProcess instance.
+    </dd>
+    <dt>channelProcessRequester</dt>
+    <dd>
+      The channelProcessRequester that is called by the support code.
+    </dd>
+    <dt>block</dt>
+    <dd>
+      If <b>true</b> then the channelProcessRequester should be called immediately.
+      If <b>false</b> then the channelProcessRequester should be called only after processing completes..
+    </dd>
+</dl>
+<h4>ChannelGet</h4>
+<pre>
+void process(
+    ChannelGet channelGet,
+    ChannelGetRequester channelGetRequester,
+    boolean block,
+    PVCopy pvCopy,
+    PVStructure pvData,
+    BitSet bitSet);
+</pre>
+where
+<dl>
+    <dt>channelGet</dt>
+    <dd>
+      The channelGet instance.
+    </dd>
+    <dt>channelGetRequester</dt>
+    <dd>
+      The channelGetRequester that is called by the support code.
+    </dd>
+    <dt>block</dt>
+    <dd>
+      If <b>true</b> then the channelGetRequester should be called immediately.
+      If <b>false</b> then the channelGetRequester should be called only after processing completes..
+    </dd>
+    <dt>pvCopy</dt>
+    <dd>
+       The pvCopy instance for the client.
+    </dd>
+    <dt>pvData</dt>
+    <dd>
+       The client data.
+    </dd>
+    <dt>bitSet</dt>
+    <dd>
+       The bitSet that shows any data changes made to pvData during record processing.
+    </dd>
+</dl>
+<h4>ChannelPut</h4>
+<pre>
+void process(
+    ChannelPut channelPut,
+    ChannelPutRequester channelPutRequester,
+    boolean block,
+    PVCopy pvCopy,
+    PVStructure pvData,
+    BitSet bitSet);
+</pre>
+where
+<dl>
+    <dt>channelPut</dt>
+    <dd>
+      The channelPut instance.
+    </dd>
+    <dt>channelPutRequester</dt>
+    <dd>
+      The channelPutRequester that is called by the support code.
+    </dd>
+    <dt>block</dt>
+    <dd>
+      If <b>true</b> then the channelPutRequester should be called immediately.
+      If <b>false</b> then the channelPutRequester should be called only after processing completes..
+    </dd>
+    <dt>pvCopy</dt>
+    <dd>
+       The pvCopy instance for the client.
+    </dd>
+    <dt>pvData</dt>
+    <dd>
+       The client data.
+    </dd>
+    <dt>bitSet</dt>
+    <dd>
+       The bitSet that shows data changes the client made.
+    </dd>
+</dl>
+<h4>ChannelPutGet</h4>
+<pre>
+void process(
+    ChannelPutGet channelPutGet,
+    ChannelPutGetRequester channelPutGetRequester,
+    boolean block,
+    PVCopy pvPutCopy,
+    PVStructure pvPutStructure,
+    BitSet putBitSet,
+    PVCopy pvGetCopy,
+    PVStructure pvGetStructure,
+    BitSet getBitSet)
+</pre>
+where
+<dl>
+    <dt>channelPutGet</dt>
+    <dd>
+      The channelPutGet instance.
+    </dd>
+    <dt>channelPutGetRequester</dt>
+    <dd>
+      The channelPutGetRequester that is called by the support code.
+    </dd>
+    <dt>block</dt>
+    <dd>
+      If <b>true</b> then the channelPutGetRequester should be called immediately.
+      If <b>false</b> then the channelPutGetRequester should be called only after processing completes..
+    </dd>
+    <dt>pvPutCopy</dt>
+    <dd>
+       The pvCopy instance for the client.
+    </dd>
+    <dt>pvPutStructure</dt>
+    <dd>
+       The data the client sent.
+    </dd>
+    <dt>putBitSet</dt>
+    <dd>
+       The bitSet that shows data changes the client made to pvPutStructure.
+    </dd>
+    <dt>pvGetCopy</dt>
+    <dd>
+       The pvCopy instance for the client.
+    </dd>
+    <dt>pvGetStructure</dt>
+    <dd>
+       The data returned to the client.
+    </dd>
+    <dt>getBitSet</dt>
+    <dd>
+       The bitSet that shows any data changes made to pvGetStructure during record processing.
+    </dd>
+</dl>
+
+<h2>pvCopy: record options</h2>
+
+<h3>block</h3>
+<p>
+This is used for a channel request that results in the provider issung a 
+process request.
+It specifies if a request should block until processing completes .
+</p>
+<p>
+For example:</p>
+<pre>
+pvput -r "record[block=true]field(value)" someAsynChannel Acquire
+</pre>
+<p>This option is honored by the following:</p>
+<dl>
+   <dt>pvDatabase</dt>
+      <dd>For channelProcess and channelPut</dd>
+</dl>
+<h2>Example: Busy Record</h2>
+<h3>Overview</h3>
+<p>The following example allows a client to set the record busy and wait until the record is done.
+For example:</p>
+<pre>
+pvput -r "record[block=true]field(value)" -w 100000000 PVRBusy Acquire
+</pre>
+<p>Another client can set it done.
+For example:</p>
+<pre>
+pvput PVRBusy Done
+</pre>
+<p>The current code only allows one client at a time to set the record busy and wait for completion.
+</p>
+<h3>Source Code</h3>
+<pre>
+public class ExampleBusyRecord extends PVRecord {
+    private static StatusCreate statusCreate = StatusFactory.getStatusCreate();
+    private static final Status okStatus = statusCreate.getStatusOK();
+    private PVStructure pvValue;
+    private PVInt pvIndex;
+    private volatile ChannelPut channelPut = null;
+    private volatile ChannelPutRequester channelPutRequester = null;
+    /**
+     * Create an instance of ExampleBusyRecord.
+     * @param recordName The name of the record.
+     * @return The new instance.
+     */
+    public static PVRecord create(String recordName)
+    {
+        NTEnumBuilder ntEnumBuilder = NTEnum.createBuilder();
+        PVStructure pvStructure = ntEnumBuilder.
+                addAlarm().addTimeStamp().
+                createPVStructure();
+        String[] choices = new String[2];
+        choices[0] = "Done";
+        choices[1] = "Acquire";
+        PVStringArray pvChoices = pvStructure.getSubField(PVStringArray.class,"value.choices");
+        pvChoices.put(0, 2, choices, 0);
+        PVRecord pvRecord = new ExampleBusyRecord(recordName,pvStructure);
+        PVDatabase master = PVDatabaseFactory.getMaster();
+        master.addRecord(pvRecord);
+        return pvRecord;
+    }
+   
+    private ExampleBusyRecord(String recordName,PVStructure pvStructure) {
+        super(recordName,pvStructure);
+        pvValue = pvStructure.getSubField(PVStructure.class, "value");
+        if(pvValue==null) throw new IllegalArgumentException("value not found");
+        pvIndex = pvValue.getSubField(PVInt.class, "index");
+        if(pvIndex==null) throw new IllegalArgumentException("value,index not found");
+    }
+    
+    public boolean isAsynRecord()
+    {
+        return true;
+    }
+
+    public void process(
+            ChannelPut channelPut,ChannelPutRequester channelPutRequester,boolean block,
+            PVCopy pvCopy,PVStructure pvData,BitSet bitSet)
+    {
+        PVStructure pvs = pvData.getSubField(PVStructure.class, "value");
+        if(pvs==null) {
+            Status status = statusCreate.createStatus(StatusType.ERROR, "value not found", null);
+            channelPutRequester.putDone(status,channelPut);
+            return;
+        }
+        PVInt pvint = pvs.getSubField(PVInt.class, "index");
+        if(pvint==null) {
+            Status status = statusCreate.createStatus(StatusType.ERROR, "value.index not found", null);
+            channelPutRequester.putDone(status,channelPut);
+            return;
+        }
+        boolean callWaitingRequester = false;
+        boolean callRequester = true;
+        lock();
+        try {
+            int current = pvIndex.get();
+            int newval = pvint.get();
+            if(current==newval) {
+                if(current==0) {
+                    Status status = statusCreate.createStatus(StatusType.WARNING, "record is already Done", null);
+                    channelPutRequester.putDone(status,channelPut);
+                } else {
+                    Status status = statusCreate.createStatus(StatusType.WARNING, "record is already Busy", null);
+                    channelPutRequester.putDone(status,channelPut);
+                }
+                return;
+            }
+            beginGroupPut();
+            pvCopy.updateMaster(pvData,bitSet);
+            process();
+            endGroupPut();
+            if(block&amp;&amp;newval==1) {
+                this.channelPut = channelPut;
+                this.channelPutRequester = channelPutRequester;
+                callRequester = false;
+                return;
+            } else if(newval==0&amp;&amp;this.channelPut!=null) {
+                callWaitingRequester = true;
+            }
+        } finally {
+            unlock();
+        }
+        if(getTraceLevel()>1) {
+            System.out.println("ChannelPutLocal::put recordName " + getRecordName());
+        }        
+        if(callRequester) channelPutRequester.putDone(okStatus,channelPut);
+        if(callWaitingRequester) {
+            this.channelPutRequester.putDone(okStatus,this.channelPut);
+            this.channelPutRequester = null;
+            this.channelPut = null;
+        }
+    }
+}
+</pre>
+<h2>Implementation of Proposal</h2>
+<p>Java code for the proposed implementation is available at:
+<a href="https://github.com/mrkraimer/pvDatabaseJava/tree/asynRecord">pvDatabaseJava</a>
+</p>
+<p>The example busy record is available at:
+<a href="https://github.com/mrkraimer/exampleJava/blob/master/database/src/org/epics/exampleJava/exampleDatabase/ExampleBusyRecord.java">ExampleBusyRecord</a>
+</p>
+</div>
+</body>
+</html>
