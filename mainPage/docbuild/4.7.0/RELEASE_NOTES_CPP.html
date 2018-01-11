@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<htm lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;" />
+  <meta name="keywords" content="EPICS, EPICSv4" />
+  <title>EPICS V4 Release 4.7.0</title>
+  <link rel="stylesheet" type="text/css" href="../../base.css" />
+  <link rel="stylesheet" type="text/css" href="../../epicsv4.css" />
+
+  <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="../../script/tocgen.js"></script>
+</head>
+
+<body>
+<div class="head">
+  <h1>EPICS V4 Release 4.7.0</h1>
+
+  <h2 class="nocount">EPICS V4 Release 4.7.0 C++ Bundle Release Notes</h2>
+
+  <dl>
+    <dt>Editors:</dt>
+    <dd>Andrew Johnson, Argonne</dd>
+  </dl>
+
+  <h2 class="nocount">Abstract</h2>
+
+  <p>This EPICS V4 C++ Package version 4.7.0 contains the same set of the EPICS
+    V4 C++ modules as the full EPICS 7.0.1 release (with the pvaPy Python
+    bindings added and no copy of EPICS Base), along with a top-level build
+    system to allow configuring all the modules at once rather than doing each
+    one individually.</p>
+
+  <p>This document contains the Release Notes entries from each individual C++
+    submodule, describing the changes between the previous bundleCPP version and
+    this release version. For any future 4.7.x patch releases the information
+    about the patch changes included will supplement the note entries from this
+    release.</p>
+
+  <p>This release can be built against EPICS Base versions 3.15.x or 3.16.x.
+    Later versions of EPICS Base are referred to as EPICS 7 and already include
+    all the necessary V4 modules. EPICS Base versions 3.14.12.x and earlier are
+    not compatible with the pva2pva module that was added to this package in
+    this release. The other V4 modules may build and run against EPICS Base
+    3.14.12.x, but they have not been built or tested against that Base version
+    recently.</p>
+
+  <!-- Boilerplate references -->
+  <p>
+    For information about EPICS, please refer to the main
+    <a href="http://epics.anl.gov/">EPICS website</a>.<br />
+    For more information about EPICS V4, please refer to the
+    <a href="../../index.html">EPICS V4 website</a>.</p>
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Items for the Table of Contents go inside this contents div -->
+<div id="contents" class="contents">
+<hr />
+
+<h2>pvCommonCPP 4.2.3</h2>
+
+<p>The <code>mb.h</code> header has been updated to build properly against EPICS Base
+versions prior to 3.15.0.1.</p>
+
+<hr />
+
+<h2>pvDataCPP 7.0.0</h2>
+
+<h3>Removals</h3>
+
+<ul>
+<li>Remove requester.h, monitor.h, and destroyable.h which were migrated to the pvAccessCPP module.</li>
+<li>Previously deprecated monitorPlugin.h is removed.</li>
+<li>Remove pv/messageQueue.h and epics::pvData::MessageQueue</li>
+</ul>
+
+<h3>Deprecations</h3>
+
+<p>The following utility classes will be removed in 8.0:</p>
+
+<ul>
+<li>epics::pvData::Queue</li>
+<li>epics::pvData::Executor</li>
+<li>epics::pvData::TimeFunction</li>
+</ul>
+
+<h3>Additions</h3>
+
+<ul>
+<li>Add pv/pvdVersion.h which is included by pv/pvIntrospect.h</li>
+<li>Add epics::pvData::createRequest() function.  Alternative to epics::pvData::CreateRequest class which throws on error.</li>
+<li>epics::pvData::FieldBuilder allow Structure defintion to be changed/appended</li>
+<li>Add epics::pvData::ValueBuilder like FieldBuilder also sets initial values.
+<ul>
+<li>Can also be constructed using an existing PVStructure to allow "editing".</li>
+</ul></li>
+<li>Add debugPtr.h wrapper with reference tracking to assist in troubleshooting shared_ptr related ref. loops.</li>
+<li>Add pvjson utilities</li>
+</ul>
+
+<hr />
+
+<h2>pvAccessCPP 6.0.0</h2>
+
+<h3>Incompatible changes</h3>
+
+<ul>
+<li>Requires pvDataCPP &gt;=7.0.0 due to headers moved from pvDataCPP into this module: requester.h, destoryable.h, and monitor.h</li>
+<li>Major changes to shared_ptr ownership rules for epics::pvAccess::ChannelProvider and
+associated classes.</li>
+<li>Add new library pvAccessIOC for use with PVAClientRegister.dbd and PVAServerRegister.dbd.
+Necessary to avoid having pvAccess library depend on all IOC core libraries.</li>
+<li>Added new library pvAccessCA with "ca" provider.  Main pvAccess library no longer depends on libca.
+Applications needing the "ca" provider must link against pvAccessCA and pvAccess.
+See examples/Makefile in the source tree.
+The headers associated with this library are: caChannel.h, caProvider.h, and caStatus.h</li>
+<li>A number of headers which were previously installed, but considered "private", are no longer installed.</li>
+<li>epics::pvAccess::ChannelProviderRegistry may no longer be sub-classed.</li>
+<li>Removed access to singleton registry via getChannelProviderRegistry() and registerChannelProviderFactory()
+in favor of epics::pvAccess::ChannelProviderRegistry::clients() and epics::pvAccess::ChannelProviderRegistry::servers().
+The "pva" and "ca" providers are registered with the clients() singleton.
+epics::pvAccess::ServerContext() looks up names with the servers() singleton.</li>
+<li>Removed deprecated epics::pvAccess::Properties</li>
+<li>The data members of epics::pvAccess::MonitorElement become const, preventing these pointers from being re-targeted.</li>
+</ul>
+
+<h3>Simplifications</h3>
+
+<ul>
+<li>use of the epics::pvAccess::ChannelRequester interface is optional
+and may be omitted when calling createChannel().
+Channel state change notifications are deliviered
+to individual operations via epics::pvAccess::ChannelBaseRequester::channelDisconnect()</li>
+<li>Default implementions added for the following methods
+<ul>
+<li>epics::pvAccess::Lockable::lock() and epics::pvAccess::Lockable::unlock() which do nothing.</li>
+<li>epics::pvAccess::Channel::getConnectionState() returns CONNECTED</li>
+<li>epics::pvAccess::Channel::isConnected() uses getConnectionState()</li>
+<li>epics::pvAccess::Channel::getField() which errors</li>
+<li>epics::pvAccess::Channel::getAccessRights() which returns rw</li>
+</ul></li>
+<li>Added epics::pvAccess::SimpleChannelProviderFactory template and
+epics::pvAccess::ChannelProviderRegistry::add() avoids need for custom
+factory.</li>
+<li>Added epics::pvAccess::MonitorElement::Ref iterator/smart-pointer
+to ensure proper handling of calls Monitor::poll() and Monitor::release().</li>
+<li>epics::pvAccess::PipelineMonitor "internal" is collapsed into epics::pvAccess::Monitor.
+PipelineMonitor becomes a typedef for Monitor.</li>
+<li>epics::pvAccess::RPCService is now a sub-class of epics::pvAccess::RPCServiceAsync</li>
+</ul>
+
+<h3>Additions</h3>
+
+<ul>
+<li>pv/pvAccess.h now provides macros OVERRIDE and FINAL which conditionally expand to the c++11 keywords override and final.</li>
+<li>Deliver disconnect notifications to individual Operations (get/put/rpc/monitor/...) via
+new epics::pvAccess::ChannelBaseRequester::channelDisconnect()</li>
+<li>New API for server creation via epics::pvAccess::ServerContext::create() allows direct specification
+of configuration and ChannelProvider(s).</li>
+<li>Add epics::pvAccess::ServerContext::getCurrentConfig() to get actual configuration, eg. for use with a client.</li>
+<li>Classes from moved headers requester.h, destoryable.h, and monitor.h added to epics::pvAccess namespace.
+Typedefs provided in epics::pvData namespace.</li>
+<li>Added Client API based on pvac::ClientProvider</li>
+<li>pv/pvaVersion.h defines VERSION<em>INT and PVACCESS</em>VERSION_INT</li>
+<li>epics::pvAccess::RPCClient may be directly constructed.</li>
+<li>epics::pvAccess::RPCServer allows epics::pvAccess::Configuration to be specified and access to ServerContext.</li>
+<li>Added epics::pvAccess::Configuration::keys() to iterate configuration parameters (excluding environment variables).</li>
+<li>Added epics::pvAccess::Destoryable::cleaner</li>
+</ul>
+
+<h3>Deprecations</h3>
+
+<ul>
+<li>epics::pvAccess::GUID in favor of epics::pvAccess::ServerGUID due to win32 name conflict.</li>
+</ul>
+
+<hr />
+
+<h2>normativeTypesCPP 5.2.0</h2>
+
+<p>This release contains bug fixes and minor source updates needed to build against the latest version of pvData.</p>
+
+<hr />
+
+<h2>pvaClientCPP 4.3.0</h2>
+
+<h3>Works with pvDataCPP-7.0 and pvAccessCPP-6.0 versions</h3>
+
+<p>Will not work with older versions.</p>
+
+<h3>destroy methods removed</h3>
+
+<p>All the destroy methods are removed since implementation is RAII compliant.</p>
+
+<h3>API changes to PvaClientMonitor</h3>
+
+<p>The second argument of method</p>
+
+<pre><code>static PvaClientMonitorPtr create(
+    PvaClientPtr const &amp;pvaClient,
+    epics::pvAccess::Channel::shared_pointer const &amp; channel,
+    epics::pvData::PVStructurePtr const &amp;pvRequest
+);
+</code></pre>
+
+<p>Is now changed to</p>
+
+<pre><code>static PvaClientMonitorPtr create(
+    PvaClientPtr const &amp;pvaClient,
+    PvaClientChannelPtr const &amp; pvaClientChannel,
+    epics::pvData::PVStructurePtr const &amp;pvRequest
+);
+</code></pre>
+
+<p>A new method is also implemented</p>
+
+<pre><code>static PvaClientMonitorPtr create(
+    PvaClientPtr const &amp;pvaClient,
+    std::string const &amp; channelName,
+    std::string const &amp; providerName,
+    std::string const &amp; request,
+    PvaClientChannelStateChangeRequesterPtr const &amp; stateChangeRequester,
+    PvaClientMonitorRequesterPtr const &amp; monitorRequester
+);
+</code></pre>
+
+<hr />
+
+<h2>pva2pva 1.0.0</h2>
+
+<p>This module replaces the original pvaSrv.</p>
+
+<hr />
+
+<h2>pvDatabaseCPP 4.3.0</h2>
+
+<p>This release contains bug fixes and minor source updates needed to build against the latest versions of pvData and pvAccess.</p>
+
+<hr />
+
+<h2>pvaPy</h2>
+
+<h3>Release 1.0.0 (2018/01/04)</h3>
+
+<ul>
+<li>added build support for python3</li>
+<li>added build support for EPICS7 releases</li>
+</ul>
+
+<h3>Release 0.9 (2017/09/17)</h3>
+
+<ul>
+<li>improved support for channel monitors: no monitor startup thread results in
+faster initial connections; monitors connect automatically when channels
+come online</li>
+<li>fixed support for older EPICS v4 releases (4.4, 4.5 and 4.6)</li>
+<li>added build support for numpy included with boost releases 1.63.0 and later</li>
+</ul>
+
+<h3>Release 0.8 (2017/07/17)</h3>
+
+<ul>
+<li>added new Channel monitor() method that can be used instead of
+subscribe()/startMonitor() sequence in case when there is only one
+subscriber</li>
+<li>enhanced PvaServer functionality: single server instance can serve multiple
+channels; channels can be added and removed dynamically; added (optional)
+callback for channel writes</li>
+</ul>
+
+<h3>Release 0.7 (2017/05/10)</h3>
+
+<ul>
+<li>added initial version of PvaServer class: PvObject exposed via instance of
+this class can be retrieved and manipulated using standard PVA command line
+tools and APIs</li>
+<li>fixed boolean array conversion to python list</li>
+<li>improved support for builds relying on custom boost installation</li>
+</ul>
+
+<hr />
+
+<h2>bundleCPP 4.7.0</h2>
+
+<h3>Submodule Changes</h3>
+
+<p>In this release the pvaSrv module has been replaced with the newer and more functional pva2pva module. The exampleCPP module was dropped for this release as it hasn't yet been updated to demonstrate the latest pvData and pvAccess API changes.</p>
+
+<p>The top-level Makefile has been modified to try and improve the behaviour of some of the buld targets (e.g. <code>make distclean</code> shouldn't try to configure any submodules that aren't already configured). In general this Makefile was designed for building the submodules from scratch, not for developers to use while working on the code.</p>
+
+</div> <!-- contents -->
+
+<hr />
+<address>Contact author: Andrew Johnson, Argonne</address>
+</body>
+</html>

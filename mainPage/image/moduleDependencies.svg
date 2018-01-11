@@ -61,7 +61,7 @@
     <rect style="fill: #ffffff" x="100" y="152" width="30" height="18"/>
     <rect style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x="100" y="152" width="30" height="18"/>
     <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:sanserif;font-style:normal;font-weight:normal" x="106" y="181.8">
-      <tspan x="106" y="181.8">pvaSrv</tspan>
+      <tspan x="106" y="181.8">pva2pva</tspan>
     </text>
   </g>
   <g>
@@ -150,8 +150,5 @@
   </g>
   <text style="fill: #000000;text-anchor:middle;font-size:6.20879;font-family:sanserif;font-style:normal;font-weight:normal" x="124.593" y="38.3806">
     <tspan x="124.593" y="38.3806">VxWorks</tspan>
-  </text>
-  <text style="fill: #000000;text-anchor:start;font-size:6.20889;font-family:monospace;font-style:normal;font-weight:normal" x="76.0877" y="67.7964">
-    <tspan x="76.0877" y="67.7964">WITH_MICROBENCH</tspan>
   </text>
 </svg>
