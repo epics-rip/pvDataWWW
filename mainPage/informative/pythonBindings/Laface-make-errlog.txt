@@ -1,0 +1,62 @@
+In file included from ../p4p_top.cpp:9:
+In file included from /Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/ndarrayobject.h:18:
+In file included from /Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/ndarraytypes.h:1788:
+/Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/npy_1_7_deprecated_api.h:15:2: warning: "Using deprecated NumPy API, disable it by "          "#defining NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION" [-W#warnings]
+#warning "Using deprecated NumPy API, disable it by " \
+ ^
+1 warning generated.
+In file included from ../p4p_type.cpp:9:
+In file included from /Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/ndarrayobject.h:18:
+In file included from /Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/ndarraytypes.h:1788:
+/Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/npy_1_7_deprecated_api.h:15:2: warning: "Using deprecated NumPy API, disable it by "          "#defining NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION" [-W#warnings]
+#warning "Using deprecated NumPy API, disable it by " \
+ ^
+In file included from ../p4p_type.cpp:4:
+../p4p.h:225:34: warning: offset of on non-POD type 'PyClassWrapper<std::__1::shared_ptr<const epics::pvData::Structure> >' [-Winvalid-offsetof]
+        type.tp_weaklistoffset = offsetof(PyClassWrapper, weak);
+                                 ^                        ~~~~
+/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include/stddef.h:120:24: note: expanded from macro 'offsetof'
+#define offsetof(t, d) __builtin_offsetof(t, d)
+                       ^                     ~
+../p4p_type.cpp:359:14: note: in instantiation of member function 'PyClassWrapper<std::__1::shared_ptr<const epics::pvData::Structure> >::buildType' requested here
+    P4PType::buildType();
+             ^
+2 warnings generated.
+In file included from ../p4p_value.cpp:9:
+In file included from /Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/ndarrayobject.h:18:
+In file included from /Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/ndarraytypes.h:1788:
+/Users/emanuelelaface/anaconda/lib/python3.6/site-packages/numpy/core/include/numpy/npy_1_7_deprecated_api.h:15:2: warning: "Using deprecated NumPy API, disable it by "          "#defining NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION" [-W#warnings]
+#warning "Using deprecated NumPy API, disable it by " \
+ ^
+In file included from ../p4p_value.cpp:4:
+In file included from ../p4p.h:20:
+/Users/emanuelelaface/Desktop/EPICS/base-7.0.1.1/include/pv/pvData.h:350:71: error: no member named 'value' in 'epics::pvData::ScalarTypeID<long>'
+        this->putFrom((const void*)&val, (ScalarType)ScalarTypeID<T>::value);
+                                                                      ^
+../p4p_value.cpp:216:16: note: in instantiation of function template specialization 'epics::pvData::PVScalar::putFrom<long>' requested here
+            F->putFrom(PyLong_AsLong(obj));
+               ^
+In file included from ../p4p_value.cpp:4:
+../p4p.h:267:42: warning: offset of on non-POD type 'PyClassWrapper<(anonymous namespace)::Value>' [-Winvalid-offsetof]
+        return (PyObject*)((char*)self - offsetof(PyClassWrapper, I));
+                                         ^                        ~
+/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include/stddef.h:120:24: note: expanded from macro 'offsetof'
+#define offsetof(t, d) __builtin_offsetof(t, d)
+                       ^                     ~
+../p4p_value.cpp:430:40: note: in instantiation of member function 'PyClassWrapper<(anonymous namespace)::Value>::wrap' requested here
+            PyObject *self = P4PValue::wrap(this);
+                                       ^
+In file included from ../p4p_value.cpp:4:
+../p4p.h:225:34: warning: offset of on non-POD type 'PyClassWrapper<(anonymous namespace)::Value>' [-Winvalid-offsetof]
+        type.tp_weaklistoffset = offsetof(PyClassWrapper, weak);
+                                 ^                        ~~~~
+/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include/stddef.h:120:24: note: expanded from macro 'offsetof'
+#define offsetof(t, d) __builtin_offsetof(t, d)
+                       ^                     ~
+../p4p_value.cpp:956:15: note: in instantiation of member function 'PyClassWrapper<(anonymous namespace)::Value>::buildType' requested here
+    P4PValue::buildType();
+              ^
+3 warnings and 1 error generated.
+make[2]: *** [p4p_value.o] Error 1
+make[1]: *** [install.darwin-x86] Error 2
+make: *** [src.install] Error 2

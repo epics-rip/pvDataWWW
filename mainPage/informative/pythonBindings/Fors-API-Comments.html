@@ -1,0 +1,53 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css" style="display:none;"><!-- P {margin-top:0;margin-bottom:0;} --></style>
+</head>
+<body dir="ltr">
+<pre>
+<b>From:</b> "Fors, Thomas L." &lt;tfors (at) anl (dot) gov&gt;>
+<b>To:</b> "Johnson, Andrew N." &lt;anj (at) aps (dot) anl (dot) gov&gt;
+<b>Subject:</b> Update on Python PVA Testing
+<b>Date:</b> Wed, 7 Feb 2018 12:11:21 -0600
+
+</pre>
+<div id="divtagdefaultwrapper" style="font-size:12pt;color:#000000;font-family:Calibri,Helvetica,sans-serif;" dir="ltr">
+<p style="margin-top:0;margin-bottom:0">Andrew,</p>
+<p style="margin-top:0;margin-bottom:0"><br>
+</p>
+<p style="margin-top:0;margin-bottom:0">Here is the update which is long overdue.&nbsp; It talks only about the performance measurements&nbsp;since that is the objective part of looking at the two packages.</p>
+<p style="margin-top:0;margin-bottom:0"><br>
+</p>
+<p style="margin-top:0;margin-bottom:0">I did spend more time looking at the APIs and other features, but my comments on that are more opinionated and biased that objective, so I'll just include them here with the caveat that I'm not steadfast in my opinions.</p>
+<p style="margin-top:0;margin-bottom:0"><br>
+</p>
+<p style="margin-top:0;margin-bottom:0"></p>
+<ul style="margin-bottom: 0px; margin-top: 0px;">
+<li>Both packages are relatively easy to use and accessing PVA objects from Python can be done in relatively few lines of&nbsp;code.</li><li>p4p introduces an additional Context&nbsp;object whose lifecycle must be maintained for the duration of the script, whereas pvaPy doesn't have this.</li><li>p4p is more hierarchical&nbsp;with the package consisting of multiple Python modules for example, the Context object must be imported from p4p.client.thread.Context rather than being directly accessible in the p4p namespace.&nbsp; My opinion is that&nbsp;I'd prefer it
+ to be accessible directly in the p4p namespace.</li><li>pvaPy is more of a flat structure with everything accessible in the pvaccess namespace.&nbsp; To me, this makes the code more readable, but this is a preference (and maybe bias)&nbsp;issue for me.&nbsp; There are plenty of complex Python packages with a lot of hierarchy
+ like matplotlib and numpy.&nbsp;</li><li>When constructing structured data, I prefer pvaPy's approach.&nbsp; A dictionary of keys and types is provided to define the structure which parallels the dictionary of keys and values that can be used to set the structure's contents.&nbsp; In p4p, structure definition
+ is accomplished through a list of tuples and then content is set via a dictionary.</li><li>In p4p I could not find a way to run a PVA Server.&nbsp; I think this is a large piece of missing functionality.</li><li>I don't get the feeling that one package is more &quot;pythonic&quot; than the other in use, but again, this may be a personal preference issue.&nbsp; I think they do a good job of connecting Python to the&nbsp;pvAccess library, but I think there is room for a higher-level
+ &quot;pythonic&quot; package that simplifies the use in the way the requests package simplified urllib's use of the HTTP protocol.</li></ul>
+<br>
+<p></p>
+<p style="margin-top:0;margin-bottom:0">I hope this helps.&nbsp; I wish I could provide a more comprehensive assessment.&nbsp; If there's anything else you need, let me know.</p>
+<p style="margin-top:0;margin-bottom:0"><br>
+</p>
+<div id="Signature">
+<div id="divtagdefaultwrapper" dir="ltr" style="font-size: 12pt; color: rgb(0, 0, 0); font-family: Calibri, Arial, Helvetica, sans-serif, Helvetica, EmojiFont, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, NotoColorEmoji, &quot;Segoe UI Symbol&quot;, &quot;Android Emoji&quot;, EmojiSymbols;">
+<p><span id="ms-rterangepaste-start"></span></p>
+<p style="margin:0px; font-style:normal; font-weight:normal; font-size:12px; line-height:normal; font-family:Helvetica">
+<span style="">--</span></p>
+<p style="margin:0px; font-style:normal; font-weight:normal; font-size:12px; line-height:normal; font-family:Helvetica">
+<span style="">&nbsp; Thomas Fors</span></p>
+<p style="margin:0px; font-style:normal; font-weight:normal; font-size:12px; line-height:normal; font-family:Helvetica">
+<span style="">&nbsp; Engineer, AES Division</span></p>
+<p style="margin:0px; font-style:normal; font-weight:normal; font-size:12px; line-height:normal; font-family:Helvetica">
+<span style="">&nbsp; Argonne National Laboratory</span></p>
+<span id="ms-rterangepaste-end"></span><br>
+<p></p>
+</div>
+</div>
+</div>
+</body>
+</html>

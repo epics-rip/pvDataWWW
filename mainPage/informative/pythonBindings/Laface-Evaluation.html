@@ -1,0 +1,153 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space; color: rgb(0, 0, 0); font-size: 16px; font-family: Times, sans-serif;">
+<div>
+<span id="OLK_SRC_BODY_SECTION">
+<div style="font-family:Calibri; font-size:11pt; text-align:left; color:black; BORDER-BOTTOM: medium none; BORDER-LEFT: medium none; PADDING-BOTTOM: 0in; PADDING-LEFT: 0in; PADDING-RIGHT: 0in; BORDER-TOP: #b5c4df 1pt solid; BORDER-RIGHT: medium none; PADDING-TOP: 3pt">
+<span style="font-weight:bold">From: </span>Emanuele Laface &lt;emanuele (dot) laface (at) esss (dot) se&gt;<br>
+<span style="font-weight:bold">Date: </span>Monday 8 January 2018 at 14:36<br>
+<span style="font-weight:bold">To: </span>Timo Korhonen &lt;timo (dot) korhonen (at) esss (dot) se&gt;<br>
+<span style="font-weight:bold">Subject: </span>Re: pvaPy vs p4p evaluation<br>
+</div>
+<div><br>
+</div>
+<blockquote id="MAC_OUTLOOK_ATTRIBUTION_BLOCKQUOTE" style="BORDER-LEFT: #b5c4df 5 solid; PADDING:0 0 0 5; MARGIN:0 0 0 5;">
+<div>
+<div>
+<div class="BodyFragment"><font size="2"><span style="font-size:10pt;">
+<div class="PlainText">I start from the installation procedure.<br>
+I always try in a sandbox of Anaconda with Python version 3.6.1.<br>
+I think it is useless to start with Python 2 because we risk to have it obsolete once we will be in production.<br>
+<br>
+Installation of P4P<br>
+<br>
+the main reference that I am using is:<br>
+<a href="https://github.com/mdavidsaver/p4p">https://github.com/mdavidsaver/p4p</a><br>
+<br>
+and the documentation for the installation is<br>
+<a href="https://mdavidsaver.github.io/p4p/building.html">https://mdavidsaver.github.io/p4p/building.html</a><br>
+<br>
+The dependencies on the website are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • Python 2.7 or &gt;=3.4<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • numpy &gt;=1.6<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • nosetests (to run unittests)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • EPICS &gt;= 7.0.1<br>
+<br>
+but on the installation command line they also have python2.7-dev. I think all the requirements should be in a single point.<br>
+Moreover the external packages (EPICS for example) should be linked.<br>
+<br>
+The installation link on the main page:<br>
+<a href="https://github.com/mdavidsaver/p4p/releases/download/1.0.0/p4p-1.0.0.tar.gz">https://github.com/mdavidsaver/p4p/releases/download/1.0.0/p4p-1.0.0.tar.gz</a><br>
+<br>
+is broken. This is due to the bad practice to use versions in the filename instead of pointing the link to the latest stable release.<br>
+Also the release has the tag with the version (<a href="https://github.com/mdavidsaver/p4p/releases/tag/0.1">https://github.com/mdavidsaver/p4p/releases/tag/0.1</a>) but if we want to use for a production we should have the tag stable pointing to the<br>
+latest stable release. The installer should be agnostic with respect to the version.<br>
+<br>
+The installer says that the alternatively we can use the versioned source<br>
+git clone <a href="https://github.com/mdavidsaver/p4p.git">https://github.com/mdavidsaver/p4p.git</a><br>
+<br>
+this link works, and I will try to compile the code from both release and development (git).<br>
+<br>
+The way to configure the EPICS path is quite dangerous:<br>
+cat &lt;&lt;EOF &gt; configure/RELEASE.local<br>
+EPICS_BASE=/path/to/epics-base<br>
+EOF<br>
+<br>
+every EPICS component should read the EPICS base from environment variable, otherwise there is the risk of different installations that point to different EPICS versions.<br>
+<br>
+Once the environment is set-up I start to compile it.<br>
+The release p4p-0.1 doesn't compile because it tries to address the name &quot;value&quot; from the epics::pvData::ScalarTypeID&lt;long&gt; in pvData.h (see attached log).<br>
+Probably the name changed in the base-7.0.1.1 and the release is not updated.<br>
+<br>
+Then I switch to the development version and it compiles with only few warnings.<br>
+<br>
+The unit test, make nose, run well (even if on Mac there is a problem with the link of the readline library and has to be manually replaced in the&nbsp; _p4p.so with<br>
+sudo install_name_tool -change libreadline.6.2.dylib ~/anaconda/lib/libreadline.6.2.dylib _p4p.so but I think it is a local problem).<br>
+<br>
+The python library lacks the setup.py to be installed in the system. The use of the environment&nbsp; variable PYTHONPATH=~/Desktop/EPICS/p4p/python3.6m/darwin-x86<br>
+is very old style because every modern python installation allows a virtualization of the python environment, so a system-wide installation should be available.<br>
+<br>
+Once loaded the library works. I am not the best person to say if from the EPICS point of view it is working well. In particular on the server side I never setup a real EPICS server (only few demos).<br>
+As client I did few test and seems to work correctly, but I should use a real EPICS server to stress a bit the client capabilities to say if it works properly.<br>
+the examples in the documentation are ok to start to understand the logic, and the APIs are well documented.<br>
+<br>
+<br>
+Installation of pvaPy<br>
+<br>
+the main reference that I am using is:<br>
+<a href="https://github.com/epics-base/pvaPy">https://github.com/epics-base/pvaPy</a><br>
+<br>
+that contains also the installation reference.<br>
+The dependencies are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • EPICS Base (v3.14.12.3 or 3.15.2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • EPICS4 CPP release (v4.4.0 or higher); note that EPICS7 release includes all needed v4 modules<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • Python development header files/libraries (v2.6.6 or higher)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • Boost (v1.41.0); must have the boost_python library built<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • Standard development tools (gcc, make, autoconf, etc.)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • Boost.NumPy (optional, for retrieving numeric scalar arrays as numpy arrays; this is not needed for Boost v1.63.0 and later)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • Sphinx (optional, for generating documentation)<br>
+<br>
+The stable release (1.0.0) says that it is compatible with the EPICS 7 distribution, but in the documentation it mention separately the EPICS Base and the EPICS4 CPP. I will try to use the EPICS7 installation.<br>
+I will try both the release 1.0.0 (from here: <a href="https://github.com/epics-base/pvaPy/releases">
+https://github.com/epics-base/pvaPy/releases</a>) and the git development.<br>
+<br>
+The boost library is not light and depends on many other libraries, specifically from: graphite2, libboost, libcxx, libcxxabi, libopus, libprotobuf, libvpx, lzo, py-boost<br>
+The check with the linker in make configuration fails on Mac because it search for $EPICS_BASE/lib/darwin-x86_64 while in the EPICSv7 the directory was renamed as darwin-x86.<br>
+<br>
+Once fixed this issue the code compiles and generates the pvaccess.so library and a shell script to configure the environment variable PYTHONPATH to allow python to see the library.<br>
+Again this is not the correct way to install a python library: the correct way is to have the setyp.py installable through pip that copies the relevant libraries and wrappers into the main python installation (or the virtual environment).<br>
+<br>
+Also for pvaPy there is the problem with the readline library and has to be fixed with<br>
+<br>
+When the pvaccess is imported with import pvaccess, it rises the error:<br>
+&gt;&gt;&gt; import pvaccess<br>
+ImportError: numpy.core.umath failed to import<br>
+Traceback (most recent call last):<br>
+&nbsp; File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;<br>
+SystemError: initialization of pvaccess raised unreported exception<br>
+<br>
+This is somehow tricky to debug because the import numpy.core.umath alone works correctly.<br>
+If I import it twice it seems to work (at least it loads the symbols for the python library).<br>
+Once installed I wasn't able to read an EPICS channel on a remote server, maybe the code is ignoring the environment variable EPICS_CA_ADDR_LIST.<br>
+<br>
+These are the two examples:<br>
+<br>
+&gt;&gt;&gt; from p4p.client.thread import Context<br>
+&gt;&gt;&gt; ctxt = Context('ca')<br>
+&gt;&gt;&gt; ctxt.get('QP1:B')<br>
+-15.57639015558656<br>
+<br>
+&gt;&gt;&gt; import pvaccess<br>
+ImportError: numpy.core.umath failed to import<br>
+Traceback (most recent call last):<br>
+&nbsp; File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;<br>
+SystemError: initialization of pvaccess raised unreported exception<br>
+&gt;&gt;&gt; import pvaccess<br>
+&gt;&gt;&gt; c = pvaccess.Channel('QP1:B')<br>
+&gt;&gt;&gt; c.get()<br>
+Traceback (most recent call last):<br>
+&nbsp; File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;<br>
+pvaccess.PvaException: Channel QP1:B timed out.<br>
+<br>
+<br>
+My overall conclusion is that both libraries are not mature for production, requires several manual tweak to be adapted to the environment and are far from<br>
+the stability required in high reliability environment.<br>
+The installation process has to be cleaned and standardized as any other python package (with the setup.py compatible with pip and the correct management of the dependencies).<br>
+The long list of dependencies of pvaPy makes me think that we should consider as first choice p4p that seems a cleaner installation.<br>
+On the other end I do not like either the fact that p4p has his own c&#43;&#43; client included in the installation. The pyepics library (the one for EPICS3) does not implement its own client<br>
+but it is a python wrapper around the installation of EPICS, so every change and update in the EPICS base is automatically ported in the python library.<br>
+If the python library implements its own client we risk to depend on it and to have trouble in case of new features of the default client.<br>
+Cheers,<br>
+e.<br>
+<br>
+</div>
+</span></font></div>
+
+</div>
+</div>
+</blockquote>
+</span>
+</body>
+</html>
